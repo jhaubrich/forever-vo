@@ -90,6 +90,7 @@ def read_cache(path: Path) -> dict[int, dict[str, str]]:
         pos += 8 + length
         parsed = parse_record(record)
         if parsed:
+            parsed["sortID"] = struct.unpack_from("<i", record, 24)[0]  # AreaTable ID (>0) or QuestSort ID (<0)
             quests[entry] = parsed
         else:
             failed += 1
@@ -105,7 +106,7 @@ def main(argv: list[str]) -> int:
         if q["details"].strip():
             out["quests"][f"{quest_id}-accept"] = {
                 "event": "accept", "questID": quest_id, "title": q["title"], "text": q["details"],
-                "source": "questcache",
+                "sortID": q["sortID"], "source": "questcache",
             }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8")

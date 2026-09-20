@@ -223,7 +223,11 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float]) -> None:
     for name in present:
         if name not in sound_index:
             folder = "Quests" if name.lstrip("mf-").split("-")[0].isdigit() and "-" in name.lstrip("mf-") else "Gossip"
-            sound_index[name] = probe_duration(SOUNDS_DIR / folder / f"{name}.mp3")
+            sound_index[name] = {"d": probe_duration(SOUNDS_DIR / folder / f"{name}.mp3"), "v": None}
+
+    def duration_of(name: str) -> float:
+        recorded = sound_index.get(name, 0.0)
+        return recorded["d"] if isinstance(recorded, dict) else float(recorded)
 
     quests: dict[int, dict] = {}
     gossip: dict[int, list[dict]] = {}
@@ -235,7 +239,7 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float]) -> None:
         if not available:
             continue
         gendered = len(variants) == 2
-        duration = max(sound_index.get(base, 0.0) for base in available)
+        duration = max(duration_of(base) for base in available)
         speaker = speaker_int(item.speaker_key)
         name = item.entry.get("name") or (item.npc or {}).get("name")
         if speaker is not None and name:
@@ -293,6 +297,8 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--quest", type=int, action="append", help="restrict to quest ID(s)")
     parser.add_argument("--tables-only", action="store_true", help="skip synthesis, rebuild tables")
     parser.add_argument("--captured", action="store_true", help="only lines captured in game (not bulk sources)")
+    parser.add_argument("--zone", type=int, action="append", help="only quests with this QuestSortID / AreaTable ID (from the client cache)")
+    parser.add_argument("--assume-voice", help="voice for quests whose speaker is unknown, e.g. skyborne-male (default: skip them)")
     args = parser.parse_args(argv)
 
     capture = load_sources()
@@ -309,6 +315,8 @@ def main(argv: list[str]) -> int:
             continue
         if args.captured and not item.entry.get("player"):
             continue
+        if args.zone and item.entry.get("sortID") not in args.zone:
+            continue
         if args.quest and (item.kind != "quests" or int(item.entry["questID"]) not in args.quest):
             continue
         if item.entry.get("found") and not args.all and item.entry.get("pack") != "Forever":
@@ -318,13 +326,20 @@ def main(argv: list[str]) -> int:
             skipped["no speaker id"] = skipped.get("no speaker id", 0) + 1
             continue
         if item.kind == "quests" and item.speaker_key is None and not item.entry.get("isObject"):
-            # Cache-only quest whose giver we have not met: wait for a capture so it gets the right voice
-            skipped["speaker unknown (play it to capture)"] = skipped.get("speaker unknown (play it to capture)", 0) + 1
-            continue
+            # Cache-only quest whose giver we have not met: wait for a capture so it gets the right
+            # voice, unless the caller vouches for a voice (e.g. a single-race starting zone)
+            if not args.assume_voice:
+                skipped["speaker unknown (play it to capture)"] = skipped.get("speaker unknown (play it to capture)", 0) + 1
+                continue
+            item.voice = args.assume_voice
         for base, text in item.variants():
             out = SOUNDS_DIR / item.subfolder / f"{base}.mp3"
             if out.exists() and not args.force:
-                continue
+                recorded = sound_index.get(base)
+                previous_voice = recorded.get("v") if isinstance(recorded, dict) else None
+                if previous_voice is None or previous_voice == item.voice or item.voice == args.assume_voice:
+                    continue
+                skipped["voice changed, regenerating"] = skipped.get("voice changed, regenerating", 0) + 1
             if not is_speakable(text):
                 skipped["unresolved markup"] = skipped.get("unresolved markup", 0) + 1
                 continue
@@ -355,7 +370,7 @@ def main(argv: list[str]) -> int:
             out = SOUNDS_DIR / item.subfolder / f"{base}.mp3"
             t0 = time.time()
             duration = synth.speak(text, item.voice, out)
-            sound_index[base] = duration
+            sound_index[base] = {"d": duration, "v": item.voice}
             print(f"[{n}/{len(todo)}] {item.subfolder}/{base}.mp3 {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{item.voice}] {item.entry.get('title') or item.entry.get('name')}")
             if n % 25 == 0:
                 # Keep the pack tables current so a client restart picks up what exists so far.

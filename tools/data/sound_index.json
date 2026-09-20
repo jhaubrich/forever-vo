@@ -22,12 +22,189 @@
  "3088-complete": 28.43,
  "3089-accept": 14.0,
  "3089-complete": 33.47,
+ "3090-accept": 20.2,
+ "3090-complete": 36.5,
+ "3091-accept": 12.08,
+ "3091-complete": 26.79,
+ "3092-accept": 12.6,
+ "3092-complete": 28.15,
+ "3093-accept": 12.04,
+ "3093-complete": 23.76,
+ "3094-accept": 11.04,
+ "3094-complete": 28.63,
+ "3095-accept": 15.8,
+ "3095-complete": 30.67,
+ "3096-accept": 13.56,
+ "3096-complete": 15.2,
+ "3097-accept": 15.36,
+ "3097-complete": 36.07,
+ "3098-accept": 19.36,
+ "3098-complete": 36.83,
+ "3099-accept": 14.8,
+ "3099-complete": 34.39,
+ "3100-accept": 14.16,
+ "3100-complete": 19.11,
+ "3101-accept": 14.68,
+ "3101-complete": 28.07,
+ "3102-accept": 14.76,
+ "3103-accept": {
+  "d": 14.72,
+  "v": null
+ },
+ "3103-complete": {
+  "d": 16.4,
+  "v": null
+ },
+ "3104-accept": {
+  "d": 13.88,
+  "v": null
+ },
+ "3104-complete": {
+  "d": 25.11,
+  "v": null
+ },
+ "3105-accept": {
+  "d": 14.28,
+  "v": null
+ },
+ "3105-complete": {
+  "d": 24.43,
+  "v": null
+ },
+ "3106-accept": {
+  "d": 17.36,
+  "v": null
+ },
+ "3106-complete": {
+  "d": 30.39,
+  "v": null
+ },
+ "3107-accept": {
+  "d": 16.4,
+  "v": null
+ },
+ "3107-complete": {
+  "d": 31.47,
+  "v": null
+ },
+ "3108-accept": {
+  "d": 15.12,
+  "v": null
+ },
+ "3108-complete": {
+  "d": 26.07,
+  "v": null
+ },
+ "3109-accept": {
+  "d": 15.6,
+  "v": null
+ },
+ "3109-complete": {
+  "d": 29.59,
+  "v": null
+ },
+ "3110-accept": {
+  "d": 17.0,
+  "v": null
+ },
+ "3110-complete": {
+  "d": 24.31,
+  "v": null
+ },
  "3309-2f8d506f": 9.68,
  "3309-6b36598f": 6.96,
  "3309-ae78a458": 3.64,
  "3318-ae78a458": 3.92,
  "5943-a28d29e1": 3.2,
  "6929-7161de72": 15.8,
+ "92460-accept": {
+  "d": 27.23,
+  "v": "skyborne-male"
+ },
+ "92461-accept": {
+  "d": 30.59,
+  "v": "skyborne-male"
+ },
+ "92462-accept": {
+  "d": 14.4,
+  "v": "skyborne-male"
+ },
+ "92463-accept": {
+  "d": 19.11,
+  "v": "skyborne-male"
+ },
+ "92464-accept": {
+  "d": 31.63,
+  "v": "skyborne-male"
+ },
+ "92466-accept": {
+  "d": 28.15,
+  "v": "skyborne-male"
+ },
+ "92467-accept": {
+  "d": 30.75,
+  "v": "skyborne-male"
+ },
+ "92469-accept": {
+  "d": 9.72,
+  "v": "skyborne-male"
+ },
+ "92470-accept": {
+  "d": 24.35,
+  "v": "skyborne-male"
+ },
+ "92471-accept": {
+  "d": 26.91,
+  "v": "skyborne-male"
+ },
+ "92472-accept": {
+  "d": 30.43,
+  "v": "skyborne-male"
+ },
+ "92473-accept": {
+  "d": 29.95,
+  "v": "skyborne-male"
+ },
+ "92474-accept": {
+  "d": 27.23,
+  "v": "skyborne-male"
+ },
+ "92515-accept": {
+  "d": 27.35,
+  "v": "skyborne-male"
+ },
+ "92516-accept": {
+  "d": 11.56,
+  "v": "skyborne-male"
+ },
+ "92517-accept": {
+  "d": 29.55,
+  "v": "skyborne-male"
+ },
+ "92544-accept": {
+  "d": 29.18,
+  "v": "skyborne-male"
+ },
+ "92598-accept": {
+  "d": 29.47,
+  "v": "skyborne-male"
+ },
+ "93318-accept": {
+  "d": 21.95,
+  "v": "skyborne-male"
+ },
+ "93319-accept": {
+  "d": 27.99,
+  "v": "skyborne-male"
+ },
+ "93552-accept": {
+  "d": 29.39,
+  "v": "skyborne-male"
+ },
+ "93951-accept": {
+  "d": 31.02,
+  "v": "skyborne-male"
+ },
  "97903-complete": 33.99,
  "99052-complete": 8.32,
  "99052-progress": 2.6
