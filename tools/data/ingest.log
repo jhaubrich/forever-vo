@@ -55,3 +55,8 @@ ingested   /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraf
 ingested   /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak: 0 quest, 0 gossip, 0 npc changes
 unchanged  /home/q/Projects/forever-vo/captures/comment-5751925873.json
 capture.json: 27 quest texts (22 without audio), 34 gossip texts (34 without audio), 30 NPCs
+=== 2026-09-20T16:57:33-04:00 sync ===
+ingested   /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua: 7 quest, 5 gossip, 7 npc changes
+ingested   /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak: 0 quest, 0 gossip, 0 npc changes
+unchanged  /home/q/Projects/forever-vo/captures/comment-5751925873.json
+capture.json: 34 quest texts (29 without audio), 39 gossip texts (39 without audio), 37 NPCs

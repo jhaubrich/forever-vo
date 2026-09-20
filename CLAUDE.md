@@ -123,12 +123,39 @@ generators at once by hand (they share `sound_index.json`).
 
 ## Releases
 
-`.pkgmeta` at the root uses `move-folders` so only `ForeverVO/` ships. Push a
-`v*` tag: the GitHub workflow builds a release with the BigWigs packager, and
-CurseForge's own packager (repo linked as Source, tags only) publishes the
-same zip. Do **not** set the `CF_API_KEY` secret, or files upload twice.
-`CHANGELOG.md` is the release notes. Dry-run locally with the packager's
-`release.sh -d -g 1.60.1`.
+Three CurseForge projects, three release paths:
+
+- **Addon** (1705010, slug `forever-vo`): `.pkgmeta` at the root uses
+  `move-folders` so only `ForeverVO/` ships. Push a `v*` tag: the GitHub
+  workflow builds a release with the BigWigs packager, and CurseForge's own
+  packager (repo linked as Source, tags only) publishes the same zip. Do
+  **not** set the `CF_API_KEY` GitHub secret, or files upload twice.
+  `CHANGELOG.md` is the release notes. Dry-run with the packager's
+  `release.sh -d -g 1.60.1` (needs zip, unzip, pandoc). The TOC carries
+  `## X-Curse-Project-ID`; the packager maps Interface 16001 to game version
+  "1.60.1" itself, there is no version field to fill.
+- **Delta pack** "Forever Voiceover Data: Forever" (1705094): lines whose
+  source is not `classic` (captures, community, beta cache), priority 200.
+  `tools/release_pack.py delta --upload --if-changed` runs at the end of the
+  nightly job and uploads a dated beta when the file set changed.
+- **Base pack** "Forever Voiceover Data: Base" (1705100): the Classic-sourced
+  lines, priority 100, huge (~1.5 GB re-encoded), released by hand and
+  rarely: `tools/release_pack.py base --upload`.
+
+`release_pack.py` builds from the single working folder `ForeverVO_Data`
+(which holds everything on the owner's machine and is what the client loads
+locally), re-encodes to mono 48 kbps mp3 under `tools/data/release/`, writes
+a fresh manifest per pack (`<Folder>Pack` global, `Register.lua`), and
+uploads through the CurseForge upload API (`wow.curseforge.com/api`). Pack
+versions are date based (`2026.09.20`, `.2` on the same day) and tracked in
+`tools/data/release_state.json`. Project IDs are the `CURSEFORGE_PROJECTS`
+constant in `tools/config.py`; the API key is `CURSEFORGE_API_KEY` in the
+gitignored `.env`, read by `load_dotenv()` in `release_pack.py`.
+
+CurseForge moderation holds new projects and their first files for a day or
+so; nothing needs doing meanwhile. The project logo must be original art
+(`docs/logo.svg` / `logo.png`); Blizzard icons are fine inside the client but
+rejected as a storefront logo.
 
 ## Crowdsourcing
 
@@ -152,12 +179,46 @@ The owner's machine picks those up on the next sync.
   titles.
 - `PlayerModel:GetDisplayInfo()` returns 0 until the model loads; the capture
   reads it in `OnModelLoaded`, and the merge ignores zero display IDs.
+- `wowdata.voice_for_npc` once silently used an old field name
+  (`isObjectOrItem`) and a patch whose anchor text had drifted never applied.
+  After editing with search-and-replace, grep for the new text; do not trust
+  "patched".
+- Sound file names: quests are `<questID>-<event>`, gossip `<speaker>-<hash>`.
+  Tell them apart by the last segment (`generate.sound_folder`), not by
+  whether the first segment is numeric, since speaker keys are numeric too.
+- The bulk generator's `sound_index.json` is written every 25 files; the
+  release script and the nightly table rebuild reload sources so files made
+  by another run are still indexed.
+- `uv run --with requests python -c ...` is the way to poke at `wowdata`
+  from a one-liner; `run.sh python -c` gives a bare interpreter.
+- CurseForge's public web API (`curseforge.com/api/v1/...`) returns HTML to
+  scripts; the authenticated `wow.curseforge.com/api` is what works.
 - The Forever client picks `_Camelot.toc` when present and `.toc` otherwise;
   this addon uses the plain `.toc` with Interface 16001.
+
+## Voices
+
+- Race voices: `tools/voices/<race>-<gender>.wav`, cloned from NPC greeting
+  kits shared by many models. Skyborne from `VocalUISounds`
+  (`NormalSoundID_0` male, `_1` female). Blood elf female has only ~7 s.
+- Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
+  models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
+  just two greetings, so his clone is rougher.
+- `FALLBACK_VOICES` and `ZONE_RACE_HINTS` in `tools/config.py` cover races
+  without a clip and speakers without display data (Zephras Isle -> skyborne).
+- `--assume-voice` on `generate.py` voices cache-only quests whose giver is
+  unknown (used once for Zephras Isle with `skyborne-male`); the voice-change
+  check fixes them once a capture names the giver.
+- The talking head defaults to Blizzard's dark panel ("Normal" kit); the
+  faction parchment is an opt-in because gold text vanished on it. Title
+  colors per kit are in `FONT_COLORS` in `UI/TalkingHead.lua`.
 
 ## Things the owner wants next
 
 - Per-line configurability: let end users nudge text, voice, exaggeration or
   pacing for a line and re-run Chatterbox for it themselves.
 - A Discord bot as an alternative inbox for `FVO1:` strings (same decoder).
-- A first `ForeverVO_Data` release once the Classic bulk run finishes.
+- A first base pack release once the Classic bulk run finishes (it was at
+  ~900 of ~7,900 quest files on 2026-09-20 evening; gossip follows quests).
+- Lower bitrate for the base pack (32 kbps) if 1.5 GB proves too large for
+  CurseForge or for players.
