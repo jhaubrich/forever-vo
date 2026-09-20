@@ -37,6 +37,9 @@ ns.defaults = {
     headScale = 1,
     showText = true,
     showQueuePanel = false,
+    showMinimapButton = true,
+    lockMinimapButton = false,
+    minimapAngle = 225,
 
     -- Data collection for generating new voice lines
     capture = true,

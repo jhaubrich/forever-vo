@@ -119,6 +119,8 @@ ns.OnInit(function()
     Checkbox(display, "showText", "Show the spoken text", "Display the words being spoken, paged in time with the audio.", RefreshHead)
     Checkbox(display, "lockHead", "Lock position", "Prevent the frame from being dragged.")
     Slider(display, "headScale", "Scale", "Size of the talking head.", 0.5, 1.5, 0.05, function(value) return format("%d%%", value * 100) end, RefreshHead)
+    Checkbox(display, "showMinimapButton", "Minimap button", "Show the button on the minimap. Left-click for options, right-click for playback controls, drag to move.", function() ns.UI.MinimapButton:ApplySettings() end)
+    Checkbox(display, "lockMinimapButton", "Lock minimap button", "Prevent the minimap button from being dragged.")
 
     -- Data
     local data = Settings.RegisterVerticalLayoutSubcategory(category, "Voice packs")

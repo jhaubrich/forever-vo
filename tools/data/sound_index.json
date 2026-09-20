@@ -23,6 +23,22 @@
   "d": 9.96,
   "v": "human-female"
  },
+ "112-accept": {
+  "d": 18.99,
+  "v": "human-male"
+ },
+ "112-complete": {
+  "d": 5.88,
+  "v": "human-male"
+ },
+ "114-accept": {
+  "d": 5.88,
+  "v": "human-male"
+ },
+ "114-complete": {
+  "d": 14.96,
+  "v": "human-female"
+ },
  "1462-complete": {
   "d": 4.76,
   "v": "tauren-female"
@@ -246,6 +262,10 @@
  },
  "3065-accept": 17.24,
  "3065-complete": 21.55,
+ "308-complete": {
+  "d": 3.44,
+  "v": "dwarf-male"
+ },
  "3082-accept": 14.0,
  "3082-complete": 39.31,
  "3083-accept": 13.480249,
@@ -351,6 +371,14 @@
   "d": 29.59,
   "v": null
  },
+ "311-accept": {
+  "d": 8.24,
+  "v": "narrator"
+ },
+ "311-complete": {
+  "d": 12.12,
+  "v": "dwarf-female"
+ },
  "3110-accept": {
   "d": 17.0,
   "v": null
@@ -435,12 +463,28 @@
   "d": 24.99,
   "v": "nightelf-male"
  },
+ "313-accept": {
+  "d": 26.47,
+  "v": "dwarf-male"
+ },
+ "313-complete": {
+  "d": 8.32,
+  "v": "dwarf-male"
+ },
  "317-accept": {
   "d": 26.75,
   "v": "dwarf-male"
  },
  "317-complete": {
   "d": 6.76,
+  "v": "dwarf-male"
+ },
+ "318-accept": {
+  "d": 32.51,
+  "v": "dwarf-male"
+ },
+ "318-complete": {
+  "d": 5.56,
   "v": "dwarf-male"
  },
  "33-accept": {
@@ -531,6 +575,14 @@
   "d": 25.75,
   "v": "nightelf-male"
  },
+ "361-accept": {
+  "d": 8.8,
+  "v": "narrator"
+ },
+ "361-complete": {
+  "d": 36.27,
+  "v": "scourge-female"
+ },
  "363-accept": {
   "d": 21.87,
   "v": "scourge-male"
@@ -547,12 +599,28 @@
   "d": 9.84,
   "v": "scourge-male"
  },
+ "365-accept": {
+  "d": 29.51,
+  "v": "scourge-male"
+ },
+ "365-complete": {
+  "d": 8.84,
+  "v": "scourge-male"
+ },
  "367-accept": {
   "d": 28.39,
   "v": "scourge-male"
  },
  "367-complete": {
   "d": 3.8,
+  "v": "scourge-male"
+ },
+ "374-accept": {
+  "d": 41.15,
+  "v": "scourge-male"
+ },
+ "374-complete": {
+  "d": 5.2,
   "v": "scourge-male"
  },
  "376-accept": {
@@ -594,6 +662,14 @@
  "383-complete": {
   "d": 17.24,
   "v": "scourge-male"
+ },
+ "384-accept": {
+  "d": 31.39,
+  "v": "dwarf-male"
+ },
+ "384-complete": {
+  "d": 12.4,
+  "v": "dwarf-male"
  },
  "3861-accept": {
   "d": 21.39,
@@ -1209,6 +1285,14 @@
   "d": 5.28,
   "v": "narrator"
  },
+ "85-accept": {
+  "d": 13.48,
+  "v": "human-female"
+ },
+ "85-complete": {
+  "d": 8.08,
+  "v": "narrator"
+ },
  "8565-complete": {
   "d": 22.92,
   "v": "dwarf-male"
@@ -1232,6 +1316,14 @@
  "8570-complete": {
   "d": 6.52,
   "v": "orc-male"
+ },
+ "86-accept": {
+  "d": 17.11,
+  "v": "narrator"
+ },
+ "86-complete": {
+  "d": 6.68,
+  "v": "human-female"
  },
  "8744-complete": {
   "d": 7.48,
@@ -1388,6 +1480,14 @@
  "92598-accept": {
   "d": 29.47,
   "v": "skyborne-male"
+ },
+ "9260-accept": {
+  "d": 27.55,
+  "v": "human-male"
+ },
+ "9260-complete": {
+  "d": 17.28,
+  "v": "human-male"
  },
  "928-accept": {
   "d": 31.35,
