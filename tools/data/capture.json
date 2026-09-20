@@ -1,5 +1,17 @@
 {
  "gossip": {
+  "10378|bbe052dd": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Omusa Thunderhorn",
+   "npc": "10378",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Camp Taurajo",
+   "text": "Where can I send you today mage?",
+   "time": 1789935907,
+   "zone": "The Barrens"
+  },
   "11044|0556ba58": {
    "build": "69913",
    "event": "gossip",
@@ -25,6 +37,18 @@
    "text": "Once, it is true, I was human. What might otherwise be a shortcoming works to our advantage, Myrlin, for I know human weaknesses intimately.",
    "time": 1789931442,
    "zone": "Undercity"
+  },
+  "11833|65ba1433": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Rahauro",
+   "npc": "11833",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Elder Rise",
+   "text": "Well met, mage. You may speak to me unless you have direct business with my mistress Magatha.\n\nI deal with most of her tasks for her so she can concentrate on more important matters. Perhaps there are some things we could discuss before you seek audience with her?",
+   "time": 1789936555,
+   "zone": "Thunder Bluff"
   },
   "11870|3a5c3d7e": {
    "build": "69913",
@@ -220,6 +244,30 @@
    "time": 1789932623,
    "zone": "The Barrens"
   },
+  "2995|bfaf54b7": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Tal",
+   "npc": "2995",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "When mounted on the back of a wind rider, one sees that its reputation for strength and speed is well earned.",
+   "time": 1789937445,
+   "zone": "Thunder Bluff"
+  },
+  "3004|dfa12b04": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Tepa",
+   "npc": "3004",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "You are truly a determined student. I will be happy to provide you with instruction!",
+   "time": 1789936643,
+   "zone": "Thunder Bluff"
+  },
   "3309|2f8d506f": {
    "build": "69913",
    "event": "gossip",
@@ -337,6 +385,18 @@
    "time": 1789931286,
    "zone": "Undercity"
   },
+  "5769|c626a1cf": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Arch Druid Hamuul Runetotem",
+   "npc": "5769",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Elder Rise",
+   "text": "The earth keeps many secrets, mage; it is our duty to ensure that those that must remain a secret for the good of all stays as such.",
+   "time": 1789936570,
+   "zone": "Thunder Bluff"
+  },
   "5943|a28d29e1": {
    "build": "69913",
    "event": "gossip",
@@ -441,11 +501,25 @@
   }
  },
  "npcs": {
+  "10378": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 968705,
+   "name": "Omusa Thunderhorn",
+   "sex": 2
+  },
   "11044": {
    "creatureType": "Humanoid",
    "level": 25,
    "modelFileID": 959310,
    "name": "Doctor Martin Felben",
+   "sex": 2
+  },
+  "11833": {
+   "creatureType": "Humanoid",
+   "level": 20,
+   "modelFileID": 968705,
+   "name": "Rahauro",
    "sex": 2
   },
   "11870": {
@@ -553,6 +627,20 @@
    "name": "Valreaa Valewind",
    "sex": 3
   },
+  "2995": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 968705,
+   "name": "Tal",
+   "sex": 2
+  },
+  "3004": {
+   "creatureType": "Humanoid",
+   "level": 35,
+   "modelFileID": 986648,
+   "name": "Tepa",
+   "sex": 3
+  },
   "3142": {
    "creatureType": "Humanoid",
    "displayID": 0,
@@ -611,6 +699,27 @@
    "modelFileID": 959310,
    "name": "Michael Garrett",
    "sex": 2
+  },
+  "5543": {
+   "creatureType": "Humanoid",
+   "level": 17,
+   "modelFileID": 997378,
+   "name": "Clarice Foster",
+   "sex": 3
+  },
+  "5769": {
+   "creatureType": "Humanoid",
+   "level": 62,
+   "modelFileID": 968705,
+   "name": "Arch Druid Hamuul Runetotem",
+   "sex": 2
+  },
+  "5770": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 986648,
+   "name": "Nara Wildmane",
+   "sex": 3
   },
   "5943": {
    "creatureType": "Humanoid",
@@ -675,6 +784,48 @@
    "title": "Hamuul Runetotem",
    "zone": "The Barrens"
   },
+  "1489-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1456,
+   "name": "Arch Druid Hamuul Runetotem",
+   "npc": "5769",
+   "player": "Myrlin Fixpoint",
+   "questID": 1489,
+   "subzone": "Elder Rise",
+   "text": "I bid you greetings, Myrlin.  You are welcome here, and I suggest you gather all your strength.  For the task we now set before you ... is a dire one.",
+   "time": 1789936571,
+   "title": "Hamuul Runetotem",
+   "zone": "Thunder Bluff"
+  },
+  "1490-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1456,
+   "name": "Arch Druid Hamuul Runetotem",
+   "npc": "5769",
+   "player": "Myrlin Fixpoint",
+   "questID": 1490,
+   "subzone": "Elder Rise",
+   "text": "I entered the land of dreams, and dreamed of a cult of druids who dwell in the Wailing Caverns.  I saw that their goals were once noble, but they have lost their way.  They are now servants of the taint seeping through the Barrens.\n\nI am old and my strength fails.  I could not long dwell in that dreaming place and know little more of the tainted druids.  But Nara is young and her spirit is fierce.  She remained in the dreaming when I fled.\n\nSpeak with Nara.  She is in the tent, over yonder.",
+   "time": 1789936572,
+   "title": "Nara Wildmane",
+   "zone": "Thunder Bluff"
+  },
+  "1490-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1456,
+   "name": "Nara Wildmane",
+   "npc": "5770",
+   "player": "Myrlin Fixpoint",
+   "questID": 1490,
+   "subzone": "Elder Rise",
+   "text": "Yes, it is true.  I know of the druids in the Wailing Caverns.  I have seen their twisted, scaled faces.  I know their crimes, and I know their plans.\n\nYou must stop them, Myrlin.",
+   "time": 1789936579,
+   "title": "Nara Wildmane",
+   "zone": "Thunder Bluff"
+  },
   "179-accept": {
    "build": "69913",
    "event": "accept",
@@ -691,6 +842,20 @@
    "time": 1789935308,
    "title": "Dwarven Outfitters",
    "zone": "Dun Morogh"
+  },
+  "264-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1456,
+   "name": "Clarice Foster",
+   "npc": "5543",
+   "player": "Myrlin Fixpoint",
+   "questID": 264,
+   "subzone": "The Pools of Vision",
+   "text": "Filthy scum! Leaves me for his damn crusade. Because \"the Light is the most important thing we have against the threats the undead pose.\"\n\nWell, what about his children?! What about ME?! Night after night I sat patiently waiting for him... always second to his blasted duty!\n\nWell, witness what \"justice\" brings you, Myrlin! He's dead and I'm bearing the very thing he was trying to stop!\n\nTake this piece of junk and put it on his tomb at the Sepulcher. I want nothing to do with it anymore... or him!",
+   "time": 1789936824,
+   "title": "Until Death Do Us Part",
+   "zone": "Thunder Bluff"
   },
   "3301-accept": {
    "build": "69913",
@@ -721,6 +886,34 @@
    "time": 1789932270,
    "title": "Supplies for the Crossroads",
    "zone": "The Barrens"
+  },
+  "5722-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1456,
+   "name": "Rahauro",
+   "npc": "11833",
+   "player": "Myrlin Fixpoint",
+   "questID": 5722,
+   "subzone": "Elder Rise",
+   "text": "The troggs are not the only thing that interested Magatha in Ragefire Chasm. She has heard word that one of her servants, a Maur Grimtotem, found something peculiar while in the Chasm, but he never made it out to show her what. She'd like Maur's body found--if it still exists--and any signs of what he found while attempting to speak to the troggs.\n\nReturn to Magatha any items of interest, and I'm sure she would be very generous in her reward.\n\nAgain, seek the Chasm in the darkest areas of Orgrimmar.",
+   "time": 1789936554,
+   "title": "Searching for the Lost Satchel",
+   "zone": "Thunder Bluff"
+  },
+  "5723-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1456,
+   "name": "Rahauro",
+   "npc": "11833",
+   "player": "Myrlin Fixpoint",
+   "questID": 5723,
+   "subzone": "Elder Rise",
+   "text": "Beneath the city of Orgrimmar, stout creatures known as troggs started coming to the surface from deep below the lava filled tunnels. In her ever-benevolence, Magatha sought to make peace with the creatures, but they turned on her diplomats, killing them. She will not allow such treatment of the tauren people and now consider the creatures a threat to all of the Horde.\n\nShe asks that you put an end to this trogg threat before it overwhelms the Horde from below. Find Ragefire Chasm and destroy them all.",
+   "time": 1789936556,
+   "title": "Testing an Enemy's Strength",
+   "zone": "Thunder Bluff"
   },
   "5725-accept": {
    "build": "69913",
@@ -871,6 +1064,20 @@
    "time": 1789934524,
    "title": "Altered Beings",
    "zone": "The Barrens"
+  },
+  "914-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1456,
+   "name": "Nara Wildmane",
+   "npc": "5770",
+   "player": "Myrlin Fixpoint",
+   "questID": 914,
+   "subzone": "Elder Rise",
+   "text": "The druids in the Wailing Caverns, the Druids of the Fang, are an aberration.  They were part of an order of noble druids whose plan was to heal the Barrens, but now seek to remake that land to match their own, twisted dreams.\n\nThe Druids of the Fang have four leaders, and each possesses a dream gem.  Even now their faces haunt me!  Defeat the leaders and bring me their gems, and the Barrens may again know peace.\n\nGo, Myrlin.  You will find them lurking deep within the Wailing Caverns.",
+   "time": 1789936580,
+   "title": "Leaders of the Fang",
+   "zone": "Thunder Bluff"
   },
   "92465-complete": {
    "build": "69913",
