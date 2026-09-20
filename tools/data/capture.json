@@ -3,6 +3,7 @@
   "11044|0556ba58": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789931444,
    "mapID": 1458,
    "name": "Doctor Martin Felben",
    "npc": "11044",
@@ -15,6 +16,7 @@
   "11044|98f6d0c2": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789931442,
    "mapID": 1458,
    "name": "Doctor Martin Felben",
    "npc": "11044",
@@ -22,6 +24,18 @@
    "subzone": "The Apothecarium",
    "text": "Once, it is true, I was human. What might otherwise be a shortcoming works to our advantage, Myrlin, for I know human weaknesses intimately.",
    "time": 1789931442,
+   "zone": "Undercity"
+  },
+  "11870|3a5c3d7e": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Archibald",
+   "npc": "11870",
+   "player": "Myrlin Fixpoint",
+   "subzone": "War Quarter",
+   "text": "I suppose you are here to be trained in the use of a new weapon?  Make it fast, I'm very busy!",
+   "time": 1789931725,
    "zone": "Undercity"
   },
   "12136|866b6683": {
@@ -65,6 +79,7 @@
   "2425|4aecbd96": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789931596,
    "mapID": 1458,
    "name": "Varimathras",
    "npc": "2425",
@@ -246,6 +261,7 @@
   "7683|21424dde": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789931503,
    "mapID": 1458,
    "name": "Alessandro Luca",
    "npc": "7683",
@@ -258,6 +274,7 @@
   "7683|70f4a6e4": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789931505,
    "mapID": 1458,
    "name": "Alessandro Luca",
    "npc": "7683",
@@ -311,6 +328,13 @@
    "level": 25,
    "modelFileID": 959310,
    "name": "Doctor Martin Felben",
+   "sex": 2
+  },
+  "11870": {
+   "creatureType": "Humanoid",
+   "level": 50,
+   "modelFileID": 959310,
+   "name": "Archibald",
    "sex": 2
   },
   "12136": {
@@ -472,6 +496,7 @@
   "5725-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789931598,
    "mapID": 1458,
    "name": "Varimathras",
    "npc": "2425",
@@ -629,6 +654,7 @@
   "97891-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789931435,
    "mapID": 1458,
    "name": "Doctor Martin Felben",
    "npc": "11044",
