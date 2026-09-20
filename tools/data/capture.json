@@ -81,13 +81,14 @@
   "12136|866b6683": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789925490,
    "mapID": 1411,
    "name": "Snurk Bucksquick",
    "npc": "12136",
    "player": "Myrlin Fixpoint",
    "subzone": "",
    "text": "Hey there cutie, you looking for a ride to Grom'gol? I hear it gets mighty steamy down in those jungles, maybe I could join you for a short vacation, show you a real jungle cat.",
-   "time": 1789925490,
+   "time": 1789944735,
    "zone": "Durotar"
   },
   "123456|927dcf86": {
@@ -126,7 +127,7 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Royal Quarter",
    "text": "Do not presume to speak to me as though you are my equal, mage. Sylvanas is my queen, and I will do as she bids.\n\nIf you do not show the proper respect, I assure you, we can find a more than suitable place for you in the Nether.\n\nBut there is no reason we cannot have words if you wish to aid the Dark Lady...",
-   "time": 1789931596,
+   "time": 1789945460,
    "zone": "Undercity"
   },
   "248199|4ee395b7": {
@@ -259,6 +260,30 @@
    "time": 1789932623,
    "zone": "The Barrens"
   },
+  "266484|e94c420f": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Morbin Lightbane",
+   "npc": "266484",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Royal Quarter",
+   "text": "We paladins must earn our place amongst our Forsaken kin each day, lest we be judged as fanatics like the Scarlet Crusade. The light is not simply a tool of our foes, but a conduit for our righteous fury! It is in our devotion to the Dark Lady and the love of our home that we may channel the light to bring justice to our enemies.\r\n\r\nThe Banshee Queen keeps a close eye on us. Let her. She will see that our resolve shall never waver. We are Forsaken!",
+   "time": 1789945496,
+   "zone": "Undercity"
+  },
+  "2798|a28d29e1": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Pand Stonebinder",
+   "npc": "2798",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Spirit Rise",
+   "text": "I can train you in First Aid techniques.",
+   "time": 1789944483,
+   "zone": "Thunder Bluff"
+  },
   "2995|bfaf54b7": {
    "build": "69913",
    "event": "gossip",
@@ -283,6 +308,42 @@
    "subzone": "",
    "text": "You are truly a determined student. I will be happy to provide you with instruction!",
    "time": 1789936643,
+   "zone": "Thunder Bluff"
+  },
+  "3084|5d6f0b28": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "What are you looking for?",
+   "time": 1789944438,
+   "zone": "Thunder Bluff"
+  },
+  "3084|a56de79f": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "First Aid is always a nice skill to have.  Many a time during battle has it saved my hide.  Visit Spiritual Healing on the Spirit Rise.  Pand Stonebinder can teach you all you need to know to save your hide as well.",
+   "time": 1789944441,
+   "zone": "Thunder Bluff"
+  },
+  "3084|ef767f20": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "Which profession?",
+   "time": 1789944440,
    "zone": "Thunder Bluff"
   },
   "3216|4cb32313": {
@@ -550,13 +611,14 @@
   "9564|8d6952f8": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789925506,
    "mapID": 1411,
    "name": "Frezza",
    "npc": "9564",
    "player": "Myrlin Fixpoint",
    "subzone": "",
    "text": "Of course there's no danger in everything catching flames and exploding like a huge helium bomb. This baby will get you to Undercity faster and safer than any boat, and the view is truly breathtaking. Speaking of breath, smoking is not allowed while on board the zeppelin, and fire spells are banned from being cast during the trip.",
-   "time": 1789925506,
+   "time": 1789944717,
    "zone": "Durotar"
   },
   "9566|fc033aae": {
@@ -706,6 +768,20 @@
    "name": "Valreaa Valewind",
    "sex": 3
   },
+  "266484": {
+   "creatureType": "Undead",
+   "level": 30,
+   "modelFileID": 959310,
+   "name": "Morbin Lightbane",
+   "sex": 2
+  },
+  "2798": {
+   "creatureType": "Humanoid",
+   "level": 35,
+   "modelFileID": 968705,
+   "name": "Pand Stonebinder",
+   "sex": 2
+  },
   "2995": {
    "creatureType": "Humanoid",
    "level": 55,
@@ -719,6 +795,13 @@
    "modelFileID": 986648,
    "name": "Tepa",
    "sex": 3
+  },
+  "3084": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 968705,
+   "name": "Bluffwatcher",
+   "sex": 2
   },
   "3142": {
    "creatureType": "Humanoid",
@@ -1046,6 +1129,7 @@
   "5723-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789942018,
    "mapID": 1456,
    "name": "Rahauro",
    "npc": "11833",
@@ -1060,6 +1144,7 @@
   "5724-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789942022,
    "mapID": 1456,
    "name": "Rahauro",
    "npc": "11833",
@@ -1074,6 +1159,7 @@
   "5724-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789942021,
    "mapID": 1456,
    "name": "Rahauro",
    "npc": "11833",
@@ -1097,6 +1183,34 @@
    "subzone": "Royal Quarter",
    "text": "Many denizens of the Legion bestow gifts on their followers as you may well know. Some of these gifts the Dark Lady feels would be better off in her hands than in the hands of those with... lesser vision.\n\nA sect of the Shadow Council hidden in caverns below Orgrimmar known as the Searing Blade are a prime example. The Lady tells me that members of the Searing Blade have come into the possession of two powerful spell books--she would like to \"borrow\" these books from them. You will get them for her.",
    "time": 1789931598,
+   "title": "The Power to Destroy...",
+   "zone": "Undercity"
+  },
+  "5725-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Varimathras",
+   "npc": "2425",
+   "player": "Myrlin Fixpoint",
+   "questID": 5725,
+   "subzone": "Royal Quarter",
+   "text": "Good, mage. You have done well in serving the Dark Lady. Your continued perseverance and ambition will be of great use to the Lady's subjects. Return to me again in the future. Perhaps I will have other tasks for you that will aid the Dark Lady in her attempts at overtaking the Lich King and completely freeing the Scourge.",
+   "time": 1789945462,
+   "title": "The Power to Destroy...",
+   "zone": "Undercity"
+  },
+  "5725-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Varimathras",
+   "npc": "2425",
+   "player": "Myrlin Fixpoint",
+   "questID": 5725,
+   "subzone": "Royal Quarter",
+   "text": "There are a hundred other tasks awaiting my attention, mage. Do you have the books?",
+   "time": 1789945461,
    "title": "The Power to Destroy...",
    "zone": "Undercity"
   },
@@ -1354,6 +1468,20 @@
    "time": 1789936580,
    "title": "Leaders of the Fang",
    "zone": "Thunder Bluff"
+  },
+  "92421-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1458,
+   "name": "Morbin Lightbane",
+   "npc": "266484",
+   "player": "Myrlin Fixpoint",
+   "questID": 92421,
+   "subzone": "Royal Quarter",
+   "text": "As a paladin of the Forsaken, it is my duty to exact the will of our Dark Lady while tending to our people's needs. We are fortunate with an opportunity to accomplish both.\r\n\r\nAbove the Undercity, the scourge still roam unchecked in great numbers. Our forces dwindle trying to reclaim our land, and decaying flesh cannot be reknit. Not without replacements.\r\n\r\nWould that our glorious captain Garek Bandarion still be with us, I know what he would wish. To finish what he started and heal our kin. For Lordaeron!",
+   "time": 1789945497,
+   "title": "Light's Justice",
+   "zone": "Undercity"
   },
   "92465-complete": {
    "build": "69913",
