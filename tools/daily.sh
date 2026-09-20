@@ -29,7 +29,7 @@ fi
 cd "$ROOT"
 # Pick up captures the GitHub bot committed from player exports
 git pull --rebase --quiet || echo "git pull failed; continuing with local data"
-./tools/run.sh tools/ingest.py || true
+./tools/ingest.sh || true
 ./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 
 # Then continue the bulk backlog for a while (timeout returns 124 when it cuts the run short)

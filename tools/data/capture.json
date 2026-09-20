@@ -25,6 +25,78 @@
    "title": null,
    "zone": "Zephras Isle"
   },
+  "249363|260391fc": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Yala Windwatcher",
+   "npc": "249363",
+   "player": "Agravain Fixpoint",
+   "subzone": "Thendal Grove",
+   "text": "The Wind Spirits have left us. \r\n\r\nNow, only mindless echoes now remain. Be wary, however. These winds are neither kind, nor gentle.",
+   "time": 1789927130,
+   "zone": "Zephras Isle"
+  },
+  "251361|d8b5b5c2": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "player": "Agravain Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "What do you need of me, child of Zephras?",
+   "time": 1789927412,
+   "zone": "Zephras Isle"
+  },
+  "251373|86bf8d52": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Xyton Silverwind",
+   "npc": "251373",
+   "player": "Agravain Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "If you have the aptitude for the druidic arts, I can train you.",
+   "time": 1789927417,
+   "zone": "Zephras Isle"
+  },
+  "251376|fb6560cd": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Tai'ree Farsight",
+   "npc": "251376",
+   "player": "Agravain Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a hunter, I can give you the tools to survive the wilds.",
+   "time": 1789927679,
+   "zone": "Zephras Isle"
+  },
+  "251389|87ef59fc": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Akeri Duskblade",
+   "npc": "251389",
+   "player": "Agravain Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "Slay your enemies and swoon your paramours with this one weird trick.\r\n\r\nIf you follow the path of the rogue, I can teach you... for a cost, of course.",
+   "time": 1789927588,
+   "zone": "Zephras Isle"
+  },
+  "251487|e92a645e": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Ventaari Brightwish",
+   "npc": "251487",
+   "player": "Agravain Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "What may I do for you, fellow windshaper?",
+   "time": 1789927210,
+   "zone": "Zephras Isle"
+  },
   "3309|2f8d506f": {
    "build": "69913",
    "event": "gossip",
@@ -143,6 +215,62 @@
    "name": "Windshaper Aeli",
    "sex": 3
   },
+  "249363": {
+   "creatureType": "Not specified",
+   "level": 5,
+   "modelFileID": 7478494,
+   "name": "Yala Windwatcher",
+   "sex": 3
+  },
+  "251361": {
+   "creatureType": "Humanoid",
+   "level": 20,
+   "modelFileID": 7478487,
+   "name": "Rorian the Dayseeker",
+   "sex": 2
+  },
+  "251366": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478494,
+   "name": "Aetheen of the Gales",
+   "sex": 3
+  },
+  "251373": {
+   "creatureType": "Humanoid",
+   "level": 5,
+   "modelFileID": 7478487,
+   "name": "Xyton Silverwind",
+   "sex": 2
+  },
+  "251376": {
+   "creatureType": "Humanoid",
+   "level": 5,
+   "modelFileID": 7478494,
+   "name": "Tai'ree Farsight",
+   "sex": 3
+  },
+  "251389": {
+   "creatureType": "Humanoid",
+   "level": 5,
+   "modelFileID": 7478487,
+   "name": "Akeri Duskblade",
+   "sex": 2
+  },
+  "251487": {
+   "creatureType": "Humanoid",
+   "level": 5,
+   "modelFileID": 7478494,
+   "name": "Ventaari Brightwish",
+   "sex": 3
+  },
+  "257551": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 1100258,
+   "name": "Valreaa Valewind",
+   "sex": 3
+  },
   "3142": {
    "creatureType": "Humanoid",
    "displayID": 0,
@@ -204,14 +332,122 @@
   "92465-complete": {
    "build": "69913",
    "event": "complete",
-   "isObject": null,
-   "mapID": 2991,
-   "name": "Windshaper Aeli",
-   "npc": "123456",
+   "firstSeen": null,
+   "mapID": 2521,
+   "name": "Yala Windwatcher",
+   "npc": "249363",
+   "player": "Agravain Fixpoint",
    "questID": 92465,
-   "source": "community",
-   "text": "Well done, $n. The cult will think twice.",
+   "subzone": "Thendal Grove",
+   "text": "It pains me to shed shen'dorei blood here in the grove, but we do what we must.",
+   "time": 1789927131,
    "title": "Agitators",
+   "zone": "Zephras Isle"
+  },
+  "92469-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Yala Windwatcher",
+   "npc": "249363",
+   "pack": "Forever",
+   "player": "Agravain Fixpoint",
+   "questID": 92469,
+   "subzone": "Thendal Grove",
+   "text": "You've done enough here, rogue. I'll stay and clean up any stragglers down there.\r\n\r\nHead back to the Village and tell Rorian about the cult's presence. He will not be pleased.",
+   "time": 1789927134,
+   "title": "Return to Rorian",
+   "zone": "Zephras Isle"
+  },
+  "92469-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "player": "Agravain Fixpoint",
+   "questID": 92469,
+   "subzone": "Thendal Village",
+   "text": "This is most troubling, but unfortunately unsurprising. We've been aware of the cult's movements for some time, but we've been content to watch from afar. Their agitation of the wind spirits near the standing stones is a clear escalation on their part.\r\n\r\nYou've performed a difficult but necessary service for Thendal Grove, Agravain. Thank you.",
+   "time": 1789927248,
+   "title": "Return to Rorian",
+   "zone": "Zephras Isle"
+  },
+  "92470-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Aetheen of the Gales",
+   "npc": "251366",
+   "pack": "Forever",
+   "player": "Agravain Fixpoint",
+   "questID": 92470,
+   "subzone": "Thendal Village",
+   "text": "Rorian informed you that I've been watching you. I now offer you a test of resolve. However, be warned--it will send you into great danger.\r\n\r\nGo to the caves to the south. Thin out the ursera's numbers there, and find their matriarch, one the rangers call \"Urs'anah\". Put her down and bring me proof of her demise. Once you have done that, you will have taken an important step on your path.",
+   "time": 1789927286,
+   "title": "Foul Matriarch",
+   "zone": "Zephras Isle"
+  },
+  "92471-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "pack": "Forever",
+   "player": "Agravain Fixpoint",
+   "questID": 92471,
+   "subzone": "Thendal Village",
+   "text": "You may not realize this but everything you've done has been a trial of sorts. A test for what is to come for you. It's a big island out there, and Zephras needs spirited young adventurers such as yourself if we are to survive the trials our people face.\r\n\r\nThe one called Aetheen of the Gales is one of the leaders of our people here on Zephras Isle, and she has been watching you. She has a task that you must complete. Speak with her to learn more.",
+   "time": 1789927255,
+   "title": "Aetheen of the Gales",
+   "zone": "Zephras Isle"
+  },
+  "92471-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Aetheen of the Gales",
+   "npc": "251366",
+   "player": "Agravain Fixpoint",
+   "questID": 92471,
+   "subzone": "Thendal Village",
+   "text": "Rorian has told me much of you. I am likely unknown to you, but I am a member of the Council of Elders here on Zephras Isle. I've come to read the flow of the winds here in Thendal Grove. I'm also here to assess young shen'dorei such as yourself that are coming of age.\r\n\r\nSo tell me, are you ready to take your next step? Are you ready to serve Zephras Isle?",
+   "time": 1789927280,
+   "title": "Aetheen of the Gales",
+   "zone": "Zephras Isle"
+  },
+  "92473-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Valreaa Valewind",
+   "npc": "257551",
+   "pack": "Forever",
+   "player": "Agravain Fixpoint",
+   "questID": 92473,
+   "subzone": "Thendal Village",
+   "text": "The ursera den to the southwest is rapidly becoming a problem. Just last week the rangers had to kill an adolescent ursera who wandered too close to the village and attempted to attack a boy playing near the base of the elder tree in the center of the village.\r\n\r\nWe were fortunate that the boy escaped with his life. Hunger and desperation makes these beasts too dangerous to be left unchecked. Go south and put the scrawniest among the ursera down. Bring me their claws as proof when it is done.",
+   "time": 1789927310,
+   "title": "Aggressive Encroachment",
+   "zone": "Zephras Isle"
+  },
+  "92598-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Ventaari Brightwish",
+   "npc": "251487",
+   "player": "Agravain Fixpoint",
+   "questID": 92598,
+   "subzone": "Thendal Village",
+   "text": "Like a muscle, your skysight must be exercised if you hope to grow stronger in the gift. Leveraging your skysight to bridge the distance between the mortal and the spiritual may prove invaluable to you in your adventures.\r\n\r\nYou'd do well to remember what you've learned here today. Our ability to use our gifts to hear what the elements tell us could be the key to our survival.",
+   "time": 1789927212,
+   "title": "The Gift of Skysight",
    "zone": "Zephras Isle"
   },
   "97903-complete": {
@@ -262,12 +498,12 @@
  },
  "sources": {
   "/home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua": {
-   "mtime": 1789925722.5519276,
-   "size": 7128
+   "mtime": 1789930109.8991203,
+   "size": 2832
   },
   "/home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak": {
-   "mtime": 1789925414.2408082,
-   "size": 5062
+   "mtime": 1789927349.9426994,
+   "size": 7933
   },
   "captures/test.json": {
    "mtime": 1789928131.130956,

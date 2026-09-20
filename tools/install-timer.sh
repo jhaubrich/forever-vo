@@ -1,27 +1,34 @@
 #!/usr/bin/env bash
-# Installs a systemd user timer that runs tools/daily.sh every day at 04:00
-# (and on the next boot if the machine was off). Re-run to update.
+# Installs two systemd user units:
+#   forever-vo-ingest.path   ingest the moment the client writes ForeverVO.lua
+#                            (on /reload and logout), so no session is lost
+#   forever-vo-daily.timer   nightly at 04:00: voice captured lines, continue
+#                            the bulk backlog, rebuild the pack tables
+# Re-run to update. Set WOW_DIR if the game lives elsewhere.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 UNIT_DIR="$HOME/.config/systemd/user"
+WOW_DIR="${WOW_DIR:-$HOME/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft}"
+ACCOUNTS="$WOW_DIR/_classic_beta_/WTF/Account"
+UNIT_PATH="/run/wrappers/bin:$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
 mkdir -p "$UNIT_DIR"
 
-cat >"$UNIT_DIR/forever-vo-daily.service" <<EOF
+cat >"$UNIT_DIR/forever-vo-daily.service" <<UNIT
 [Unit]
-Description=Forever Voiceover: ingest captured lines and generate audio
+Description=Forever Voiceover: nightly voice generation
 
 [Service]
 Type=oneshot
 WorkingDirectory=$ROOT
-Environment=PATH=/run/wrappers/bin:$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin
+Environment=PATH=$UNIT_PATH
 Environment=HOME=$HOME
 ExecStart=$ROOT/tools/daily.sh
 Nice=10
-EOF
+UNIT
 
-cat >"$UNIT_DIR/forever-vo-daily.timer" <<EOF
+cat >"$UNIT_DIR/forever-vo-daily.timer" <<UNIT
 [Unit]
-Description=Forever Voiceover daily generation
+Description=Forever Voiceover nightly generation
 
 [Timer]
 OnCalendar=*-*-* 04:00:00
@@ -30,9 +37,40 @@ RandomizedDelaySec=10m
 
 [Install]
 WantedBy=timers.target
-EOF
+UNIT
+
+cat >"$UNIT_DIR/forever-vo-ingest.service" <<UNIT
+[Unit]
+Description=Forever Voiceover: ingest freshly written saved variables
+
+[Service]
+Type=oneshot
+WorkingDirectory=$ROOT
+Environment=PATH=$UNIT_PATH
+Environment=HOME=$HOME
+ExecStart=$ROOT/tools/ingest.sh
+UNIT
+
+{
+    echo "[Unit]"
+    echo "Description=Forever Voiceover: watch saved variables for writes"
+    echo
+    echo "[Path]"
+    for account in "$ACCOUNTS"/*/; do
+        # account folders look like 123456789#1; skip the account-wide SavedVariables dir itself
+        [ -d "${account}SavedVariables" ] || continue
+        echo "PathModified=${account}SavedVariables/ForeverVO.lua"
+    done
+    echo "Unit=forever-vo-ingest.service"
+    echo
+    echo "[Install]"
+    echo "WantedBy=default.target"
+} >"$UNIT_DIR/forever-vo-ingest.path"
 
 systemctl --user daemon-reload
 systemctl --user enable --now forever-vo-daily.timer
+systemctl --user enable --now forever-vo-ingest.path
 systemctl --user list-timers forever-vo-daily.timer --no-pager
-echo "run it now with: systemctl --user start forever-vo-daily.service ; logs in tools/data/daily.log"
+echo "watching:"
+grep PathModified "$UNIT_DIR/forever-vo-ingest.path"
+echo "logs: tools/data/ingest.log and tools/data/daily.log; run the nightly job now with: systemctl --user start forever-vo-daily.service"
