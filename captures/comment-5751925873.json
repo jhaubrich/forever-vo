@@ -1,0 +1,29 @@
+{
+ "gossip": {
+  "14726|65d66388": {
+   "build": "69913",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Rashona Straglash",
+   "npc": "14726",
+   "questID": null,
+   "source": "community",
+   "text": "In these trying times, a simple donation of cloth can go a long way to help those less fortunate than ourselves.  Cloth goes a long way to making garments and bandages - both important for the war effort!\n\nIf you are interested in donating cloth pieces to the orcs of Orgrimmar, I will gladly accept them and make sure you receive the proper recognition for doing so.\n\nFor the Horde!",
+   "title": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "14726": {
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Rashona Straglash",
+   "sex": 3
+  }
+ },
+ "origin": "comment-5751925873",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
