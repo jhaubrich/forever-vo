@@ -12,6 +12,19 @@
    "time": 1789925490,
    "zone": "Durotar"
   },
+  "123456|927dcf86": {
+   "build": "69913",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": null,
+   "name": "Windshaper Aeli",
+   "npc": "123456",
+   "questID": null,
+   "source": "community",
+   "text": "The winds favor you, $n.",
+   "title": null,
+   "zone": "Zephras Isle"
+  },
   "3309|2f8d506f": {
    "build": "69913",
    "event": "gossip",
@@ -124,6 +137,12 @@
    "name": "Snurk Bucksquick",
    "sex": 3
   },
+  "123456": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "name": "Windshaper Aeli",
+   "sex": 3
+  },
   "3142": {
    "creatureType": "Humanoid",
    "displayID": 0,
@@ -182,6 +201,19 @@
   }
  },
  "quests": {
+  "92465-complete": {
+   "build": "69913",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2991,
+   "name": "Windshaper Aeli",
+   "npc": "123456",
+   "questID": 92465,
+   "source": "community",
+   "text": "Well done, $n. The cult will think twice.",
+   "title": "Agitators",
+   "zone": "Zephras Isle"
+  },
   "97903-complete": {
    "build": "69913",
    "event": "complete",
@@ -236,6 +268,10 @@
   "/home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak": {
    "mtime": 1789925414.2408082,
    "size": 5062
+  },
+  "captures/test.json": {
+   "mtime": 1789928131.130956,
+   "size": 821
   }
  },
  "version": 2

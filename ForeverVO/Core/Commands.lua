@@ -32,6 +32,7 @@ local commands = {
         ns.UI.TalkingHead.frame:ResetPosition()
     end },
     status = { "Show loaded packs and capture counts", Status },
+    export = { "Copy this session's unvoiced lines to contribute", function() ns.Export:Show() end },
     debug  = { "Toggle debug messages", function()
         ns.db.debug = not ns.db.debug
         ns.Print("debug", ns.db.debug and "on" or "off")

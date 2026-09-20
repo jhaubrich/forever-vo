@@ -1,0 +1,23 @@
+name: Contribute captured lines
+description: Paste the string from "/fvo export" so the lines you saw can be voiced.
+title: "Capture: <zone or what you were doing>"
+labels: ["capture"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! In game, type `/fvo export`, press Ctrl+C in the window that opens, and paste below.
+        The string only contains quest and gossip text, the speaking NPC, and the zone. Your character name is not included.
+  - type: textarea
+    id: export
+    attributes:
+      label: Export string
+      description: Starts with FVO1:
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: notes
+    attributes:
+      label: Notes (optional)
+      placeholder: e.g. Zephras Isle, levels 1-6, Alliance

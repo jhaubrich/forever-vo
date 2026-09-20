@@ -1,0 +1,82 @@
+name: Ingest captures
+
+# Players paste "/fvo export" strings as comments on the pinned inbox issue
+# (label: capture-inbox), or open an issue from the "Contribute captured lines"
+# template. Each one is decoded into captures/ and committed.
+
+on:
+  issue_comment:
+    types: [created, edited]
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  ingest:
+    if: >-
+      (github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'capture-inbox')) ||
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'capture'))
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ingest-captures
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Decode the export string
+        id: decode
+        env:
+          BODY: ${{ github.event.comment.body || github.event.issue.body }}
+          NAME: ${{ github.event.comment.id && format('comment-{0}', github.event.comment.id) || format('issue-{0}', github.event.issue.number) }}
+        run: |
+          printf '%s' "$BODY" > /tmp/body.txt
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          if python tools/exportfile.py /tmp/body.txt --out "captures/$NAME.json" --origin "$NAME" | tee /tmp/result.txt; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Commit the capture
+        if: steps.decode.outputs.ok == 'true'
+        run: |
+          git config user.name "forever-vo bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add captures/
+          git commit -m "captures: ${{ steps.decode.outputs.name }}" || exit 0
+          git pull --rebase
+          git push
+      - name: Acknowledge
+        uses: actions/github-script@v7
+        env:
+          OK: ${{ steps.decode.outputs.ok }}
+          NAME: ${{ steps.decode.outputs.name }}
+        with:
+          script: |
+            const fs = require('fs');
+            const ok = process.env.OK === 'true';
+            const result = fs.existsSync('/tmp/result.txt') ? fs.readFileSync('/tmp/result.txt', 'utf8').trim() : '';
+            if (context.eventName === 'issue_comment') {
+              // Quiet acknowledgement on the inbox: a reaction, and a reply only when it failed
+              await github.rest.reactions.createForIssueComment({
+                ...context.repo, comment_id: context.payload.comment.id, content: ok ? 'rocket' : 'confused',
+              });
+              if (!ok) {
+                await github.rest.issues.createComment({
+                  ...context.repo, issue_number: context.issue.number,
+                  body: `@${context.payload.comment.user.login} I could not find a valid \`FVO1:\` export string in that comment. Run \`/fvo export\` in game and paste the whole string.`,
+                });
+              }
+            } else {
+              const body = ok
+                ? `Thanks! Stored as \`captures/${process.env.NAME}.json\` (${result}). These lines go into the next voice pack build.`
+                : `I could not find a valid \`FVO1:\` export string in this issue. Run \`/fvo export\` in game, copy the whole string, and edit the issue to include it.`;
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+              if (ok) {
+                await github.rest.issues.update({ ...context.repo, issue_number: context.issue.number, state: 'closed' });
+              }
+            }

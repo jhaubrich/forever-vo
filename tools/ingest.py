@@ -13,8 +13,10 @@ import json
 import sys
 from pathlib import Path
 
-from config import ADDON_NAME, BETA_DIR, CAPTURE_JSON
+from config import ADDON_NAME, BETA_DIR, CAPTURE_JSON, ROOT
 from luatable import parse_saved_variables
+
+CAPTURES_DIR = ROOT / "captures"   # community exports decoded by tools/exportfile.py
 
 SV_NAME = f"{ADDON_NAME}.lua"
 CAPTURE_VAR = "ForeverVOCaptureDB"
@@ -49,8 +51,11 @@ def merge_entry(store: dict, key: str, entry: dict) -> bool:
 
 
 def ingest_file(capture: dict, path: Path) -> tuple[int, int, int]:
-    variables = parse_saved_variables(path.read_text(encoding="utf-8", errors="replace"))
-    db = variables.get(CAPTURE_VAR)
+    if path.suffix == ".json":
+        db = json.loads(path.read_text(encoding="utf-8"))
+    else:
+        variables = parse_saved_variables(path.read_text(encoding="utf-8", errors="replace"))
+        db = variables.get(CAPTURE_VAR)
     if not isinstance(db, dict):
         return (0, 0, 0)
     quests = gossip = npcs = 0
@@ -70,7 +75,7 @@ def ingest_file(capture: dict, path: Path) -> tuple[int, int, int]:
 
 
 def main(argv: list[str]) -> int:
-    files = [Path(a) for a in argv] or find_saved_variable_files()
+    files = [Path(a) for a in argv] or (find_saved_variable_files() + sorted(CAPTURES_DIR.glob("*.json")))
     if not files:
         print(f"no {SV_NAME} files found under {BETA_DIR / 'WTF' / 'Account'}")
         return 1

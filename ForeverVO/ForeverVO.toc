@@ -19,6 +19,7 @@ Core\Audio.lua
 Core\Queue.lua
 Core\Events.lua
 Core\Capture.lua
+Core\Export.lua
 UI\TalkingHead.lua
 UI\QueueList.lua
 UI\QuestLog.lua

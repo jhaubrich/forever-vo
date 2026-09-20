@@ -124,6 +124,9 @@ function Capture:Record(line)
     else
         db.gossip[format("%s|%s", npcKey or line.speaker.name or "?", Util.TextKey(line.text, entry.player))] = entry
     end
+    if ns.Export then
+        ns.Export:OnLineCaptured(line.found)
+    end
 end
 
 function Capture:Summary()
