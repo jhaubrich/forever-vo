@@ -29,6 +29,7 @@
   "11870|3a5c3d7e": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789931725,
    "mapID": 1458,
    "name": "Archibald",
    "npc": "11870",
@@ -88,6 +89,18 @@
    "text": "Do not presume to speak to me as though you are my equal, mage. Sylvanas is my queen, and I will do as she bids.\n\nIf you do not show the proper respect, I assure you, we can find a more than suitable place for you in the Nether.\n\nBut there is no reason we cannot have words if you wish to aid the Dark Lady...",
    "time": 1789931596,
    "zone": "Undercity"
+  },
+  "248199|4ee395b7": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Beneris",
+   "npc": "248199",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "Oh! Greetings, friend. Feel free to browse my wares.",
+   "time": 1789932632,
+   "zone": "The Barrens"
   },
   "249363|260391fc": {
    "build": "69913",
@@ -167,6 +180,42 @@
    "time": 1789927210,
    "zone": "Zephras Isle"
   },
+  "256388|631ab615": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Jornah",
+   "npc": "256388",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "Recently there has been a sharp rise in lost orders. We strive to ensure that each delivery is efficient and safe, but with a rise of bandits, rowdy creatures, and those damned Alliance, inevitably not every delivery goes according to plan.\r\n\r\nShould you find these shipments, take a look over the label for what it should contain. It is not your responsibility to deal with our mistakes, but if you complete the shipment, you will be rewarded in kind. \r\n\r\nDokimi over by the wagon can handle the logistics and your compensation. We will take it from there.",
+   "time": 1789932622,
+   "zone": "The Barrens"
+  },
+  "256388|6578af6f": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Jornah",
+   "npc": "256388",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "I am glad you asked! We are far more than just a delivery service, Myrlin. We employ and contract craftsman across a variety of specialties and trades, and keep our ear to the ground for any new opportunities to keep their hands busy and goods flowing. We cannot possibly predict the emergent needs of any potential client, so we depend on their crafting orders to arrive to us.\r\n\r\nYou can imagine that this pipeline is... not as effective as we would hope. We encourage any crafters to satisfy these demands and deliver the goods directly to the customers,  wherever they may be. Worry not, you will be fairly compensated for your troubles and earn respect among our organization.",
+   "time": 1789932624,
+   "zone": "The Barrens"
+  },
+  "256388|70cda348": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Jornah",
+   "npc": "256388",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "Greetings and well met, Myrlin! Your arrival is timely, and we here at the Durotar Supply and Logistics company are always in need of new contractors.\r\n\r\nIf you are someone with a knack for gathering useful materials or the skills to craft something from scratch, you have a place here.\r\n\r\nPlease let me know if you have any questions.",
+   "time": 1789932623,
+   "zone": "The Barrens"
+  },
   "3309|2f8d506f": {
    "build": "69913",
    "event": "gossip",
@@ -206,6 +255,18 @@
    "time": 1789924497,
    "zone": "Orgrimmar"
   },
+  "3310|cc0cf280": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Doras",
+   "npc": "3310",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Strength",
+   "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
+   "time": 1789932147,
+   "zone": "Orgrimmar"
+  },
   "3318|ae78a458": {
    "build": "69913",
    "event": "gossip",
@@ -218,6 +279,42 @@
    "text": "Would you rather trust your goods with a goblin?",
    "time": 1789924612,
    "zone": "Orgrimmar"
+  },
+  "3429|01a1e491": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Thork",
+   "npc": "3429",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Crossroads",
+   "text": "Welcome to the Crossroads, mage. My name is Thork--I lead the defenses here in the name of the Warchief.\n\nPlease, feel free to make yourself at home. As long as you mind your business, no one should have any problem with you taking up some space.\n\nThere are many threats to our safety here. If you've already become familiar with the lay of the land, speak to the others here--perhaps they have tasks for you to do.",
+   "time": 1789932275,
+   "zone": "The Barrens"
+  },
+  "3448|c2224a6c": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Crossroads",
+   "text": "The times we live in are as fickle as the shifting winds, mage.  It is important to remember what is true and lasting in this world, and to preserve that.  Everything else is a waste.",
+   "time": 1789934529,
+   "zone": "The Barrens"
+  },
+  "3489|68d65f37": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Zargh",
+   "npc": "3489",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Crossroads",
+   "text": "Have a look at my meats, friend.  You won't want to go out into the Barrens without a good stock of provisions.",
+   "time": 1789932298,
+   "zone": "The Barrens"
   },
   "4551|d37b59d0": {
    "build": "69913",
@@ -365,6 +462,13 @@
    "name": "Varimathras",
    "sex": 2
   },
+  "248199": {
+   "creatureType": "Humanoid",
+   "level": 60,
+   "modelFileID": 7478487,
+   "name": "Beneris",
+   "sex": 2
+  },
   "249363": {
    "creatureType": "Not specified",
    "level": 5,
@@ -414,6 +518,13 @@
    "name": "Ventaari Brightwish",
    "sex": 3
   },
+  "256388": {
+   "creatureType": "Humanoid",
+   "level": 30,
+   "modelFileID": 949470,
+   "name": "Jornah",
+   "sex": 3
+  },
   "257551": {
    "creatureType": "Humanoid",
    "level": 10,
@@ -437,12 +548,40 @@
    "name": "Karus",
    "sex": 2
   },
+  "3310": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 917116,
+   "name": "Doras",
+   "sex": 2
+  },
   "3318": {
    "creatureType": "Humanoid",
    "displayID": 0,
    "level": 45,
    "modelFileID": 917116,
    "name": "Koma",
+   "sex": 2
+  },
+  "3429": {
+   "creatureType": "Humanoid",
+   "level": 42,
+   "modelFileID": 917116,
+   "name": "Thork",
+   "sex": 2
+  },
+  "3448": {
+   "creatureType": "Humanoid",
+   "level": 22,
+   "modelFileID": 968705,
+   "name": "Tonga Runetotem",
+   "sex": 2
+  },
+  "3489": {
+   "creatureType": "Humanoid",
+   "level": 16,
+   "modelFileID": 917116,
+   "name": "Zargh",
    "sex": 2
   },
   "4551": {
@@ -493,6 +632,48 @@
   }
  },
  "quests": {
+  "1489-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 1489,
+   "subzone": "The Crossroads",
+   "text": "The shells you brought me have a taint, one I have never before seen.  I am certain the water of the Oases is the cause, and I can sense the confusion they cause this land.  It is as if the land dreams and cannot awake.\n\nThe Wailing Caverns must be the source of the taint.  But before you go there, speak with Hamuul Runetotem, the elder druid.  I sent word to him of the happenings in the Barrens.  He is wise, and can offer you counsel.\n\nYou will find him in Thunder Bluff, on the Elder Rise.",
+   "time": 1789934528,
+   "title": "Hamuul Runetotem",
+   "zone": "The Barrens"
+  },
+  "3301-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 3301,
+   "subzone": "The Crossroads",
+   "text": "My clanmate, Mura Runetotem, traveled to Silverpine so that she might aid our undead allies.  Silverpine is an ailing forest, a dying forest, and it was Mura's hope to bring it new life.  Perhaps the strange life found here in the Barrens can help her work in Silverpine.\n\nTake a sample of the shells you gathered, and bring it to Mura in Silverpine.  She is staying at the Sepulcher.  With luck, studying the shell will give her the insight she needs to heal that dying place.",
+   "time": 1789934530,
+   "title": "Mura Runetotem",
+   "zone": "The Barrens"
+  },
+  "5041-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1413,
+   "name": "Thork",
+   "npc": "3429",
+   "player": "Myrlin Fixpoint",
+   "questID": 5041,
+   "subzone": "The Crossroads",
+   "text": "That attack on the caravan contained supplies we desperately needed.\n\nYou've been brave enough to take on the Razormane tribe so far, and I will ask you to do so again, but this time, I wonder if I could ask you to keep your eyes open for some of our lost supplies. You can probably find them throughout their camps, the quilboar getting fat off their dishonorable acts.\n\nThe people of the Crossroads would be in your debt.",
+   "time": 1789932270,
+   "title": "Supplies for the Crossroads",
+   "zone": "The Barrens"
+  },
   "5725-accept": {
    "build": "69913",
    "event": "accept",
@@ -507,6 +688,132 @@
    "time": 1789931598,
    "title": "The Power to Destroy...",
    "zone": "Undercity"
+  },
+  "6386-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1413,
+   "name": "Zargh",
+   "npc": "3489",
+   "player": "Myrlin Fixpoint",
+   "questID": 6386,
+   "subzone": "The Crossroads",
+   "text": "Hah!  I guess she liked it!  Nothing brings red to a lady's cheeks like a big, juicy steak!\n\nThank you, Myrlin.  You've done me a great service.  Here is some money for your trouble, and don't be surprised if I invite you to my wedding!",
+   "time": 1789932301,
+   "title": "Return to the Crossroads",
+   "zone": "The Barrens"
+  },
+  "6386-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1413,
+   "name": "Zargh",
+   "npc": "3489",
+   "player": "Myrlin Fixpoint",
+   "questID": 6386,
+   "subzone": "The Crossroads",
+   "text": "Have you returned from Orgrimmar?  Did Gryshka like the meat I sent her?",
+   "time": 1789932300,
+   "title": "Return to the Crossroads",
+   "zone": "The Barrens"
+  },
+  "870-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 870,
+   "subzone": "The Crossroads",
+   "text": "You found a fissure in the earth, with gases bubbling from it?  Strange.  This may be an answer to our questions, but we cannot yet be sure.\n\nBut it is a clue.  And I am grateful that you found it.",
+   "time": 1789932781,
+   "title": "The Forgotten Pools",
+   "zone": "The Barrens"
+  },
+  "871-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1413,
+   "name": "Thork",
+   "npc": "3429",
+   "player": "Myrlin Fixpoint",
+   "questID": 871,
+   "subzone": "The Crossroads",
+   "text": "All the quilboars are our enemies, Myrlin. Some just prove to be more of a nuisance than others.\n\nThe Razormane tribe has been attacking our supply lines from Durotar, causing us no end of annoyance. I have scouts seeking the leader of these raids, but until then, any losses you can inflict on the filthy pig men would aid us.\n\nStart in the northeast towards Durotar. You can always tell their dens from the huge thorny vines that come up from the earth. Seek them out, and slay them.",
+   "time": 1789932277,
+   "title": "Disrupt the Attacks",
+   "zone": "The Barrens"
+  },
+  "877-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 877,
+   "subzone": "The Crossroads",
+   "text": "Like the one you found at the Forgotten Pools, there may be fissures at the other oases in the Barrens.  If so, then perhaps the fissures are the oases' source of life.\n\nWe must test this.\n\nHere, take these seeds.  They are dead and infertile, but take them to the Stagnant Oasis to the southeast.  If there is a fissure there, then place the seeds within it...and observe.",
+   "time": 1789932783,
+   "title": "The Stagnant Oasis",
+   "zone": "The Barrens"
+  },
+  "877-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 877,
+   "subzone": "The Crossroads",
+   "text": "Your findings are amazing!  The seeds I gave you were dried, and dead.  Whatever rests under these oases can create life from nothing!\n\nWe must study this more...",
+   "time": 1789933076,
+   "title": "The Stagnant Oasis",
+   "zone": "The Barrens"
+  },
+  "880-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 880,
+   "subzone": "The Crossroads",
+   "text": "Your findings are incredible, Myrlin.  These oases hold properties that must come from an outside source.  Or perhaps an inside one.\n\nI want to know how these fissures are affecting the beasts who drink from the oases' water.\n\nHunt oasis snapjaws at the Lushwater and Stagnant Oases.  Bring me their shells so I may examine them.",
+   "time": 1789933078,
+   "title": "Altered Beings",
+   "zone": "The Barrens"
+  },
+  "880-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 880,
+   "subzone": "The Crossroads",
+   "text": "Thank you, Myrlin.  Studying the beasts of an area can tell much about the area itself.  We shall see what tale these shells tell.\n\nPlease accept my gratitude for your aid ... and perhaps you can use these coins.  I find that I do not need them.",
+   "time": 1789934526,
+   "title": "Altered Beings",
+   "zone": "The Barrens"
+  },
+  "880-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "player": "Myrlin Fixpoint",
+   "questID": 880,
+   "subzone": "The Crossroads",
+   "text": "How goes your collection?  Did you get the shells?",
+   "time": 1789934524,
+   "title": "Altered Beings",
+   "zone": "The Barrens"
   },
   "92465-complete": {
    "build": "69913",
