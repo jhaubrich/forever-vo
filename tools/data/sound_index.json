@@ -735,6 +735,22 @@
   "d": 6.2,
   "v": "scourge-male"
  },
+ "407-accept": {
+  "d": 36.19,
+  "v": "scourge-male"
+ },
+ "407-complete": {
+  "d": 4.68,
+  "v": "human-male"
+ },
+ "4161-accept": {
+  "d": 37.1,
+  "v": "nightelf-male"
+ },
+ "4161-complete": {
+  "d": 10.16,
+  "v": "nightelf-male"
+ },
  "420-accept": {
   "d": 28.03,
   "v": "dwarf-male"
@@ -799,6 +815,14 @@
   "d": 15.8,
   "v": "orc-male"
  },
+ "47-accept": {
+  "d": 14.52,
+  "v": "human-male"
+ },
+ "47-complete": {
+  "d": 8.76,
+  "v": "human-male"
+ },
  "475-accept": {
   "d": 32.31,
   "v": "nightelf-male"
@@ -821,6 +845,14 @@
  },
  "488-complete": {
   "d": 16.68,
+  "v": "narrator"
+ },
+ "489-accept": {
+  "d": 36.95,
+  "v": "nightelf-female"
+ },
+ "489-complete": {
+  "d": 3.92,
   "v": "narrator"
  },
  "5261-accept": {
@@ -1000,6 +1032,26 @@
   "d": 5.64,
   "v": "human-male"
  },
+ "60-complete": {
+  "d": 5.48,
+  "v": "human-male"
+ },
+ "61-accept": {
+  "d": 15.95,
+  "v": "human-male"
+ },
+ "61-complete": {
+  "d": 7.08,
+  "v": "human-male"
+ },
+ "62-accept": {
+  "d": 18.36,
+  "v": "human-male"
+ },
+ "62-complete": {
+  "d": 10.44,
+  "v": "human-male"
+ },
  "6394-accept": {
   "d": 37.03,
   "v": "orc-male"
@@ -1087,6 +1139,14 @@
  },
  "755-complete": {
   "d": 6.84,
+  "v": "tauren-male"
+ },
+ "756-accept": {
+  "d": 18.68,
+  "v": "tauren-male"
+ },
+ "756-complete": {
+  "d": 14.32,
   "v": "tauren-male"
  },
  "757-accept": {
@@ -1177,6 +1237,22 @@
   "d": 13.76,
   "v": "human-female"
  },
+ "771-accept": {
+  "d": 30.43,
+  "v": "tauren-male"
+ },
+ "771-complete": {
+  "d": 8.92,
+  "v": "tauren-male"
+ },
+ "772-accept": {
+  "d": 22.04,
+  "v": "tauren-male"
+ },
+ "772-complete": {
+  "d": 5.76,
+  "v": "tauren-male"
+ },
  "780-accept": {
   "d": 19.0,
   "v": "tauren-male"
@@ -1200,6 +1276,14 @@
  "783-complete": {
   "d": 21.07,
   "v": "human-male"
+ },
+ "784-accept": {
+  "d": 38.23,
+  "v": "orc-male"
+ },
+ "784-complete": {
+  "d": 9.04,
+  "v": "orc-male"
  },
  "787-accept": {
   "d": 35.67,
@@ -1232,6 +1316,14 @@
  "790-complete": {
   "d": 21.64,
   "v": "troll-male"
+ },
+ "791-accept": {
+  "d": 32.59,
+  "v": "orc-male"
+ },
+ "791-complete": {
+  "d": 13.24,
+  "v": "orc-male"
  },
  "792-accept": {
   "d": 41.43,
@@ -1275,6 +1367,14 @@
  },
  "805-complete": {
   "d": 21.28,
+  "v": "troll-male"
+ },
+ "818-accept": {
+  "d": 41.11,
+  "v": "troll-male"
+ },
+ "818-complete": {
+  "d": 3.72,
   "v": "troll-male"
  },
  "84-accept": {

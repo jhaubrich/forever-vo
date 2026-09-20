@@ -9,6 +9,7 @@ local ADDON_NAME, ns = ...
 ns.name = ADDON_NAME
 ns.version = C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version") or "dev"
 ns.mediaPath = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\"
+ns.iconTexture = "Interface\\Icons\\Ability_Warrior_BattleShout" -- an NPC mid-shout; ships with the client
 ns.UI = {}
 
 ForeverVO = ns
