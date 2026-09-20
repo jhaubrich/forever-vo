@@ -35,6 +35,9 @@ fi
 timeout "${BULK_HOURS}h" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 ./tools/run.sh tools/generate.py --tables-only 2>&1 | tail -1 || true
 
+# Publish the Forever delta pack to CurseForge when new files exist (needs ~/.config/forever-vo/curseforge.json)
+./tools/run.sh tools/release_pack.py delta --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
+
 # Publish the text side of the build so the repository matches this machine
 git add tools/data/capture.json tools/data/sound_index.json tools/data/bulk/questcache.json ForeverVO_Data/Data captures 2>/dev/null || true
 if ! git diff --cached --quiet; then
