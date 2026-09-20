@@ -2300,12 +2300,64 @@
   "d": 31.83,
   "v": "tauren-male"
  },
+ "6087-complete": {
+  "d": 5.32,
+  "v": "tauren-male"
+ },
+ "6088-accept": {
+  "d": 33.03,
+  "v": "tauren-male"
+ },
+ "6088-complete": {
+  "d": 19.92,
+  "v": "tauren-male"
+ },
+ "6089-accept": {
+  "d": 33.59,
+  "v": "tauren-male"
+ },
+ "6089-complete": {
+  "d": 23.59,
+  "v": "tauren-male"
+ },
  "61-accept": {
   "d": 15.95,
   "v": "human-male"
  },
  "61-complete": {
   "d": 7.08,
+  "v": "human-male"
+ },
+ "6101-accept": {
+  "d": 29.71,
+  "v": "nightelf-male"
+ },
+ "6101-complete": {
+  "d": 5.84,
+  "v": "nightelf-male"
+ },
+ "6102-accept": {
+  "d": 29.11,
+  "v": "nightelf-male"
+ },
+ "6102-complete": {
+  "d": 30.23,
+  "v": "nightelf-male"
+ },
+ "6103-accept": {
+  "d": 29.35,
+  "v": "nightelf-male"
+ },
+ "6103-complete": {
+  "d": 32.15,
+  "v": "nightelf-female"
+ },
+ "6181-accept": {
+  "d": 26.75,
+  "v": "human-male"
+ },
+ "6181-complete": {
+  "d": 6.28,
   "v": "human-male"
  },
  "62-accept": {
@@ -2315,6 +2367,54 @@
  "62-complete": {
   "d": 10.44,
   "v": "human-male"
+ },
+ "6261-accept": {
+  "d": 21.75,
+  "v": "human-male"
+ },
+ "6261-complete": {
+  "d": 9.16,
+  "v": "human-male"
+ },
+ "6281-accept": {
+  "d": 15.0,
+  "v": "human-male"
+ },
+ "6281-complete": {
+  "d": 12.44,
+  "v": "human-male"
+ },
+ "6285-accept": {
+  "d": 25.47,
+  "v": "human-male"
+ },
+ "6285-complete": {
+  "d": 12.96,
+  "v": "human-male"
+ },
+ "6321-accept": {
+  "d": 32.79,
+  "v": "scourge-male"
+ },
+ "6321-complete": {
+  "d": 9.36,
+  "v": "scourge-male"
+ },
+ "6322-accept": {
+  "d": 18.88,
+  "v": "scourge-male"
+ },
+ "6322-complete": {
+  "d": 8.08,
+  "v": "scourge-male"
+ },
+ "6323-accept": {
+  "d": 14.2,
+  "v": "scourge-male"
+ },
+ "6323-complete": {
+  "d": 6.68,
+  "v": "scourge-male"
  },
  "6394-accept": {
   "d": 37.03,

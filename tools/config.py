@@ -66,5 +66,5 @@ ZONE_RACE_HINTS = {
 CURSEFORGE_PROJECTS = {
     "addon": 1705010,   # Forever Voiceover
     "delta": 1705094,   # Forever Voiceover Data: Forever
-    "base": None,       # Forever Voiceover Data (Classic set), not created yet
+    "base": 1705100,    # Forever Voiceover Data: Base (Classic set)
 }

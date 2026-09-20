@@ -49,7 +49,7 @@ GAME_VERSION_NAME = "1.60.1"
 PACKS = {
     "base": {
         "folder": "ForeverVO_Data",
-        "title": "Forever Voiceover Data",
+        "title": "Forever Voiceover Data: Base",
         "pack_name": "Classic",
         "priority": 100,
         "notes": "Classic-era quests and gossip, voiced. Install with Forever Voiceover.",
