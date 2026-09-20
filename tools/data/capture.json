@@ -42,6 +42,7 @@
   "11066|b615098a": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789940771,
    "mapID": 1454,
    "name": "Jhag",
    "npc": "11066",
@@ -287,6 +288,7 @@
   "3216|4cb32313": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789940898,
    "mapID": 1454,
    "name": "Neeru Fireblade",
    "npc": "3216",
@@ -405,6 +407,7 @@
   "4047|550c4a52": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789940639,
    "mapID": 1454,
    "name": "Zor Lonetree",
    "npc": "4047",
@@ -430,6 +433,7 @@
   "4949|9255c79c": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789940989,
    "mapID": 1454,
    "name": "Thrall",
    "npc": "4949",
@@ -455,6 +459,7 @@
   "5885|a7455611": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789941234,
    "mapID": 1454,
    "name": "Deino",
    "npc": "5885",
@@ -874,6 +879,7 @@
   "1061-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789940640,
    "mapID": 1454,
    "name": "Zor Lonetree",
    "npc": "4047",
@@ -1055,6 +1061,7 @@
   "5728-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789940658,
    "mapID": 1454,
    "name": "Thrall",
    "npc": "4949",
@@ -1069,6 +1076,7 @@
   "5729-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789940659,
    "mapID": 1454,
    "name": "Thrall",
    "npc": "4949",
@@ -1083,6 +1091,7 @@
   "5729-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789940900,
    "mapID": 1454,
    "name": "Neeru Fireblade",
    "npc": "3216",
@@ -1097,6 +1106,7 @@
   "5730-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789940901,
    "mapID": 1454,
    "name": "Neeru Fireblade",
    "npc": "3216",
@@ -1111,6 +1121,7 @@
   "5730-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789940991,
    "mapID": 1454,
    "name": "Thrall",
    "npc": "4949",
@@ -1125,6 +1136,7 @@
   "5761-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789940571,
    "mapID": 1454,
    "name": "Neeru Fireblade",
    "npc": "3216",
@@ -1139,6 +1151,7 @@
   "5761-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789940570,
    "mapID": 1454,
    "name": "Neeru Fireblade",
    "npc": "3216",
