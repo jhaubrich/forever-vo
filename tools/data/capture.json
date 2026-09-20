@@ -93,6 +93,7 @@
   "248199|4ee395b7": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789932632,
    "mapID": 1413,
    "name": "Beneris",
    "npc": "248199",
@@ -183,6 +184,7 @@
   "256388|631ab615": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789932622,
    "mapID": 1413,
    "name": "Jornah",
    "npc": "256388",
@@ -195,6 +197,7 @@
   "256388|6578af6f": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789932624,
    "mapID": 1413,
    "name": "Jornah",
    "npc": "256388",
@@ -207,6 +210,7 @@
   "256388|70cda348": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789932623,
    "mapID": 1413,
    "name": "Jornah",
    "npc": "256388",
@@ -258,6 +262,7 @@
   "3310|cc0cf280": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789932147,
    "mapID": 1454,
    "name": "Doras",
    "npc": "3310",
@@ -283,6 +288,7 @@
   "3429|01a1e491": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789932275,
    "mapID": 1413,
    "name": "Thork",
    "npc": "3429",
@@ -295,6 +301,7 @@
   "3448|c2224a6c": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789934529,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -307,6 +314,7 @@
   "3489|68d65f37": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789932298,
    "mapID": 1413,
    "name": "Zargh",
    "npc": "3489",
@@ -635,6 +643,7 @@
   "1489-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789934528,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -649,6 +658,7 @@
   "3301-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789934530,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -663,6 +673,7 @@
   "5041-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789932270,
    "mapID": 1413,
    "name": "Thork",
    "npc": "3429",
@@ -692,6 +703,7 @@
   "6386-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789932301,
    "mapID": 1413,
    "name": "Zargh",
    "npc": "3489",
@@ -706,6 +718,7 @@
   "6386-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789932300,
    "mapID": 1413,
    "name": "Zargh",
    "npc": "3489",
@@ -720,6 +733,7 @@
   "870-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789932781,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -734,6 +748,7 @@
   "871-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789932277,
    "mapID": 1413,
    "name": "Thork",
    "npc": "3429",
@@ -748,6 +763,7 @@
   "877-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789932783,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -762,6 +778,7 @@
   "877-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789933076,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -776,6 +793,7 @@
   "880-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789933078,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -790,6 +808,7 @@
   "880-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789934526,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
@@ -804,6 +823,7 @@
   "880-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789934524,
    "mapID": 1413,
    "name": "Tonga Runetotem",
    "npc": "3448",
