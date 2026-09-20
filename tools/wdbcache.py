@@ -63,15 +63,29 @@ def decode_at(record: bytes, p: int) -> dict[str, str] | None:
     title = parts[0]
     if not title[0].isalnum() and title[0] not in "\"'":
         return None
-    return dict(zip(FIELDS, parts))
+    if "\n" in title or len(title) > 120:
+        return None
+    details = parts[2]
+    if details and not (details[0].isalnum() or details[0] in "\"'(<$"):
+        return None
+    result = dict(zip(FIELDS, parts))
+    result["_gap"] = start - (p + 12)  # bytes between the length bits and the strings (quest objectives)
+    return result
 
 
 def parse_record(record: bytes) -> dict[str, str] | None:
-    for steps in range(FIXED_MAX_STEPS):
-        parsed = decode_at(record, FIXED_BASE + FIXED_STEP * steps)
-        if parsed:
+    """The fixed part is 488 + 43n bytes for most quests but not all, so try every
+    offset and prefer the candidate with no objectives block, then the latest one."""
+    best = None
+    for p in range(FIXED_BASE, len(record) - 12):
+        parsed = decode_at(record, p)
+        if not parsed:
+            continue
+        if parsed["_gap"] == 0:
             return parsed
-    return None
+        if best is None or parsed["_gap"] < best["_gap"]:
+            best = parsed
+    return best
 
 
 def read_cache(path: Path) -> dict[int, dict[str, str]]:
