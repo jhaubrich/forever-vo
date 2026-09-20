@@ -10,6 +10,7 @@
 ## AddonCompartmentFuncOnEnter: ForeverVO_OnCompartmentEnter
 ## AddonCompartmentFuncOnLeave: ForeverVO_OnCompartmentLeave
 ## X-Category: Quests & Leveling
+## X-License: MIT
 ## X-Website: https://github.com/quinn-dougherty/forever-vo
 
 Core\Init.lua

@@ -73,10 +73,13 @@ given by items and objects.
 
 ## Credits
 
-Interface concept after [VoiceOver](https://github.com/mrthinger/wow-voiceover)
-by mrthinger and contributors (public domain); the button textures are theirs.
-Client data comes from [wago.tools](https://wago.tools). Speech by
-[Chatterbox](https://github.com/resemble-ai/chatterbox).
+MIT licensed. Interface concept after
+[VoiceOver](https://github.com/mrthinger/wow-voiceover) by mrthinger and
+contributors; the button textures are theirs (public domain). Client data
+comes from [wago.tools](https://wago.tools). Speech by
+[Chatterbox](https://github.com/resemble-ai/chatterbox). Voice packs are fan
+content: Blizzard's text, voices generated from the game's own recordings,
+shared for non-commercial use.
 
 ## Contributing lines
 

@@ -1,7 +1,7 @@
 # CurseForge listing text
 
 Slug: `forever-vo`. Name: Forever Voiceover. Game version: 1.60.1 (Forever).
-License: Unlicense (public domain). Category: Quests & Leveling.
+License: MIT. Category: Quests & Leveling. The voice pack is fan content, non-commercial.
 
 ---
 
