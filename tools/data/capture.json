@@ -168,6 +168,18 @@
    "time": 1789924612,
    "zone": "Orgrimmar"
   },
+  "4551|d37b59d0": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Michael Garrett",
+   "npc": "4551",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Trade Quarter",
+   "text": "How may I be of service?",
+   "time": 1789931286,
+   "zone": "Undercity"
+  },
   "5943|a28d29e1": {
    "build": "69913",
    "event": "gossip",
@@ -193,6 +205,18 @@
    "text": "If we are to make these new lands ours then we must have places to rest our battle weary bodies. Lay your axe by the fire and share the stories of your mighty battles.",
    "time": 1789924785,
    "zone": "Orgrimmar"
+  },
+  "7683|dc498649": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Alessandro Luca",
+   "npc": "7683",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "Welcome to Blue Moon Odds and Ends, mage.  If you have any questions, please let me know.",
+   "time": 1789931358,
+   "zone": "Undercity"
   },
   "9564|8d6952f8": {
    "build": "69913",
@@ -321,6 +345,13 @@
    "name": "Koma",
    "sex": 2
   },
+  "4551": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 959310,
+   "name": "Michael Garrett",
+   "sex": 2
+  },
   "5943": {
    "creatureType": "Humanoid",
    "displayID": 0,
@@ -336,6 +367,13 @@
    "modelFileID": 949470,
    "name": "Innkeeper Gryshka",
    "sex": 3
+  },
+  "7683": {
+   "creatureType": "Humanoid",
+   "level": 35,
+   "modelFileID": 959310,
+   "name": "Alessandro Luca",
+   "sex": 2
   },
   "9564": {
    "creatureType": "Humanoid",
@@ -482,6 +520,20 @@
    "time": 1789927212,
    "title": "The Gift of Skysight",
    "zone": "Zephras Isle"
+  },
+  "97891-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1458,
+   "name": "Alessandro Luca",
+   "npc": "7683",
+   "player": "Myrlin Fixpoint",
+   "questID": 97891,
+   "subzone": "The Apothecarium",
+   "text": "You! Quickly, I need you to bring this potion across the slime canal to Doctor Martin Felben in the Apothecarium!\r\n\r\nIt has a very limited shelf life, and no I can't go myself, my knees rattle and pop out if I attempt to run.\r\n\r\nJust another lovely side effect of undeath, apparently.\r\n\r\nBut we're wasting time! Here, take this and go!\r\n\r\n<Alessandro makes a shooing motion.>",
+   "time": 1789931359,
+   "title": "Prompt Potion Runner",
+   "zone": "Undercity"
   },
   "97903-complete": {
    "build": "69913",
