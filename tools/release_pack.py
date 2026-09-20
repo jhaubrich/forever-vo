@@ -46,6 +46,28 @@ STATE_FILE = DATA_DIR / "release_state.json"
 CF_API = "https://wow.curseforge.com/api"
 GAME_VERSION_NAME = "1.60.1"
 
+CLASSIC_JSON = DATA_DIR / "bulk" / "classic.json"
+
+
+def classic_quest_ids() -> set[int]:
+    if not CLASSIC_JSON.exists():
+        return set()
+    data = json.loads(CLASSIC_JSON.read_text(encoding="utf-8"))
+    return {entry["questID"] for entry in data["quests"].values()}
+
+
+def is_forever_line(entry: dict, classic_ids: set[int]) -> bool:
+    """Delta pack membership: lines players saw in game, or quests Classic never had.
+    Beta-cache text for a quest that exists in Classic stays in the base pack, so the
+    delta does not grow as the bulk run works through Classic."""
+    source = entry.get("source", "classic")
+    if entry.get("player") or source in ("capture", "community"):
+        return True
+    if source == "questcache":
+        return entry.get("questID") not in classic_ids
+    return False
+
+
 PACKS = {
     "base": {
         "folder": "ForeverVO_Data",
@@ -53,7 +75,7 @@ PACKS = {
         "pack_name": "Classic",
         "priority": 100,
         "notes": "Classic-era quests and gossip, voiced. Install with Forever Voiceover.",
-        "select": lambda entry: entry.get("source", "classic") == "classic" and not entry.get("player"),
+        "select": lambda entry, classic_ids: not is_forever_line(entry, classic_ids),
     },
     "delta": {
         "folder": "ForeverVO_Data_Forever",
@@ -61,7 +83,7 @@ PACKS = {
         "pack_name": "Forever",
         "priority": 200,
         "notes": "New and revised Forever lines from player captures. Sits on top of Forever Voiceover Data.",
-        "select": lambda entry: entry.get("source", "classic") != "classic" or bool(entry.get("player")),
+        "select": lambda entry, classic_ids: is_forever_line(entry, classic_ids),
     },
 }
 
@@ -112,7 +134,8 @@ def write_manifest(stage: Path, spec: dict, version: str) -> None:
 def build(pack: str, version: str) -> tuple[Path, dict]:
     spec = PACKS[pack]
     sources = load_sources()
-    items = [item for item in load_items(sources, include_progress=True) if spec["select"](item.entry)]
+    classic_ids = classic_quest_ids()
+    items = [item for item in load_items(sources, include_progress=True) if spec["select"](item.entry, classic_ids)]
     stage = RELEASE_DIR / spec["folder"]
     if stage.exists():
         shutil.rmtree(stage)

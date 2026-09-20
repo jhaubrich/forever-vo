@@ -87,6 +87,10 @@
   "d": 8.52,
   "v": "troll-male"
  },
+ "1464-complete": {
+  "d": 6.2,
+  "v": "troll-male"
+ },
  "147-accept": {
   "d": 19.35,
   "v": "human-male"
@@ -295,6 +299,22 @@
   "d": 43.31,
   "v": "troll-male"
  },
+ "1526-accept": {
+  "d": 35.75,
+  "v": "troll-male"
+ },
+ "1526-complete": {
+  "d": 15.64,
+  "v": "narrator"
+ },
+ "1527-accept": {
+  "d": 14.6,
+  "v": "narrator"
+ },
+ "1527-complete": {
+  "d": 23.03,
+  "v": "orc-male"
+ },
  "1578-accept": {
   "d": 30.51,
   "v": "dwarf-male"
@@ -384,6 +404,14 @@
   "d": 30.86,
   "v": "human-female"
  },
+ "1644-accept": {
+  "d": 29.71,
+  "v": "human-female"
+ },
+ "1644-complete": {
+  "d": 21.15,
+  "v": "human-female"
+ },
  "1645-complete": {
   "d": 31.43,
   "v": "dwarf-female"
@@ -399,6 +427,10 @@
  "1647-accept": {
   "d": 32.15,
   "v": "dwarf-female"
+ },
+ "1648-accept": {
+  "d": 26.18,
+  "v": "human-male"
  },
  "1656-accept": {
   "d": 32.99,
@@ -546,6 +578,74 @@
  },
  "176-complete": {
   "d": 10.0,
+  "v": "human-male"
+ },
+ "1778-accept": {
+  "d": 11.48,
+  "v": "human-male"
+ },
+ "1778-complete": {
+  "d": 27.95,
+  "v": "dwarf-female"
+ },
+ "1779-accept": {
+  "d": 30.58,
+  "v": "dwarf-female"
+ },
+ "1779-complete": {
+  "d": 30.23,
+  "v": "dwarf-male"
+ },
+ "1780-complete": {
+  "d": 26.87,
+  "v": "human-male"
+ },
+ "1781-accept": {
+  "d": 29.9,
+  "v": "human-male"
+ },
+ "1781-complete": {
+  "d": 32.51,
+  "v": "dwarf-male"
+ },
+ "1783-accept": {
+  "d": 32.03,
+  "v": "dwarf-male"
+ },
+ "1784-accept": {
+  "d": 36.1,
+  "v": "dwarf-male"
+ },
+ "1784-complete": {
+  "d": 15.16,
+  "v": "dwarf-male"
+ },
+ "1785-accept": {
+  "d": 20.16,
+  "v": "dwarf-male"
+ },
+ "1785-complete": {
+  "d": 31.1,
+  "v": "dwarf-female"
+ },
+ "1786-accept": {
+  "d": 34.47,
+  "v": "dwarf-male"
+ },
+ "1787-accept": {
+  "d": 34.99,
+  "v": "dwarf-male"
+ },
+ "1787-complete": {
+  "d": 7.68,
+  "v": "dwarf-male"
+ },
+ "1788-accept": {
+  "d": 19.96,
+  "v": "dwarf-male"
+ },
+ "1788-complete": {
+  "d": 29.94,
   "v": "human-male"
  },
  "1789-complete": {
