@@ -286,6 +286,10 @@
   "d": 29.15,
   "v": "dwarf-female"
  },
+ "310-complete": {
+  "d": 5.0,
+  "v": "narrator"
+ },
  "3100-accept": 14.16,
  "3100-complete": 19.11,
  "3101-accept": 14.68,
@@ -431,6 +435,14 @@
   "d": 24.99,
   "v": "nightelf-male"
  },
+ "317-accept": {
+  "d": 26.75,
+  "v": "dwarf-male"
+ },
+ "317-complete": {
+  "d": 6.76,
+  "v": "dwarf-male"
+ },
  "33-accept": {
   "d": 13.36,
   "v": "human-male"
@@ -535,6 +547,14 @@
   "d": 9.84,
   "v": "scourge-male"
  },
+ "367-accept": {
+  "d": 28.39,
+  "v": "scourge-male"
+ },
+ "367-complete": {
+  "d": 3.8,
+  "v": "scourge-male"
+ },
  "376-accept": {
   "d": 32.95,
   "v": "scourge-female"
@@ -631,6 +651,14 @@
   "d": 7.4,
   "v": "narrator"
  },
+ "404-accept": {
+  "d": 16.68,
+  "v": "scourge-male"
+ },
+ "404-complete": {
+  "d": 6.2,
+  "v": "scourge-male"
+ },
  "420-accept": {
   "d": 28.03,
   "v": "dwarf-male"
@@ -695,6 +723,22 @@
   "d": 15.8,
   "v": "orc-male"
  },
+ "475-accept": {
+  "d": 32.31,
+  "v": "nightelf-male"
+ },
+ "475-complete": {
+  "d": 5.88,
+  "v": "nightelf-male"
+ },
+ "476-accept": {
+  "d": 31.79,
+  "v": "nightelf-male"
+ },
+ "476-complete": {
+  "d": 4.6,
+  "v": "nightelf-male"
+ },
  "488-accept": {
   "d": 30.71,
   "v": "narrator"
@@ -734,6 +778,22 @@
  "5481-complete": {
   "d": 24.71,
   "v": "scourge-male"
+ },
+ "5482-accept": {
+  "d": 23.39,
+  "v": "scourge-male"
+ },
+ "5482-complete": {
+  "d": 15.12,
+  "v": "scourge-male"
+ },
+ "5541-accept": {
+  "d": 32.47,
+  "v": "dwarf-male"
+ },
+ "5541-complete": {
+  "d": 17.0,
+  "v": "dwarf-male"
  },
  "5621-accept": {
   "d": 31.67,
@@ -889,6 +949,14 @@
   "d": 12.36,
   "v": "human-male"
  },
+ "745-accept": {
+  "d": 35.75,
+  "v": "tauren-male"
+ },
+ "745-complete": {
+  "d": 19.64,
+  "v": "tauren-male"
+ },
  "747-accept": {
   "d": 33.87,
   "v": "tauren-male"
@@ -929,6 +997,14 @@
   "d": 14.76,
   "v": "tauren-male"
  },
+ "754-accept": {
+  "d": 21.63,
+  "v": "tauren-male"
+ },
+ "754-complete": {
+  "d": 13.84,
+  "v": "tauren-male"
+ },
  "755-accept": {
   "d": 33.59,
   "v": "tauren-male"
@@ -943,6 +1019,14 @@
  },
  "757-complete": {
   "d": 6.92,
+  "v": "tauren-male"
+ },
+ "761-accept": {
+  "d": 27.07,
+  "v": "tauren-male"
+ },
+ "761-complete": {
+  "d": 11.32,
   "v": "tauren-male"
  },
  "763-accept": {
@@ -976,6 +1060,14 @@
  "7665-complete": {
   "d": 20.92,
   "v": "troll-male"
+ },
+ "767-accept": {
+  "d": 19.51,
+  "v": "tauren-male"
+ },
+ "767-complete": {
+  "d": 9.12,
+  "v": "tauren-male"
  },
  "7671-complete": {
   "d": 17.6,
@@ -1108,6 +1200,14 @@
  "805-complete": {
   "d": 21.28,
   "v": "troll-male"
+ },
+ "84-accept": {
+  "d": 6.52,
+  "v": "human-female"
+ },
+ "84-complete": {
+  "d": 5.28,
+  "v": "narrator"
  },
  "8565-complete": {
   "d": 22.92,
