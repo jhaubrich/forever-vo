@@ -17,6 +17,7 @@ from config import ADDON_NAME, BETA_DIR, CAPTURE_JSON, ROOT
 from luatable import parse_saved_variables
 
 CAPTURES_DIR = ROOT / "captures"   # community exports decoded by tools/exportfile.py
+SOURCES_JSON = CAPTURE_JSON.with_name("capture.sources.json")  # mtime bookkeeping, not versioned
 
 SV_NAME = f"{ADDON_NAME}.lua"
 CAPTURE_VAR = "ForeverVOCaptureDB"
@@ -31,9 +32,10 @@ def find_saved_variable_files() -> list[Path]:
 
 
 def load_capture() -> dict:
-    if CAPTURE_JSON.exists():
-        return json.loads(CAPTURE_JSON.read_text(encoding="utf-8"))
-    return {"version": 2, "quests": {}, "gossip": {}, "npcs": {}, "sources": {}}
+    capture = json.loads(CAPTURE_JSON.read_text(encoding="utf-8")) if CAPTURE_JSON.exists() else {"version": 2, "quests": {}, "gossip": {}, "npcs": {}}
+    capture.pop("sources", None)  # older files kept it inline
+    capture["sources"] = json.loads(SOURCES_JSON.read_text(encoding="utf-8")) if SOURCES_JSON.exists() else {}
+    return capture
 
 
 def merge_entry(store: dict, key: str, entry: dict) -> bool:
@@ -90,7 +92,9 @@ def main(argv: list[str]) -> int:
         print(f"ingested   {path}: {quests} quest, {gossip} gossip, {npcs} npc changes")
 
     CAPTURE_JSON.parent.mkdir(parents=True, exist_ok=True)
+    sources = capture.pop("sources")
     CAPTURE_JSON.write_text(json.dumps(capture, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+    SOURCES_JSON.write_text(json.dumps(sources, indent=1, sort_keys=True), encoding="utf-8")
     missing_q = sum(1 for e in capture["quests"].values() if not e.get("found"))
     missing_g = sum(1 for e in capture["gossip"].values() if not e.get("found"))
     print(f"capture.json: {len(capture['quests'])} quest texts ({missing_q} without audio), "

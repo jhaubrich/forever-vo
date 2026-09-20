@@ -13,3 +13,4 @@ tools/data/bulk/classic.json
 tools/data/generate.log
 tools/data/daily.log
 tools/data/daily.lock
+tools/data/capture.sources.json

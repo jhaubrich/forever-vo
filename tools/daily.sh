@@ -35,4 +35,10 @@ git pull --rebase --quiet || echo "git pull failed; continuing with local data"
 # Then continue the bulk backlog for a while (timeout returns 124 when it cuts the run short)
 timeout "${BULK_HOURS}h" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 ./tools/run.sh tools/generate.py --tables-only 2>&1 | tail -1 || true
+
+# Publish the text side of the build so the repository matches this machine
+git add tools/data/capture.json tools/data/sound_index.json tools/data/bulk/questcache.json ForeverVO_Data/Data captures 2>/dev/null || true
+if ! git diff --cached --quiet; then
+    git commit -q -m "nightly: $(date +%F) captures and pack tables" && git push -q || echo "git push failed"
+fi
 echo "=== $(date -Is) done ==="

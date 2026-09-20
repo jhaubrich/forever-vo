@@ -28,6 +28,7 @@
   "249363|260391fc": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789927130,
    "mapID": 2521,
    "name": "Yala Windwatcher",
    "npc": "249363",
@@ -40,6 +41,7 @@
   "251361|d8b5b5c2": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789927412,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
@@ -52,6 +54,7 @@
   "251373|86bf8d52": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789927417,
    "mapID": 2521,
    "name": "Xyton Silverwind",
    "npc": "251373",
@@ -64,6 +67,7 @@
   "251376|fb6560cd": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789927679,
    "mapID": 2521,
    "name": "Tai'ree Farsight",
    "npc": "251376",
@@ -76,6 +80,7 @@
   "251389|87ef59fc": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789927588,
    "mapID": 2521,
    "name": "Akeri Duskblade",
    "npc": "251389",
@@ -88,6 +93,7 @@
   "251487|e92a645e": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789927210,
    "mapID": 2521,
    "name": "Ventaari Brightwish",
    "npc": "251487",
@@ -347,6 +353,7 @@
   "92469-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789927134,
    "found": true,
    "mapID": 2521,
    "name": "Yala Windwatcher",
@@ -363,6 +370,7 @@
   "92469-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789927248,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
@@ -377,6 +385,7 @@
   "92470-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789927286,
    "found": true,
    "mapID": 2521,
    "name": "Aetheen of the Gales",
@@ -393,6 +402,7 @@
   "92471-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789927255,
    "found": true,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
@@ -409,6 +419,7 @@
   "92471-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789927280,
    "mapID": 2521,
    "name": "Aetheen of the Gales",
    "npc": "251366",
@@ -423,6 +434,7 @@
   "92473-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789927310,
    "found": true,
    "mapID": 2521,
    "name": "Valreaa Valewind",
@@ -439,6 +451,7 @@
   "92598-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789927212,
    "mapID": 2521,
    "name": "Ventaari Brightwish",
    "npc": "251487",
@@ -494,20 +507,6 @@
    "time": 1789925007,
    "title": "Threat from Below",
    "zone": "Durotar"
-  }
- },
- "sources": {
-  "/home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua": {
-   "mtime": 1789930109.8991203,
-   "size": 2832
-  },
-  "/home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak": {
-   "mtime": 1789927349.9426994,
-   "size": 7933
-  },
-  "captures/test.json": {
-   "mtime": 1789928131.130956,
-   "size": 821
   }
  },
  "version": 2
