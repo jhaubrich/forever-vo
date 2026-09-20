@@ -62,7 +62,7 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Elder Rise",
    "text": "Well met, mage. You may speak to me unless you have direct business with my mistress Magatha.\n\nI deal with most of her tasks for her so she can concentrate on more important matters. Perhaps there are some things we could discuss before you seek audience with her?",
-   "time": 1789936555,
+   "time": 1789942019,
    "zone": "Thunder Bluff"
   },
   "11870|3a5c3d7e": {
@@ -349,7 +349,7 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Strength",
    "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
-   "time": 1789932147,
+   "time": 1789941717,
    "zone": "Orgrimmar"
   },
   "3318|ae78a458": {
@@ -1041,6 +1041,48 @@
    "text": "Beneath the city of Orgrimmar, stout creatures known as troggs started coming to the surface from deep below the lava filled tunnels. In her ever-benevolence, Magatha sought to make peace with the creatures, but they turned on her diplomats, killing them. She will not allow such treatment of the tauren people and now consider the creatures a threat to all of the Horde.\n\nShe asks that you put an end to this trogg threat before it overwhelms the Horde from below. Find Ragefire Chasm and destroy them all.",
    "time": 1789936556,
    "title": "Testing an Enemy's Strength",
+   "zone": "Thunder Bluff"
+  },
+  "5723-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1456,
+   "name": "Rahauro",
+   "npc": "11833",
+   "player": "Myrlin Fixpoint",
+   "questID": 5723,
+   "subzone": "Elder Rise",
+   "text": "I am glad to see you took Magatha's task seriously. Thank you, Myrlin. I'm sure the troggs will have a harder time coming to the surface with their numbers so greatly reduced.\n\nPerhaps in the future we can take time to figure out where such creatures came from, and what they really want.",
+   "time": 1789942018,
+   "title": "Testing an Enemy's Strength",
+   "zone": "Thunder Bluff"
+  },
+  "5724-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1456,
+   "name": "Rahauro",
+   "npc": "11833",
+   "player": "Myrlin Fixpoint",
+   "questID": 5724,
+   "subzone": "Elder Rise",
+   "text": "Excellent, Myrlin. Thank you.\n\nMagatha told me that if you were successful in finding her clansman that you be given this. Please, take it in thanks.",
+   "time": 1789942022,
+   "title": "Returning the Lost Satchel",
+   "zone": "Thunder Bluff"
+  },
+  "5724-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1456,
+   "name": "Rahauro",
+   "npc": "11833",
+   "player": "Myrlin Fixpoint",
+   "questID": 5724,
+   "subzone": "Elder Rise",
+   "text": "Were you able to find anything, Myrlin? Any clues as to why one of her clansman had to die needlessly would be helpful.",
+   "time": 1789942021,
+   "title": "Returning the Lost Satchel",
    "zone": "Thunder Bluff"
   },
   "5725-accept": {
