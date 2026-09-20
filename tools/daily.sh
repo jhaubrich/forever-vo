@@ -27,8 +27,7 @@ if pgrep -f 'tools/generate.py' >/dev/null; then
 fi
 
 cd "$ROOT"
-# Pick up captures the GitHub bot committed from player exports
-git pull --rebase --quiet || echo "git pull failed; continuing with local data"
+# Sync with GitHub (pull, ingest, push) before generating
 ./tools/ingest.sh || true
 ./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 

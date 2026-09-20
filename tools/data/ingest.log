@@ -2,3 +2,11 @@
 ingested   /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua: 0 quest, 4 gossip, 4 npc changes
 ingested   /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak: 8 quest, 2 gossip, 4 npc changes
 capture.json: 11 quest texts (7 without audio), 16 gossip texts (16 without audio), 17 NPCs
+=== 2026-09-20T15:01:46-04:00 sync ===
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+git pull failed; continuing with local data
+unchanged  /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua
+unchanged  /home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak
+unchanged  /home/q/Projects/forever-vo/captures/comment-5751925873.json
+capture.json: 11 quest texts (7 without audio), 17 gossip texts (17 without audio), 18 NPCs

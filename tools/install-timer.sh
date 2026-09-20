@@ -41,7 +41,7 @@ UNIT
 
 cat >"$UNIT_DIR/forever-vo-ingest.service" <<UNIT
 [Unit]
-Description=Forever Voiceover: ingest freshly written saved variables
+Description=Forever Voiceover: sync (pull, ingest saved variables, push)
 
 [Service]
 Type=oneshot
@@ -67,10 +67,25 @@ UNIT
     echo "WantedBy=default.target"
 } >"$UNIT_DIR/forever-vo-ingest.path"
 
+# Periodic sync so captures committed by the GitHub bot reach this machine quickly
+cat >"$UNIT_DIR/forever-vo-sync.timer" <<UNIT
+[Unit]
+Description=Forever Voiceover periodic sync with GitHub
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=20m
+Unit=forever-vo-ingest.service
+
+[Install]
+WantedBy=timers.target
+UNIT
+
 systemctl --user daemon-reload
 systemctl --user enable --now forever-vo-daily.timer
 systemctl --user enable --now forever-vo-ingest.path
-systemctl --user list-timers forever-vo-daily.timer --no-pager
+systemctl --user enable --now forever-vo-sync.timer
+systemctl --user list-timers 'forever-vo-*' --no-pager
 echo "watching:"
 grep PathModified "$UNIT_DIR/forever-vo-ingest.path"
 echo "logs: tools/data/ingest.log and tools/data/daily.log; run the nightly job now with: systemctl --user start forever-vo-daily.service"
