@@ -20,6 +20,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: BigWigsMods/packager@v2
+        with:
+          args: -g 1.60.1   # CurseForge lists Forever under game version "1.60.1"
         env:
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
