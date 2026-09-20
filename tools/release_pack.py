@@ -197,6 +197,8 @@ def main(argv: list[str]) -> int:
     parser.add_argument("pack", choices=sorted(PACKS))
     parser.add_argument("--upload", action="store_true", help="upload to CurseForge after building")
     parser.add_argument("--if-changed", action="store_true", help="skip when the set of files is unchanged since the last release")
+    parser.add_argument("--min-new", type=int, default=0, help="with --if-changed: skip unless at least this many files are new since the last release...")
+    parser.add_argument("--max-age-days", type=int, default=0, help="...unless the last release is older than this many days and anything changed")
     parser.add_argument("--release-type", default="beta", choices=["alpha", "beta", "release"])
     args = parser.parse_args(argv)
 
@@ -211,14 +213,22 @@ def main(argv: list[str]) -> int:
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
     fingerprint = sorted(stats["files"])
-    if args.if_changed and state.get(args.pack, {}).get("files") == fingerprint:
-        print("no new files since the last release; nothing to do")
-        zip_path.unlink(missing_ok=True)
-        return 0
+    if args.if_changed:
+        last = state.get(args.pack, {})
+        previous = set(last.get("files", []))
+        new_files = len(set(fingerprint) - previous)
+        changed = last.get("files") != fingerprint
+        age_days = (date.today() - date.fromisoformat(last["date"])).days if last.get("date") else 10**6
+        due = changed and (new_files >= args.min_new or (args.max_age_days and age_days >= args.max_age_days))
+        if not due:
+            print(f"not due: {new_files} new files since the last release {age_days} days ago "
+                  f"(need {args.min_new} new or {args.max_age_days} days); nothing to do")
+            zip_path.unlink(missing_ok=True)
+            return 0
 
     if args.upload:
         upload(args.pack, zip_path, version, stats, args.release_type)
-    state[args.pack] = {"version": version, "files": fingerprint, "zip": str(zip_path)}
+    state[args.pack] = {"version": version, "date": date.today().isoformat(), "files": fingerprint, "zip": str(zip_path)}
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
     return 0
 
