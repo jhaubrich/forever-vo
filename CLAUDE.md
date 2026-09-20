@@ -16,7 +16,8 @@ Classic-plus client, codename Camelot). Two addons plus a Python pipeline:
 - `captures/` — community `/fvo export` submissions, committed by a GitHub
   Action from comments on the pinned issue #1.
 
-Owner: Quinn Dougherty (quinn@for-all.dev). CurseForge project 1705010,
+Owner: Quinn Dougherty (quinn@for-all.dev). CurseForge projects: addon 1705010,
+delta pack 1705094 (IDs in tools/config.py; API key only in the gitignored .env). Addon
 slug `forever-vo`, display name "Forever Voiceover". License MIT; voice packs
 are non-commercial fan content (Blizzard's text, voices cloned from the
 game's own recordings).

@@ -2087,6 +2087,18 @@
   "d": 27.11,
   "v": "nightelf-male"
  },
+ "5931-complete": {
+  "d": 29.07,
+  "v": "nightelf-male"
+ },
+ "5932-accept": {
+  "d": 25.95,
+  "v": "nightelf-male"
+ },
+ "5932-complete": {
+  "d": 35.79,
+  "v": "tauren-male"
+ },
  "5943-a28d29e1": 3.2,
  "6-accept": {
   "d": 20.35,
@@ -2099,6 +2111,194 @@
  "60-complete": {
   "d": 5.48,
   "v": "human-male"
+ },
+ "6001-accept": {
+  "d": 28.71,
+  "v": "nightelf-male"
+ },
+ "6001-complete": {
+  "d": 20.63,
+  "v": "nightelf-male"
+ },
+ "6002-accept": {
+  "d": 36.67,
+  "v": "tauren-male"
+ },
+ "6002-complete": {
+  "d": 23.19,
+  "v": "tauren-male"
+ },
+ "6061-accept": {
+  "d": 36.75,
+  "v": "tauren-male"
+ },
+ "6061-complete": {
+  "d": 4.96,
+  "v": "tauren-male"
+ },
+ "6062-accept": {
+  "d": 32.95,
+  "v": "orc-male"
+ },
+ "6062-complete": {
+  "d": 6.84,
+  "v": "orc-male"
+ },
+ "6063-accept": {
+  "d": 33.79,
+  "v": "nightelf-male"
+ },
+ "6063-complete": {
+  "d": 3.96,
+  "v": "nightelf-male"
+ },
+ "6064-complete": {
+  "d": 4.52,
+  "v": "dwarf-male"
+ },
+ "6065-accept": {
+  "d": 14.68,
+  "v": "tauren-female"
+ },
+ "6065-complete": {
+  "d": 2.88,
+  "v": "tauren-male"
+ },
+ "6066-accept": {
+  "d": 14.52,
+  "v": "tauren-male"
+ },
+ "6066-complete": {
+  "d": 3.52,
+  "v": "tauren-male"
+ },
+ "6067-accept": {
+  "d": 13.32,
+  "v": "orc-male"
+ },
+ "6067-complete": {
+  "d": 3.64,
+  "v": "tauren-male"
+ },
+ "6068-accept": {
+  "d": 14.64,
+  "v": "troll-female"
+ },
+ "6068-complete": {
+  "d": 4.2,
+  "v": "orc-male"
+ },
+ "6069-accept": {
+  "d": 16.96,
+  "v": "troll-female"
+ },
+ "6069-complete": {
+  "d": 3.8,
+  "v": "orc-male"
+ },
+ "6070-accept": {
+  "d": 17.4,
+  "v": "tauren-female"
+ },
+ "6070-complete": {
+  "d": 3.92,
+  "v": "orc-male"
+ },
+ "6071-accept": {
+  "d": 15.08,
+  "v": "nightelf-female"
+ },
+ "6071-complete": {
+  "d": 3.92,
+  "v": "nightelf-male"
+ },
+ "6072-accept": {
+  "d": 14.12,
+  "v": "nightelf-female"
+ },
+ "6072-complete": {
+  "d": 3.4,
+  "v": "nightelf-male"
+ },
+ "6073-accept": {
+  "d": 11.68,
+  "v": "dwarf-female"
+ },
+ "6073-complete": {
+  "d": 3.04,
+  "v": "nightelf-male"
+ },
+ "6074-accept": {
+  "d": 14.76,
+  "v": "dwarf-male"
+ },
+ "6074-complete": {
+  "d": 4.64,
+  "v": "dwarf-male"
+ },
+ "6075-accept": {
+  "d": 12.32,
+  "v": "dwarf-female"
+ },
+ "6075-complete": {
+  "d": 3.8,
+  "v": "dwarf-male"
+ },
+ "6076-accept": {
+  "d": 12.24,
+  "v": "dwarf-female"
+ },
+ "6076-complete": {
+  "d": 4.96,
+  "v": "dwarf-male"
+ },
+ "6081-accept": {
+  "d": 23.96,
+  "v": "orc-male"
+ },
+ "6081-complete": {
+  "d": 21.0,
+  "v": "orc-male"
+ },
+ "6082-accept": {
+  "d": 32.71,
+  "v": "orc-male"
+ },
+ "6082-complete": {
+  "d": 24.35,
+  "v": "orc-male"
+ },
+ "6083-accept": {
+  "d": 33.87,
+  "v": "orc-male"
+ },
+ "6083-complete": {
+  "d": 4.88,
+  "v": "orc-male"
+ },
+ "6084-accept": {
+  "d": 31.39,
+  "v": "dwarf-male"
+ },
+ "6084-complete": {
+  "d": 7.08,
+  "v": "dwarf-male"
+ },
+ "6085-accept": {
+  "d": 33.95,
+  "v": "dwarf-male"
+ },
+ "6085-complete": {
+  "d": 12.4,
+  "v": "dwarf-male"
+ },
+ "6086-complete": {
+  "d": 26.11,
+  "v": "dwarf-female"
+ },
+ "6087-accept": {
+  "d": 31.83,
+  "v": "tauren-male"
  },
  "61-accept": {
   "d": 15.95,

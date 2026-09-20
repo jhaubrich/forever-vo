@@ -21,12 +21,8 @@ everything on the maintainer's machine):
 Audio is re-encoded for release (mono 48 kbps mp3) into tools/data/release/.
 Versions are date based (2026.09.21, then 2026.09.21.2 on the same day).
 
-Upload credentials come from the repo's .env (gitignored):
-    CURSEFORGE_API_KEY=...
-    FVO_CF_DELTA_PROJECT=1234567
-    FVO_CF_BASE_PROJECT=1234568
-or from the environment, or from ~/.config/forever-vo/curseforge.json
-({"token": ..., "projects": {"delta": ..., "base": ...}}).
+The API key comes from the repo's .env (gitignored): CURSEFORGE_API_KEY=...
+Project IDs are in config.CURSEFORGE_PROJECTS.
 """
 from __future__ import annotations
 
@@ -42,7 +38,7 @@ from pathlib import Path
 
 import requests
 
-from config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR
+from config import CURSEFORGE_PROJECTS, DATA_DIR, SOUND_INDEX, SOUNDS_DIR
 from generate import load_items, load_sources, rebuild_tables, sound_folder
 
 RELEASE_DIR = DATA_DIR / "release"
@@ -140,7 +136,6 @@ def build(pack: str, version: str) -> tuple[Path, dict]:
     return zip_path, stats
 
 
-CONFIG_FILE = Path.home() / ".config" / "forever-vo" / "curseforge.json"
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 
 
@@ -157,12 +152,10 @@ def load_dotenv() -> None:
 
 
 def curseforge_config(pack: str) -> tuple[str | None, int | None]:
-    """(api token, project id) for the pack: .env / environment first, then the config file."""
+    """(api token, project id) for the pack."""
     load_dotenv()
-    conf = json.loads(CONFIG_FILE.read_text()) if CONFIG_FILE.exists() else {}
-    key = os.environ.get("CURSEFORGE_API_KEY") or os.environ.get("CF_API_KEY") or conf.get("token")
-    project = os.environ.get(f"FVO_CF_{pack.upper()}_PROJECT") or (conf.get("projects") or {}).get(pack)
-    return key, (int(project) if project else None)
+    key = os.environ.get("CURSEFORGE_API_KEY") or os.environ.get("CF_API_KEY")
+    return key, CURSEFORGE_PROJECTS.get(pack)
 
 
 def game_version_id(key: str) -> int:
@@ -176,7 +169,7 @@ def game_version_id(key: str) -> int:
 def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: str) -> None:
     key, project = curseforge_config(pack)
     if not key or not project:
-        raise SystemExit(f"upload needs a token and a project id for {pack} in {CONFIG_FILE}")
+        raise SystemExit(f"upload needs CURSEFORGE_API_KEY in .env and a project id for {pack} in config.CURSEFORGE_PROJECTS")
     changelog = (f"{version}: {stats['quests']} quests, {stats['gossip']} gossip lines, {len(stats['files'])} sound files.\n\n"
                  f"Generated from lines captured by players; see https://github.com/quinn-dougherty/forever-vo")
     metadata = {
@@ -210,7 +203,7 @@ def main(argv: list[str]) -> int:
     if args.upload:
         key, project = curseforge_config(args.pack)
         if not key or not project:
-            print(f"CurseForge upload not configured for {args.pack}: need CURSEFORGE_API_KEY and FVO_CF_{args.pack.upper()}_PROJECT in .env; skipping")
+            print(f"CurseForge upload not configured for {args.pack}: need CURSEFORGE_API_KEY in .env and a project id in config.CURSEFORGE_PROJECTS; skipping")
             return 0
 
     version = next_version(args.pack)

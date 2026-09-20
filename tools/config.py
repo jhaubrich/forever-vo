@@ -60,3 +60,11 @@ FALLBACK_VOICES = {
 ZONE_RACE_HINTS = {
     "Zephras Isle": "skyborne",
 }
+
+# CurseForge project IDs. The player addon's ID also lives in its TOC. The
+# API key stays out of git (.env: CURSEFORGE_API_KEY).
+CURSEFORGE_PROJECTS = {
+    "addon": 1705010,   # Forever Voiceover
+    "delta": 1705094,   # Forever Voiceover Data: Forever
+    "base": None,       # Forever Voiceover Data (Classic set), not created yet
+}
