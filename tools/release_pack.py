@@ -21,9 +21,12 @@ everything on the maintainer's machine):
 Audio is re-encoded for release (mono 48 kbps mp3) into tools/data/release/.
 Versions are date based (2026.09.21, then 2026.09.21.2 on the same day).
 
-Upload needs ~/.config/forever-vo/curseforge.json:
-    {"token": "<CurseForge API token>", "projects": {"delta": 1234567, "base": 1234568}}
-(CF_API_KEY and FVO_CF_DELTA_PROJECT / FVO_CF_BASE_PROJECT in the environment override it.)
+Upload credentials come from the repo's .env (gitignored):
+    CURSEFORGE_API_KEY=...
+    FVO_CF_DELTA_PROJECT=1234567
+    FVO_CF_BASE_PROJECT=1234568
+or from the environment, or from ~/.config/forever-vo/curseforge.json
+({"token": ..., "projects": {"delta": ..., "base": ...}}).
 """
 from __future__ import annotations
 
@@ -138,12 +141,26 @@ def build(pack: str, version: str) -> tuple[Path, dict]:
 
 
 CONFIG_FILE = Path.home() / ".config" / "forever-vo" / "curseforge.json"
+ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
+
+
+def load_dotenv() -> None:
+    """KEY=VALUE lines from the repo's .env, without overriding the real environment."""
+    if not ENV_FILE.exists():
+        return
+    for line in ENV_FILE.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip().strip("'\""))
 
 
 def curseforge_config(pack: str) -> tuple[str | None, int | None]:
-    """(api token, project id) for the pack, from the environment or the config file."""
+    """(api token, project id) for the pack: .env / environment first, then the config file."""
+    load_dotenv()
     conf = json.loads(CONFIG_FILE.read_text()) if CONFIG_FILE.exists() else {}
-    key = os.environ.get("CF_API_KEY") or conf.get("token")
+    key = os.environ.get("CURSEFORGE_API_KEY") or os.environ.get("CF_API_KEY") or conf.get("token")
     project = os.environ.get(f"FVO_CF_{pack.upper()}_PROJECT") or (conf.get("projects") or {}).get(pack)
     return key, (int(project) if project else None)
 
@@ -193,7 +210,7 @@ def main(argv: list[str]) -> int:
     if args.upload:
         key, project = curseforge_config(args.pack)
         if not key or not project:
-            print(f"CurseForge upload not configured for {args.pack} ({CONFIG_FILE}); skipping")
+            print(f"CurseForge upload not configured for {args.pack}: need CURSEFORGE_API_KEY and FVO_CF_{args.pack.upper()}_PROJECT in .env; skipping")
             return 0
 
     version = next_version(args.pack)
