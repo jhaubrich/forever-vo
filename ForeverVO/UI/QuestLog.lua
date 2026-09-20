@@ -40,6 +40,48 @@ function QuestLog:UpdateAllTextures()
     for _, button in pairs(self.buttons) do
         self:UpdateTexture(button)
     end
+    self:UpdateDetailsButton()
+end
+
+-- "Play" button next to "Back" in the quest details panel -----------------
+
+function QuestLog:GetDetailsButton()
+    if self.detailsButton then
+        return self.detailsButton
+    end
+    local backFrame = QuestMapFrame and QuestMapFrame.DetailsFrame and QuestMapFrame.DetailsFrame.BackFrame
+    if not backFrame or not backFrame.BackButton then
+        return nil
+    end
+    local button = CreateFrame("Button", nil, backFrame, "UIPanelButtonTemplate")
+    button:SetSize(70, 22)
+    button:SetPoint("LEFT", backFrame.BackButton, "RIGHT", 6, 0)
+    button:SetText("Play")
+    button:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        QuestLog:OnClick(self)
+    end)
+    button:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(self:IsEnabled() and "Play this quest's text" or "No voiceover for this quest", 1, 1, 1)
+        GameTooltip:Show()
+    end)
+    button:SetScript("OnLeave", GameTooltip_Hide)
+    self.detailsButton = button
+    return button
+end
+
+function QuestLog:UpdateDetailsButton()
+    local button = self:GetDetailsButton()
+    if not button then
+        return
+    end
+    local questID = QuestMapFrame.DetailsFrame.questID
+    button.questID = questID
+    local hasSound = questID ~= nil and Packs:FindQuest(questID, "accept") ~= nil
+    button:SetEnabled(hasSound)
+    local item = questID and self.queued[questID]
+    button:SetText(item and Queue:Contains(item) and "Stop" or "Play")
 end
 
 function QuestLog:OnClick(button)
@@ -115,6 +157,11 @@ local function TryHook()
         hooksecurefunc("QuestLogQuests_Update", function()
             QuestLog:Update()
         end)
+        if QuestMapFrame_ShowQuestDetails then
+            hooksecurefunc("QuestMapFrame_ShowQuestDetails", function()
+                QuestLog:UpdateDetailsButton()
+            end)
+        end
         QuestLog.hooked = true
     end
     return QuestLog.hooked
