@@ -3,6 +3,7 @@
   "10378|bbe052dd": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789935907,
    "mapID": 1413,
    "name": "Omusa Thunderhorn",
    "npc": "10378",
@@ -38,9 +39,22 @@
    "time": 1789931442,
    "zone": "Undercity"
   },
+  "11066|b615098a": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Jhag",
+   "npc": "11066",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Drag",
+   "text": "To die in battle is glorious! But, with what I teach you, maybe you not die so quickly, hm?  ",
+   "time": 1789940771,
+   "zone": "Orgrimmar"
+  },
   "11833|65ba1433": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789936555,
    "mapID": 1456,
    "name": "Rahauro",
    "npc": "11833",
@@ -247,6 +261,7 @@
   "2995|bfaf54b7": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789937445,
    "mapID": 1456,
    "name": "Tal",
    "npc": "2995",
@@ -259,6 +274,7 @@
   "3004|dfa12b04": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789936643,
    "mapID": 1456,
    "name": "Tepa",
    "npc": "3004",
@@ -267,6 +283,18 @@
    "text": "You are truly a determined student. I will be happy to provide you with instruction!",
    "time": 1789936643,
    "zone": "Thunder Bluff"
+  },
+  "3216|4cb32313": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Neeru Fireblade",
+   "npc": "3216",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Cleft of Shadow",
+   "text": "Listen closely to what you are told and do not quickly trust, or distrust.  For even friends serve their own ends, mage.\n\nOur great Warchief knows this, and to prove that there are warlocks within the Horde who do not wish to destroy it from within or gain control over it, I have volunteered to aid our young leader in anyway I can.",
+   "time": 1789940898,
+   "zone": "Orgrimmar"
   },
   "3309|2f8d506f": {
    "build": "69913",
@@ -285,13 +313,15 @@
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789924610,
+   "found": true,
    "mapID": 1454,
    "name": "Karus",
    "npc": "3309",
+   "pack": "Forever",
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Strength",
    "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
-   "time": 1789924610,
+   "time": 1789941149,
    "zone": "Orgrimmar"
   },
   "3309|ae78a458": {
@@ -372,6 +402,18 @@
    "time": 1789932298,
    "zone": "The Barrens"
   },
+  "4047|550c4a52": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Zor Lonetree",
+   "npc": "4047",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Grommash Hold",
+   "text": "Greetings, traveler.",
+   "time": 1789940639,
+   "zone": "Orgrimmar"
+  },
   "4551|d37b59d0": {
    "build": "69913",
    "event": "gossip",
@@ -385,9 +427,22 @@
    "time": 1789931286,
    "zone": "Undercity"
   },
+  "4949|9255c79c": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Grommash Hold",
+   "text": "It would be wise to explain to you the depths at which our enemies will go to to hide themselves under our noses.\n\nKnow this first and foremost: our enemy is the Shadow Council. No matter what task I give you, or who I ask you to act against, know that one simple fact.\n\nMany cults exist within the Council, but only to hide its actions against the foolish.\n\nGroups like the Burning Blade, the Argus Wake, and the Searing Blade are all tools of the Council. Consider them one and the same.",
+   "time": 1789940989,
+   "zone": "Orgrimmar"
+  },
   "5769|c626a1cf": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789936570,
    "mapID": 1456,
    "name": "Arch Druid Hamuul Runetotem",
    "npc": "5769",
@@ -396,6 +451,18 @@
    "text": "The earth keeps many secrets, mage; it is our duty to ensure that those that must remain a secret for the good of all stays as such.",
    "time": 1789936570,
    "zone": "Thunder Bluff"
+  },
+  "5885|a7455611": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Deino",
+   "npc": "5885",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Spirits",
+   "text": "Greetings, mage.  Are you here to learn of the hidden arts?",
+   "time": 1789941234,
+   "zone": "Orgrimmar"
   },
   "5943|a28d29e1": {
    "build": "69913",
@@ -513,6 +580,13 @@
    "level": 25,
    "modelFileID": 959310,
    "name": "Doctor Martin Felben",
+   "sex": 2
+  },
+  "11066": {
+   "creatureType": "Humanoid",
+   "level": 26,
+   "modelFileID": 917116,
+   "name": "Jhag",
    "sex": 2
   },
   "11833": {
@@ -649,6 +723,13 @@
    "name": "Orgnil Soulscar",
    "sex": 2
   },
+  "3216": {
+   "creatureType": "Humanoid",
+   "level": 37,
+   "modelFileID": 917116,
+   "name": "Neeru Fireblade",
+   "sex": 2
+  },
   "3309": {
    "creatureType": "Humanoid",
    "displayID": 0,
@@ -693,11 +774,25 @@
    "name": "Zargh",
    "sex": 2
   },
+  "4047": {
+   "creatureType": "Humanoid",
+   "level": 62,
+   "modelFileID": 917116,
+   "name": "Zor Lonetree",
+   "sex": 2
+  },
   "4551": {
    "creatureType": "Humanoid",
    "level": 55,
    "modelFileID": 959310,
    "name": "Michael Garrett",
+   "sex": 2
+  },
+  "4949": {
+   "creatureType": "Humanoid",
+   "level": -1,
+   "modelFileID": 917116,
+   "name": "Thrall",
    "sex": 2
   },
   "5543": {
@@ -719,6 +814,13 @@
    "level": 55,
    "modelFileID": 986648,
    "name": "Nara Wildmane",
+   "sex": 3
+  },
+  "5885": {
+   "creatureType": "Humanoid",
+   "level": 40,
+   "modelFileID": 1018060,
+   "name": "Deino",
    "sex": 3
   },
   "5943": {
@@ -769,6 +871,20 @@
   }
  },
  "quests": {
+  "1061-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1454,
+   "name": "Zor Lonetree",
+   "npc": "4047",
+   "player": "Myrlin Fixpoint",
+   "questID": 1061,
+   "subzone": "Grommash Hold",
+   "text": "The spirits of the Stonetalon Mountains are angered, for goblins and their servants are plundering and burning the land.  So the land has cried out, and those who listen for such things... have heard.\n\nSeereth Stonebreak, a promising shaman of the Horde, was sent to Stonetalon.  She reports massive deforestation at the hands of the goblins, and requests aid.\n\nMeet Seereth in Stonetalon.  To reach her, follow the road west of the Barrens' Crossroads.  She is camped near the Greatwood Vale.",
+   "time": 1789940640,
+   "title": "The Spirits of Stonetalon",
+   "zone": "Orgrimmar"
+  },
   "1489-accept": {
    "build": "69913",
    "event": "accept",
@@ -787,6 +903,7 @@
   "1489-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789936571,
    "mapID": 1456,
    "name": "Arch Druid Hamuul Runetotem",
    "npc": "5769",
@@ -801,6 +918,7 @@
   "1490-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789936572,
    "mapID": 1456,
    "name": "Arch Druid Hamuul Runetotem",
    "npc": "5769",
@@ -815,6 +933,7 @@
   "1490-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789936579,
    "mapID": 1456,
    "name": "Nara Wildmane",
    "npc": "5770",
@@ -846,6 +965,7 @@
   "264-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789936824,
    "mapID": 1456,
    "name": "Clarice Foster",
    "npc": "5543",
@@ -890,6 +1010,7 @@
   "5722-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789936554,
    "mapID": 1456,
    "name": "Rahauro",
    "npc": "11833",
@@ -904,6 +1025,7 @@
   "5723-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789936556,
    "mapID": 1456,
    "name": "Rahauro",
    "npc": "11833",
@@ -929,6 +1051,104 @@
    "time": 1789931598,
    "title": "The Power to Destroy...",
    "zone": "Undercity"
+  },
+  "5728-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "player": "Myrlin Fixpoint",
+   "questID": 5728,
+   "subzone": "Grommash Hold",
+   "text": "I am glad you've returned, Myrlin. Some of those loyal to me brought word immediately that the caverns below Orgrimmar were in disarray now that their leaders have been slain. I even heard reports that Neeru was more than agitated. It seems we've put a dent in his armor. I can't say I'm displeased... even with such a minor victory.",
+   "time": 1789940658,
+   "title": "Hidden Enemies",
+   "zone": "Orgrimmar"
+  },
+  "5729-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "player": "Myrlin Fixpoint",
+   "questID": 5729,
+   "subzone": "Grommash Hold",
+   "text": "I think our next step should be to have you placed close to Neeru. If he is as agitated as reports suggest, then we may accomplish two things. One, you may be able to gain some greater knowledge about the Council or at least the Burning Blade, and two, he may just begin to trust you enough that he asks you to start to aid him. He may very well look at you as someone who can fill the void now that some of the leadership is in turmoil.\n\nReturn to the Cleft and speak to him again, but do not be too overt.",
+   "time": 1789940659,
+   "title": "Hidden Enemies",
+   "zone": "Orgrimmar"
+  },
+  "5729-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1454,
+   "name": "Neeru Fireblade",
+   "npc": "3216",
+   "player": "Myrlin Fixpoint",
+   "questID": 5729,
+   "subzone": "Cleft of Shadow",
+   "text": "What is it?! Oh, you, mage... my apologies. My anger rivals that of a rabid kodo bull... but perhaps it is my own fault. In sending travelers into Ragefire Chasm, I should have seen the possibility that some harm would come from it. It seems both Bazzalan and Jergosh were taken unaware and slain by some of Thrall's do-gooders. A most inopportune time, but there is nothing that can be done about it now.",
+   "time": 1789940900,
+   "title": "Hidden Enemies",
+   "zone": "Orgrimmar"
+  },
+  "5730-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1454,
+   "name": "Neeru Fireblade",
+   "npc": "3216",
+   "player": "Myrlin Fixpoint",
+   "questID": 5730,
+   "subzone": "Cleft of Shadow",
+   "text": "You are one of my lieutenants! Prepare yourself, mage. I will call upon you soon.\n\nMy time spent on the Searing Blade may be all but wasted now, but that does not mean that the Shadow Council's schemes elsewhere must suffer. I will do what I can to minimize the damage here in Ragefire Chasm. In the meantime, I will have my agents in the Barrens and Ashenvale begin work on our newest agenda. Return to me soon.",
+   "time": 1789940901,
+   "title": "Hidden Enemies",
+   "zone": "Orgrimmar"
+  },
+  "5730-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "player": "Myrlin Fixpoint",
+   "questID": 5730,
+   "subzone": "Grommash Hold",
+   "text": "Ashenvale? Hmm, I had not heard of any presence of the Council or the Burning Blade in Ashenvale. My spies will investigate, Myrlin. You have done well.\n\nFor now, rest, and keep yourself occupied with other tasks. I will call upon you again soon.\n\nLok-Tar Ogar!",
+   "time": 1789940991,
+   "title": "Hidden Enemies",
+   "zone": "Orgrimmar"
+  },
+  "5761-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1454,
+   "name": "Neeru Fireblade",
+   "npc": "3216",
+   "player": "Myrlin Fixpoint",
+   "questID": 5761,
+   "subzone": "Cleft of Shadow",
+   "text": "Ha! You've done it! Thrall will be so pleased.\n\nI will ensure this heart is taken care of properly.\n\nFor now though, you must celebrate your victory. I will inform Thrall of your success.\n\nThank you for your aid, mage.",
+   "time": 1789940571,
+   "title": "Slaying the Beast",
+   "zone": "Orgrimmar"
+  },
+  "5761-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1454,
+   "name": "Neeru Fireblade",
+   "npc": "3216",
+   "player": "Myrlin Fixpoint",
+   "questID": 5761,
+   "subzone": "Cleft of Shadow",
+   "text": "Have you killed the beast? He surely must be the leader of the Searing Blade in Ragefire Chasm.",
+   "time": 1789940570,
+   "title": "Slaying the Beast",
+   "zone": "Orgrimmar"
   },
   "6386-complete": {
    "build": "69913",
@@ -1068,6 +1288,7 @@
   "914-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789936580,
    "mapID": 1456,
    "name": "Nara Wildmane",
    "npc": "5770",
