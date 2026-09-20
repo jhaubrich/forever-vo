@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Installs two systemd user units:
-#   forever-vo-ingest.path   ingest the moment the client writes ForeverVO.lua
-#                            (on /reload and logout), so no session is lost
+#   forever-vo-ingest.path   sync (pull, ingest, push) the moment the client writes
+#                            ForeverVO.lua (on /reload and logout), so no session is lost
 #   forever-vo-daily.timer   nightly at 04:00: voice captured lines, continue
 #                            the bulk backlog, rebuild the pack tables
 # Re-run to update. Set WOW_DIR if the game lives elsewhere.
@@ -67,25 +67,10 @@ UNIT
     echo "WantedBy=default.target"
 } >"$UNIT_DIR/forever-vo-ingest.path"
 
-# Periodic sync so captures committed by the GitHub bot reach this machine quickly
-cat >"$UNIT_DIR/forever-vo-sync.timer" <<UNIT
-[Unit]
-Description=Forever Voiceover periodic sync with GitHub
-
-[Timer]
-OnBootSec=2m
-OnUnitActiveSec=20m
-Unit=forever-vo-ingest.service
-
-[Install]
-WantedBy=timers.target
-UNIT
-
 systemctl --user daemon-reload
 systemctl --user enable --now forever-vo-daily.timer
 systemctl --user enable --now forever-vo-ingest.path
-systemctl --user enable --now forever-vo-sync.timer
-systemctl --user list-timers 'forever-vo-*' --no-pager
+systemctl --user list-timers forever-vo-daily.timer --no-pager
 echo "watching:"
 grep PathModified "$UNIT_DIR/forever-vo-ingest.path"
 echo "logs: tools/data/ingest.log and tools/data/daily.log; run the nightly job now with: systemctl --user start forever-vo-daily.service"

@@ -4,8 +4,8 @@
 # the result. Runs under a lock so the on-write watcher, the periodic timer
 # and the nightly job never overlap.
 #
-# Triggered by forever-vo-ingest.path (client wrote ForeverVO.lua) and
-# forever-vo-sync.timer (every 20 minutes). Also called by daily.sh.
+# Triggered by forever-vo-ingest.path (client wrote ForeverVO.lua) and by
+# daily.sh before the nightly generation.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$ROOT/tools/data/ingest.log"
