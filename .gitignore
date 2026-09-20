@@ -1,0 +1,10 @@
+.venv
+__pycache__/
+tools/data/db2/
+tools/data/capture.json.bak
+tools/voices/*.wav
+tools/voices/raw/
+tools/samples/
+*.wav
+ForeverVO_Data/Sounds/*/*.mp3
+ForeverVO_Data/Sounds/*/*.ogg

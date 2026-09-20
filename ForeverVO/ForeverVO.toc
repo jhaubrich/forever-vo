@@ -1,0 +1,26 @@
+## Interface: 16001
+## Title: Forever Voiceover
+## Notes: Voiced quests and NPC dialogue for World of Warcraft: Forever, from locally generated voice packs.
+## Version: 0.1.0
+## Author: Quinn Dougherty
+## IconTexture: Interface\AddOns\ForeverVO\Media\Icon
+## SavedVariables: ForeverVODB, ForeverVOCaptureDB
+## SavedVariablesPerCharacter: ForeverVOCharDB
+## AddonCompartmentFunc: ForeverVO_OnCompartmentClick
+## AddonCompartmentFuncOnEnter: ForeverVO_OnCompartmentEnter
+## AddonCompartmentFuncOnLeave: ForeverVO_OnCompartmentLeave
+## X-Category: Quests & Leveling
+## X-Website: https://github.com/quinn-dougherty/forever-vo
+
+Core\Init.lua
+Core\Util.lua
+Core\Packs.lua
+Core\Audio.lua
+Core\Queue.lua
+Core\Events.lua
+Core\Capture.lua
+UI\TalkingHead.lua
+UI\QueueList.lua
+UI\QuestLog.lua
+Core\Settings.lua
+Core\Commands.lua
