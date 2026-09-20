@@ -9,10 +9,16 @@ goes to Capture so that lines without audio can be generated later.
 local Events = {}
 ns.Events = Events
 
-local function NotifyUnvoiced(what)
-    if ns.db.notifyUnvoiced then
-        ns.Print(format("no voice yet for %s. |cffffd100/fvo export|r to contribute it.", what))
+local notified = {}
+local function NotifyUnvoiced(what, key)
+    -- One notice per quest event or per NPC per session, so a vendor's menus do not spam
+    if not ns.db.notifyUnvoiced or (key and notified[key]) then
+        return
     end
+    if key then
+        notified[key] = true
+    end
+    ns.Print(format("no voice yet for %s. |cffffd100/fvo export|r to contribute it.", what))
 end
 
 local currentQuestItem, currentGossipItem
@@ -71,7 +77,7 @@ local function QueueQuest(event, text)
     })
 
     if not path then
-        NotifyUnvoiced(format("\"%s\" (%s)", title or questID, event))
+        NotifyUnvoiced(format("\"%s\" (%s)", title or questID, event), format("q%d-%s", questID, event))
         return
     end
     if (event == "accept" and not ns.db.playAccept)
@@ -149,7 +155,7 @@ local function QueueGossip(event, text)
     })
 
     if not path then
-        NotifyUnvoiced(format("%s's %s", speaker.name or "this NPC", event == "greeting" and "greeting" or "gossip"))
+        NotifyUnvoiced(format("%s's %s", speaker.name or "this NPC", event == "greeting" and "greeting" or "gossip"), speaker.guid or speaker.name)
         return
     end
     if (event == "greeting" and not ns.db.playGreeting) or (event == "gossip" and not ns.db.playGossip) then

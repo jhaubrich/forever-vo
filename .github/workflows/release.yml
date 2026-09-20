@@ -1,0 +1,25 @@
+name: Release addon
+
+# Tag a commit (v0.1.0) to package ForeverVO with the BigWigs packager and
+# upload it to CurseForge and GitHub Releases. Needs the CF_API_KEY secret
+# and ## X-Curse-Project-ID in ForeverVO.toc once the project exists.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: BigWigsMods/packager@v2
+        env:
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}

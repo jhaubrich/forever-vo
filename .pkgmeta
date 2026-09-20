@@ -1,0 +1,14 @@
+# BigWigs packager config: ships only the player addon. The voice pack
+# (ForeverVO_Data) is released separately because of its size.
+package-as: ForeverVO
+
+ignore:
+  - ForeverVO_Data
+  - tools
+  - captures
+  - .github
+  - .pkgmeta
+  - README.md
+  - LICENSE
+
+enable-nolib-creation: no
