@@ -350,6 +350,18 @@
    "time": 1789925033,
    "zone": "Durotar"
   },
+  "658|003beda2": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1426,
+   "name": "Sten Stoutarm",
+   "npc": "658",
+   "player": "Torky Lashwire",
+   "subzone": "Coldridge Valley",
+   "text": "Ah, well aren't you a sturdy-looking one? Perhaps you can assist me with a thing or two. Not much help around here except for green apprentices, and they've other things to worry about.",
+   "time": 1789935078,
+   "zone": "Dun Morogh"
+  },
   "6929|7161de72": {
    "build": "69913",
    "event": "gossip",
@@ -607,6 +619,13 @@
    "name": "Rawrk",
    "sex": 2
   },
+  "658": {
+   "creatureType": "Humanoid",
+   "level": 5,
+   "modelFileID": 878772,
+   "name": "Sten Stoutarm",
+   "sex": 2
+  },
   "6929": {
    "creatureType": "Humanoid",
    "displayID": 0,
@@ -654,6 +673,22 @@
    "time": 1789934528,
    "title": "Hamuul Runetotem",
    "zone": "The Barrens"
+  },
+  "179-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1426,
+   "name": "Sten Stoutarm",
+   "npc": "658",
+   "pack": "Forever",
+   "player": "Torky Lashwire",
+   "questID": 179,
+   "subzone": "Coldridge Valley",
+   "text": "What do we have here? You look as though you might need something to keep your hands warm, hm?\n\nI'll tell you what would help: a pair of nice, warm gloves. And, being the kind soul that I am, I'd be more than happy to provide you with a suitable pair. I've one condition, however.\n\nI need you to go get me some wolf meat. Nice arrangement, hm? You bring me some wolf meat, and I'll make sure you don't lose any digits to frostbite. Well, what do you say?",
+   "time": 1789935080,
+   "title": "Dwarven Outfitters",
+   "zone": "Dun Morogh"
   },
   "3301-accept": {
    "build": "69913",
