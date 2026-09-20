@@ -24,11 +24,13 @@ local DEFAULT_ATLASES = {
     Portrait = "TalkingHeads-Alliance-PortraitFrame",
     PortraitBg = "TalkingHeads-PortraitBg",
 }
+-- Name / Title / Text colors per texture kit. Blizzard's values for Name and
+-- Text; Title is ours and must read on both the dark panel and the parchment.
 local FONT_COLORS = {
-    ["TalkingHeads-Horde"]    = { Name = CreateColor(0.28, 0.02, 0.02), Text = CreateColor(0, 0, 0), Shadow = CreateColor(0, 0, 0, 0) },
-    ["TalkingHeads-Alliance"] = { Name = CreateColor(0.02, 0.17, 0.33), Text = CreateColor(0, 0, 0), Shadow = CreateColor(0, 0, 0, 0) },
-    ["TalkingHeads-Neutral"]  = { Name = CreateColor(0.33, 0.16, 0.02), Text = CreateColor(0, 0, 0), Shadow = CreateColor(0, 0, 0, 0) },
-    ["Normal"]                = { Name = CreateColor(1, 0.82, 0.02),    Text = CreateColor(1, 1, 1), Shadow = CreateColor(0, 0, 0, 1) },
+    ["TalkingHeads-Horde"]    = { Name = CreateColor(0.28, 0.02, 0.02), Title = CreateColor(0.25, 0.15, 0.05), Text = CreateColor(0, 0, 0), Shadow = CreateColor(0, 0, 0, 0) },
+    ["TalkingHeads-Alliance"] = { Name = CreateColor(0.02, 0.17, 0.33), Title = CreateColor(0.25, 0.15, 0.05), Text = CreateColor(0, 0, 0), Shadow = CreateColor(0, 0, 0, 0) },
+    ["TalkingHeads-Neutral"]  = { Name = CreateColor(0.33, 0.16, 0.02), Title = CreateColor(0.25, 0.15, 0.05), Text = CreateColor(0, 0, 0), Shadow = CreateColor(0, 0, 0, 0) },
+    ["Normal"]                = { Name = CreateColor(1, 0.82, 0.02),    Title = CreateColor(0.85, 0.85, 0.85), Text = CreateColor(1, 1, 1), Shadow = CreateColor(0, 0, 0, 1) },
 }
 
 local TalkingHead = {
@@ -42,6 +44,9 @@ local function AtlasExists(atlas)
 end
 
 local function CurrentTextureKit()
+    if not ns.db.factionHead then
+        return "Normal" -- Blizzard's default dark talking head
+    end
     local faction = UnitFactionGroup("player")
     local kit = faction and ("TalkingHeads-" .. faction) or "TalkingHeads-Neutral"
     if AtlasExists(format(TEXTURE_KIT_FORMATS.TextBackground, kit)) then
@@ -371,12 +376,14 @@ function TalkingHead:ApplyTextureKit()
     frame.Name:SetShadowColor(colors.Shadow:GetRGBA())
     frame.Text:SetTextColor(colors.Text:GetRGB())
     frame.Text:SetShadowColor(colors.Shadow:GetRGBA())
+    frame.Title:SetTextColor(colors.Title:GetRGB())
     frame.Title:SetShadowColor(colors.Shadow:GetRGBA())
 end
 
 function TalkingHead:ApplySettings()
     local frame = self.frame
     frame:SetScale(ns.db.headScale or 1)
+    self:ApplyTextureKit()
     frame.Text:SetShown(ns.db.showText ~= false)
     if not ns.db.showHead then
         self:CloseFrame()

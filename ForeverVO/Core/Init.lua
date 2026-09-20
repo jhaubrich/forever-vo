@@ -38,6 +38,7 @@ ns.defaults = {
     headScale = 1,
     showText = true,
     showQueuePanel = false,
+    factionHead = false,
     showMinimapButton = true,
     lockMinimapButton = false,
     minimapAngle = 225,
