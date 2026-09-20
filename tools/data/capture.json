@@ -1,5 +1,29 @@
 {
  "gossip": {
+  "11044|0556ba58": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Doctor Martin Felben",
+   "npc": "11044",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "Have you now? This certainly doesn't look like something I had asked for.\r\n\r\nThis potion is clearly inert, meaning it will no longer create reactions. Hence it is of no use to my studies.\r\n\r\nTake it back to Alessandro. Perhaps next time he sends me a potion he can find someone with faster feet.\r\n\r\n<Doctor Felben waves a dismissive hand.>",
+   "time": 1789931444,
+   "zone": "Undercity"
+  },
+  "11044|98f6d0c2": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Doctor Martin Felben",
+   "npc": "11044",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "Once, it is true, I was human. What might otherwise be a shortcoming works to our advantage, Myrlin, for I know human weaknesses intimately.",
+   "time": 1789931442,
+   "zone": "Undercity"
+  },
   "12136|866b6683": {
    "build": "69913",
    "event": "gossip",
@@ -37,6 +61,18 @@
    "text": "In these trying times, a simple donation of cloth can go a long way to help those less fortunate than ourselves.  Cloth goes a long way to making garments and bandages - both important for the war effort!\n\nIf you are interested in donating cloth pieces to the orcs of Orgrimmar, I will gladly accept them and make sure you receive the proper recognition for doing so.\n\nFor the Horde!",
    "time": 1789930736,
    "zone": "Orgrimmar"
+  },
+  "2425|4aecbd96": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Varimathras",
+   "npc": "2425",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Royal Quarter",
+   "text": "Do not presume to speak to me as though you are my equal, mage. Sylvanas is my queen, and I will do as she bids.\n\nIf you do not show the proper respect, I assure you, we can find a more than suitable place for you in the Nether.\n\nBut there is no reason we cannot have words if you wish to aid the Dark Lady...",
+   "time": 1789931596,
+   "zone": "Undercity"
   },
   "249363|260391fc": {
    "build": "69913",
@@ -171,6 +207,7 @@
   "4551|d37b59d0": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789931286,
    "mapID": 1458,
    "name": "Michael Garrett",
    "npc": "4551",
@@ -206,7 +243,7 @@
    "time": 1789924785,
    "zone": "Orgrimmar"
   },
-  "7683|dc498649": {
+  "7683|21424dde": {
    "build": "69913",
    "event": "gossip",
    "mapID": 1458,
@@ -214,8 +251,33 @@
    "npc": "7683",
    "player": "Myrlin Fixpoint",
    "subzone": "The Apothecarium",
+   "text": "Yes, I see that. I can't say I'm pleased yet another one of my brilliant concoctions has been wasted.",
+   "time": 1789931503,
+   "zone": "Undercity"
+  },
+  "7683|70f4a6e4": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Alessandro Luca",
+   "npc": "7683",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "<Alessandro lets out a frustrated sigh and pinches the bridge of his nose with boney fingers.>\r\n\r\nFine. Yes, give it here. At least I can reuse the glass vial.",
+   "time": 1789931505,
+   "zone": "Undercity"
+  },
+  "7683|dc498649": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789931358,
+   "mapID": 1458,
+   "name": "Alessandro Luca",
+   "npc": "7683",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
    "text": "Welcome to Blue Moon Odds and Ends, mage.  If you have any questions, please let me know.",
-   "time": 1789931358,
+   "time": 1789931510,
    "zone": "Undercity"
   },
   "9564|8d6952f8": {
@@ -244,6 +306,13 @@
   }
  },
  "npcs": {
+  "11044": {
+   "creatureType": "Humanoid",
+   "level": 25,
+   "modelFileID": 959310,
+   "name": "Doctor Martin Felben",
+   "sex": 2
+  },
   "12136": {
    "creatureType": "Humanoid",
    "displayID": 0,
@@ -264,6 +333,13 @@
    "modelFileID": 949470,
    "name": "Rashona Straglash",
    "sex": 3
+  },
+  "2425": {
+   "creatureType": "Demon",
+   "level": -1,
+   "modelFileID": 123673,
+   "name": "Varimathras",
+   "sex": 2
   },
   "249363": {
    "creatureType": "Not specified",
@@ -393,6 +469,20 @@
   }
  },
  "quests": {
+  "5725-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1458,
+   "name": "Varimathras",
+   "npc": "2425",
+   "player": "Myrlin Fixpoint",
+   "questID": 5725,
+   "subzone": "Royal Quarter",
+   "text": "Many denizens of the Legion bestow gifts on their followers as you may well know. Some of these gifts the Dark Lady feels would be better off in her hands than in the hands of those with... lesser vision.\n\nA sect of the Shadow Council hidden in caverns below Orgrimmar known as the Searing Blade are a prime example. The Lady tells me that members of the Searing Blade have come into the possession of two powerful spell books--she would like to \"borrow\" these books from them. You will get them for her.",
+   "time": 1789931598,
+   "title": "The Power to Destroy...",
+   "zone": "Undercity"
+  },
   "92465-complete": {
    "build": "69913",
    "event": "complete",
@@ -524,6 +614,7 @@
   "97891-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789931359,
    "mapID": 1458,
    "name": "Alessandro Luca",
    "npc": "7683",
@@ -532,6 +623,20 @@
    "subzone": "The Apothecarium",
    "text": "You! Quickly, I need you to bring this potion across the slime canal to Doctor Martin Felben in the Apothecarium!\r\n\r\nIt has a very limited shelf life, and no I can't go myself, my knees rattle and pop out if I attempt to run.\r\n\r\nJust another lovely side effect of undeath, apparently.\r\n\r\nBut we're wasting time! Here, take this and go!\r\n\r\n<Alessandro makes a shooing motion.>",
    "time": 1789931359,
+   "title": "Prompt Potion Runner",
+   "zone": "Undercity"
+  },
+  "97891-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Doctor Martin Felben",
+   "npc": "11044",
+   "player": "Myrlin Fixpoint",
+   "questID": 97891,
+   "subzone": "The Apothecarium",
+   "text": "Ah, marvelous! I had been waiting for Alessandro's potion to arrive. The last six he sent destabilized along the way, but you've made it just in time!\r\n\r\nHere, take this for your effort. That is all for now, unless you have other business with me?\r\n\r\nIf not, remove yourself so I may continue my experiments unhindered.",
+   "time": 1789931435,
    "title": "Prompt Potion Runner",
    "zone": "Undercity"
   },
