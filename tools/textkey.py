@@ -7,6 +7,8 @@ from __future__ import annotations
 import re
 
 _NON_ALNUM = re.compile(r"[^a-z0-9]")
+_DOLLAR_CODE = re.compile(r"\$[a-z]")
+_GENDER_CODE = re.compile(r"\$g[^;]*;")
 
 
 def normalize(text: str | None, player_name: str | None = None) -> str:
@@ -15,6 +17,11 @@ def normalize(text: str | None, player_name: str | None = None) -> str:
     text = text.lower()
     if player_name:
         text = text.replace(player_name.lower(), "", 1)
+    else:
+        # Database text still holds server placeholders ($n, $b, $g he:she;, ...);
+        # live text has them substituted, so drop them before hashing.
+        text = _GENDER_CODE.sub("", text)
+        text = _DOLLAR_CODE.sub("", text)
     # Lua strips per byte; encode to UTF-8 so multi-byte characters vanish the same way
     raw = text.encode("utf-8")
     return _NON_ALNUM.sub("", raw.decode("latin-1"))

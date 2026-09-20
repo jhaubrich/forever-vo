@@ -41,3 +41,17 @@ RACE_DICT = {
     95: "skyborne", 96: "skyborne",
 }
 GENDER_DICT = {0: "male", 1: "female"}
+
+# Voices without a reference clip borrow a related one; "narrator" is used for
+# quests given by items or objects. Provide tools/voices/narrator.wav to override.
+FALLBACK_VOICES = {
+    "narrator": "human-male",
+    "felorc": "orc", "magharorc": "orc",
+    "foresttroll": "troll", "icetroll": "troll", "zandalari": "troll",
+    "skeleton": "scourge", "northrendskeleton": "scourge",
+    "taunka": "tauren", "highmountaintauren": "tauren",
+    "draenei": "human", "broken": "human", "vrykul": "human", "kultiran": "human", "thinhuman": "human", "worgen": "human",
+    "naga": "nightelf", "nightborne": "nightelf", "voidelf": "bloodelf",
+    "tuskarr": "dwarf", "darkirondwarf": "dwarf", "mechagnome": "gnome", "vulpera": "goblin",
+    "pandaren": "human", "dracthyr": "bloodelf",
+}

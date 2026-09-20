@@ -25,7 +25,7 @@ import tempfile
 import time
 from pathlib import Path
 
-from config import CAPTURE_JSON, PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR, VOICES_DIR
+from config import CAPTURE_JSON, DATA_DIR, FALLBACK_VOICES, PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR, VOICES_DIR
 from luatable import lua_string
 from textclean import chunk, clean, has_gender_branch, is_speakable, split_gender
 from textkey import text_key
@@ -78,6 +78,30 @@ class Item:
         return [(self.base_name, text)]
 
 
+SOURCE_ORDER = ["classic", "questcache", "capture"]  # later sources override earlier ones
+
+
+def load_sources() -> dict:
+    """Merges tools/data/bulk/*.json and capture.json field by field, capture winning."""
+    merged = {"quests": {}, "gossip": {}, "npcs": {}}
+    files = {p.stem: p for p in (DATA_DIR / "bulk").glob("*.json")}
+    if CAPTURE_JSON.exists():
+        files["capture"] = CAPTURE_JSON
+    for name in SOURCE_ORDER + sorted(set(files) - set(SOURCE_ORDER)):
+        path = files.get(name)
+        if not path:
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for kind in ("quests", "gossip", "npcs"):
+            for key, entry in data.get(kind, {}).items():
+                target = merged[kind].setdefault(str(key), {})
+                for field, value in entry.items():
+                    if value is not None and value != "":
+                        target[field] = value
+        print(f"source {name}: {len(data.get('quests', {}))} quest, {len(data.get('gossip', {}))} gossip, {len(data.get('npcs', {}))} npc entries")
+    return merged
+
+
 def load_items(capture: dict, include_progress: bool) -> list[Item]:
     items = []
     for kind in ("quests", "gossip"):
@@ -109,7 +133,14 @@ class Synth:
 
     def reference_for(self, voice: str) -> Path | None:
         if voice not in self._voice_cache:
-            candidates = [VOICES_DIR / f"{voice}.wav", VOICES_DIR / "narrator.wav"]
+            race, _, gender = voice.partition("-")
+            fallback = FALLBACK_VOICES.get(race)
+            candidates = [VOICES_DIR / f"{voice}.wav"]
+            if fallback:
+                candidates.append(VOICES_DIR / (f"{fallback}-{gender}.wav" if gender else f"{fallback}.wav"))
+                candidates.append(VOICES_DIR / f"{fallback}-male.wav")
+            candidates.append(VOICES_DIR / "narrator.wav")
+            candidates.append(VOICES_DIR / "human-male.wav")
             self._voice_cache[voice] = next((p for p in candidates if p.exists()), None)
         return self._voice_cache[voice]
 
@@ -262,10 +293,10 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--tables-only", action="store_true", help="skip synthesis, rebuild tables")
     args = parser.parse_args(argv)
 
-    if not CAPTURE_JSON.exists():
-        print(f"{CAPTURE_JSON} missing; run ingest.py first")
+    capture = load_sources()
+    if not capture["quests"] and not capture["gossip"]:
+        print("nothing to voice: run ingest.py, classicdb.py or wdbcache.py first")
         return 1
-    capture = json.loads(CAPTURE_JSON.read_text(encoding="utf-8"))
     sound_index = json.loads(SOUND_INDEX.read_text(encoding="utf-8")) if SOUND_INDEX.exists() else {}
     items = load_items(capture, include_progress=args.progress)
 
@@ -282,6 +313,10 @@ def main(argv: list[str]) -> int:
         if item.kind == "gossip" and speaker_int(item.speaker_key) is None:
             skipped["no speaker id"] = skipped.get("no speaker id", 0) + 1
             continue
+        if item.kind == "quests" and item.speaker_key is None and not item.entry.get("isObject"):
+            # Cache-only quest whose giver we have not met: wait for a capture so it gets the right voice
+            skipped["speaker unknown (play it to capture)"] = skipped.get("speaker unknown (play it to capture)", 0) + 1
+            continue
         for base, text in item.variants():
             out = SOUNDS_DIR / item.subfolder / f"{base}.mp3"
             if out.exists() and not args.force:
@@ -290,6 +325,8 @@ def main(argv: list[str]) -> int:
                 skipped["unresolved markup"] = skipped.get("unresolved markup", 0) + 1
                 continue
             todo.append((item, base, text))
+    # Low-level content first so early zones are playable soonest
+    todo.sort(key=lambda t: (t[0].kind != "quests", t[0].entry.get("level") or 0, t[1]))
     if args.limit:
         todo = todo[: args.limit]
 
@@ -317,7 +354,8 @@ def main(argv: list[str]) -> int:
             sound_index[base] = duration
             print(f"[{n}/{len(todo)}] {item.subfolder}/{base}.mp3 {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{item.voice}] {item.entry.get('title') or item.entry.get('name')}")
             if n % 25 == 0:
-                SOUND_INDEX.write_text(json.dumps(sound_index, indent=1, sort_keys=True), encoding="utf-8")
+                # Keep the pack tables current so a client restart picks up what exists so far
+                rebuild_tables(items, sound_index)
         print(f"generated {len(todo)} files in {(time.time() - started) / 60:.1f} min")
 
     rebuild_tables(items, sound_index)
