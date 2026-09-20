@@ -1,4 +1,36 @@
 {
+ "1462-complete": {
+  "d": 4.76,
+  "v": "tauren-female"
+ },
+ "1463-complete": {
+  "d": 8.52,
+  "v": "troll-male"
+ },
+ "1470-accept": {
+  "d": 40.71,
+  "v": "scourge-female"
+ },
+ "1470-complete": {
+  "d": 31.03,
+  "v": "scourge-female"
+ },
+ "1485-accept": {
+  "d": 31.43,
+  "v": "orc-male"
+ },
+ "1485-complete": {
+  "d": 18.44,
+  "v": "orc-male"
+ },
+ "1499-accept": {
+  "d": 19.79,
+  "v": "orc-male"
+ },
+ "1499-complete": {
+  "d": 14.88,
+  "v": "orc-female"
+ },
  "15-accept": {
   "d": 16.76,
   "v": "human-male"
@@ -6,6 +38,38 @@
  "15-complete": {
   "d": 11.2,
   "v": "human-male"
+ },
+ "1516-accept": {
+  "d": 39.63,
+  "v": "troll-male"
+ },
+ "1516-complete": {
+  "d": 42.31,
+  "v": "troll-male"
+ },
+ "1517-accept": {
+  "d": 44.63,
+  "v": "troll-male"
+ },
+ "1517-complete": {
+  "d": 30.47,
+  "v": "narrator"
+ },
+ "1518-accept": {
+  "d": 28.75,
+  "v": "narrator"
+ },
+ "1518-complete": {
+  "d": 39.59,
+  "v": "troll-male"
+ },
+ "1519-accept": {
+  "d": 43.67,
+  "v": "tauren-female"
+ },
+ "1519-complete": {
+  "d": 41.59,
+  "v": "tauren-female"
  },
  "16-complete": 3.96,
  "170-complete": {
@@ -433,6 +497,10 @@
   "d": 26.91,
   "v": "tauren-male"
  },
+ "750-complete": {
+  "d": 11.0,
+  "v": "tauren-male"
+ },
  "752-accept": {
   "d": 28.27,
   "v": "tauren-male"
@@ -440,6 +508,22 @@
  "752-complete": {
   "d": 8.04,
   "v": "tauren-female"
+ },
+ "753-accept": {
+  "d": 37.11,
+  "v": "tauren-female"
+ },
+ "753-complete": {
+  "d": 14.76,
+  "v": "tauren-male"
+ },
+ "755-accept": {
+  "d": 33.59,
+  "v": "tauren-male"
+ },
+ "755-complete": {
+  "d": 6.84,
+  "v": "tauren-male"
  },
  "7660-complete": {
   "d": 18.92,
@@ -519,6 +603,14 @@
  },
  "788-complete": {
   "d": 20.52,
+  "v": "orc-male"
+ },
+ "789-accept": {
+  "d": 30.55,
+  "v": "orc-male"
+ },
+ "789-complete": {
+  "d": 22.63,
   "v": "orc-male"
  },
  "7946-complete": {
@@ -716,6 +808,10 @@
   "d": 32.11,
   "v": "dwarf-male"
  },
+ "f-233-accept": {
+  "d": 20.67,
+  "v": "dwarf-male"
+ },
  "f-3102-complete": {
   "d": 29.59,
   "v": "human-male"
@@ -730,6 +826,10 @@
  },
  "m-170-accept": {
   "d": 33.43,
+  "v": "dwarf-male"
+ },
+ "m-233-accept": {
+  "d": 18.84,
   "v": "dwarf-male"
  },
  "m-3102-complete": {

@@ -1,0 +1,2064 @@
+{
+ "gossip": {},
+ "npcs": {},
+ "quests": {
+  "1013-accept": {
+   "event": "accept",
+   "questID": 1013,
+   "sortID": 209,
+   "source": "questcache",
+   "text": "$n, Shadowfang Keep holds a book, the Book of Ur, which would be much prized in my collection.  Ur was a great mage of Dalaran before the coming of the Scourge, his studies in other worlds are of much value to ... certain parties among the Forsaken.$B$BEnter Shadowfang Keep and find the book.  Bring it to me, and I will report your service to our Dark Lady...",
+   "title": "The Book of Ur"
+  },
+  "1014-accept": {
+   "event": "accept",
+   "questID": 1014,
+   "sortID": 209,
+   "source": "questcache",
+   "text": "Arugal still resides in Shadowfang Keep. We cannot claim Silverpine as a strategic stronghold for the Dark Lady until Arugal is slain.$b$bI shall see to it that his magic is eradicated, $n. But I leave it in your hands to see that Arugal meets the death he so deserves.$b$bTravel to Shadowfang Keep and put an end to Arugal's foul spells once and for all. Bring to me the vile wizard's head!",
+   "title": "Arugal Must Die"
+  },
+  "1061-accept": {
+   "event": "accept",
+   "questID": 1061,
+   "sortID": 406,
+   "source": "questcache",
+   "text": "The spirits of the Stonetalon Mountains are angered, for goblins and their servants are plundering and burning the land.  So the land has cried out, and those who listen for such things... have heard.$B$BSeereth Stonebreak, a promising shaman of the Horde, was sent to Stonetalon.  She reports massive deforestation at the hands of the goblins, and requests aid.$B$BMeet Seereth in Stonetalon.  To reach her, follow the road west of the Barrens' Crossroads.  She is camped near the Greatwood Vale.",
+   "title": "The Spirits of Stonetalon"
+  },
+  "1069-accept": {
+   "event": "accept",
+   "questID": 1069,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Spider egg omelettes are a new fad in Booty Bay!  The problem is... Booty Bay's got no eggs.$B$BI smell an opportunity!$B$BIn Windshear Crag and Sishir Canyon, in the Stonetalon Mountains to the northwest, lives the deepmoss spider.  Bring me its eggs and I'll pay a bundle!$B$BIn Windshear Crag, the eggs will be clustered under what trees remain.$B$BIn Sishir Canyon... well, if you have a weak stomach then maybe you should just collect the eggs at Windshear Crag...",
+   "title": "Deepmoss Spider Eggs"
+  },
+  "1098-accept": {
+   "event": "accept",
+   "questID": 1098,
+   "sortID": 209,
+   "source": "questcache",
+   "text": "In preparation for an assault on Shadowfang, two deathstalkers were sent to the keep to gather intelligence.  It has been many days and they have not returned, but we must receive their report if we're to have any hope of a successful attack!$B$BSo here is your task, $n.  Go to Shadowfang Keep to the south and find the Deathstalkers Adamant and Vincent.  Find them, and if they require aid then give it.$B$BThis mission is as dangerous as is it critical, $n.  Do not fail.",
+   "title": "Deathstalkers in Shadowfang"
+  },
+  "1358-accept": {
+   "event": "accept",
+   "questID": 1358,
+   "sortID": 1497,
+   "source": "questcache",
+   "text": "A colleague in Kalimdor, Apothecary Helbrim, is researching the effects of Lordaeron toxins on the beasts of Kalimdor.  He would be very interested in a sample of the wolf hearts Renferrel sent me.$B$BHelbrim is stationed in the Barrens, in a village known as the Crossroads.  To reach him, you must travel via zeppelin to the orc capital of Orgrimmar, then travel south, by foot, to Durotar.  Head west into the Barrens, and you will soon reach the Crossroads.",
+   "title": "Sample for Helbrim"
+  },
+  "1359-accept": {
+   "event": "accept",
+   "questID": 1359,
+   "sortID": 1497,
+   "source": "questcache",
+   "text": "The wolf hearts you acquired possess a quality unseen in similar specimens.  There is a toxicity to them that should be deadly to the very wolves in which the hearts beat!$B$BIt's quite incredible, and we must study it further.  I kept a few samples of the hearts acquired.  Take them to my colleague, Apothecary Zinge.  You will find her in our headquarters in the Undercity.",
+   "title": "Zinge's Delivery"
+  },
+  "1478-accept": {
+   "event": "accept",
+   "questID": 1478,
+   "sortID": -61,
+   "source": "questcache",
+   "text": "Ah, $n! I just received word from Carendin Halgar that he would like to see you for further training.$b$bYou should be proud of yourself, $n. It's not every day that Master Halgar personally sees fit to instruct a young warlock.$b$bYou'll be able to find him in the Magic Quarter of the Undercity, near the Temple of the Damned.",
+   "title": "Halgar's Summons"
+  },
+  "1483-accept": {
+   "event": "accept",
+   "questID": 1483,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The Venture Company stole many of the best goblin minds, but from time to time, we get the opportunity to steal some back.$b$bA while ago, the Venture Company outfit in the Stonetalon Mountains hired Gerenzo Wrenchwhistle--a gnome! Their other engineer, Ziz Fizziks, was so taken aback by this, he pleaded with me to find him new employment with the Tinkers' Union. I set him on a few tasks, but he might need help.$b$bMaybe you could look in on him for me? He's stationed at the western edge of Windshear Crag.",
+   "title": "Ziz Fizziks"
+  },
+  "1489-accept": {
+   "event": "accept",
+   "questID": 1489,
+   "sortID": 718,
+   "source": "questcache",
+   "text": "The shells you brought me have a taint, one I have never before seen.  I am certain the water of the Oases is the cause, and I can sense the confusion they cause this land.  It is as if the land dreams and cannot awake.$B$BThe Wailing Caverns must be the source of the taint.  But before you go there, speak with Hamuul Runetotem, the elder druid.  I sent word to him of the happenings in the Barrens.  He is wise, and can offer you counsel.$B$BYou will find him in Thunder Bluff, on the Elder Rise.",
+   "title": "Hamuul Runetotem"
+  },
+  "1490-accept": {
+   "event": "accept",
+   "questID": 1490,
+   "sortID": 718,
+   "source": "questcache",
+   "text": "I entered the land of dreams, and dreamed of a cult of druids who dwell in the Wailing Caverns.  I saw that their goals were once noble, but they have lost their way.  They are now servants of the taint seeping through the Barrens.$B$BI am old and my strength fails.  I could not long dwell in that dreaming place and know little more of the tainted druids.  But Nara is young and her spirit is fierce.  She remained in the dreaming when I fled.$B$BSpeak with Nara.  She is in the tent, over yonder.",
+   "title": "Nara Wildmane"
+  },
+  "1491-accept": {
+   "event": "accept",
+   "questID": 1491,
+   "sortID": 718,
+   "source": "questcache",
+   "text": "Ok, so the raptor horns didn't work so well.  But that's all right -- no one got rich on their first try!  And besides, I think I found something that'll work even better in my smart drinks!$B$BThere is a substance called Wailing Essence, and I think it is the cause of the strange plants and animals in the Barrens.  Get me some and I'll try it in my drink!$B$BI heard the essence gathers in ectoplasmic creatures in the Wailing Caverns to the west.  Hunt those creatures and gather the essence.",
+   "title": "Smart Drinks"
+  },
+  "1492-accept": {
+   "event": "accept",
+   "questID": 1492,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "I have need to send a crate of potions, reagents and other items to my associates in the Old World. Little time I have to actually see them to the dock at Ratchet, and the last caravan has already left.$b$bIf you could, please take this to Wharfmaster Dizzywig. He will ensure that it is placed on the next boat to Blackwater Cove.",
+   "title": "Wharfmaster Dizzywig"
+  },
+  "1501-accept": {
+   "event": "accept",
+   "questID": 1501,
+   "sortID": -61,
+   "source": "questcache",
+   "text": "So few warlocks remain... We risk much, but the risks are warranted. You must quickly reach maturity in your ability if you are to be of use to the Horde and to the Warchief.$b$bIt is time that you learned a new summoning spell.$b$bFirst, you must recover the Tablet of Verga, which was stolen by warlocks of the Burning Blade and is now kept at their lair in Skull Rock to the east of the city. With the tablet, I will show you the runes necessary to summoning a voidwalker.",
+   "title": "Creature of the Void"
+  },
+  "1505-accept": {
+   "event": "accept",
+   "questID": 1505,
+   "sortID": -81,
+   "source": "questcache",
+   "text": "The Horde honors its warriors because their strength is unquestioned.  But the truly great warriors are great students as well.$B$BSeek out Uzzek.  He is a veteran of many battles and now instructs young warriors in the ways of combat.  You will find him south of Far Watch Post, the orc garrison on the border of the Barrens and Durotar to the east.",
+   "title": "Veteran Uzzek"
+  },
+  "1525-accept": {
+   "event": "accept",
+   "questID": 1525,
+   "sortID": -82,
+   "source": "questcache",
+   "text": "But you did not come here for a history lesson, did you? You came for the Eternal Flame and fire totem.$B$BThe first step is to create a sapta and bind you to the flame.$B$BI can create the fire sapta for you if you bring me two items. The first is fire tar, a simple item usually carried by Razormane spellcasters in eastern Barrens.$B$BThe second item will be more dangerous: a reagent pouch from one of the cultists of the Burning Blade. You can find them in a cave above the ravines northeast of Razor Hill.",
+   "title": "Call of Fire"
+  },
+  "1821-accept": {
+   "event": "accept",
+   "questID": 1821,
+   "sortID": -81,
+   "source": "questcache",
+   "text": "The Agamand family were my employers in life, and they were the cause of my death!  It is fitting that the Agamands are now mindless minions of the Lich King.$B$BNow I would have their last vestiges of honor.  Go into their family crypt and rob them of their family heirlooms: a sword, an axe, a dagger and a mace.  Bring them to me!$B$BThe Agamand family crypt is at the north end of the Agamand mills, protected by lurking scourge and dead Agamands.",
+   "title": "Agamand Heirlooms"
+  },
+  "1883-accept": {
+   "event": "accept",
+   "questID": 1883,
+   "sortID": -161,
+   "source": "questcache",
+   "text": "Un'thuwa, tribal mage of Sen'jin Village, detects a disturbance in the magic currents of Durotar and asks for aid.  Speak with Un'thuwa and do what you can to help him.$B$BDo this, and in time further secrets will be revealed to you.",
+   "title": "Speak with Un'thuwa"
+  },
+  "1884-accept": {
+   "event": "accept",
+   "questID": 1884,
+   "sortID": -161,
+   "source": "questcache",
+   "text": "The warlock Zalazane of the Echo Isles has disrupted the normal flow of magic in Durotar.  He does this through tainted fetishes, ju-ju heaps, which he has placed among his huts on the main Echo Isle.$B$BThese heaps corrupt our wildlife and give power to the warlocks and infernal creatures that lurk in the land's dark corners.$B$BYou must destroy the ju-ju heaps, $n, before the flow of magic is forever altered.",
+   "title": "Ju-Ju Heaps"
+  },
+  "1886-accept": {
+   "event": "accept",
+   "questID": 1886,
+   "sortID": -162,
+   "source": "questcache",
+   "text": "If you wish to join the Deathstalkers, Lord Varimathras' elite guard, you will have to prove your worth.$b$bI will not lie to you, $n, this task could mean your death.$b$bI have some things that need attending to. I require the personal effects of Astor Hadren, a messenger who travels between Silverpine and the Undercity. I will leave the method of procurement to your discretion.$b$bIt will be better for you if you know less of the nature of this business. Succeed and I shall tell you more.",
+   "title": "The Deathstalkers"
+  },
+  "2161-accept": {
+   "event": "accept",
+   "questID": 2161,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Excuse me?  Can you help me?$B$BI have a load of food here.  I walked along the road and braved scorpids and spiders and worse!  I brought the food to the Valley of Trials because I thought they needed it and I like to help out.  But they don't need any food!  Now I have to take it back to Razor Hill and I'm afraid of all the beasts along the way...$B$BCan you take it for me?  I'm just a peon, but you're a hero.  You fear nothing!$B$BTake it to Innkeeper Grosk at the Razor Hill inn.  Thank you!",
+   "title": "A Peon's Burden"
+  },
+  "235-accept": {
+   "event": "accept",
+   "questID": 235,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "Attention, young adventurers!  The wilds of Ashenvale await you!$B$BThe Horde has established a strong presence in the lands north of the Barrens.  Our two outposts - Splintertree Post and the Zoram Strand Outpost - strive to bring glory to the Horde!  Those who would prove themselves should seek out guidance there.  Of note: Senani Thunderheart in Splintertree Post, directly north of the Barrens, seeks adventurers willing to take part in a great hunt of Ashenvale!",
+   "title": "The Ashenvale Hunt"
+  },
+  "264-accept": {
+   "event": "accept",
+   "questID": 264,
+   "sortID": 1638,
+   "source": "questcache",
+   "text": "Filthy scum! Leaves me for his damn crusade. Because \"the Light is the most important thing we have against the threats the undead pose.\"$B$BWell, what about his children?! What about ME?! Night after night I sat patiently waiting for him... always second to his blasted duty!$B$BWell, witness what \"justice\" brings you, $n! He's dead and I'm bearing the very thing he was trying to stop!$B$BTake this piece of junk and put it on his tomb at the Sepulcher. I want nothing to do with it anymore... or him!",
+   "title": "Until Death Do Us Part"
+  },
+  "2983-accept": {
+   "event": "accept",
+   "questID": 2983,
+   "sortID": -82,
+   "source": "questcache",
+   "text": "It's been some time since you were tested last, $n. You've been patient thus far in your studies, but it's time for you to learn about greater powers... it's time you learn real power. The element of fire is yours if you're prepared to pay for it.$B$BSeek out Kranal Fiss in the Barrens. He lives in a small dwelling north of the Crossroads, but be mindful, if you've reached the blasted night elf lands, you've gone way too far.",
+   "title": "Call of Fire"
+  },
+  "3085-accept": {
+   "event": "accept",
+   "questID": 3085,
+   "sortID": -262,
+   "source": "questcache",
+   "text": "Ah, while you were gone a tablet came for you, $n.$B$BRead it when you have time. If I'm not mistaken, it came from the priest trainer Ken'jai. He would have words with you when you're ready.",
+   "title": "Hallowed Tablet"
+  },
+  "3221-accept": {
+   "event": "accept",
+   "questID": 3221,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "While you were out helping our deathstalkers, Apothecary Renferrel sent you a summons.  He did not give me details, but he wanted to speak with you about the wolf hearts you had given him.",
+   "title": "Speak with Renferrel"
+  },
+  "3301-accept": {
+   "event": "accept",
+   "questID": 3301,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "My clanmate, Mura Runetotem, traveled to Silverpine so that she might aid our undead allies.  Silverpine is an ailing forest, a dying forest, and it was Mura's hope to bring it new life.  Perhaps the strange life found here in the Barrens can help her work in Silverpine.$B$BTake a sample of the shells you gathered, and bring it to Mura in Silverpine.  She is staying at the Sepulcher.  With luck, studying the shell will give her the insight she needs to heal that dying place.",
+   "title": "Mura Runetotem"
+  },
+  "354-accept": {
+   "event": "accept",
+   "questID": 354,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The Agamand family was the most prosperous family in Tirisfal Glades.  I used to work their mills...before the Plague.$B$BWhen the Scourge first came, the Agamands fortified their home and convinced those in their employ to remain and help them defend.  We were fools, but at least we were loyal fools.$B$BThe Agamands, in their pride, doomed us to undeath.  And now they are minions of the Scourge!$B$BServe the Forsaken by defeating the Agamands who fell to the Plague.  Serve me by bringing me their remains.",
+   "title": "Deaths in the Family"
+  },
+  "356-accept": {
+   "event": "accept",
+   "questID": 356,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The defenders on The Bulwark protecting Tirisfal from the Plaguelands are on constant alert. But sometimes Scourge will slip past them.$B$BOur success at the Bulwark depends on a one-front battle - we cannot allow an attack from the rear, nor can we allow our defenders' supply line to be cut.$B$BAssist the Bulwark. Patrol east and slay any Scourge you find. Spend particular effort at the Balnir Farmstead to the east. It has become a haven for interloping Scourge.",
+   "title": "Rear Guard Patrol"
+  },
+  "357-accept": {
+   "event": "accept",
+   "questID": 357,
+   "sortID": 1497,
+   "source": "questcache",
+   "text": "There is a lich who dwells on the island in Brightwater Lake to the north.  Although he is a free-willed Forsaken, he believes all other Undead are Scourge slaves and has his minions attack anyone who approaches him.$B$BBut because he is Forsaken, the Queen will want him.  And if he is skilled in Necromancy, then his knowledge would be...quite useful to us.$B$BTo discover his identity and his talents, I must see his spellbook.  Steal into his camp and acquire it, then return to me.",
+   "title": "The Lich's Identity"
+  },
+  "358-accept": {
+   "event": "accept",
+   "questID": 358,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The Mass Graves, southwest of Garren's Haunt to the north, were made to accommodate the...impressive...number of deaths Tirisfal suffered when the Plague first came.  $B$BThe bodies in these graves have so far been spared an undeath, but the Scourge now send Rot Hide Gnolls to gather the corpses and use them to bolster their armies.  This cannot be allowed!$B$BYour task is twofold: slay the Rot Hides at the Mass Grave and Garren's Haunt, and gather from them the Embalming Ichor that gives them life.",
+   "title": "Graverobbers"
+  },
+  "359-accept": {
+   "event": "accept",
+   "questID": 359,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "I need a fresh report from our Deathguard waystation to the east.$B$BI must know if more Scourge forces have slipped past The Bulwark and into Tirisfal.  Our vigilance on the border to the Plaguelands must be maintained - we can't let the Scourge get a stronger foothold here!$B$BTravel south along the road, then east at the fork to the waystation.  Speak with Deathguard Linnea.  She has the information I need.",
+   "title": "Forsaken Duties"
+  },
+  "360-accept": {
+   "event": "accept",
+   "questID": 360,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Now return to Magistrate Sevren with the information I gave you.  He'll want it as soon as possible, so be swift.$B$BAnd if you see any Scourge on your way back, take them down - we can't let them wander our lands unchallenged.",
+   "title": "Return to the Magistrate"
+  },
+  "361-accept": {
+   "event": "accept",
+   "questID": 361,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "This is a letter written by Thurman, the eldest son of Gregor Agamand.  It is addressed to an Yvette Farthing, though it does not appear to have reached her...",
+   "title": "A Letter Undelivered"
+  },
+  "362-accept": {
+   "event": "accept",
+   "questID": 362,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Devlin Agamand was the younger of two sons in the Agamand family, and in life the two could not be more different.  Thurman was tall and gentle while his younger brother was weak and sharp tongued.$B$BWhen Agamand Mills fell to the Plague, I was not surprised to hear that Devlin was quick to succumb.  His mad chattering can still be heard near the road leading to the Agamand Mills.$B$BI'm collecting the remains of the Agamands, and I want poor Devlin.  Find him, destroy him, and bring me his bones.",
+   "title": "The Haunted Mills"
+  },
+  "365-accept": {
+   "event": "accept",
+   "questID": 365,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "What have we here?  You look like a fledgling $c.  If you hope to prove yourself to The Dark Lady, you need to learn the ways of The Forsaken.$b$bTo the west you'll find a farm.  Humans infest the land like mold on a rotting corpse.  And worse yet, the Scarlet Crusade patrols nearby from their tower.  Teach those scum a lesson and steal 10 of their precious pumpkins.$b$bOnce you have 10, take them to Apothecary Johaan in Brill.",
+   "title": "Fields of Grief"
+  },
+  "366-accept": {
+   "event": "accept",
+   "questID": 366,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Long ago Gunther and I, along with the now Scourge Necromancer Thule Ravenclaw, were friends and students within the Kirin Tor - a society of mages in Dalaran.$B$BGunther and I both fell to the Plague, but I thought he either remained dead, or was raised into the ranks of the Lich King.  It is good to know he is free.$B$BWe must have him.  I have placed a spell on his book that, when he sees it, will show him that I too am free of the Lich King.  After knowing this, it is my hope that he will join us.",
+   "title": "Return the Book"
+  },
+  "367-accept": {
+   "event": "accept",
+   "questID": 367,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Lady Sylvanas has called upon the Royal Apothecary Society. The Dark Lady believes our knowledge coupled with the newfound magic will provide the key to Arthas's demise.  She has challenged us to concoct a new plague, a plague deadlier than any ailment on Azeroth. This new disease will bring Arthas's Scourge Army to ruin.$b$bMy studies show that the blood of beasts might prove to be the key. Bring to me 5 vials of darkhound blood so I can test my theory. ",
+   "title": "A New Plague"
+  },
+  "368-accept": {
+   "event": "accept",
+   "questID": 368,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "While you were collecting samples for me, my experiments led me to realize that more reagents will be required for this new disease to spread properly. Poisoning some hapless victim is child's play. Plaguing an entire world proves to be a bit more complicated.$b$bI will need 5 Vile Fin Scales from Murlocs in the vicinity.  You will find the creatures along the coast to the north or to the west.",
+   "title": "A New Plague"
+  },
+  "369-accept": {
+   "event": "accept",
+   "questID": 369,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "While you were out gathering, I uncovered some old text in one of my tomes that indicates that an ancient plague wiped out thousands of innocent victims.  Later it was discovered that the deadly agent in the plague was preserved through the venom of Night Web Spiders.$b$bBring me some venom from a Vicious Night Web Spider to complete this experiment.  I want to see if the contagious element from the venom will work with my new concoction.  Rumor has it the spiders can be found in Eastern Tirisfal Glades.",
+   "title": "A New Plague"
+  },
+  "370-accept": {
+   "event": "accept",
+   "questID": 370,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The strategic documents from Executor Arren contain all the details we need to wipe the human infestation from the lands.  According to the information, The Scarlet Crusade has assigned Captain Perrine and a brigade to the ruined tower southwest of Brill.$b$bKill Perrine along with 3 Zealots and 3 Missionaries and report back to me.",
+   "title": "At War With The Scarlet Crusade"
+  },
+  "371-accept": {
+   "event": "accept",
+   "questID": 371,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "We are still at war and the Scarlet Crusade grows in strength.  The report Executor Arren sent me indicates Scarlet Crusaders have been raiding from the ruined tower in southeastern Tirisfal near the Balnir Farmstead under the command of Captain Vachon.$b$bKill Vachon along with 5 Scarlet Friars. It should prove to be a devastating blow to the Crusade!",
+   "title": "At War With The Scarlet Crusade"
+  },
+  "372-accept": {
+   "event": "accept",
+   "questID": 372,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Scarlet Crusaders have been raiding from the ruined tower in northern Tirisfal, past Faol's Rest.  According to the information we have, a ruthless commander named Captain Melrache is in charge of this evil crew.$b$bI am entrusting you now with a special and dangerous mission.  Slay Melrache and his two bodyguards, in the name of The Dark Lady.",
+   "title": "At War With The Scarlet Crusade"
+  },
+  "374-accept": {
+   "event": "accept",
+   "questID": 374,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Executor Zygand tells me you've been out killing Scarlet Crusaders. Tirisfal Glades is crawling with them.$b$bVarimathras, lieutenant to The Dark Lady, is seeing to it personally that the scum of Azeroth, the Human race, gets wiped into oblivion. Here in Tirisfal Glades we face a particularly annoying breed of humans: The Scarlet Crusade.$b$bVenture forth and wage an offensive on the Scarlet Crusade, $c. Bring me back 10 Scarlet Insignia Rings as proof of your loyalty to Varimathras and The Dark Lady.",
+   "title": "Proof of Demise"
+  },
+  "375-accept": {
+   "event": "accept",
+   "questID": 375,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "It's so cold, now.  The Plague of Undeath crawls through my veins like an icy serpent.  The Mindless State will be upon me soon.  But no doomed destiny will prevent me from serving our Dark Lady.  When the call arose I sewed body bags for the fallen soldiers of Sylvanas's mighty army.$b$bNow my hands shake from the chill.  If you would bring me five Duskbat Pelts and some Coarse Thread I could sew myself a blanket.  Help me, $n, so that I can continue to serve the cause.",
+   "title": "The Chill of Death"
+  },
+  "398-accept": {
+   "event": "accept",
+   "questID": 398,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Wanted: Maggot Eye!$b$bA foul beast, even by Gnoll standards, Maggot Eye has been sentenced to death for his crimes against The Forsaken.  This despicable villain has been stealing corpses for use by the Lich King's army.  Maggot Eye was last seen pillaging the lands near Garren's Haunt to the north of Brill.$b$bThe town of Brill hereby offers a reward to the capable soul who can carry out the execution.  Show Executor Zygand the villain's paw once the deed is done.$b$bMercy is for the weak.",
+   "title": "WANTED: Maggot Eye"
+  },
+  "4021-accept": {
+   "event": "accept",
+   "questID": 4021,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The Horde commends your successes against the Kolkar, but the Kolkar themselves are maddened.  I have reports that a contingent of Kolkar has traveled to the Barrens from their home in Desolace, to seek vengeance.  My latest report was that, even now, they move against these bunkers, from the west!$B$BFace the Kolkar invaders, and end their threat in the Barrens.  Kill them until their leader, Warlord Krom'zar, appears.  Defeat him and bring me a piece of his banner as proof.$B$BWe're counting on you, $n.",
+   "title": "Counterattack!"
+  },
+  "404-accept": {
+   "event": "accept",
+   "questID": 404,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Scourge have trickled into Tirisfal Glades and have infested the area west of Brill, near the old bridge.$B$BGo there and beat back the rotting dead and ravaged corpses you find.  Scatter their bones and bring back their putrid claws, and the Deathguards will reward you.",
+   "title": "A Putrid Task"
+  },
+  "405-accept": {
+   "event": "accept",
+   "questID": 405,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Bethor Iceshard, a high-ranking and powerful mage in the Undercity to the south, commands me to send him an agent with proven worth against the Scourge.  You, $n, will be that agent.$B$BPresent these orders to Bethor.  He will then instruct you on your mission.  I don't know its details, but it deals with recruiting a wayward Lich.  And it will be dangerous.$B$BSo ready yourself, $C.  You must not fail.$B$BYou may find Bethor in the Magic Quarter of the Undercity.",
+   "title": "The Prodigal Lich"
+  },
+  "408-accept": {
+   "event": "accept",
+   "questID": 408,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The Agamand Mills area has become a foothold for the Scourge.  Their strongest point is the Agamand Family Crypt where their local military leader, a skeleton named Captain Dargol, has headquartered.  With Necromancy he has raised the ancestors of the Agamands and plans to use them against us.$B$BThis cannot pass, and you must stop it.  Travel to the Agamand Family Crypt and defeat the raised Agamand ancestors.$B$BAnd, bring me the skull of Captain Dargol.",
+   "title": "The Family Crypt"
+  },
+  "409-accept": {
+   "event": "accept",
+   "questID": 409,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "You say you are not bound by the will of the Lich King, and the enchantment Bethor placed upon my book corroborates this.  But before I believe you I must have proof that you are enemy to the Scourge.$B$BThere is an old, bloody altar just off the southern coast of this island.  it is used by a powerful Scourge agent, Lillith Nefara.$B$BTake a Candle of Beckoning from this crate here.  Light it on the altar and Lillith will awake.  Destroy Lillith, and I will believe you are the Lich King's foe.",
+   "title": "Proving Allegiance"
+  },
+  "411-accept": {
+   "event": "accept",
+   "questID": 411,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Take this Nether Gem to my old comrade Bethor.  It will let us communicate ... and I have much to tell him.",
+   "title": "The Prodigal Lich Returns"
+  },
+  "421-accept": {
+   "event": "accept",
+   "questID": 421,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "Lady Sylvanas has charged Varimathras with the conquering of the human and dwarven lands to the south.$b$bBut that fool, Arugal -- charlatan of Dalaran and now cursed beast of Shadowfang Keep -- let his reckless magic wreak havoc with the strategic stronghold of Silverpine Forest.$b$bI need someone skilled in the ways of combat to help clean up Arugal's mess.  Prove yourself to me by killing 5 Moonrage Whitescalps.  The wretched beasts can often be found just off the road, down the hill below.",
+   "title": "Prove Your Worth"
+  },
+  "426-accept": {
+   "event": "accept",
+   "questID": 426,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The Scourge are trying to form a base at the Agamand Mills.  If they do, then they can stage further attacks within Tirisfal.$B$BThe orders have been given.  The Scourge in the Mills must be destroyed.$B$BGo to the Mills.  Collect Notched Ribs from Rattlecage and Cracked Skull Soldiers, and Blackened Skulls from Darkeye Bonecasters.$B$BTo get to the Mills, follow the road west.  After crossing the bridge, take the next fork north then keep going north.  When you see windmills, the battle will begin.",
+   "title": "The Mills Overrun"
+  },
+  "427-accept": {
+   "event": "accept",
+   "questID": 427,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The documents Executor Arren provided are just the break we needed in our battle with the wretched Scarlet Crusade.  We now know their exact locations throughout Tirisfal Glades.$b$bBut the Deathguard has larger concerns.  The Lich King's army grows in number each night.  We need someone with \"initiative\" like yourself to drive the Scarlet Crusade to the grave.$b$bProve to me you are capable of serving The Dark Lady by travelling west to the tower past the Solliden Farmstead and slay 10 Scarlet Warriors.",
+   "title": "At War With The Scarlet Crusade"
+  },
+  "429-accept": {
+   "event": "accept",
+   "questID": 429,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "My brother Quinn was badly hurt by the ghoul, Ivar the Foul, and I don't know if he will heal properly without alchemical aid.  Although I am not an apothecary, I do know that our apothecaries can make healing potions from the discolored hearts of worgs.$B$BGather such hearts and take them to Apothecary Renferrel at the Sepulcher to the south.  Then return here with the potion.$B$BYou can find plenty of worgs between here and Malden's Orchard to the east.",
+   "title": "Wild Hearts"
+  },
+  "435-accept": {
+   "event": "accept",
+   "questID": 435,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "The wolves outside won't leave, and they eye me evilly every time I step foot out that door.  They must be incredibly hungry to think I'm worth eating.$B$BI have to report to my teammate, the Deathstalker Rane Yorick.  And to get to Rane, I'll need help against those wolves.$B$BPlease escort me!  And there are a lot of wolves out there, so we'll have a better chance if you have friends who can help...",
+   "title": "Escorting Erland"
+  },
+  "437-accept": {
+   "event": "accept",
+   "questID": 437,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "Our initial scouting reports of Silverpine show the rot hides have a base at an old farm to the north, the Dead Fields.  We have sent small assaults against them, but each time they are reinforced by the banshee Nightlash, who uses her magic to rout our forces.$B$BWe want Nightlash destroyed.$B$BGo to the Dead Fields and assault the rot hides.  If you don't see Nightlash then kill the rot hides until she appears, then defeat her.$B$BHer essence will turn to dust.  Bring me that dust as proof.",
+   "title": "The Dead Fields"
+  },
+  "4402-accept": {
+   "event": "accept",
+   "questID": 4402,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "It sure gets hot out here in the Valley of Trials.$B$B<Galgar wipes his brow.>$B$BIf only I had some cactus apples, I could make my famous cactus apple surprise! Nothing cools you off faster than a piece of that delicious treat.$B$BI'll tell you what, $n. If you bring me 10 cactus apples, I'll make you a few portions of cactus apple surprise to take with you on your adventures, and a free training manual, too. If you're interested, you can find cactus apples growing near the cactus plants around here.",
+   "title": "Galgar's Cactus Apple Surprise"
+  },
+  "445-accept": {
+   "event": "accept",
+   "questID": 445,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Time is a luxury that is not afforded to those of us under the employ of Lady Sylvanas.  Surely you know this by now.$b$bAs a member of the Royal Apothecary Society it is my duty to share my knowledge with my colleagues so that our collective efforts might one day provide The Dark Lady with the New Plague she so badly desires.$b$bTake these findings to Apothecary Renferrel who is stationed at The Sepulcher in Silverpine Forest.  Follow the roads to the south from Brill.  From the Undercity go southwest.",
+   "title": "Delivery to Silverpine Forest"
+  },
+  "447-accept": {
+   "event": "accept",
+   "questID": 447,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "Arthas's numbers are overwhelming. But with a New Plague we could eradicate both the Scourge Army and the Human infestation once and for all.$b$bMy studies have proven that spider blood combined with a toxin derived from a grizzled bear heart results in a deadly elixir. Collect samples from the spiders in the Skittering Dark to the northwest and from the bears wandering throughout Silverpine Forest. Deliver the reagents to Master Apothecary Faranell of the Royal Apothecary Society in the Undercity.",
+   "title": "A Recipe For Death"
+  },
+  "449-accept": {
+   "event": "accept",
+   "questID": 449,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "Although Quinn's wounds are mending, I want to get our report to High Executor Hadrec as quickly as possible.  It has information that is vital to the Forsaken's occupation of Silverpine.",
+   "title": "The Deathstalkers' Report"
+  },
+  "450-accept": {
+   "event": "accept",
+   "questID": 450,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "You can be of further service to the Royal Apothecary Society, $n.$b$bWhen Arugal cast his wretched magic on the forest, he cursed one of our most promising members, Apothecary Berard.  Now a mindless servant of Arugal, Berard is useless to us.  But his findings might prove to be of worth.  He was studying an ancient plague that killed off all the aquatic life in Lake Lordamere ages ago.$b$bRetrieve Berard's Journal from his study in the Pyrewood Village Inn and take it to Apothecary Renferrel.",
+   "title": "A Recipe For Death"
+  },
+  "4641-accept": {
+   "event": "accept",
+   "questID": 4641,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "Finally, you are of age, $n... of age to battle in the name of the Horde. To conquer for the glory of the Warchief.$B$BYes...$B$B<Kaltunk looks you over.>$B$BYou will do nicely.$B$BNo doubt you wish to find a great dragon or demon and strangle it with your bare hands, but perhaps it would be wise to start on something less... dangerous.$B$B<Kaltunk laughs.>$B$BReport to Gornek, he should be able to assign a task better suited to a young $c. You will find Gornek in the Den, to the west.\r\n",
+   "title": "Your Place in the World"
+  },
+  "477-accept": {
+   "event": "accept",
+   "questID": 477,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "As you may know, the town of Ambermill remains a source of human opposition, mainly through the support they receive from the wizards of Dalaran.$b$bI don't know what their plan is, but for them to show interest in a backwater village like Ambermill indicates that it must have some greater importance.$b$bThey've been shipping crates by the wagon from Hillsbrad. Many of those supplies end up at a small camp north of Pyrewood Village. Retrieve the contents of a crate and return them to me.",
+   "title": "Border Crossings"
+  },
+  "4921-accept": {
+   "event": "accept",
+   "questID": 4921,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "We battled in a small tauren camp when we were separated--she held three of the Bristlebacks off by herself. But the odds began to overwhelm us. I led some away only to see her overwhelmed by newcomers. In my rage, I turned to face my enemies, but they brought me down easily with their vast numbers.$B$BI awoke to a tauren druid tending my wounds--he had come across me on the Gold Road as I fell.$B$BPlease, $c, find some sign of my wife.",
+   "title": "Lost in Battle"
+  },
+  "493-accept": {
+   "event": "accept",
+   "questID": 493,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "The Royal Apothecary Society is under extreme pressure from the Dark Lady to develop a New Plague.  We are working diligently and have made much progress.  It is our belief that the success will be achieved much faster if we share information amongst the Society.$b$bFor that reason I want you to deliver my latest findings to Apothecary Lydon in Tarren Mill, a small town nestled in the Hillsbrad Foothills.  The journey will be a long one.$b$bHead south and stick to the roads.  Follow the signs closely!",
+   "title": "Journey to Hillsbrad Foothills"
+  },
+  "5041-accept": {
+   "event": "accept",
+   "questID": 5041,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "That attack on the caravan contained supplies we desperately needed.$B$BYou've been brave enough to take on the Razormane tribe so far, and I will ask you to do so again, but this time, I wonder if I could ask you to keep your eyes open for some of our lost supplies. You can probably find them throughout their camps, the quilboar getting fat off their dishonorable acts.$B$BThe people of the Crossroads would be in your debt.",
+   "title": "Supplies for the Crossroads"
+  },
+  "516-accept": {
+   "event": "accept",
+   "questID": 516,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "I have received reports that a group of undead are holing up to prepare for an attack against us. Armed with this information, we can turn the tables and attack them first, nipping their little plan in the bud.$b$bUnfortunately, my information is spotty, at best. They are reported to be hiding in a location known as Beren's Peril. The exact location is unknown, but it appears to be a cave in the hills, near a pocket of Dalaran wizards.$b$bI trust your resourcefulness. Find them, and put them down.",
+   "title": "Beren's Peril"
+  },
+  "5441-accept": {
+   "event": "accept",
+   "questID": 5441,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "Cursed peons!  They work hard gathering lumber from the trees of the valley, but they're always taking naps!  I need someone to help keep the peons in line.$B$BYou look like the right $r for my task.  Here, you take this blackjack and use it on any lazy peons you find sleeping on the job.  A good smack will get them right back to work!  Return the blackjack when you're done.$B$BLousy slacking peons...",
+   "title": "Lazy Peons"
+  },
+  "5482-accept": {
+   "event": "accept",
+   "questID": 5482,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "So you can see the predicament that I'm in, $n. That thing is out there collecting the wrong weeds! I'll make it worth your while to gather what I need. Bring back to me enough doom weed and I'll give you a suitable reward.$B$BIt is my understanding that they like to plague the flora near the mass gravesite, to the north of the Brill graveyard. Hurry and be mindful of the gnolls in the area.",
+   "title": "Doom Weed"
+  },
+  "5722-accept": {
+   "event": "accept",
+   "questID": 5722,
+   "sortID": 2437,
+   "source": "questcache",
+   "text": "The troggs are not the only thing that interested Magatha in Ragefire Chasm. She has heard word that one of her servants, a Maur Grimtotem, found something peculiar while in the Chasm, but he never made it out to show her what. She'd like Maur's body found--if it still exists--and any signs of what he found while attempting to speak to the troggs.$B$BReturn to Magatha any items of interest, and I'm sure she would be very generous in her reward.$B$BAgain, seek the Chasm in the darkest areas of Orgrimmar.",
+   "title": "Searching for the Lost Satchel"
+  },
+  "5723-accept": {
+   "event": "accept",
+   "questID": 5723,
+   "sortID": 2437,
+   "source": "questcache",
+   "text": "Beneath the city of Orgrimmar, stout creatures known as troggs started coming to the surface from deep below the lava filled tunnels. In her ever-benevolence, Magatha sought to make peace with the creatures, but they turned on her diplomats, killing them. She will not allow such treatment of the tauren people and now consider the creatures a threat to all of the Horde.$B$BShe asks that you put an end to this trogg threat before it overwhelms the Horde from below. Find Ragefire Chasm and destroy them all.",
+   "title": "Testing an Enemy's Strength"
+  },
+  "5725-accept": {
+   "event": "accept",
+   "questID": 5725,
+   "sortID": 2437,
+   "source": "questcache",
+   "text": "Many denizens of the Legion bestow gifts on their followers as you may well know. Some of these gifts the Dark Lady feels would be better off in her hands than in the hands of those with... lesser vision.$B$BA sect of the Shadow Council hidden in caverns below Orgrimmar known as the Searing Blade are a prime example. The Lady tells me that members of the Searing Blade have come into the possession of two powerful spell books--she would like to \"borrow\" these books from them. You will get them for her.",
+   "title": "The Power to Destroy..."
+  },
+  "5726-accept": {
+   "event": "accept",
+   "questID": 5726,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "One thing I will not tolerate are traitors in our midst, $n. But I would be a fool to play my hand so early--it would not sufficiently cut the corruption out of our lands and only cause the infection to grow worse.$B$BBut you, a young adventurer, could go places my agents could not... could learn the truth... could find the true head of the beast.$B$BIf you are brave enough, then enter Skull Rock to the east of Orgrimmar, find a lieutenant's insignia off one of the Burning Blade there, and return to me.",
+   "title": "Hidden Enemies"
+  },
+  "5727-accept": {
+   "event": "accept",
+   "questID": 5727,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "Now let us see if this insignia you found is worth the effort.$B$BThere is a warlock within the city who believes he has my trust. He does not know that I realize where his true loyalties lie. He is in fact the leader of the Burning Blade. But do not rush off to do battle with him; he has a purpose, and we shall use him against our enemies.$B$BTake this insignia to him in the Cleft of Shadow here in Orgrimmar, speak to him and see if he believes you are one of his own, then return to me here.",
+   "title": "Hidden Enemies"
+  },
+  "5728-accept": {
+   "event": "accept",
+   "questID": 5728,
+   "sortID": 2437,
+   "source": "questcache",
+   "text": "Hmm, leaders of the Searing Blade... this concerns me most. If they are the ones of value to Neeru, then those are who we must target first. This satyr... Bazzalan, and the other Neeru mentioned--what was he, a warlock?--must be slain.$B$BReturn to the Cleft of Shadow and enter Ragefire Chasm, $n. Find these two leaders of the Searing Blade, and kill them. But be careful not to let Neeru know it was you who did this. You must retain your identity as one of his $gbrothers:sisters; in arms.",
+   "title": "Hidden Enemies"
+  },
+  "5761-accept": {
+   "event": "accept",
+   "questID": 5761,
+   "sortID": 2437,
+   "source": "questcache",
+   "text": "The primary task set upon me by our great Warchief is to root out the creatures responsible for infesting our lord's great city with demonic influence. The Burning Blade is one threat, but there are others; the Searing Blade for instance, who make their home in Ragefire Chasm, secretly attempting to subvert innocent members of the Horde.$B$BIf they are to be stopped, then their leader must be slain--a Felguard named Taragaman the Hungerer.$B$BKill him, and his heart will appease Thrall, of this I'm sure.",
+   "title": "Slaying the Beast"
+  },
+  "6321-accept": {
+   "event": "accept",
+   "questID": 6321,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "Executor Hadrec asked me to take stock of our equipment at the Sepulcher.  With the Scourge, and worse, lurking in the woods, he doesn't want the Deathguards to lack gear they might need.$B$BI found that we are, in general, well stocked, but we do need more weapons to replace those lost in the field.$B$BHere is a requisition order of what is needed, for the weapon dealer Gordon Wendham in the Undercity.  Take the order to our bat master, Karos Razok, and speak with him about transport to the Undercity.",
+   "title": "Supplying the Sepulcher"
+  },
+  "6322-accept": {
+   "event": "accept",
+   "questID": 6322,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "I have placed the Sepulcher's supplies into this crate.  If you have already visited the Sepulcher and spoken with their bat master, then you may ride a bat back to him.$B$BSpeak with the Undercity's bat master, Michael Garrett.  He can provide you with a bat to the Sepulcher.",
+   "title": "Michael Garrett"
+  },
+  "6323-accept": {
+   "event": "accept",
+   "questID": 6323,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "One of my bats can take you to the Undercity, for a small fee.  Speak with me again when you are ready so that we may arrange your transport.$B$BYou will find Gordon Wendham in the Trade Quarter of the Undercity.  That is the same quarter where my bat will land.",
+   "title": "Ride to the Undercity"
+  },
+  "6324-accept": {
+   "event": "accept",
+   "questID": 6324,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "The bat master in the Sepulcher is Karos Razok.  If you have already met him, then I can give you a bat to fly back to him.$B$BOur bats will always fly to the Undercity, but to travel to more remote locales their rider must first visit the area and speak with its bat master.$B$BYou have met Karos in the Sepulcher, so you may now fly bats there.  Speak with me again when you are ready.",
+   "title": "Return to Podrig"
+  },
+  "6365-accept": {
+   "event": "accept",
+   "questID": 6365,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "I have some choice cuts of meat that I want to send to a friend.  Her name is Gryshka, the innkeeper in Orgrimmar.  Will you deliver the meat for me?$B$BThe fastest way to Orgrimmar is on a wind rider.  Take the meats to the Crossroads wind rider master, Devrak, and speak with him about transport to Orgrimmar.",
+   "title": "Meats to Orgrimmar"
+  },
+  "6384-accept": {
+   "event": "accept",
+   "questID": 6384,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "For just a few coins I will have a wind rider bring you to Orgrimmar.  When you get there, you can take Zargh's Meats to Gryshka.  Her inn is in the Valley of Strength, not far from the Skytower, where my wind rider will drop you off.$B$BSpeak with me again when you are ready for the journey.",
+   "title": "Ride to Orgrimmar"
+  },
+  "6385-accept": {
+   "event": "accept",
+   "questID": 6385,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "I've written a letter of thanks to Zargh.  Will you deliver it for me?  If you've already been to the Crossroads and spoken with their wind rider master, then you can fly a wind rider back there.$B$BTake my letter to Doras, the wind rider master of Orgrimmar, and speak with him about transport to the Crossroads.",
+   "title": "Doras the Wind Rider Master"
+  },
+  "6386-accept": {
+   "event": "accept",
+   "questID": 6386,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "My wind riders are trained to fly to many different places, as long as you have already been to that place and spoken with the wind rider master there.$B$BYou have been to the Crossroads and spoken to their wind rider master Devrak, so now you can fly directly to him from here.  Once you're at the Crossroads, you can deliver Gryshka's letter to Zargh.$B$BSpeak with me when you are ready to go.",
+   "title": "Return to the Crossroads"
+  },
+  "6394-accept": {
+   "event": "accept",
+   "questID": 6394,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "$n, you are a dependable $r.  Can I count on you for another task?$B$BSome time ago I was surveying the cave to the north for minerals, and I left my favorite pick behind.  When I later returned to retrieve it I found the cave was filled with vicious beasts!  Will you go into the cave, the Burning Blade Coven, and get my pick?$B$BI left it in a chamber with waterfalls.  My pick has a spell on it so you can see it in the dark, so you won't have to worry about finding it... just what's guarding it!",
+   "title": "Thazz'ril's Pick"
+  },
+  "746-accept": {
+   "event": "accept",
+   "questID": 746,
+   "sortID": 215,
+   "source": "questcache",
+   "text": "There are dwarves preparing a dig site to the northwest.  They think secrets lie in the earth, and that is true, but hollowing and defiling the land is no way to earn its teachings.$B$BCollect the dwarven tools of digging, smash them, and return to me with the dwarves' broken tools.$B$BYou can smash the tools at a forge.  You will find one in Thunder Bluff, but any forge -- even a forge at the dwarven camp -- will suffice.",
+   "title": "Dwarven Digging"
+  },
+  "772-accept": {
+   "event": "accept",
+   "questID": 772,
+   "sortID": 215,
+   "source": "questcache",
+   "text": "I now present you with the Water of the Seers.$b$bWhen you are ready, consume the waters near the tribal fire. Once you have ingested the holy waters, it will take a few moments before the vision materializes before the fire.$b$bAt that point, it is up to you to follow it to your destiny....",
+   "title": "Rite of Vision"
+  },
+  "784-accept": {
+   "event": "accept",
+   "questID": 784,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Led by Admiral Proudmoore, the humans of Kul Tiras encroached on Durotar, violating the Warchief's pact made with Jaina Proudmoore in order to defeat Archimonde years ago.$b$bThe human aggression was repelled and Tiragarde Keep fell. But recently, the Admiral's reserves, led by Lieutenant Benedict, have retaken the keep and once again pose a threat to our homeland. These humans show no respect for diplomacy.$b$bProve your honor and travel south to Tiragarde Keep to eliminate the human invaders.",
+   "title": "Vanquish the Betrayers"
+  },
+  "786-accept": {
+   "event": "accept",
+   "questID": 786,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Lower your voice, $c. The Kolkar centaurs lie just over the ridge to the west in Kolkar Crag.$b$bLast night while they were raiding, I snuck into their village and discovered that the dirty beasts have a three-tiered attack planned on the trolls and orcs of Durotar.$b$bWe mustn't let their invasion come to fruition. Perhaps you can muster the might needed to infiltrate Kolkar Crag and destroy their attack plans.$b$bLast I saw, they had divided them up amongst three of their leaders.",
+   "title": "Thwarting Kolkar Aggression"
+  },
+  "788-accept": {
+   "event": "accept",
+   "questID": 788,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "The first order of business will be to put a little strength in your backbone. I could send you out to the Barrens to hunt kodo, but well, in all honesty, you're more useful to us alive than dead.$b$bI believe you would find a good match with the mottled boars you'll find to the north of here.",
+   "title": "Cutting Teeth"
+  },
+  "789-accept": {
+   "event": "accept",
+   "questID": 789,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "Powerful warrior and awkward novice alike have fallen to the venomous sting of the scorpid. You will find large numbers of scorpids northwest of here. Bring me ten of their tails as proof of your prowess in battle.$b$bThe antidote for their sting is actually made from venom extracted from their stingers. We keep large quantities of antidote for scorpid venom on hand to heal young bloods just like you...$b$bBut I'm sure you won't be needing any of that, will you?",
+   "title": "Sting of the Scorpid"
+  },
+  "790-accept": {
+   "event": "accept",
+   "questID": 790,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "$C! I thought I would die out here with none to know of it. While I was hunting the scorpids of the Valley, I came across a particularly vicious-looking one. Hurling myself at it, I managed to inflict a massive blow to its claw before it closed around my leg.$b$bI wasn't ready for its stinger though, and it sliced down and into my chest, cutting into my flesh and letting my blood. Please, you must kill the scorpid for me! My honor must be upheld! I fought it up on the plateau to the south.",
+   "title": "Sarkoth"
+  },
+  "792-accept": {
+   "event": "accept",
+   "questID": 792,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "I trust the Valley of Trials will teach you much, young $c.$B$BI was sent to the Valley to guide you, but I have discovered a growing taint here...$B$BA group that calls itself the Burning Blade has a coven here in the Valley of Trials.  They are skulking in a cave to the northeast, and their Vile Familiars have spilled from its mouth to cause havoc.$B$BAs your first task against the Burning Blade, I bid you, defeat these familiars. Slay many and, if you survive, return to me.",
+   "title": "Vile Familiars"
+  },
+  "794-accept": {
+   "event": "accept",
+   "questID": 794,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "Through my divinations, I see that an item of power hides deep within the Burning Blade Coven, guarded by beasts and black magic.$B$BIt is called the Burning Blade Medallion, and your next task is to find it and remove it from the coven.$B$BBut be wary, for the medallion may be possessed by an agent of the Burning Blade, and if so then the agent's power would be greater than the familiars you have already encountered.$B$BGo, $n.  You will find the coven in a cave, to the north and west.",
+   "title": "Burning Blade Medallion"
+  },
+  "804-accept": {
+   "event": "accept",
+   "questID": 804,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "Seeing the deed you have done for me steels my heart. I cannot fall so easily! I must endure!$b$bBut it remains that I cannot make the trek back to the Den unassisted. Please, $n, return to the Den and tell Gornek of my situation. Perhaps he can help me.",
+   "title": "Sarkoth"
+  },
+  "805-accept": {
+   "event": "accept",
+   "questID": 805,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "Your trials against the Burning Blade are finished... here in the Valley.  But I want you to report your findings.$B$BGo to the troll village of Sen'jin and seek out Master Gadrin.  Sen'jin Village is east out of the valley, then right at the fork.$B$BTell Gadrin of the Burning Blade, and that they have reached the Valley of Trials.  Discover from him if they have yet reached Sen'jin.$B$BGo, $n, and be swift.  I fear the evil found in the Burning Blade Coven is but the herald of a larger threat...",
+   "title": "Report to Sen'jin Village"
+  },
+  "806-accept": {
+   "event": "accept",
+   "questID": 806,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "We cannot allow the Burning Blade a foothold in Durotar!  We must destroy them before their evil festers!$B$BI have undergone my own investigations and found that a Burning Blade warlock, the goblin Fizzle Darkstorm, has camped within Thunder Ridge to the northwest.  There he and his cultist minions spread chaos.$B$BFind and defeat Fizzle, and bring me his dead claw!",
+   "title": "Dark Storms"
+  },
+  "808-accept": {
+   "event": "accept",
+   "questID": 808,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "I hear the voice of my brother, Minshina, calling to me in my dreams.$B$BHe was taken by Zalazane, the warlock on the Echo Isles to the east. And he is dead.$B$BBut death is not freedom for my brother. Minshina's spirit was trapped within his own skull by Zalazane's magics. In my dreams I see it with other skulls, in a circle of power on the largest Echo Isle. As long as it remains there my brother's soul is doomed.$B$BPlease, $n. Find the circle and retrieve Minshina's skull. Bring it to me.$B$BFree him!",
+   "title": "Minshina's Skull"
+  },
+  "809-accept": {
+   "event": "accept",
+   "questID": 809,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Since the last great war when the Burning Legion was defeated, I have searched for sources of demonic corruption in orc society.  The collar you brought me confirms my fears.$B$BIt belongs to the Burning Blade, a cult that rallies around an item of demonic power.  It is called the Demon Seed, and it resides in the Barrens atop Dreadmist Peak.  It must be destroyed!$B$BGo to Far Watch Post, on the border of the Barrens to the west, and speak with my assistant, Ak'Zeloth.  He will direct you further.",
+   "title": "Ak'Zeloth"
+  },
+  "815-accept": {
+   "event": "accept",
+   "questID": 815,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Bah! I almost forgot I need to get breakfast ready.$B$B$n, get yourself movin' and get me some taillasher eggs. I'll need at least three of them if I'm going to have enough for tomorrow's meal.$B$BThe Bloodtalon taillashers can be fierce, and protect their eggs to the death more often than not. They sometimes bury their eggs too deep in the earth to uncover safely, but if you head to the Echo Isles to the southeast of Sen'jin Village, you can usually find them all over those islands.",
+   "title": "Break a Few Eggs"
+  },
+  "816-accept": {
+   "event": "accept",
+   "questID": 816,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "$n, please, can you help me? My son Kron went hunting days ago, and he still hasn't returned. He went west towards the Barrens to hunt crocolisks along Southfury River. I fear the worst.$B$BAs strong as he was, his stubborn pride has always drawn him into trouble. I warned him that the crocolisks were powerful and vicious. He grew angry and stormed off.$B$BIf you can't find him, at least bring me a sign of his fate... even if you have to open up the stomach of every crocolisk along the Southfury's banks.",
+   "title": "Lost But Not Forgotten"
+  },
+  "817-accept": {
+   "event": "accept",
+   "questID": 817,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Many of the hides we use come from Durotar tigers, $n. Blankets, armor, tents: there are a great many reasons we hunt the beasts, and many reasons we let them thrive at the same time.$B$BThe time has come for us to cull the flock, so to speak. Our numbers grow, and our needs are beginning to overwhelm our stocks. I need more hides if I'm to prepare suitable goods for our people.$B$BBring me 4 Durotar tiger furs, and I shall reward you. You can find them on the islands south of here.",
+   "title": "Practical Prey"
+  },
+  "818-accept": {
+   "event": "accept",
+   "questID": 818,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Although my eyes fail me, I still can see clearly enough. More often I must rely on my alchemical skills to aid me in magics that once came easily. But I refuse to take on an apprentice--no troll or orc worthy enough has ever come forward.$B$BAre you worthy? Yes, of course you are... of course you think you are.$B$BI need a few things. Will you get them for me?$B$BI need intact makrura eyes, and vials of crawler mucus. You can find them on any makrura or crawler in Durotar. We shall speak again soon.",
+   "title": "A Solvent Spirit"
+  },
+  "823-accept": {
+   "event": "accept",
+   "questID": 823,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "We at Sen'jin Village are not without our own troubles, and we thank you for your aid.  But the news you bring regarding the Burning Blade could be trouble for everyone.$B$BThere is an orc stationed at Razor Hill, Orgnil Soulscar, who polices Durotar from evils such as the Burning Blade!  Go to Orgnil and tell him of our plight, as well as your news from the Valley of Trials.  He will want to know these things.$B$BRazor Hill lies to the north.",
+   "title": "Report to Orgnil"
+  },
+  "825-accept": {
+   "event": "accept",
+   "questID": 825,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "One of my most observant scouts brings back word that the wreckage of Proudmoore's fleet still remains off the coast of Durotar, just east of Tiragarde Keep.$b$bIt is no secret that the humans, in alliance with those foul little creatures known as gnomes, have an advanced knowledge of mechanics. We must have a complete understanding of all our potential enemies. And our people will benefit from this new knowledge as well.$b$bSwim through the wreckage, $n, and retrieve for me the tools of the Alliance.",
+   "title": "From The Wreckage...."
+  },
+  "826-accept": {
+   "event": "accept",
+   "questID": 826,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "The witchdoctor Zalazane dwells on the Echo Isles to the east.  They are the isles we once called home.$B$BFrom there he sends his trolls to the mainland, to hex our people and drag more of them under his sway.$B$BHe must be stopped.$B$BDefeat Zalazane and his minions -- former Darkspear trolls, now lost to us.  Bring me his head and I will know his reign of evil is over.",
+   "title": "Zalazane"
+  },
+  "827-accept": {
+   "event": "accept",
+   "questID": 827,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "$n.  The Burning Blade has infested the cave east of Orgrimmar known as Skull Rock.  Inside that cave they perform vile rituals, and burn their own flesh with Searing Collars.$B$BBy wearing these collars, I believe the cultists attune themselves to demonic power.  But to confirm this, I must have a collection of the collars to study.$B$BGo to Skull Rock and gather Searing Collars from the cultists you find there.  Bring them to me, and I will uncover their secrets.",
+   "title": "Skull Rock"
+  },
+  "828-accept": {
+   "event": "accept",
+   "questID": 828,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "One of our Shamans, Margoz, knows more of the Burning Blade's corruption.  He speaks of a cave called Skull Rock in the mountains - just outside Orgrimmar! - that shelters a large band of Burning Blade cultists.$B$BBefore you go to Skull Rock speak with Margoz.  He is wise and his council is valued.$B$BHe is camped to the northeast, between the coast and Drygulch Ravine.$B$BFollow his advice, but whatever Margoz says, $n, I still want you to crush those cultists!",
+   "title": "Margoz"
+  },
+  "829-accept": {
+   "event": "accept",
+   "questID": 829,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "The Searing Collars you brought me are powerful, demonic implements.  Divining their origin is, I'm afraid, beyond my skills as a shaman.  We will need a warlock to study them.$B$BTake a searing collar to Neeru Fireblade.  Although he is a skilled warlock, he professes to use his powers to thwart demons, and claims his research in the occult is benign.  Be that true or false, we may need his aid against the demonic cult in Durotar.$B$BYou may find Neeru in Orgrimmar in the Cleft of Shadow.",
+   "title": "Neeru Fireblade"
+  },
+  "831-accept": {
+   "event": "accept",
+   "questID": 831,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Humans cannot be trusted. We fought alongside them with a weary heart, knowing they would betray us one day.$b$bAdmiral Proudmoore's death was not enough to stop his legacy of deceit. The human scum had his plans well laid out before he ever met his demise.$b$bHis reign won't even die with Benedict it seems. Who knows how long it will be before the next waves of Proudmoore's men land upon our shores.$b$bWe need to get these orders to Nazgrel in Orgrimmar immediately! He can be found in Thrall's chamber.",
+   "title": "The Admiral's Orders"
+  },
+  "834-accept": {
+   "event": "accept",
+   "questID": 834,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "I'm Rezlak, one of Gazlowe's boys. Boss sent me to help the orcs here in Durotar. Things'd been going good except for the caravans. Can't manage to keep them safe! Makes my job a little harder, you know?$b$bThe last shipment--they promised it'd get through!--was snatched by the Dustwind harpies of...where was it...Razorwind Canyon?$b$bI gotta have those supplies or I'll never get anything done! Follow the big canyon to the south, you'll find the ravine cut right into the west and east sides of the walls.",
+   "title": "Winds in the Desert"
+  },
+  "835-accept": {
+   "event": "accept",
+   "questID": 835,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Gazlowe told me once, \"Rezlak. There's one thing you need to know in life, and that's if you want something done well, do it yourself.\"$b$bI can't deal with losing all our caravans, so I'm just going to take matters into my own hands. Drygulch Ravine lies through the eastern part of Razorwind Canyon. If we kill all the harpies there, the routes will be safe.$b$bOf course, there was one other thing that Gazlowe taught me, and that's \"You can get anything done for a price.\" So, going to help me out, $n?",
+   "title": "Securing the Lines"
+  },
+  "837-accept": {
+   "event": "accept",
+   "questID": 837,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "When we arrived, the Razormane quilboars possessed much of the land, and proved a thorn in our sides. Through our efforts we have driven out the largest part of their numbers, but still they remain well-fortified in some areas.$b$bIt has gone on long enough, however. For our own protection, we cannot allow the Razormane any hold in our lands. Their camps can be found to the west of here. Look for the brambles and you will find them. Today we drive them from Durotar, tomorrow, perhaps from all of Kalimdor.",
+   "title": "Encroachment"
+  },
+  "840-accept": {
+   "event": "accept",
+   "questID": 840,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Hmm, you look pretty strong.$B$BListen, my good friend Kargal needs some new recruits for Barrens duty. I know you want to do what's right for the Horde. Well, this is your chance.$B$BTake this recruitment letter to Kargal and see if he'll sign it.",
+   "title": "Conscript of the Horde"
+  },
+  "842-accept": {
+   "event": "accept",
+   "questID": 842,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Take this signed recruitment letter to the Crossroads.$B$BSergra Darkthorn, curse her hide, is in charge there. She's a nasty shaman who will talk your head in circles before she lets you do anything useful. Thrall is convinced she's something special, but I'm not so sure.$B$BYou'll just have to decide for yourself, pup...",
+   "title": "Crossroads Conscription"
+  },
+  "844-accept": {
+   "event": "accept",
+   "questID": 844,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Your first prey will be easy.$B$BThe plainstriders to the east have been harassing our food supplies and have become a nuisance.$B$BPut down the plainstriders and return to me with their beaks.",
+   "title": "Plainstrider Menace"
+  },
+  "845-accept": {
+   "event": "accept",
+   "questID": 845,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The zhevra, although not the fiercest beast in the Barrens, are a shade tougher than the plainstriders.  Don't worry -- we'll send you against bigger prey in good time, but for now your teeth could use a little more cutting.$B$BHunt the zhevra to the north and south, and collect their hooves.  Bring them to me and perhaps we'll next send you against something tougher.",
+   "title": "The Zhevra"
+  },
+  "848-accept": {
+   "event": "accept",
+   "questID": 848,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The oases of the Barrens hide a mystery.  Life energy flows from their waters, invigorating the plants and beasts that drink it.$B$BInvigorating, and altering.$B$BThere is a mushroom that grows near these oases.  Its spores hold properties that we, the apothecaries of Lordaeron, find useful.$B$BBring me these spores and you will earn our gratitude.",
+   "title": "Fungal Spores"
+  },
+  "865-accept": {
+   "event": "accept",
+   "questID": 865,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The raptors of the Barrens are smarter than raptors in other lands.  And I think all that smarts is hiding in their horns!  If so, then I could grind their horns into powder and use it to make \"smart drinks.\"  I could sell them for a fortune!!!$B$BAnd you can help me.  Find me intact raptor horns from sunscale scytheclaws.  They roam in the southern Barrens, and in the northern Barrens near the border of Ashenvale Forest.",
+   "title": "Raptor Horns"
+  },
+  "867-accept": {
+   "event": "accept",
+   "questID": 867,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The blasted harpies have been ravaging our caravan supplies for too long. It's time we slit a few of their throats and diminished their numbers.$B$BI've been snooping around their nests and figured out who leads who. The most devastating attack will destroy a good section of their lower chain of command and then we can work our way to the top.$B$BI'll start you off slow, take out Witchwing Harpies and Witchwing Roguefeathers in the Northwest and bring me 8 Witchwing talons. That should be a good start...",
+   "title": "Harpy Raiders"
+  },
+  "86784-accept": {
+   "event": "accept",
+   "questID": 86784,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "My associate Eleanor Shackleton prides herself on traveling the wilds, surviving against weather and monsters. She is currently camped not far from here, in the hills to the west, and I remember a piece of advice that she once gave me: \"When you think you have enough firewood, gather five times more.\"\r\n\r\nIf you have some spare time, you could collect some wood in this basket and take it to her camp. I'm sure she could give you a few tips about the existence of a traveling adventurer.",
+   "title": "Sticks and Bones"
+  },
+  "869-accept": {
+   "event": "accept",
+   "questID": 869,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Not long ago, a shipment of silver was stolen from our guard tower.  It was meant as payroll to the Crossroads' guards, and we want that silver back.$B$BThe strange thing is... we caught one of the thieves on the night of the theft.  And... it was a raptor!  Unbelievable!$B$BI don't know what raptors would want with silver.  But I don't care -- I want the raptors dead so they won't steal from us again!$B$BHunt raptors in the Barrens.  Collect for me their heads!",
+   "title": "Raptor Thieves"
+  },
+  "870-accept": {
+   "event": "accept",
+   "questID": 870,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Long ago, the Barrens was a lush place, teeming with life.  But war and cataclysm raged across the land, scorching it and leaving a dry husk.  Such is the way of things, and it saddens my heart.$B$BBut within the past few years, new oases have formed in the Barrens, and life stirs.  And deep down, we druids sense a power leaking its way to the surface.$B$BWe must find its source.  Travel to the Forgotten Pools, northwest of the Crossroads.  Search its waters for a source of power, then return here.",
+   "title": "The Forgotten Pools"
+  },
+  "871-accept": {
+   "event": "accept",
+   "questID": 871,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "All the quilboars are our enemies, $n. Some just prove to be more of a nuisance than others.$B$BThe Razormane tribe has been attacking our supply lines from Durotar, causing us no end of annoyance. I have scouts seeking the leader of these raids, but until then, any losses you can inflict on the filthy pig men would aid us.$B$BStart in the northeast towards Durotar. You can always tell their dens from the huge thorny vines that come up from the earth. Seek them out, and slay them.",
+   "title": "Disrupt the Attacks"
+  },
+  "872-accept": {
+   "event": "accept",
+   "questID": 872,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "One of my scouts witnessed an attack on a caravan from Durotar, $n. The culprits are indeed the Razormane tribe of quilboars. One of the quilboars in particular is leading the raids: Kreenig Snarlsnout. He was seen northeast of here, just south of the road from Durotar. If the threat is to be ended, then Kreenig must die.$B$BTo be sure the attacks cease, though, I say we add insult to their injury. Kill Kreenig along with more of their tribe, and return to me when you have his tusk.",
+   "title": "The Disruption Ends"
+  },
+  "877-accept": {
+   "event": "accept",
+   "questID": 877,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Like the one you found at the Forgotten Pools, there may be fissures at the other oases in the Barrens.  If so, then perhaps the fissures are the oases' source of life.$B$BWe must test this.$B$BHere, take these seeds.  They are dead and infertile, but take them to the Stagnant Oasis to the southeast.  If there is a fissure there, then place the seeds within it...and observe.",
+   "title": "The Stagnant Oasis"
+  },
+  "880-accept": {
+   "event": "accept",
+   "questID": 880,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Your findings are incredible, $n.  These oases hold properties that must come from an outside source.  Or perhaps an inside one.$B$BI want to know how these fissures are affecting the beasts who drink from the oases' water.$B$BHunt oasis snapjaws at the Lushwater and Stagnant Oases.  Bring me their shells so I may examine them.",
+   "title": "Altered Beings"
+  },
+  "887-accept": {
+   "event": "accept",
+   "questID": 887,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "I sure wish Vice Admiral Grezzlik did a better job of keeping the seas safe for our trading vessels. With all the gold the trade princes have poured into the Trade Fleets, it ticks me off to see so many pirates running willy-nilly, raiding my ships and stealing my goods!$b$bI heard that the Southsea Freebooters have set up a camp just south of here. They've been a real thorn in my side and if Grezzlik won't take care of them, well, maybe you can help me get rid of them.",
+   "title": "Southsea Freebooters"
+  },
+  "894-accept": {
+   "event": "accept",
+   "questID": 894,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The Venture Company set up a small research facility far to the north of here, southwest of the Sludge Fen. I don't know very much about what they're doing, but did manage to discover that they're experimenting with something called a \"samophlange\".$b$bNow what the heck is a samophlange? Well, whatever it is, I want to examine it, so I need someone to go get it.$b$bI obtained a copy of their control system operating manual, you should be able to figure out how to disengage the samophlange from it.",
+   "title": "Samophlange"
+  },
+  "895-accept": {
+   "event": "accept",
+   "questID": 895,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "WANTED!$b$bBaron Longshore, Captain of the Heedless$b$bCaptain Longshore of Gilneas leads vessels of the Southsea Freebooters, and is wanted on charges of piracy. Remains must be in identifiable condition!$b$b-- Gazlowe",
+   "title": "WANTED: Baron Longshore"
+  },
+  "896-accept": {
+   "event": "accept",
+   "questID": 896,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Being Wharfmaster of a busy port like Ratchet, I keep my finger on the pulse of information. I know all about the exchange of goods and money between here and Booty Bay.$b$bThe latest bit of news I've heard is about the Venture Company's Boulder Lode mine northeast of the Sludge Fen. One of the miners discovered an emerald the size of your fist. I know a few buyers who'd be interested in getting their hands on something like that, and I'd be willing to go half and half on its sale.",
+   "title": "Miner's Fortune"
+  },
+  "899-accept": {
+   "event": "accept",
+   "questID": 899,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Perhaps you know the pain of uncertainty, perhaps not, $c. But know this: I stand here every day, from the sun's rising till its decline, scouring the horizon for more of those monsters. I've killed every pig man I've come across since, but my thirst for their blood is far from quenched. Perhaps instead of heading north to the Crossroads I should have headed to Taurajo.$B$BYou, $c--you  could help me.$B$BKill them. Kill as many as you can. Bring me their tusks, and we will celebrate their deaths together.",
+   "title": "Consumed by Hatred"
+  },
+  "91282-accept": {
+   "event": "accept",
+   "questID": 91282,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "It is encouraging to see my newly risen brothers and sisters thrive as you have. It is only through community and shared faith that we can truly realize our full potential however, and to that end we've begun to form a new paladin order right here in Tirisfal. \r\n\r\nIf you wish to learn more, you should visit our monastery at Northface Rock. It is called Bandarion Keep. It's on the bluffs just northwest of the Solliden Farmstead, and should be hard to miss.",
+   "title": "A Second Home"
+  },
+  "91285-accept": {
+   "event": "accept",
+   "questID": 91285,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "Normally we'd show our newcomers a bit more hospitality, but we've got a bit of a murloc problem at the moment.\r\n\r\nA tribe of murlocs used to use the keep as their spawning grounds. They've been a problem since we moved in and kicked them out, but now it's starting to get out of hand. You look like you've seen some action. Do you think you could help us drive back some of these pests? You'll find them lurking in the bluffs along the road to the east, and in the camps around the lake to the west.",
+   "title": "Murlocs at the Gates"
+  },
+  "91294-accept": {
+   "event": "accept",
+   "questID": 91294,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "Now that the immediate threat of the murloc attacks is under control, I'd encourage you to show yourself around our stronghold. It isn't much yet, but it's home.\r\n\r\nWhen you are done exploring, seek out Danitha Morr, our leader. She can help you get settled in.\r\n\r\nI'm very glad to have met you, $n. May the light be your guide.",
+   "title": "Touring the Grounds"
+  },
+  "91316-accept": {
+   "event": "accept",
+   "questID": 91316,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "This far from the Undercity, logistics are challenging and we have a dire shortage of building materials needed to help restore this fortress. I'd like your help with that.\r\n\r\nThe ruined village of Shadowvale can be found in the Whispering Forest, just southwest of here. One of the buildings has an old root cellar used to store all sorts of things. There are likely to be usable materials down there. Scavenge what you can and return to us.",
+   "title": "Making Repairs"
+  },
+  "91317-accept": {
+   "event": "accept",
+   "questID": 91317,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "Not all risen paladins have acclimated well to our new existence, as you may have seen yourself already. Some have carried forward their prejudices from life, and continue to visit violence upon their fellow Forsaken.\r\n\r\nAs it stands we are mistrusted by our people who remember well the persecution inflicted by the living in the name of the light, and these attacks do not help. A number of these tarnished have taken up residence at Shadowvale to the southwest. End them and bring me their leader's head.",
+   "title": "The Tarnished"
+  },
+  "914-accept": {
+   "event": "accept",
+   "questID": 914,
+   "sortID": 718,
+   "source": "questcache",
+   "text": "The druids in the Wailing Caverns, the Druids of the Fang, are an aberration.  They were part of an order of noble druids whose plan was to heal the Barrens, but now seek to remake that land to match their own, twisted dreams.$B$BThe Druids of the Fang have four leaders, and each possesses a dream gem.  Even now their faces haunt me!  Defeat the leaders and bring me their gems, and the Barrens may again know peace.$B$BGo, $n.  You will find them lurking deep within the Wailing Caverns.",
+   "title": "Leaders of the Fang"
+  },
+  "924-accept": {
+   "event": "accept",
+   "questID": 924,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "The Demon Seed is a powerful tool for the Burning Legion. It rests in a cave on Dreadmist Peak, above a demonic altar of fire.$B$BI have prepared power stones that when placed near the Seed will disrupt its connection to the Legion.$B$BTake a stone from the table and bring it to the altar of fire atop Dreadmist Peak. Travel west, then north when the road forks. The Peak will be to your left. The safest climb to the top is on its northern face.$B$BAnd hurry--the stone's power will consume itself in time.",
+   "title": "The Demon Seed"
+  },
+  "92401-accept": {
+   "event": "accept",
+   "questID": 92401,
+   "sortID": 1497,
+   "source": "questcache",
+   "text": "It's my husband Edward...\r\n\r\nHe has not returned from his weekly journey to the graveyard in the Lordaeron ruins. Our son was lost when Arthas razed the city, and my dear Edward is still filled with guilt and sorrow that we never found his body. I've tried to warn him against searching those overrun ruins, but he refuses to give up. I try not worry, but it's been days.\r\n\r\nThere are things there I cannot contend with but if you are willing, I need to know the fate of my husband.",
+   "title": "A Frightened Request"
+  },
+  "92421-accept": {
+   "event": "accept",
+   "questID": 92421,
+   "sortID": 16611,
+   "source": "questcache",
+   "text": "As a paladin of the Forsaken, it is my duty to exact the will of our Dark Lady while tending to our people's needs. We are fortunate with an opportunity to accomplish both.\r\n\r\nAbove the Undercity, the scourge still roam unchecked in great numbers. Our forces dwindle trying to reclaim our land, and decaying flesh cannot be reknit. Not without replacements.\r\n\r\nWould that our glorious captain Garek Bandarion still be with us, I know what he would wish. To finish what he started and heal our kin. For Lordaeron!",
+   "title": "Light's Justice"
+  },
+  "92422-accept": {
+   "event": "accept",
+   "questID": 92422,
+   "sortID": 16611,
+   "source": "questcache",
+   "text": "Reports have come in from the Lordamere Overlook deep within the Ruins of Lordaeron. An unholy fog has taken over the streets and graveyard, affording the scourge up there some measure of stealth. \r\n\r\nOur scouts indicate they're being conjured by a new power within their ranks, a necromancer known as Rath'mael. We do not have the luxury of waiting this one out, $n.\r\n\r\nIf you have allies, summon them and their aid to the Forsaken. Drive this creature out of our lands.",
+   "title": "The Wrath of Rath'mael"
+  },
+  "92460-accept": {
+   "event": "accept",
+   "questID": 92460,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Look at you, bright eyed and ready for adventure! We've been awaiting your arrival and anticipating your much needed help here in Thendal Village. I imagine you are brimming with both nerves and excitement for what is to come. After all, you only get to come of age once in a lifetime.\r\n\r\n<Ailee smiles kindly.>\r\n\r\nGo, seek out our village leader Rorian the Dayseeker at the entrance to the greatfather tree just west of here. He will get you started on your journey.",
+   "title": "Coming of Age"
+  },
+  "92461-accept": {
+   "event": "accept",
+   "questID": 92461,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "We live in times of great uncertainty for our people. We face unprecedented challenges that may require bold solutions, but we also must contend with the ordinary and mundane here in Thendal Grove. Take, for example, the recent unsustainable rise in the vuldren population.\r\n\r\nThe vuldren are a vital part of our ecosystem. However, imbalances must be corrected to maintain the delicate harmony that all creatures in Thendal Grove share.\r\n\r\nHead east and cull some of the vuldren there.",
+   "title": "Harmony in Balance"
+  },
+  "92462-accept": {
+   "event": "accept",
+   "questID": 92462,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "One of our rangers recently reported an infestation of cirrusflies here in Thendal Grove. \r\n\r\nCirrusflies can be dangerous if the swarm is allowed to grow too large, so please head to the eastern end of the Grove and exterminate as many as you can.",
+   "title": "Infestation Investigation"
+  },
+  "92463-accept": {
+   "event": "accept",
+   "questID": 92463,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "If the forest is as thick with these insects as it sounds, simply killing the workers won't be enough.\r\n\r\nGo deeper into the forest and find the queen. She'll be close to the hive and surrounded by bigger and more aggressive soldiers, so be careful.\r\n\r\nPut her down and return here when it's done. That'll be one less problem to think about around here.",
+   "title": "The Cirrusfly Queen"
+  },
+  "92464-accept": {
+   "event": "accept",
+   "questID": 92464,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Ever since our elemental benefactors left us, it seems that we are simply moving from one unrest to another. The problem we face now is that the manifestations of the winds near the standing stones to the northeast are agitated.\r\n\r\nNot truly self-aware like the sentient wind spirits that once lived here, these simple sprites respond in kind to forces, emotions, and intentions of the creatures around them. \r\n\r\nMy apprentice Yala Windwatcher went to observe them. Seek her out and discover what she's learned.",
+   "title": "Elemental Unrest"
+  },
+  "92465-accept": {
+   "event": "accept",
+   "questID": 92465,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "The Al'Aketh cult is a blight upon this island. These cultists are surely the ones responsible for agitating the simple wind sprites that reside here and turning them violent.\r\n\r\nRegrettably, we'll need to disperse these roiling winds here before they harm someone. We also need to send a clear message to the cult that they are not welcome in the grove.\r\n\r\nWill you lend me your aid, $c?",
+   "title": "Agitators"
+  },
+  "92466-accept": {
+   "event": "accept",
+   "questID": 92466,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "While we owe much of our prosperity to the elements of wind, the path we walk requires that we obey the call of all four of the primary elements and undertake a trial for each. Before you begin your first trial in earnest however, you must prove the strength of your resolve.\r\n\r\nTravel to the standing stones to the east. A force of Al'Aketh converts has been spotted there and they must be driven off. Confront the cultists there and bring me one of their signets as proof of your deeds.",
+   "title": "Call of Earth"
+  },
+  "92467-accept": {
+   "event": "accept",
+   "questID": 92467,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "A sapta is a drink created to bind our spirits to the elements. Fused with magic, the potion will allow the strong willed to see the elements as no one else can. Your spirit will be connected to the element the sapta was created for, and only a select few shaman know the recipe.$B$BThe sapta is always drunk in a sacred place, and never anywhere else--remember that.$B$BSeek out the Rise of Spirits up the pass northeast of here. Drink your sapta there, and... well, you will see what you need see.",
+   "title": "Call of Earth"
+  },
+  "92468-accept": {
+   "event": "accept",
+   "questID": 92468,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Take this Rough Quartz from me and bring it to the one you call Windshaper Boro as proof of our meeting. He will craft a totem for you, and this shard will be the heart of it. As small as it may seem, you will come to find that size does not matter, and that even the smallest of things can outlast many others.$B$BBe patient, $n. Remain strong. And seek wisdom. This is what the elements ask of you. In the end, you shall become one with the earth--respect it as it shall respect you.",
+   "title": "Call of Earth"
+  },
+  "92469-accept": {
+   "event": "accept",
+   "questID": 92469,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "You've done enough here, $c. I'll stay and clean up any stragglers down there.\r\n\r\nHead back to the Village and tell Rorian about the cult's presence. He will not be pleased.",
+   "title": "Return to Rorian"
+  },
+  "92470-accept": {
+   "event": "accept",
+   "questID": 92470,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Rorian informed you that I've been watching you. I now offer you a test of resolve. However, be warned--it will send you into great danger.\r\n\r\nGo to the caves to the south. Thin out the ursera's numbers there, and find their matriarch, one the rangers call \"Urs'anah\". Put her down and bring me proof of her demise. Once you have done that, you will have taken an important step on your path.",
+   "title": "Foul Matriarch"
+  },
+  "92471-accept": {
+   "event": "accept",
+   "questID": 92471,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "You may not realize this but everything you've done has been a trial of sorts. A test for what is to come for you. It's a big island out there, and Zephras needs spirited young adventurers such as yourself if we are to survive the trials our people face.\r\n\r\nThe one called Aetheen of the Gales is one of the leaders of our people here on Zephras Isle, and she has been watching you. She has a task that you must complete. Speak with her to learn more.",
+   "title": "Aetheen of the Gales"
+  },
+  "92472-accept": {
+   "event": "accept",
+   "questID": 92472,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "One of the most pervasive threats on Zephras Isle is the Al'Aketh Cult. They are religious zealots devoted to the worship of the supposed elemental ruler of Skywall, Al'Akir the Windlord. They are brutal, single minded, and their power and ambitions are growing more deadly by the day.\r\n\r\nYour path will soon take you to Shen'dar Village to the south. Present yourself to Constable Aonda when you arrive. The cult threatens Shen'dar and they are in need of aid. Tell Aonda that I sent you.",
+   "title": "The Next Step"
+  },
+  "92473-accept": {
+   "event": "accept",
+   "questID": 92473,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "The ursera den to the southwest is rapidly becoming a problem. Just last week the rangers had to kill an adolescent ursera who wandered too close to the village and attempted to attack a boy playing near the base of the elder tree in the center of the village.\r\n\r\nWe were fortunate that the boy escaped with his life. Hunger and desperation makes these beasts too dangerous to be left unchecked. Go south and put the scrawniest among the ursera down. Bring me their claws as proof when it is done.",
+   "title": "Aggressive Encroachment"
+  },
+  "92474-accept": {
+   "event": "accept",
+   "questID": 92474,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Well hello there, $n! Want to play a game?\r\n\r\nAll you've got to do is step up on that ledge... then jump! Use your innate ability to walk on the air to slow your fall and see how far forward you can float.\r\n\r\nThe rules are made up and the points don't matter, but you get bonus points if you can land right in front of Rorian the Dayseeker and startle him! He won't like it but I'll certainly get a good laugh if you can get him all worked up! Hah!",
+   "title": "Falling With Style"
+  },
+  "92484-accept": {
+   "event": "accept",
+   "questID": 92484,
+   "sortID": -82,
+   "source": "questcache",
+   "text": "While you were away dealing with our vuldren problem, our resident Shaman trainer--Windshaper Boro--left this recall crystal for you. Please examine it, then speak with Boro just over yonder near the center of the village.",
+   "title": "Embracing the Elements"
+  },
+  "92514-accept": {
+   "event": "accept",
+   "questID": 92514,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "You've got that \"Windshaper\" air about you. Something about how I can feel a tiny bit of static on my skin when near someone spirit-touched that gives it away. Before I properly put you to work around here, you should check in with our resident Windshaper elder, Illaya Amberwind. She's just outside, near the center of town.\r\n\r\nOh, and check in with Coriella Calmbreeze as well, she runs the local inn and can provide lodging and supplies, should you need them.",
+   "title": "Welcome to Shen'dar Village"
+  },
+  "92515-accept": {
+   "event": "accept",
+   "questID": 92515,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "As if bandits and mad cultists weren't enough, the hills are thick with prideclaws as well right now. They are starting to encroach on the village borders and growing bolder by the day. It's only a matter of time before someone's pet or child is taken. It would be a mercy for us to cull their numbers now rather than after some tragedy occurs.\r\n\r\nBring me a dozen or so of their pelts. I can turn them into all sorts of goods that will be of aid to the village.",
+   "title": "The Problem With Prideclaws"
+  },
+  "92516-accept": {
+   "event": "accept",
+   "questID": 92516,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "A flock of Hippogryph have recently established nesting grounds southeast of Shen'dar Village and they've been wreaking havoc on travelers on the road. I need someone to head down there and thin them out for us.",
+   "title": "Hippogryph Harrassment"
+  },
+  "92517-accept": {
+   "event": "accept",
+   "questID": 92517,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "There's a cave not far to the north, hidden behind a waterfall. It's well known to me that there's a group of bandits that are operating out of that cave. They were a problem for us before the cult arrived, but now they are a real terror. I can't spare the people to go and clear them out, unfortunately.\r\n\r\nI need you to go there and take care of them for me. Kill as many as you can, and if possible, take out their leader, the one they call \"Badwind\" Bennic. That cave is dangerous, so be careful.",
+   "title": "The Criminal Element"
+  },
+  "92528-accept": {
+   "event": "accept",
+   "questID": 92528,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "The faithful of Al'Akir grow ever stronger with each eager new recruit like yourself. As you can see, our strength gives form to the storm itself!\r\n\r\nNormally I'd send you straight to Skypriest Aanders for assessment, but he is occupied at present receiving a guest at the inn on the north side of town. Please avoid that place for now. An unshaven recruit like yourself in the presence of such a guest would be inappropriate.\r\n\r\nFor now, just don't get in anyone's way.",
+   "title": "Among the Faithful"
+  },
+  "92544-accept": {
+   "event": "accept",
+   "questID": 92544,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "A band of Al'Aketh cult ruffians have taken up residence near the temple ruins just southwest of here, led by a real monster called Malduko Cloudcrush. This rabble has no doubt been dispatched here by High Priestess Lorthuna at the Shrine of Akir to attack travelers and coerce our people into joining the cult.\r\n\r\nI need to stay here at my post to alert travelers leaving the grove of the danger, but I would be grateful if you could do something about those cultists and their leader for me.",
+   "title": "Al'Aketh Thugs"
+  },
+  "92553-accept": {
+   "event": "accept",
+   "questID": 92553,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Up for a bit of work? I could use a bit of muscle from a strong adventuring-type such as yourself. With how dangerous things are getting around here, no one's had much time to hunt or forage of late, and I need someone to get out there and source me fresh eggs and strider meat to keep this village fed.\r\n\r\nI'd be happy to teach you one of my famous recipes if you can bring me what I need. What do you say?",
+   "title": "Restocking the Larders"
+  },
+  "92595-accept": {
+   "event": "accept",
+   "questID": 92595,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "<Illaya smiles warmly at you.>\r\n\r\nI am glad you returned to speak with me, child of the winds. I knew it the first moment you walked into my presence, that you were strong in the skysight. Do you find this surprising? Even those who have not trained as a Shaman may possess the gift. \r\n\r\nCome, let us speak about the mandate of the Windshapers, the nature of our struggles on Zephras, and the plight of our people.",
+   "title": "The Windshapers"
+  },
+  "92598-accept": {
+   "event": "accept",
+   "questID": 92598,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "As a Windshaper, you have the ability to use the sacred skysight gifted to us by the elemental spirits. Travel to the standing stones to the northeast of the village. Find the elemental convergence there and use your gift.\r\n\r\nYou'll find that you may draw upon the skysight anywhere, but its boon is much more powerful if you do so in the presence of an elemental convergence. You may at times receive other bits of wisdom from the spirits that are drawn to such places of power, as well.",
+   "title": "The Gift of Skysight"
+  },
+  "92706-accept": {
+   "event": "accept",
+   "questID": 92706,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Calling all anglers!\r\n\r\nA giant shark has been circling the waters near the shipping dock, attacking sailors and small boats. Dockworkers have given it the nickname \"Bruuz\". A hefty reward will be given to whoever brings me its fin!\r\n\r\n-- Gazlowe",
+   "title": "WANTED: Bruuz"
+  },
+  "93318-accept": {
+   "event": "accept",
+   "questID": 93318,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "By order of Constable Aonda of the Peacekeepers, a bounty is hereby placed upon the scourge of the highlands, Vulgara the Insatiable. Last spotted on a hilltop rise just southwest of Shen'dar Village, the winged vuldren terror is highly dangerous and should be approached with caution.\r\n\r\nDeliver the beast's head to Danarii Bellowveil to receive your reward.",
+   "title": "WANTED: Vulgara the Insatiable"
+  },
+  "93319-accept": {
+   "event": "accept",
+   "questID": 93319,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "We are relying on windstones more and more for day to day living here on Zephras so we try and maintain a cache of them in reserve for emergencies. Lately I've noticed some go missing from our stores.\r\n\r\nWe've found windstones on bandits we've captured recently, and I suspect they are behind our shortages.\r\n\r\nIf you find yourself near the bandit cave to the north, mind knocking a few heads together and reclaiming some of our pilfered windstones for me?",
+   "title": "Pilfered Windstones"
+  },
+  "93552-accept": {
+   "event": "accept",
+   "questID": 93552,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Windstones are a critical resource on Zephras Isle as they contain the raw, concentrated energy of the winds themselves. The wind elementals who used to live here on zephras with us vanished several centuries ago, and since then, the magic that sustains this island is slowly fading. Not without limitations, the windstones are still a reliable energy source, and are incredibly valuable to us.\r\n\r\nYou'll find raw windstones scattered around the grove, think you can help me harvest them?",
+   "title": "Harvesting Windstones"
+  },
+  "93739-accept": {
+   "event": "accept",
+   "questID": 93739,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "Azeroth is a large world, and the territory of the Horde is vast. The Undercity, Orgrimmar, and Thunder Bluff all have very unique people and culture.\r\n\r\nIf you are to be a guest of the horde here on Azeroth, it would do you good to visit each of our capital cities in turn. Speak with my advisor Nazgrel for directions.",
+   "title": "Exploring the Horde"
+  },
+  "93746-accept": {
+   "event": "accept",
+   "questID": 93746,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "The High Order has been warned of the consequences of meddling with the Windshaper's affairs. I think we need to make an example out of Belathaan and send him back to the High Order with a few bruises and a healthy respect for the boundaries we set.\r\n\r\nBelathaan was seen leaving town, traveling north towards the Shrine of Akir. I don't know why he was going there, but confronting him alone on the road is the safest option. Find him, and put a bit of fear into his heart.",
+   "title": "A Firm Response"
+  },
+  "93949-accept": {
+   "event": "accept",
+   "questID": 93949,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "We've been bugged.\r\n\r\nIt's skyhopper season in the lowlands, which means the pests are everywhere. One of the High Order mages reported that one of the insects that they killed had an enchantment of some kind placed upon it. When we inspected it closely it seems to be some sort of listening spell.\r\n\r\nWe suspect that the cult is using these enchanted insects as spies. Go and exterminate them for us. You won't be able to tell which are enchanted by looking at them, so you'll just have to kill them all.",
+   "title": "Bugged"
+  },
+  "93951-accept": {
+   "event": "accept",
+   "questID": 93951,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "The Hippogryph that have taken up residence southwest of the village can be a nuisance, but they also present a rather unique opportunity to obtain their feathers. Many skyborne love to adorn their hair with vibrant plumes and the down feathers of a hippogryph are exceptionally vibrant and more importantly, silky soft.\r\n\r\nIf you are heading that way, try and gather as many of the fallen feathers as you can from in and around their nesting grounds. Do be careful, as wild hippogryph are not tolerant of guests.",
+   "title": "A Little Beauty"
+  },
+  "94411-accept": {
+   "event": "accept",
+   "questID": 94411,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Be warned, members of the High Order have been seen in the vicinity of the standing stones north of the village. We have warned them time and again to not meddle at our sacred sites, but they are growing more bold in pushing us. Prove your resolve to us by going to the standing stones and dispersing them.\r\n\r\nI am loathe to condone outright bloodshed, but do what you must to drive them off. Return to me when its done.",
+   "title": "Meddlesome Mages"
+  },
+  "94414-accept": {
+   "event": "accept",
+   "questID": 94414,
+   "sortID": 16593,
+   "source": "questcache",
+   "text": "Greetings, young $n. I often times come here to look upon the ancient anchor pylon. Gifts from the spirits of the winds, they bind and sustain our island. Of late however, their magic has grown unstable and inconsistent.\r\n\r\nThey suffer no distress I can see. Their splendor has not changed.\r\n\r\nIf you'd like, I can lend you my gift to look upon them yourself.",
+   "title": "The Anchors of Zephras"
+  },
+  "94427-accept": {
+   "event": "accept",
+   "questID": 94427,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "A key tenant of being a paladin is the pursuit of divinity. This is not the pursuit of godhood, but merely the pursuit of good itself, for good's sake. We've all arrived at this place due to tragedy of one form or another, and it would be easy to lose that grace that defined us as paladins in life.\r\n\r\nGo to the Undercity and seek out Tanis Alderwood in the Trade Quarter. They are in need, and they could benefit greatly from some grace.",
+   "title": "A Lesson in Divinity"
+  },
+  "94434-accept": {
+   "event": "accept",
+   "questID": 94434,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "Wait, you want to... help? Why would a paladin want to help a beggar like me?\r\n\r\nWell, I suppose that you could be of some assistance. \r\n\r\nIts my wife you see. She, well... she's falling apart. I mean that literally. The apothecaries can stitch her back together right as rain, but they are about the Dark Lady's business and none are available to help. If you could perhaps bring me some fresh cloth then I could at least make her a wrapping to hold her together while we wait for the apothecaries.",
+   "title": "A Lesson in Divinity"
+  },
+  "94435-accept": {
+   "event": "accept",
+   "questID": 94435,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "I don't know why you'd go out of your way to help me, but I appreciate it. If someone sent you my way, tell them I appreciate them too. You'll always have a friend in Tanis Alderwood, $c.",
+   "title": "A Lesson in Divinity"
+  },
+  "94436-accept": {
+   "event": "accept",
+   "questID": 94436,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "It's time to demonstrate your ability to channel one of the light's greatest gifts.\r\n\r\nThe item I just gave you is called the Symbol of Life. Take care, as it may cause you some discomfort to handle a talisman of the light such as this. The light may be anathema to the force that created us, but it is still our guide and ally. The pain reminds us of this.\r\n\r\nGo see Deathguard Billmuth downstairs. He just arrived and he has petitioned us for aid. Show him and the Forsaken what a true paladin can do.",
+   "title": "A Lesson in Divinity"
+  },
+  "94438-accept": {
+   "event": "accept",
+   "questID": 94438,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "Falgan and I were sent on a mission to scout out scarlet activity in Venomweb Vale. We managed to sneak close enough to one of their camps to hear about new orders involving an attack on Brill. Before we could decide what to do next, I stepped on a twig and the noise alerted them to us.\r\n\r\nFalgan yelled at me to run, so I ran. By the time I realized he wasn't with me, I was halfway to Brill. That brave idiot probably stayed behind to hold them off for me.\r\n\r\nPlease, find my friend and help him if you can.",
+   "title": "A Lesson in Divinity"
+  },
+  "95042-accept": {
+   "event": "accept",
+   "questID": 95042,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "A Forsaken paladin... here in Ashenvale? Amusing. \r\n\r\nSo you seek a Kor Gem? Unsurprising as these are sometimes employed to empower magical weapons and implements by the paladins of the alliance. Why should a fallen paladin like you be any different?\r\n\r\nIf you truly desire one of the gems, then you must head north to the ruins known as Blackfathom Deeps. The naga who still use the gems are down below. Do not go alone, $c.",
+   "title": "Seeking the Kor Gem"
+  },
+  "95216-accept": {
+   "event": "accept",
+   "questID": 95216,
+   "sortID": 16611,
+   "source": "questcache",
+   "text": "Welcome to the most vital organ of the Undercity: The Apothecarium! Here we experiment on the most virulent of Azeroth's exotic specimens.\r\n\r\nYou've caught me in a good mood, so I will let you in on my latest investigation. It appears there is a particularly venomous arthropod stalking the ruins above our fair city. Its toxins are said to eat through even undead flesh. How exhilarating!\r\n\r\nI wish to validate these claims. Should you find yourself withering away from its bite, I should love a sample.",
+   "title": "The New Plague"
+  },
+  "95314-accept": {
+   "event": "accept",
+   "questID": 95314,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Before the Scourge invasion, the reclusive village of Shadowvale was known for its Whispering Elixir. Distilled from herbs found only in Tyr's Fall, the elixir was sought by apothecaries, mystics, and poisoners alike even after being banned in the city.\r\n\r\nI've had requests from a number of buyers eager to get their hands on some elixir. Travel to the ruins of Shadowvale deep in the Whispering Forest to the west. I'm prepared to offer significant compensation if you can recover some bottles for me.",
+   "title": "That Shadowvale Green Elixir"
+  },
+  "95328-accept": {
+   "event": "accept",
+   "questID": 95328,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Against your better judgement you scrape up and collect the squirming remains of the beast. Someone in Undercity might have a use for them.",
+   "title": "Whispering Horror Residue"
+  },
+  "95774-accept": {
+   "event": "accept",
+   "questID": 95774,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "The healer who saved me could not save her, and she has died in battle. Her name is Olgra, and I will never forget her.\r\n\r\nYou did not find her adornments on her body? She wore many jewels of polished bone.\r\n\r\nSlay the Razormane Raiders near where she fell, and find her precious works of art!\r\n\r\nI will place them with the memorial that I build in her memory.",
+   "title": "Her Name Is Olgra"
+  },
+  "95803-accept": {
+   "event": "accept",
+   "questID": 95803,
+   "sortID": -141,
+   "source": "questcache",
+   "text": "Now that we've claimed the head of the tarnished commander, I need you to deliver it to the Undercity. Sylvanas Windrunner mistrusts us greatly, and all but openly disparages us.\r\n\r\nDeliver Rudolph Gelhardt's head to the Dark Lady. Show her that we tend to our own house and are devoted to the prosperity of the forsaken.",
+   "title": "A Token of Good Faith"
+  },
+  "959-accept": {
+   "event": "accept",
+   "questID": 959,
+   "sortID": 718,
+   "source": "questcache",
+   "text": "Oops!$b$bHad a little mishap, as you can see! The morning cargo shipment from Booty Bay was huge. Huge I say! Never seen so many crates. Well, I was trying to expedite things so I started unloading a bit more than I could handle. That's when everything came tumbling down.$b$bBefore I knew what was going on, I saw that menace, Mad Magglish, go running off with a bottle of 99-year-old port. Chased him all the way to Wailing Caverns. No way I was going in there.$b$bMaybe you're brave enough to find him?",
+   "title": "Trouble at the Docks"
+  },
+  "96101-accept": {
+   "event": "accept",
+   "questID": 96101,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Greetings, $c. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "title": "The Great Outdoors"
+  },
+  "96102-accept": {
+   "event": "accept",
+   "questID": 96102,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Tailoring is a surprisingly potent tradeskill to invest in, and I'm sure it'll serve you well.\r\n\r\nI know someone that can teach you how to craft a Faction Banner for your camp, provided you have the skill for it. Inspiration and morale are a key part of success on any battlefield, and an inspirational banner can go a long way to keeping you energized.",
+   "title": "Camping 101: Tailoring"
+  },
+  "962-accept": {
+   "event": "accept",
+   "questID": 962,
+   "sortID": 718,
+   "source": "questcache",
+   "text": "The Royal Apothecary Society, based in the great Undercity of Lordaeron, has sent me here for a very specific service, $n. Perhaps you wish to aid me, and in turn The Dark Lady in our efforts to advance the Forsaken.$b$bRecently I studied a rare specimen of flora named Serpentbloom. I believe in greater quantities this herb has great potential.$b$bUnfortunately Serpentbloom can only be found in the darkest recesses of the Wailing Caverns, a dangerous cave system located in the Barrens.",
+   "title": "Serpentbloom"
+  },
+  "96604-accept": {
+   "event": "accept",
+   "questID": 96604,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Greetings, $c. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "title": "The Great Outdoors"
+  },
+  "96607-accept": {
+   "event": "accept",
+   "questID": 96607,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Greetings, $c. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "title": "The Great Outdoors"
+  },
+  "96638-accept": {
+   "event": "accept",
+   "questID": 96638,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "More and more adventurers like yourself have been seeking glory and fortune outside of the safety of Thendal Grove. There's one such adventurer who has made a camp outside of Shen'dar Village, along the road leading southwest out of Thendal Grove.\r\n\r\nSeek him out and see what you can learn from him that may help you in your own travels.",
+   "title": "The Adventurer"
+  },
+  "96646-accept": {
+   "event": "accept",
+   "questID": 96646,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "So you want to learn more about camping, huh? Good for you, $c. The first step any adventurer needs to take is to become a cook and learn how to make a campfire.\r\n\r\nCooking's not just about making tasty foods. It's also the foundation for your camp.",
+   "title": "Camping 101: Cooking"
+  },
+  "96652-accept": {
+   "event": "accept",
+   "questID": 96652,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "<The journal appears to be quite plain, detailing the life and adventures of someone you've never heard of.\r\n\r\nThere are multiple entries mentioning camping. It seems to be quite... fun.>",
+   "title": "The Adventurer"
+  },
+  "96655-accept": {
+   "event": "accept",
+   "questID": 96655,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "So you want to learn more about camping, huh? Good for you, $c. The first step any adventurer needs to take is to become a cook and learn how to make a campfire.\r\n\r\nCooking's not just about making tasty foods. It's also the foundation for your camp.",
+   "title": "Camping 101: Cooking"
+  },
+  "96821-accept": {
+   "event": "accept",
+   "questID": 96821,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "We be seein' fewer and fewer travelers from Razor Hill. The scorpids were never much fun, but now I be hearin' there be spiders makin' their nest along the road.\r\n\r\nIf your travels be takin' you up north, kill some of the spiders on your way. Then, let Razor Hill know the path's a bit safer for them.",
+   "title": "Legging It"
+  },
+  "96822-accept": {
+   "event": "accept",
+   "questID": 96822,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "We lost many brave warriors of the Horde when we sacked Tiragarde Keep. Now that the humans have reinforced the ruins, we cannot collect their remains to properly honor their deaths.\r\n\r\nGo to the ruins surrounding the keep, and search for the weapons left by our fallen kin. We will display them in a place of honor.",
+   "title": "For Honor"
+  },
+  "96825-accept": {
+   "event": "accept",
+   "questID": 96825,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Our hunters and fishers bring back plenty of savory food for our troops - but it's rare that they get a sweet treat.\r\n\r\nI've seen a cactus that produces a prickly, tasty fruit. But it only grows in the hills to the west, where the wretched quilboars make their camps. Make your way past the quilboars and bring me some of those fruits. And be careful - the fruits are as spiny as the quilboars!",
+   "title": "This Fruit Could Bite Back"
+  },
+  "96874-accept": {
+   "event": "accept",
+   "questID": 96874,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Have you seen the huge beasts of Thunder Ridge? I keep thinking the spines on their backs would be perfect for crafting the head of a mighty axe. Saru laughed when I told him... but what does he know!?\r\n\r\nAs part of your smithing lessons, you can help me out! Bring me some of those spines, along with grinding stones to sharpen them.",
+   "title": "This Is Spinal Axe"
+  },
+  "96875-accept": {
+   "event": "accept",
+   "questID": 96875,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "Orgrimmar is always expanding, $c. And when the peons need hides to line the walls and roofs of our new buildings, they come to me!\r\n\r\nThe hides of the lizards in Thunder Ridge are typically too thick for armor, but they make excellent building material. Bring me some of their hides, along with a few lighter cured hides. Let's see your skill with leather!",
+   "title": "Beasts of Thunder Ridge"
+  },
+  "96895-accept": {
+   "event": "accept",
+   "questID": 96895,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Not sure if you heard, but two emissaries of the Argent Dawn just passed through here. I don't mind the Argent Dawn, but I don't like them poking around Tirisfal unsupervised either. They were both Forsaken... but that doesn't make me any less nervous.\r\n\r\nOne of them just passed by here, headed southeast. There's a group of scourge cultists snooping around the outskirts of the city in that direction. If those two heard about them, there's no doubt that would have caught their attention.",
+   "title": "The Argent Emissary"
+  },
+  "96896-accept": {
+   "event": "accept",
+   "questID": 96896,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Danitha and I fought against the scourge in the defense of the Undercity when Naxxramas attacked. We lost many good friends that day, including the hero after which this keep was named--Garek Bandarion.\r\n\r\nHe might just have been the first Forsaken to rediscover how to wield the light as a paladin. I am encouraged to see his legacy and potential live on here with Danitha and her cohort.\r\n\r\nIf only the rest of the forsaken felt the same way...",
+   "title": "A Righteous Cause"
+  },
+  "96897-accept": {
+   "event": "accept",
+   "questID": 96897,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "The scourge are a blight on our lands, and their living servants are the worst of them. The people of Tirisfal have enough to deal with between the mindless dead and the Scarlet Crusade. If you wish to do some good, help me put an end to this scum.",
+   "title": "The Cult of the Damned"
+  },
+  "96898-accept": {
+   "event": "accept",
+   "questID": 96898,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "It wasn't long ago that the citadel of Naxxramas bore down upon this city, intent on wiping the Forsaken off the map. Both the Forsaken and the Argent Dawn lost much that day to secure the future of the Forsaken.\r\n\r\nDuring the battle, the great necrotic focusing crystal hanging beneath Naxxramas was shattered and its fragments were scattered all over this area. I suspect that is what the cultists are here for. Help me recover the fragments and deprive the scourge of them.",
+   "title": "Remnants of War"
+  },
+  "96899-accept": {
+   "event": "accept",
+   "questID": 96899,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "You've done a great thing for the cause of the Argent Dawn here today, and I thank you. I don't know how familiar you are with the fortress of Bandarion Keep, but my commander and I were headed that way to meet with the paladins that reside there. That was before we learned of the presence of the Cult of the Damned.\r\n\r\nIf you'd like to learn more about the Argent Dawn and our mission, seek out my commander at Bandarion Keep, to the northwest of here. I'll remain here to mop up the rest of this mess.",
+   "title": "Bandarion Keep"
+  },
+  "97003-accept": {
+   "event": "accept",
+   "questID": 97003,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "You there, $c. I need your aid. There are rumors of a beast that makes its lair deep in a cave at Thorn Hill, northeast of here. The Razormane call it Chol'aruk or \"The Ravener\". It's supposedly five times the size of a normal quilboar with a thirst for blood that can never be sated.\r\n\r\nMost don't believe the tales. But I do--because I've fought its like before.\r\n\r\nSeek out its lair and slay Chol'aruk. Bring me its head. I warn you though--prepare well and do not go alone.\r\n\r\nBlood and thunder, $c.",
+   "title": "Chol'aruk the Ravener"
+  },
+  "97223-accept": {
+   "event": "accept",
+   "questID": 97223,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "All of the raptors you see before you are ones I have trained myself. They come from all over Kalimdor, but some of the finest come from the Bloodtalon raptors on the isles off our coast.\r\n\r\nOne raptor amongst them, the Bloodtalon Matriarch, is particularly savage and has killed many from our village and has become too dangerous to leave at our borders. If you can strike her down, return with her eggs so that we can raise the hatchlings as allies instead of enemies.",
+   "title": "Bloodtalon Matriarch"
+  },
+  "97225-accept": {
+   "event": "accept",
+   "questID": 97225,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "When we fled the isles that Zalazane and his ilk now inhabit, we left behind many precious idols that help us commune with spirits we worship: our loa. They are of grave importance to our tribe.\r\n\r\nThe followers of Zalazane show no reverence for our loa and have scattered these idols across the largest of the isles.\r\n\r\nThis is an action that will not go unnoticed if we are not able to collect these idols, and offending a loa is a grave matter.\r\n\r\nGo, find as many loa idols as you can and return them to me.",
+   "title": "Forgotten Loa Idols"
+  },
+  "97242-accept": {
+   "event": "accept",
+   "questID": 97242,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "Yelmak doesn't want his apprentice breaking anything. Well, anything more than he already has.\r\n\r\nHe told me the young mixer in training has too much pride to ask for help when he really needs it. Yelmak wants to give him a taste of a particular home-brewed recipe.\r\n\r\nGather a mix of cattail and speargrass cuttings taken from the plants growing around the water in the Valley of Honor. I'd get them myself, but if I left the shop, Whuut would surely know we're catering to his mood.",
+   "title": "Yelmak's Medley"
+  },
+  "97246-accept": {
+   "event": "accept",
+   "questID": 97246,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "My son, Migi, always takes off to play with his friends all day. I tell him to pick up a lunch at Borstan's, but I know he almost never does, because he comes home starving. These kids think their games are more important than their own bodies!\r\n\r\nPlease, stop at Borstan's Firepit and tell him you're there to deliver Migi's lunch. You can almost certainly find Migi behind Grommash Hold with the rest of his friends.\r\n\r\nDuties keep me here during the day and I can't watch over his every meal.",
+   "title": "Meal Appeal"
+  },
+  "97249-accept": {
+   "event": "accept",
+   "questID": 97249,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "Now that I know his parents worry about how much he's actually filling that belly, I've got an idea. \r\n\r\nThey made me promise not to pack the same meal every day, so Migi grows a taste for more than one thing. Still, whenever the smoker's full and we're making sweetglazed hog belly sandwiches, he always shows up for lunch. We've started crumbling the leftover crispy glazed bits as a topping--something we can add daily. \r\n\r\nTake this to him. Maybe he'll start showing up early and bringing friends!",
+   "title": "Favorite Food"
+  },
+  "97250-accept": {
+   "event": "accept",
+   "questID": 97250,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Traveler, have you plans to head toward Dustwallow Marsh? I have heard mutterings that a few human soldiers have taken a stand at its border and are toppling the landmarks left behind by our tauren pathfinders.\r\n\r\nRumor has it that a favored tavern has burned to the ground, and in typical Alliance fashion, they immediately cast their blame onto the Horde! I cannot know whether there is any truth to their claim, but their incursion onto OUR land must not stand.\r\n\r\nKill first, investigate later!",
+   "title": "Wrongly Blamed, Justly Corrected"
+  },
+  "97253-accept": {
+   "event": "accept",
+   "questID": 97253,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "Hey, got a sec?\r\n\r\nSo, apparently, nobody I've sent to deal with the recent pirate problem has come back alive. After five or six attempts I thought, \"what if I sent a machine instead?\" Turns out, scimitars double as screwdrivers in a pinch, and before I could redirect it home, it was already in pieces and scattered across their camp!\r\n\r\nI need those parts back, and since this is a quick little retrieval mission, I'd wager your odds for survival are MUCH higher than the others. Whaddya say?",
+   "title": "Parts and Pieces"
+  },
+  "97275-accept": {
+   "event": "accept",
+   "questID": 97275,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "Whuut is a prodigy. That much is true. But he doesn't yet have the experience, wisdom, and time on the stirring rod to know how to respect alchemical processes.\r\n\r\nHe is exhausting all of the rarest and most exotic reagents we have available without pausing to practice and refine his basic skills.\r\n\r\nGive him this potion I've brewed with a quick tonic method. He'll reconsider everything he's doing when he learns how local remedies and careful touch are the first true mastery.",
+   "title": "Whuut's the Rush"
+  },
+  "97279-accept": {
+   "event": "accept",
+   "questID": 97279,
+   "sortID": 363,
+   "source": "questcache",
+   "text": "With an influx of new recruits like yourself, it's been hard to keep our weapons supplied. Our weaponsmith, Kzan, is running low on training weapons and I'd like to see what kinds of skills you possess to get an idea of what I have to work with. Luckily for you, I have a solution to both.\r\n\r\nWhile you're out there cutting your teeth on boars, salvage six abandoned training weapons. Our failed recruits left them laying on the ground. Once you do, return them to our weaponsmith Kzan behind me in the Den.",
+   "title": "Wayward Weapons"
+  },
+  "97281-accept": {
+   "event": "accept",
+   "questID": 97281,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "<Before you is a strange orb and with a dull surface. When picked up a small electrical current seems to vibrate from within. Upon closer inspection, it looks as if a dark mist swirls within and every so often a small electrical spark can be seen.\r\n\r\nIt is clear the harpy was using it for some purpose. Perhaps Rezlak would be interested in this object?>",
+   "title": "A Simmering Storm"
+  },
+  "97282-accept": {
+   "event": "accept",
+   "questID": 97282,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "\"Rezlack, when an opportunity come's knocking make sure you're ready to seize it.\" That's another gem Gazlowe taught me and that's exactly what I intend to do.\r\n\r\nThis orb doesn't seem damaged, it just looks like it's out of juice, but I've the idea to supercharge it back to full strength!\r\n\r\nThere are a bunch of thunder lizards in a gorge west of here. They have organs that hold a strong electrical charge that would be perfect for this.\r\n\r\nGo harvest some and bring them back to me!",
+   "title": "Stormy Potential"
+  },
+  "97292-accept": {
+   "event": "accept",
+   "questID": 97292,
+   "sortID": 16611,
+   "source": "questcache",
+   "text": "I have concocted a lovely serum that our new guest is sure to find quite... stimulating.\r\n\r\nTake this. Feed it into the workings dripping from above him. Let's see if we can't show him why it's in his best interest to serve loyally.\r\n\r\nAnd try not to drop it. I can't afford a new assistant.",
+   "title": "Unending Torment"
+  },
+  "97326-accept": {
+   "event": "accept",
+   "questID": 97326,
+   "sortID": 1637,
+   "source": "questcache",
+   "text": "Hey! You've got time to help us out! I know you do, I can tell by the way you smiled watching the game we're playing.\r\n\r\nThis spot behind Grommash Hold is nice because it's clear enough for us to set up our figures. But what stinks is we don't have enough rocks for chairs or tables.\r\n\r\nYou're big and strong... d'ya think you could carry back some medium sized rocks, smooth enough to sit on if we need a rest?",
+   "title": "Rocks to Rests"
+  },
+  "97558-accept": {
+   "event": "accept",
+   "questID": 97558,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "One part of undeath no one mentions is what happens when we are injured. How does the skin of an undead heal itself?\r\n\r\nWell, it doesn't.\r\n\r\nOurs is a cursed life, $n. We must take from the living to further our own existence.\r\n\r\nWhen we sustain an injury, we must replace our skin which usually means animal hides. Since different hide thicknesses are better for different places on our bodies a variety is key!\r\n\r\nBring me wing membranes of a duskbat, hides from a darkhound and skin of a Vile Fin murloc.",
+   "title": "Hides for the Forsaken"
+  },
+  "97891-accept": {
+   "event": "accept",
+   "questID": 97891,
+   "sortID": 1497,
+   "source": "questcache",
+   "text": "You! Quickly, I need you to bring this potion across the slime canal to Doctor Martin Felben in the Apothecarium!\r\n\r\nIt has a very limited shelf life, and no I can't go myself, my knees rattle and pop out if I attempt to run.\r\n\r\nJust another lovely side effect of undeath, apparently.\r\n\r\nBut we're wasting time! Here, take this and go!\r\n\r\n<Alessandro makes a shooing motion.>",
+   "title": "Prompt Potion Runner"
+  },
+  "97899-accept": {
+   "event": "accept",
+   "questID": 97899,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "So, you chose to cook up brews and potions as an Alchemist. I'm sure that'll come in handy in your travels.\r\n\r\nI reckon I know someone that can teach you how to craft a Mana Well for your camp. Build one of these and all of the healers and spellcaster types will come running to get a refreshing taste.",
+   "title": "Camping 101: Alchemy"
+  },
+  "97901-accept": {
+   "event": "accept",
+   "questID": 97901,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Enchanters make everything better and are always welcome at any camp out in the wilds.\r\n\r\nI reckon I know someone that can teach you how to craft an Enchanted Lute for your camp. It's so important to find entertainment during your downtime, and this bit of magic can help ensure you are ready to weather all sorts of challenges when you hit the old dusty trail once again.",
+   "title": "Camping 101: Enchanting"
+  },
+  "97903-accept": {
+   "event": "accept",
+   "questID": 97903,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "So you've taken up First Aid? That's an honorable... and pragmatic pursuit as a $c.\r\n\r\nI reckon I know someone that can teach you how to craft a First Aid Kit for your camp. Injuries are a reality in the world of adventuring and offering some much-needed healing at your camp could even save lives.",
+   "title": "Camping 101: First Aid"
+  },
+  "97904-accept": {
+   "event": "accept",
+   "questID": 97904,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "You might not think so, but your skill as a fisherman can actually come in handy at camp.\r\n\r\nI reckon I know someone that can teach you how to craft a Fish Bowl for your camp. You can use this fixture to help provide a bit of joy to yourself and your fellow adventurers. A happy adventurer is a strong adventurer and I'm sure your combat capabilities will reflect that.",
+   "title": "Camping 101: Fishing"
+  },
+  "97905-accept": {
+   "event": "accept",
+   "questID": 97905,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Looks to me like you've gained some skill in herbalism. Picking flowers isn't just for dilly-dallying, you know. It can be useful... and profitable.\r\n\r\nI reckon I know someone that can teach you how to craft an Incense Candle for your camp. High spirits are a key component to keeping healers and spellcasters in the fight, and an Incense Candle can provide a boost that magic users will surely appreciate.",
+   "title": "Camping 101: Herbalism"
+  },
+  "97908-accept": {
+   "event": "accept",
+   "questID": 97908,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Being able to skillfully harvest the skins and hides of fallen beasts is one of the more valuable skills an adventurer can possess.\r\n\r\nI reckon I know someone that can teach you how to craft a Camp Chair for your camp. Sometimes it's important to just take a load off, and you can use some of those hides you've gathered to make a comfy chair to sit in. A bit of relaxation can help ensure that you are at your peak condition and can strike where it counts the next time you find yourself in a dust-up.",
+   "title": "Camping 101: Skinning"
+  },
+  "97953-accept": {
+   "event": "accept",
+   "questID": 97953,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Enchanters make everything better and are always welcome at any camp out in the wilds.\r\n\r\nI reckon I know someone that can teach you how to craft an Enchanted Lute for your camp. It's so important to find entertainment during your downtime, and this bit of magic can help ensure you are ready to weather all sorts of challenges when you hit the old dusty trail once again.",
+   "title": "Camping 101: Enchanting"
+  },
+  "97955-accept": {
+   "event": "accept",
+   "questID": 97955,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "So you've taken up First Aid? That's an honorable... and pragmatic pursuit as a $c.\r\n\r\nI reckon I know someone that can teach you how to craft a First Aid Kit for your camp. Injuries are a reality in the world of adventuring and offering some much-needed healing at your camp could even save lives.",
+   "title": "Camping 101: First Aid"
+  },
+  "97956-accept": {
+   "event": "accept",
+   "questID": 97956,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "You might not think so, but your skill as a fisherman can actually come in handy at camp.\r\n\r\nI reckon I know someone that can teach you how to craft a Fish Bowl for your camp. You can use this fixture to help provide a bit of joy to yourself and your fellow adventurers. A happy adventurer is a strong adventurer and I'm sure your combat capabilities will reflect that.",
+   "title": "Camping 101: Fishing"
+  },
+  "97959-accept": {
+   "event": "accept",
+   "questID": 97959,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Mining isn't the most glamorous, but it's good honest work and a fine profession for you to explore.\r\n\r\nI reckon I know someone that can teach you how to craft a Lodestone for your camp. Build one of these and everyone who wants to swing a sword will be eager to gather round your fire and soak up the extra \"oomph\" it can provide to increase their combat prowess.",
+   "title": "Camping 101: Mining"
+  },
+  "97965-accept": {
+   "event": "accept",
+   "questID": 97965,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "So you've taken up First Aid? That's an honorable... and pragmatic pursuit as a $c.\r\n\r\nI reckon I know someone that can teach you how to craft a First Aid Kit for your camp. Injuries are a reality in the world of adventuring and offering some much-needed healing at your camp could even save lives.",
+   "title": "Camping 101: First Aid"
+  },
+  "97967-accept": {
+   "event": "accept",
+   "questID": 97967,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "You might not think so, but your skill as a fisherman can actually come in handy at camp.\r\n\r\nI reckon I know someone that can teach you how to craft a Fish Bowl for your camp. You can use this fixture to help provide a bit of joy to yourself and your fellow adventurers. A happy adventurer is a strong adventurer and I'm sure your combat capabilities will reflect that.",
+   "title": "Camping 101: Fishing"
+  },
+  "97969-accept": {
+   "event": "accept",
+   "questID": 97969,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "You've become a leatherworker. Good for you, $c. I reckon I know someone that can teach you how to make yourself a tent that will keep you cool on hot days, and dry on rainy days.\r\n\r\nWith a good tent over your head, you'll ensure that you get all the rest you need to stay sharp on your travels.",
+   "title": "Camping 101: Leatherworking"
+  },
+  "97971-accept": {
+   "event": "accept",
+   "questID": 97971,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "Being able to skillfully harvest the skins and hides of fallen beasts is one of the more valuable skills an adventurer can possess.\r\n\r\nI reckon I know someone that can teach you how to craft a Camp Chair for your camp. Sometimes it's important to just take a load off, and you can use some of those hides you've gathered to make a comfy chair to sit in. A bit of relaxation can help ensure that you are at your peak condition and can strike where it counts the next time you find yourself in a dust-up.",
+   "title": "Camping 101: Skinning"
+  },
+  "98024-accept": {
+   "event": "accept",
+   "questID": 98024,
+   "sortID": 17,
+   "source": "questcache",
+   "text": "After journeying here from the elemental plane, the problems our lands face may seem small. Rest assured, the dangers the horde faces are very real, and you will grow formidable should you survive your service.\r\n\r\nIf you'd like to get started doing some good in our world, travel southwest to the vast lands known as the Barrens. There is a settlement there known as the Crossroads. The proud citizens there are ever in need of aid.\r\n\r\nGo with honor, adventurer!",
+   "title": "Journey to the Crossroads"
+  },
+  "98248-accept": {
+   "event": "accept",
+   "questID": 98248,
+   "sortID": 44,
+   "source": "questcache",
+   "text": "<A torn shipping label can be found on the side of the now fully stocked crate. Though the intended recipient is torn off, details of its origin still remain.\r\n\r\n\"Return damaged shipments or empty crates to the Durotar Supply and Logistics trade outpost, now conveniently located due west of the Crossroads in the Barrens. Your time is valuable and we will compensate you for your efforts!\"\r\n\r\nBeside the text is a crudely drawn map of the area near the aforementioned destination.>",
+   "title": "Shipping Label"
+  },
+  "98285-accept": {
+   "event": "accept",
+   "questID": 98285,
+   "sortID": -666,
+   "source": "questcache",
+   "text": "An engineer is ever-resourceful, and if you are in the wilds alone, it's always good to be able to put your trade to use. No good camp is complete without a few helpful constructs!\r\n\r\nYes, come back and see me when you've gained a little bit of experience as an engineer and I can show you how to make something special!",
+   "title": "Camping 101: Engineering"
+  },
+  "98427-accept": {
+   "event": "accept",
+   "questID": 98427,
+   "sortID": 215,
+   "source": "questcache",
+   "text": "The shredder one of the pages speaks of--I have seen them before in my travels. They can decimate a forest in a fraction of the time that hand and axe can.\r\n\r\nEntire glades--homes to the Earth Mother's children for millenia--erased in days.\r\n\r\nWe will not allow this to happen in our home, a stone's throw from where our young ones take their first steps.\r\n\r\n$n, I must ask you to gather others, go back into the mine to the northeast, and ensure it fells not a single tree more.",
+   "title": "Ceasing Operations"
+  },
+  "98545-accept": {
+   "event": "accept",
+   "questID": 98545,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Since you are here, I'd like you to deliver this letter to an old friend of mine in the Undercity. I'd deliver myself but I have a somewhat colorful history with the Dark Lady, and it would be better if a neutral third party made the delivery.\r\n\r\nYou are looking for a goblin named Glix Xizzix in the Trade Quarter area of the Undercity. I'm sure he'd be happy to compensate you for your time.\r\n\r\n<Leonid lets out a low chuckle as he hands you the letter.>",
+   "title": "Leonid's Letter"
+  },
+  "98576-accept": {
+   "event": "accept",
+   "questID": 98576,
+   "sortID": -161,
+   "source": "questcache",
+   "text": "Ah, while you were gone a parchment came for you, $n.$B$BRead it when you have time. If I'm not mistaken, it came from the mage trainer Mai'ah. She would have words with you when you're ready.",
+   "title": "Glyphic Parchment"
+  },
+  "99-accept": {
+   "event": "accept",
+   "questID": 99,
+   "sortID": 130,
+   "source": "questcache",
+   "text": "As my understanding of Arugal's magic grows so does my disdain for the hapless fool.  I am close to completing my research on his so called remedy.$b$bMy knowledge will be complete when I learn what enchantment is causing the strange behavior going on in Pyrewood Village.  By day, the peasants appear to be Human.  But when the sun goes down the townsfolk turn into Moonrage Worgen.$b$bI need to draw energy from the enchanted shackles Arugal cast on them.  Bring to me six enchanted Pyrewood Shackles, $n.",
+   "title": "Arugal's Folly"
+  },
+  "99048-accept": {
+   "event": "accept",
+   "questID": 99048,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "A member of the Shattered Hand, a group of more... subtle fighters, was watching Tiragarde Keep from a distance. Her reports suddenly stopped coming in.\r\n\r\nI doubt the humans would have caught her, so I'm concerned something more dangerous is at play. See if you can find her. Hopefully the messages are just delayed.",
+   "title": "A Missing Hand"
+  },
+  "99049-accept": {
+   "event": "accept",
+   "questID": 99049,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "<The nearby area is destroyed with obvious signs of a skirmish. Whatever ambushed Heglan didn't make it out unscathed. There's probably signs nearby of what happened.\r\n\r\nOrgnil will probably want to see any evidence left by the attackers.>",
+   "title": "Threat from Below"
+  },
+  "99051-accept": {
+   "event": "accept",
+   "questID": 99051,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "It wouldn't be the first time those snakes bothered us. They need to be taught that their presence is not tolerated here.\r\n\r\nFind where their scouts are setting up camp and slaughter them. Bring me back their fins as proof. We need to act fast to make sure they understand.",
+   "title": "Threat from Below"
+  },
+  "99052-accept": {
+   "event": "accept",
+   "questID": 99052,
+   "sortID": 14,
+   "source": "questcache",
+   "text": "One of my scouts has reported a sea giant followed those naga down here. Not sure if they brought him intentionally or what, but he's dangerous in any case.\r\n\r\nIt's a young one, but it could still rip an orc in half in a heartbeat if they were caught off guard. I need him gone. But I'd suggest you find some help to deal with it.",
+   "title": "Threat from Below"
+  },
+  "99134-accept": {
+   "event": "accept",
+   "questID": 99134,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "You are not a member of the Deathguard, and therefore have yet to disappoint me.\r\n\r\nAs a reward for your lack of incompetence, you shall be rewarded with punishing those that have demonstrated such talents in excess.\r\n\r\nSwiftly now--$n, is it?--or I shall add your name to my ledger for someone else's reward.",
+   "title": "Discipline"
+  },
+  "99141-accept": {
+   "event": "accept",
+   "questID": 99141,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Make no mistake, $c--the Dark Lady demands the perfect execution of her will. As an Executor, it is my duty to see that this happens.\r\n\r\nReports from several of my Deathguards are overdue. Needless to say, my patience has run out. Obtain their reports and bring them to me in the Dark Lady's name.\r\n\r\nYou will find Deathguard Dillinger just west of here, by the graveyard. Deathguard Kristof is stationed at the waystation to the east. And check on the abomination Gordo; he wanders west near Stillwater Pond.",
+   "title": "Patience"
+  },
+  "99142-accept": {
+   "event": "accept",
+   "questID": 99142,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "If you're heading east, towards the Balnir Farmstead, I have more you might do for me. Good help is ever so hard to find these days, as your run-in with Gordo illuminates ever so clearly.\r\n\r\nAs I acquire doom weed I perform some minor alchemical alterations and replant them on that farmstead to cultivate my ultimate creation. I call it tomb weed, and it shall be the herald of my glorious destiny.\r\n\r\nDo keep an eye on the Scourge in the area while you're there. They seem... drawn... to the weed. Curious.",
+   "title": "Tomb Weed"
+  },
+  "99152-accept": {
+   "event": "accept",
+   "questID": 99152,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "While the Tarnished in Shadowvale to the southwest are definitely a problem, we cannot allow the cellars below the town to fester into a full-blown Scourge uprising on Bandarion Keep.\r\n\r\nI need to get these trainees up to snuff in case that happens. You, however, are going to receive what I like to call a crash course.\r\n\r\nTravel beneath Shadowvale and retrieve some of their wretched bones so we can study them further. I need ones that still retain some of the initial reanimation magic--that's glowing ones.",
+   "title": "As Above, So Below"
+  },
+  "99153-accept": {
+   "event": "accept",
+   "questID": 99153,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Oi, you! Word travels quickly among our ranks. I heard about the work you did with the cultists around the remnants of the battle with Naxxramas.\r\n\r\nProblem is, one of them cultists got away with a piece of the focusing crystal. Seems to still have some juice in it. Best guess we have is it's somewhere beneath Shadowvale. It's either raising 'em or making 'em stronger, and you don't want either one.\r\n\r\nFind that crystal before this gets out of hand.",
+   "title": "The One That Got Away"
+  },
+  "99156-accept": {
+   "event": "accept",
+   "questID": 99156,
+   "sortID": 85,
+   "source": "questcache",
+   "text": "Damn it all! A new report came in while you were on patrol. There has been a sighting of a rogue abomination wandering Eastern Tirisfal Glades, near Venomweb Vale.\r\n\r\nSomething is wrong. Abominations don't just slip through the Bulwark unnoticed.\r\n\r\nKeep this matter on a strictly need-to-know basis. That said, such a creature will not fall easily; you will need allies if you wish to be more than its next meal.\r\n\r\nSee this through, and you will be duly rewarded. Bring me its heart as proof of the deed.",
+   "title": "Rear Guard Patrol"
+  }
+ },
+ "source": "questcache",
+ "version": 2
+}
