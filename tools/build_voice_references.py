@@ -1,3 +1,7 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["requests"]
+# ///
 """Builds reference clips for voice cloning straight from the client's own audio.
 
 For every race/gender that has humanoid NPC models, this pulls the Blizzard

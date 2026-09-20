@@ -1,10 +1,18 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "chatterbox-tts",
+#   "setuptools<81",   # perth (chatterbox's watermarker) still imports pkg_resources
+#   "requests",
+# ]
+# ///
 """Generates missing voice lines with a local TTS model and rebuilds the
 ForeverVO_Data voice pack tables.
 
-    ./tools/run.sh python tools/generate.py --dry-run          # what would be generated
-    ./tools/run.sh python tools/generate.py --limit 20         # generate a few
-    ./tools/run.sh python tools/generate.py                    # everything missing
-    ./tools/run.sh python tools/generate.py --tables-only      # just rebuild the pack tables
+    ./tools/run.sh tools/generate.py --dry-run          # what would be generated
+    ./tools/run.sh tools/generate.py --limit 20         # generate a few
+    ./tools/run.sh tools/generate.py                    # everything missing
+    ./tools/run.sh tools/generate.py --tables-only      # just rebuild the pack tables
 
 Input is tools/data/capture.json (see ingest.py). Audio goes to
 ForeverVO_Data/Sounds/{Quests,Gossip}/ and the tables to ForeverVO_Data/Data/.

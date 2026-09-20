@@ -4,8 +4,8 @@ The Forever beta client writes SavedVariables on logout but never reads them
 back, so each session's file only holds that session. Run this after each play
 session to accumulate everything the addon has seen.
 
-    ./tools/run.sh python tools/ingest.py            # scans the beta WTF folder
-    ./tools/run.sh python tools/ingest.py file.lua   # or explicit files
+    ./tools/run.sh tools/ingest.py            # scans the beta WTF folder
+    ./tools/run.sh tools/ingest.py file.lua   # or explicit files
 """
 from __future__ import annotations
 

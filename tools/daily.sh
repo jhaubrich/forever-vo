@@ -21,16 +21,16 @@ if ! flock -n 9; then
     echo "another run holds the lock; skipping"
     exit 0
 fi
-if pgrep -f 'python tools/generate.py' >/dev/null; then
+if pgrep -f 'tools/generate.py' >/dev/null; then
     echo "a generate.py process is already running; skipping"
     exit 0
 fi
 
 cd "$ROOT"
-./tools/run.sh python tools/ingest.py || true
-./tools/run.sh python tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+./tools/run.sh tools/ingest.py || true
+./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 
 # Then continue the bulk backlog for a while (timeout returns 124 when it cuts the run short)
-timeout "${BULK_HOURS}h" ./tools/run.sh python tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
-./tools/run.sh python tools/generate.py --tables-only 2>&1 | tail -1 || true
+timeout "${BULK_HOURS}h" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+./tools/run.sh tools/generate.py --tables-only 2>&1 | tail -1 || true
 echo "=== $(date -Is) done ==="

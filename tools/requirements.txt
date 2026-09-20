@@ -1,3 +1,0 @@
-chatterbox-tts
-setuptools<81
-requests

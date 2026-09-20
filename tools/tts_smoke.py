@@ -1,6 +1,14 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "chatterbox-tts",
+#   "setuptools<81",   # perth (chatterbox's watermarker) still imports pkg_resources
+#   "requests",
+# ]
+# ///
 """Smoke test: does Chatterbox run on the GPU in this environment?
 
-Run with tools/run.sh:  ./tools/run.sh python tools/tts_smoke.py
+Run with tools/run.sh:  ./tools/run.sh tools/tts_smoke.py
 """
 import sys
 import time

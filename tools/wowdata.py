@@ -1,3 +1,7 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["requests"]
+# ///
 """Client data helpers backed by wago.tools (DB2 tables as CSV, files by FileDataID).
 
 No local CASC extraction is needed: wago.tools indexes the wow_classic_beta

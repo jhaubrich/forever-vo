@@ -24,9 +24,9 @@ audio:
 
 1. Play. Every quest you accept or hand in and every NPC you talk to is
    recorded in `ForeverVOCaptureDB`, with the speaker's creature ID and model.
-2. Log out, then `./tools/run.sh python tools/ingest.py` merges the saved
+2. Log out, then `./tools/run.sh tools/ingest.py` merges the saved
    variables into `tools/data/capture.json`.
-3. `./tools/run.sh python tools/generate.py` picks a voice per speaker (race and
+3. `./tools/run.sh tools/generate.py` picks a voice per speaker (race and
    gender from the client's display tables), synthesises the missing lines with
    Chatterbox on your GPU, and rebuilds the pack tables.
 4. Restart the client (new sound files are only seen at launch) and play on.
@@ -45,14 +45,15 @@ priorities, so a pack of new or revised lines can sit on top of a base pack.
 
 ## Setup
 
-NixOS is assumed; on other systems create a venv with `tools/requirements.txt`
-and put `ffmpeg` on PATH.
+Scripts declare their own dependencies in inline metadata and run with
+[`uv run`](https://docs.astral.sh/uv/guides/scripts/); `tools/run.sh` wraps
+that and, on NixOS, also supplies Python, ffmpeg and the shared libraries the
+CUDA wheels expect. Elsewhere, `uv run tools/<script>.py` works directly with
+`ffmpeg` on PATH.
 
 ```bash
-nix shell nixpkgs#python312 nixpkgs#uv -c sh -c \
-  'uv venv --python $(which python3) .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -r tools/requirements.txt'
-./tools/run.sh python tools/tts_smoke.py            # CUDA check, writes tools/smoke.wav
-./tools/run.sh python tools/build_voice_references.py   # reference clips from the client's own voice lines
+./tools/run.sh tools/tts_smoke.py            # CUDA check, writes tools/smoke.wav
+./tools/run.sh tools/build_voice_references.py   # reference clips from the client's own voice lines
 
 B="$HOME/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/Interface/AddOns"
 ln -s "$PWD/ForeverVO" "$B/ForeverVO"
