@@ -28,14 +28,14 @@
   "14726|65d66388": {
    "build": "69913",
    "event": "gossip",
-   "isObject": null,
+   "firstSeen": null,
    "mapID": 1454,
    "name": "Rashona Straglash",
    "npc": "14726",
-   "questID": null,
-   "source": "community",
+   "player": "Fixpoint Fix",
+   "subzone": "The Drag",
    "text": "In these trying times, a simple donation of cloth can go a long way to help those less fortunate than ourselves.  Cloth goes a long way to making garments and bandages - both important for the war effort!\n\nIf you are interested in donating cloth pieces to the orcs of Orgrimmar, I will gladly accept them and make sure you receive the proper recognition for doing so.\n\nFor the Horde!",
-   "title": null,
+   "time": 1789930736,
    "zone": "Orgrimmar"
   },
   "249363|260391fc": {
@@ -236,6 +236,7 @@
   },
   "14726": {
    "creatureType": "Humanoid",
+   "level": 35,
    "modelFileID": 949470,
    "name": "Rashona Straglash",
    "sex": 3
