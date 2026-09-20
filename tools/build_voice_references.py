@@ -61,6 +61,34 @@ def npc_greeting_fdids() -> dict[str, list[int]]:
     return voices
 
 
+NAMED_MAX_DISPLAYS = 3   # a greeting kit shared by this few models belongs to a named NPC
+
+
+def named_npc_fdids() -> dict[str, list[int]]:
+    """voice name npc-<displayID> -> greeting FileDataIDs for NPCs with their own recorded lines
+    (Varimathras, Thrall, Sylvanas, ...). Race voices come from kits shared by many models."""
+    kits = files_by_kit()
+    npc_sounds = load_db2("NPCSounds")
+    displays_by_sound: dict[int, list[int]] = defaultdict(list)
+    for display_id, row in load_db2("CreatureDisplayInfo").items():
+        sound_id = int(row.get("NPCSoundID") or 0)
+        if sound_id and sound_id in npc_sounds:
+            displays_by_sound[sound_id].append(display_id)
+    voices: dict[str, list[int]] = {}
+    for sound_id, displays in displays_by_sound.items():
+        if len(displays) > NAMED_MAX_DISPLAYS:
+            continue
+        fdids: list[int] = []
+        for col in ("SoundID_0", "SoundID_1", "SoundID_2"):  # hello, goodbye, pissed
+            for fdid in kits.get(int(npc_sounds[sound_id].get(col) or 0), []):
+                if fdid not in fdids:
+                    fdids.append(fdid)
+        if fdids:
+            for display_id in displays:
+                voices[f"npc-{display_id}"] = fdids
+    return voices
+
+
 def skyborne_fdids() -> dict[str, list[int]]:
     """VocalUISounds.NormalSoundID_0 is the male kit, _1 the female kit."""
     kits = files_by_kit()
@@ -94,8 +122,8 @@ def build_reference(voice: str, files: list[Path]) -> Path | None:
         total += d
         if total >= TARGET_SECONDS:
             break
-    if not chosen:
-        print(f"{voice}: no usable clips")
+    if not chosen or (total < 4.0 and voice.startswith("npc-")):
+        print(f"{voice}: not enough usable audio ({total:.1f}s)")
         return None
     list_file = RAW_DIR / voice / "concat.txt"
     list_file.write_text("".join(f"file '{p.resolve()}'\n" for p in chosen), encoding="utf-8")
@@ -111,9 +139,15 @@ def build_reference(voice: str, files: list[Path]) -> Path | None:
 
 def main(argv: list[str]) -> int:
     wanted = set(argv)
-    sources = npc_greeting_fdids()
-    for voice, fdids in skyborne_fdids().items():
-        sources[voice] = fdids + sources.get(voice, [])
+    named_only = "--named" in wanted
+    wanted.discard("--named")
+    sources = {} if named_only else npc_greeting_fdids()
+    if not named_only:
+        for voice, fdids in skyborne_fdids().items():
+            sources[voice] = fdids + sources.get(voice, [])
+    if named_only or "npc" in wanted:
+        sources.update(named_npc_fdids())
+        wanted.discard("npc")
 
     for voice in sorted(sources):
         race = voice.split("-")[0]

@@ -21,14 +21,14 @@ if ! flock -n 9; then
     echo "another run holds the lock; skipping"
     exit 0
 fi
+cd "$ROOT"
+# Sync with GitHub (pull, ingest, push) whatever else is going on
+./tools/ingest.sh || true
+
 if pgrep -f 'tools/generate.py' >/dev/null; then
-    echo "a generate.py process is already running; skipping"
+    echo "a generate.py process is already running (bulk service?); leaving generation to it"
     exit 0
 fi
-
-cd "$ROOT"
-# Sync with GitHub (pull, ingest, push) before generating
-./tools/ingest.sh || true
 ./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 
 # Then continue the bulk backlog for a while (timeout returns 124 when it cuts the run short)

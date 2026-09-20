@@ -15,7 +15,7 @@ from pathlib import Path
 
 import requests
 
-from config import BETA_BUILD, DB2_DIR, GENDER_DICT, RACE_DICT, WAGO_BASE, ZONE_RACE_HINTS
+from config import BETA_BUILD, DB2_DIR, GENDER_DICT, RACE_DICT, VOICES_DIR, WAGO_BASE, ZONE_RACE_HINTS
 
 
 def db2_path(table: str, build: str = BETA_BUILD) -> Path:
@@ -80,9 +80,12 @@ def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
     Falls back to the in-game UnitSex (2 male, 3 female) when the display race is
     unknown, and to the narrator for game objects, items and genderless units.
     """
-    if not npc or npc.get("isObjectOrItem"):
+    if not npc or npc.get("isObject") or npc.get("isObjectOrItem"):
         return "narrator"
-    race_id, sex_id = display_race_sex(npc.get("displayID"))
+    display_id = npc.get("displayID")
+    if display_id and (VOICES_DIR / f"npc-{int(display_id)}.wav").exists():
+        return f"npc-{int(display_id)}"  # cloned from this NPC's own recorded greetings
+    race_id, sex_id = display_race_sex(display_id)
     race = RACE_DICT.get(race_id) if race_id is not None else None
     if sex_id is None:
         unit_sex = npc.get("sex")

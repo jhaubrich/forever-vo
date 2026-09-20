@@ -127,6 +127,14 @@
   "d": 38.23,
   "v": "tauren-female"
  },
+ "1581-accept": {
+  "d": 20.8,
+  "v": "nightelf-female"
+ },
+ "1581-complete": {
+  "d": 12.8,
+  "v": "nightelf-female"
+ },
  "1598-accept": {
   "d": 30.11,
   "v": "human-female"
@@ -250,6 +258,22 @@
  },
  "2438-complete": {
   "d": 8.44,
+  "v": "nightelf-male"
+ },
+ "2459-accept": {
+  "d": 32.35,
+  "v": "nightelf-male"
+ },
+ "2459-complete": {
+  "d": 5.56,
+  "v": "nightelf-male"
+ },
+ "2541-accept": {
+  "d": 28.43,
+  "v": "nightelf-male"
+ },
+ "2541-complete": {
+  "d": 10.96,
   "v": "nightelf-male"
  },
  "282-accept": {
@@ -485,6 +509,18 @@
  },
  "318-complete": {
   "d": 5.56,
+  "v": "dwarf-male"
+ },
+ "319-accept": {
+  "d": 22.47,
+  "v": "dwarf-male"
+ },
+ "319-complete": {
+  "d": 7.8,
+  "v": "dwarf-male"
+ },
+ "320-accept": {
+  "d": 6.8,
   "v": "dwarf-male"
  },
  "33-accept": {
@@ -1377,6 +1413,30 @@
   "d": 3.72,
   "v": "troll-male"
  },
+ "823-accept": {
+  "d": 34.47,
+  "v": "troll-male"
+ },
+ "823-complete": {
+  "d": 5.84,
+  "v": "orc-male"
+ },
+ "830-accept": {
+  "d": 13.2,
+  "v": "narrator"
+ },
+ "830-complete": {
+  "d": 7.44,
+  "v": "orc-male"
+ },
+ "831-accept": {
+  "d": 37.71,
+  "v": "orc-male"
+ },
+ "831-complete": {
+  "d": 16.44,
+  "v": "orc-male"
+ },
  "84-accept": {
   "d": 6.52,
   "v": "human-female"
@@ -1469,6 +1529,22 @@
   "d": 16.04,
   "v": "nightelf-male"
  },
+ "918-accept": {
+  "d": 27.59,
+  "v": "nightelf-male"
+ },
+ "918-complete": {
+  "d": 13.88,
+  "v": "nightelf-male"
+ },
+ "919-accept": {
+  "d": 15.83,
+  "v": "nightelf-male"
+ },
+ "919-complete": {
+  "d": 12.0,
+  "v": "nightelf-male"
+ },
  "920-accept": {
   "d": 12.32,
   "v": "nightelf-male"
@@ -1483,6 +1559,14 @@
  },
  "921-complete": {
   "d": 12.6,
+  "v": "nightelf-male"
+ },
+ "922-accept": {
+  "d": 31.11,
+  "v": "nightelf-male"
+ },
+ "922-complete": {
+  "d": 26.59,
   "v": "nightelf-male"
  },
  "92460-accept": {
@@ -1605,6 +1689,14 @@
   "d": 19.72,
   "v": "nightelf-male"
  },
+ "932-accept": {
+  "d": 28.79,
+  "v": "nightelf-male"
+ },
+ "932-complete": {
+  "d": 6.48,
+  "v": "nightelf-male"
+ },
  "93318-accept": {
   "d": 21.95,
   "v": "skyborne-male"
@@ -1692,6 +1784,10 @@
   "d": 32.55,
   "v": "troll-female"
  },
+ "f-60-accept": {
+  "d": 21.83,
+  "v": "human-male"
+ },
  "f-997-complete": {
   "d": 12.84,
   "v": "nightelf-male"
@@ -1739,6 +1835,10 @@
  "m-5648-complete": {
   "d": 33.95,
   "v": "troll-female"
+ },
+ "m-60-accept": {
+  "d": 22.39,
+  "v": "human-male"
  },
  "m-997-complete": {
   "d": 14.76,
