@@ -11,3 +11,5 @@ ForeverVO_Data/Sounds/*/*.ogg
 tools/data/classicdb/
 tools/data/bulk/
 tools/data/generate.log
+tools/data/daily.log
+tools/data/daily.lock

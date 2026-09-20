@@ -113,79 +113,79 @@
  },
  "3111-accept": {
   "d": 23.67,
-  "v": null
+  "v": "narrator"
  },
  "3112-accept": {
-  "d": 16.040249,
-  "v": null
+  "d": 16.04,
+  "v": "dwarf-male"
  },
  "3112-complete": {
   "d": 31.27,
-  "v": null
+  "v": "dwarf-male"
  },
  "3113-accept": {
   "d": 15.48,
-  "v": null
+  "v": "dwarf-male"
  },
  "3113-complete": {
   "d": 29.55,
-  "v": null
+  "v": "dwarf-male"
  },
  "3114-accept": {
   "d": 16.72,
-  "v": null
+  "v": "dwarf-male"
  },
  "3114-complete": {
   "d": 19.91,
-  "v": null
+  "v": "gnome-male"
  },
  "3115-accept": {
   "d": 22.79,
-  "v": null
+  "v": "dwarf-male"
  },
  "3115-complete": {
   "d": 51.59,
-  "v": null
+  "v": "gnome-male"
  },
  "3116-accept": {
-  "d": 12.200249,
-  "v": null
+  "d": 12.2,
+  "v": "nightelf-male"
  },
  "3116-complete": {
   "d": 42.87,
-  "v": null
+  "v": "nightelf-female"
  },
  "3117-accept": {
   "d": 11.96,
-  "v": null
+  "v": "nightelf-male"
  },
  "3117-complete": {
   "d": 29.35,
-  "v": null
+  "v": "nightelf-female"
  },
  "3118-accept": {
   "d": 10.48,
-  "v": null
+  "v": "nightelf-male"
  },
  "3118-complete": {
   "d": 28.43,
-  "v": null
+  "v": "nightelf-male"
  },
  "3119-accept": {
   "d": 9.92,
-  "v": null
+  "v": "nightelf-male"
  },
  "3119-complete": {
   "d": 26.71,
-  "v": null
+  "v": "nightelf-female"
  },
  "3120-accept": {
   "d": 10.24,
-  "v": null
+  "v": "nightelf-male"
  },
  "3120-complete": {
   "d": 24.99,
-  "v": null
+  "v": "nightelf-male"
  },
  "3309-2f8d506f": 9.68,
  "3309-6b36598f": 6.96,
@@ -193,14 +193,130 @@
  "3318-ae78a458": 3.92,
  "363-accept": {
   "d": 21.87,
-  "v": null
+  "v": "scourge-male"
  },
  "363-complete": {
   "d": 31.11,
-  "v": null
+  "v": "scourge-male"
+ },
+ "3861-accept": {
+  "d": 21.39,
+  "v": "narrator"
+ },
+ "3861-complete": {
+  "d": 13.0,
+  "v": "narrator"
+ },
+ "403-complete": {
+  "d": 7.4,
+  "v": "narrator"
+ },
+ "458-accept": {
+  "d": 31.39,
+  "v": "nightelf-male"
+ },
+ "458-complete": {
+  "d": 5.04,
+  "v": "narrator"
+ },
+ "4641-accept": {
+  "d": 33.59,
+  "v": "orc-male"
+ },
+ "4641-complete": {
+  "d": 15.8,
+  "v": "orc-male"
+ },
+ "579-complete": {
+  "d": 3.16,
+  "v": "human-male"
+ },
+ "5805-accept": {
+  "d": 20.11,
+  "v": "narrator"
+ },
+ "5805-complete": {
+  "d": 8.36,
+  "v": "human-female"
+ },
+ "5841-accept": {
+  "d": 20.11,
+  "v": "narrator"
+ },
+ "5841-complete": {
+  "d": 9.6,
+  "v": "dwarf-male"
+ },
+ "5842-accept": {
+  "d": 20.43,
+  "v": "narrator"
+ },
+ "5842-complete": {
+  "d": 8.04,
+  "v": "nightelf-male"
+ },
+ "5843-accept": {
+  "d": 20.39,
+  "v": "narrator"
+ },
+ "5843-complete": {
+  "d": 11.44,
+  "v": "orc-female"
+ },
+ "5844-accept": {
+  "d": 20.59,
+  "v": "narrator"
+ },
+ "5844-complete": {
+  "d": 9.92,
+  "v": "tauren-male"
+ },
+ "5847-accept": {
+  "d": 19.67,
+  "v": "narrator"
+ },
+ "5847-complete": {
+  "d": 12.28,
+  "v": "scourge-female"
  },
  "5943-a28d29e1": 3.2,
  "6929-7161de72": 15.8,
+ "7660-complete": {
+  "d": 18.92,
+  "v": "orc-male"
+ },
+ "7661-complete": {
+  "d": 17.32,
+  "v": "orc-male"
+ },
+ "7662-complete": {
+  "d": 17.88,
+  "v": "tauren-male"
+ },
+ "7663-complete": {
+  "d": 15.64,
+  "v": "tauren-male"
+ },
+ "7664-complete": {
+  "d": 18.44,
+  "v": "troll-male"
+ },
+ "7665-complete": {
+  "d": 20.92,
+  "v": "troll-male"
+ },
+ "7671-complete": {
+  "d": 17.6,
+  "v": "nightelf-female"
+ },
+ "7672-complete": {
+  "d": 16.96,
+  "v": "nightelf-female"
+ },
+ "7673-complete": {
+  "d": 15.36,
+  "v": "dwarf-male"
+ },
  "92460-accept": {
   "d": 27.23,
   "v": "skyborne-male"
@@ -223,7 +339,7 @@
  },
  "92465-accept": {
   "d": 23.03,
-  "v": "skyborne-male"
+  "v": null
  },
  "92466-accept": {
   "d": 28.15,
@@ -235,7 +351,7 @@
  },
  "92468-accept": {
   "d": 31.3,
-  "v": "skyborne-male"
+  "v": null
  },
  "92469-accept": {
   "d": 9.72,
@@ -263,7 +379,7 @@
  },
  "92514-accept": {
   "d": 27.31,
-  "v": "skyborne-male"
+  "v": null
  },
  "92515-accept": {
   "d": 27.35,
@@ -279,7 +395,7 @@
  },
  "92528-accept": {
   "d": 28.39,
-  "v": "skyborne-male"
+  "v": null
  },
  "92544-accept": {
   "d": 29.18,
@@ -287,11 +403,11 @@
  },
  "92553-accept": {
   "d": 23.7,
-  "v": "skyborne-male"
+  "v": null
  },
  "92595-accept": {
   "d": 23.35,
-  "v": "skyborne-male"
+  "v": null
  },
  "92598-accept": {
   "d": 29.47,
@@ -311,7 +427,7 @@
  },
  "93949-accept": {
   "d": 29.55,
-  "v": "skyborne-male"
+  "v": null
  },
  "93951-accept": {
   "d": 31.02,
@@ -319,11 +435,11 @@
  },
  "94411-accept": {
   "d": 25.11,
-  "v": "skyborne-male"
+  "v": null
  },
  "94414-accept": {
   "d": 23.03,
-  "v": "skyborne-male"
+  "v": null
  },
  "97903-complete": 33.99,
  "99052-complete": 8.32,
