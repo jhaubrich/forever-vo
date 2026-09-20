@@ -11,7 +11,7 @@ from pathlib import Path
 
 import requests
 
-from config import BETA_BUILD, DB2_DIR, GENDER_DICT, RACE_DICT, WAGO_BASE
+from config import BETA_BUILD, DB2_DIR, GENDER_DICT, RACE_DICT, WAGO_BASE, ZONE_RACE_HINTS
 
 
 def db2_path(table: str, build: str = BETA_BUILD) -> Path:
@@ -70,7 +70,7 @@ def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:
     return int(extra["DisplayRaceID"]), int(extra["DisplaySexID"])
 
 
-def voice_for_npc(npc: dict | None) -> str:
+def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
     """Picks a `race-gender` voice name for a captured NPC record.
 
     Falls back to the in-game UnitSex (2 male, 3 female) when the display race is
@@ -83,10 +83,10 @@ def voice_for_npc(npc: dict | None) -> str:
     if sex_id is None:
         unit_sex = npc.get("sex")
         sex_id = {2: 0, 3: 1}.get(unit_sex)
-    if race is None or sex_id is None:
-        if sex_id is None:
-            return "narrator"
-        return f"human-{GENDER_DICT[sex_id]}"
+    if race is None:
+        race = ZONE_RACE_HINTS.get(zone or npc.get("zone") or "", "human")
+    if sex_id is None:
+        return "narrator"
     return f"{race}-{GENDER_DICT[sex_id]}"
 
 

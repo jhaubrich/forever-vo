@@ -55,3 +55,8 @@ FALLBACK_VOICES = {
     "tuskarr": "dwarf", "darkirondwarf": "dwarf", "mechagnome": "gnome", "vulpera": "goblin",
     "pandaren": "human", "dracthyr": "bloodelf",
 }
+
+# When the client tables give no race for a speaker, the zone is a strong hint.
+ZONE_RACE_HINTS = {
+    "Zephras Isle": "skyborne",
+}

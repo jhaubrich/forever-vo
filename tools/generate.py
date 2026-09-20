@@ -44,7 +44,7 @@ class Item:
         self.key = key
         self.entry = entry
         self.npc = npc
-        self.voice = voice_for_npc(npc)
+        self.voice = voice_for_npc(npc, entry.get("zone"))
         self.raw_text = entry.get("text") or ""
         self.event = entry.get("event") or "gossip"
         self.speaker_key = entry.get("npc")   # "288" or "-123" (game object)
