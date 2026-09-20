@@ -33,6 +33,7 @@ local commands = {
     end },
     status = { "Show loaded packs and capture counts", Status },
     export = { "Copy this session's unvoiced lines to contribute", function() ns.Export:Show() end },
+    welcome = { "Show the welcome message again", function() ns.Welcome:Show() end },
     debug  = { "Toggle debug messages", function()
         ns.db.debug = not ns.db.debug
         ns.Print("debug", ns.db.debug and "on" or "off")

@@ -463,6 +463,26 @@
   "d": 16.48,
   "v": "human-male"
  },
+ "3903-complete": {
+  "d": 13.76,
+  "v": "human-female"
+ },
+ "3904-accept": {
+  "d": 29.79,
+  "v": "human-female"
+ },
+ "3904-complete": {
+  "d": 14.04,
+  "v": "human-female"
+ },
+ "3905-accept": {
+  "d": 16.56,
+  "v": "human-female"
+ },
+ "3905-complete": {
+  "d": 16.48,
+  "v": "human-male"
+ },
  "403-complete": {
   "d": 7.4,
   "v": "narrator"
@@ -474,6 +494,14 @@
  "4402-complete": {
   "d": 8.76,
   "v": "orc-male"
+ },
+ "4495-accept": {
+  "d": 31.99,
+  "v": "nightelf-female"
+ },
+ "4495-complete": {
+  "d": 4.8,
+  "v": "nightelf-male"
  },
  "456-accept": {
   "d": 35.19,
@@ -522,6 +550,74 @@
  "5261-complete": {
   "d": 4.96,
   "v": "human-male"
+ },
+ "5441-accept": {
+  "d": 29.63,
+  "v": "orc-male"
+ },
+ "5441-complete": {
+  "d": 6.52,
+  "v": "orc-male"
+ },
+ "5621-accept": {
+  "d": 31.67,
+  "v": "nightelf-female"
+ },
+ "5621-complete": {
+  "d": 26.35,
+  "v": "nightelf-female"
+ },
+ "5622-complete": {
+  "d": 9.6,
+  "v": "nightelf-female"
+ },
+ "5623-complete": {
+  "d": 7.08,
+  "v": "human-female"
+ },
+ "5624-complete": {
+  "d": 29.75,
+  "v": "human-female"
+ },
+ "5625-accept": {
+  "d": 25.31,
+  "v": "dwarf-male"
+ },
+ "5625-complete": {
+  "d": 30.03,
+  "v": "dwarf-male"
+ },
+ "5626-complete": {
+  "d": 18.04,
+  "v": "dwarf-male"
+ },
+ "5648-accept": {
+  "d": 37.11,
+  "v": "troll-female"
+ },
+ "5649-accept": {
+  "d": 36.79,
+  "v": "troll-male"
+ },
+ "5649-complete": {
+  "d": 41.51,
+  "v": "troll-female"
+ },
+ "5650-accept": {
+  "d": 36.83,
+  "v": "scourge-male"
+ },
+ "5650-complete": {
+  "d": 26.99,
+  "v": "scourge-male"
+ },
+ "5651-accept": {
+  "d": 34.99,
+  "v": "scourge-male"
+ },
+ "5651-complete": {
+  "d": 9.36,
+  "v": "scourge-male"
  },
  "579-complete": {
   "d": 3.16,
@@ -576,6 +672,10 @@
   "v": "scourge-female"
  },
  "5943-a28d29e1": 3.2,
+ "6394-accept": {
+  "d": 37.03,
+  "v": "orc-male"
+ },
  "6929-7161de72": 15.8,
  "7-accept": {
   "d": 12.8,
