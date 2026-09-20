@@ -71,6 +71,38 @@
   "d": 41.59,
   "v": "tauren-female"
  },
+ "1520-accept": {
+  "d": 35.27,
+  "v": "tauren-female"
+ },
+ "1520-complete": {
+  "d": 31.63,
+  "v": "narrator"
+ },
+ "1521-accept": {
+  "d": 28.35,
+  "v": "narrator"
+ },
+ "1521-complete": {
+  "d": 38.23,
+  "v": "tauren-female"
+ },
+ "1598-accept": {
+  "d": 30.11,
+  "v": "human-female"
+ },
+ "1598-complete": {
+  "d": 19.79,
+  "v": "human-female"
+ },
+ "1599-accept": {
+  "d": 29.91,
+  "v": "gnome-male"
+ },
+ "1599-complete": {
+  "d": 31.95,
+  "v": "gnome-male"
+ },
  "16-complete": 3.96,
  "170-complete": {
   "d": 16.92,
@@ -78,6 +110,22 @@
  },
  "179-accept": 32.51,
  "179-complete": 11.24,
+ "18-accept": {
+  "d": 16.44,
+  "v": "human-male"
+ },
+ "18-complete": {
+  "d": 4.52,
+  "v": "human-male"
+ },
+ "182-accept": {
+  "d": 35.07,
+  "v": "dwarf-male"
+ },
+ "182-complete": {
+  "d": 11.72,
+  "v": "dwarf-male"
+ },
  "183-accept": {
   "d": 27.95,
   "v": "dwarf-male"
@@ -88,6 +136,14 @@
  },
  "233-complete": {
   "d": 13.92,
+  "v": "dwarf-male"
+ },
+ "234-accept": {
+  "d": 7.64,
+  "v": "dwarf-male"
+ },
+ "234-complete": {
+  "d": 5.92,
   "v": "dwarf-male"
  },
  "2383-accept": 19.64,
@@ -315,6 +371,30 @@
   "d": 10.8,
   "v": "gnome-male"
  },
+ "3519-accept": {
+  "d": 18.68,
+  "v": "nightelf-male"
+ },
+ "3519-complete": {
+  "d": 8.8,
+  "v": "nightelf-female"
+ },
+ "3521-accept": {
+  "d": 37.54,
+  "v": "nightelf-female"
+ },
+ "3521-complete": {
+  "d": 8.8,
+  "v": "nightelf-female"
+ },
+ "3522-accept": {
+  "d": 18.32,
+  "v": "nightelf-female"
+ },
+ "3522-complete": {
+  "d": 25.75,
+  "v": "nightelf-male"
+ },
  "363-accept": {
   "d": 21.87,
   "v": "scourge-male"
@@ -339,6 +419,22 @@
   "d": 10.6,
   "v": "scourge-female"
  },
+ "380-accept": {
+  "d": 31.47,
+  "v": "scourge-male"
+ },
+ "380-complete": {
+  "d": 14.84,
+  "v": "scourge-male"
+ },
+ "381-accept": {
+  "d": 33.15,
+  "v": "scourge-male"
+ },
+ "381-complete": {
+  "d": 10.6,
+  "v": "scourge-male"
+ },
  "3861-accept": {
   "d": 21.39,
   "v": "narrator"
@@ -362,6 +458,10 @@
  "3902-complete": {
   "d": 9.96,
   "v": "scourge-male"
+ },
+ "3903-accept": {
+  "d": 16.48,
+  "v": "human-male"
  },
  "403-complete": {
   "d": 7.4,

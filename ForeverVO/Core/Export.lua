@@ -160,3 +160,20 @@ function Export:OnLineCaptured(found)
         ns.Print(format("%d lines seen this session have no voice yet. |cffffd100/fvo export|r to contribute them.", self.count))
     end
 end
+
+-- Last-chance reminder when a logout or quit timer starts (the beta client
+-- forgets the capture between sessions, so lines not exported now are lost
+-- to the export path).
+ns.OnInit(function()
+    local frame = CreateFrame("Frame")
+    frame:RegisterEvent("PLAYER_CAMPING")
+    frame:RegisterEvent("PLAYER_QUITING")
+    frame:SetScript("OnEvent", function()
+        local _, questsMissing, _, gossipMissing = ns.Capture:Summary()
+        local missing = questsMissing + gossipMissing
+        if missing > 0 then
+            ns.Print(format("%d unvoiced %s seen this session. |cffffd100/fvo export|r before you go, or they are forgotten.",
+                missing, Util.Plural(missing, "line")))
+        end
+    end)
+end)
