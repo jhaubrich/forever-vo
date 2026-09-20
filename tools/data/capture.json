@@ -1,0 +1,242 @@
+{
+ "gossip": {
+  "12136|866b6683": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1411,
+   "name": "Snurk Bucksquick",
+   "npc": "12136",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "Hey there cutie, you looking for a ride to Grom'gol? I hear it gets mighty steamy down in those jungles, maybe I could join you for a short vacation, show you a real jungle cat.",
+   "time": 1789925490,
+   "zone": "Durotar"
+  },
+  "3309|2f8d506f": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789924607,
+   "mapID": 1454,
+   "name": "Karus",
+   "npc": "3309",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Strength",
+   "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
+   "time": 1789924607,
+   "zone": "Orgrimmar"
+  },
+  "3309|6b36598f": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789924610,
+   "mapID": 1454,
+   "name": "Karus",
+   "npc": "3309",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Strength",
+   "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
+   "time": 1789924610,
+   "zone": "Orgrimmar"
+  },
+  "3309|ae78a458": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789924497,
+   "mapID": 1454,
+   "name": "Karus",
+   "npc": "3309",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Strength",
+   "text": "Would you rather trust your goods with a goblin?",
+   "time": 1789924497,
+   "zone": "Orgrimmar"
+  },
+  "3318|ae78a458": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789924612,
+   "mapID": 1454,
+   "name": "Koma",
+   "npc": "3318",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Strength",
+   "text": "Would you rather trust your goods with a goblin?",
+   "time": 1789924612,
+   "zone": "Orgrimmar"
+  },
+  "5943|a28d29e1": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789925033,
+   "mapID": 1411,
+   "name": "Rawrk",
+   "npc": "5943",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Razor Hill Barracks",
+   "text": "I can train you in First Aid techniques.",
+   "time": 1789925033,
+   "zone": "Durotar"
+  },
+  "6929|7161de72": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789924785,
+   "mapID": 1454,
+   "name": "Innkeeper Gryshka",
+   "npc": "6929",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Strength",
+   "text": "If we are to make these new lands ours then we must have places to rest our battle weary bodies. Lay your axe by the fire and share the stories of your mighty battles.",
+   "time": 1789924785,
+   "zone": "Orgrimmar"
+  },
+  "9564|8d6952f8": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1411,
+   "name": "Frezza",
+   "npc": "9564",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "Of course there's no danger in everything catching flames and exploding like a huge helium bomb. This baby will get you to Undercity faster and safer than any boat, and the view is truly breathtaking. Speaking of breath, smoking is not allowed while on board the zeppelin, and fire spells are banned from being cast during the trip.",
+   "time": 1789925506,
+   "zone": "Durotar"
+  },
+  "9566|fc033aae": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1420,
+   "name": "Zapetta",
+   "npc": "9566",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "My brother said we could make great money with this trade route, but he didn't tell me I would be the one living on this side. If you come back this way on the Zeppelin, could you bring me something to eat? They sell some of the finest meat in Orgrimmar, and I sure could use something that didn't die weeks before it stopped moving.",
+   "time": 1789925687,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "12136": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 45,
+   "modelFileID": 119369,
+   "name": "Snurk Bucksquick",
+   "sex": 3
+  },
+  "3142": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 18,
+   "modelFileID": 917116,
+   "name": "Orgnil Soulscar",
+   "sex": 2
+  },
+  "3309": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 45,
+   "modelFileID": 917116,
+   "name": "Karus",
+   "sex": 2
+  },
+  "3318": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 45,
+   "modelFileID": 917116,
+   "name": "Koma",
+   "sex": 2
+  },
+  "5943": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 15,
+   "modelFileID": 917116,
+   "name": "Rawrk",
+   "sex": 2
+  },
+  "6929": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 30,
+   "modelFileID": 949470,
+   "name": "Innkeeper Gryshka",
+   "sex": 3
+  },
+  "9564": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 45,
+   "modelFileID": 119376,
+   "name": "Frezza",
+   "sex": 2
+  },
+  "9566": {
+   "creatureType": "Humanoid",
+   "displayID": 0,
+   "level": 45,
+   "modelFileID": 119376,
+   "name": "Zapetta",
+   "sex": 2
+  }
+ },
+ "quests": {
+  "97903-complete": {
+   "build": "69913",
+   "event": "complete",
+   "firstSeen": 1789925034,
+   "mapID": 1411,
+   "name": "Rawrk",
+   "npc": "5943",
+   "player": "Myrlin Fixpoint",
+   "questID": 97903,
+   "subzone": "Razor Hill Barracks",
+   "text": "There you have it, you can now craft your very own First Aid Kit. Most folk don't care much for camps being set up in the center of town, so you'll need to head into the wilderness if you want to test it out.\r\n\r\nOh, and just remember, no camp is complete without a campfire. You'll need one of those before you start up your camp. Most cooks can teach you to make a fire. If you haven't already, you might want to check in with someone who can train you in the culinary arts to learn the basics.",
+   "time": 1789925034,
+   "title": "Camping 101: First Aid",
+   "zone": "Durotar"
+  },
+  "99052-complete": {
+   "build": "69913",
+   "event": "complete",
+   "firstSeen": 1789925008,
+   "mapID": 1411,
+   "name": "Orgnil Soulscar",
+   "npc": "3142",
+   "player": "Myrlin Fixpoint",
+   "questID": 99052,
+   "subzone": "Razor Hill",
+   "text": "Ha! I could hear his body fall from here!\r\n\r\nBe proud of your kill today, not many can claim they survived a fight with a sea giant.",
+   "time": 1789925008,
+   "title": "Threat from Below",
+   "zone": "Durotar"
+  },
+  "99052-progress": {
+   "build": "69913",
+   "event": "progress",
+   "firstSeen": 1789925007,
+   "mapID": 1411,
+   "name": "Orgnil Soulscar",
+   "npc": "3142",
+   "player": "Myrlin Fixpoint",
+   "questID": 99052,
+   "subzone": "Razor Hill",
+   "text": "Give 'em blood and thunder!",
+   "time": 1789925007,
+   "title": "Threat from Below",
+   "zone": "Durotar"
+  }
+ },
+ "sources": {
+  "/home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua": {
+   "mtime": 1789925722.5519276,
+   "size": 7128
+  },
+  "/home/q/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft/_classic_beta_/WTF/Account/352015929#1/SavedVariables/ForeverVO.lua.bak": {
+   "mtime": 1789925414.2408082,
+   "size": 5062
+  }
+ },
+ "version": 2
+}

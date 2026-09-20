@@ -96,8 +96,9 @@ def load_sources() -> dict:
             for key, entry in data.get(kind, {}).items():
                 target = merged[kind].setdefault(str(key), {})
                 for field, value in entry.items():
-                    if value is not None and value != "":
-                        target[field] = value
+                    if value is None or value == "" or (field in ("displayID", "modelFileID") and not value):
+                        continue
+                    target[field] = value
         print(f"source {name}: {len(data.get('quests', {}))} quest, {len(data.get('gossip', {}))} gossip, {len(data.get('npcs', {}))} npc entries")
     return merged
 
@@ -291,6 +292,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--only", choices=["quests", "gossip"], help="restrict to one kind")
     parser.add_argument("--quest", type=int, action="append", help="restrict to quest ID(s)")
     parser.add_argument("--tables-only", action="store_true", help="skip synthesis, rebuild tables")
+    parser.add_argument("--captured", action="store_true", help="only lines captured in game (not bulk sources)")
     args = parser.parse_args(argv)
 
     capture = load_sources()
@@ -304,6 +306,8 @@ def main(argv: list[str]) -> int:
     skipped: dict[str, int] = {}
     for item in items:
         if args.only and item.kind != args.only:
+            continue
+        if args.captured and not item.entry.get("player"):
             continue
         if args.quest and (item.kind != "quests" or int(item.entry["questID"]) not in args.quest):
             continue
@@ -354,11 +358,12 @@ def main(argv: list[str]) -> int:
             sound_index[base] = duration
             print(f"[{n}/{len(todo)}] {item.subfolder}/{base}.mp3 {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{item.voice}] {item.entry.get('title') or item.entry.get('name')}")
             if n % 25 == 0:
-                # Keep the pack tables current so a client restart picks up what exists so far
-                rebuild_tables(items, sound_index)
+                # Keep the pack tables current so a client restart picks up what exists so far.
+                # Sources are reloaded so files made by another run (e.g. a --captured pass) are included.
+                rebuild_tables(load_items(load_sources(), include_progress=True), sound_index)
         print(f"generated {len(todo)} files in {(time.time() - started) / 60:.1f} min")
 
-    rebuild_tables(items, sound_index)
+    rebuild_tables(load_items(load_sources(), include_progress=True), sound_index)
     return 0
 
 

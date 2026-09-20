@@ -29,21 +29,45 @@ local function GetDB()
     return db
 end
 
---- Reads the creature display ID through a hidden PlayerModel; the pipeline maps
---- it to a race and gender to choose a voice.
-local function DisplayInfo(unit)
-    local displayID, fileID
+--- Reads the creature display ID through an invisible PlayerModel; the pipeline
+--- maps it to a race and gender to choose a voice. The model loads
+--- asynchronously, so the value is written into the NPC record when it arrives.
+local function GetModelFrame()
+    if not modelFrame then
+        modelFrame = CreateFrame("PlayerModel", nil, UIParent)
+        modelFrame:SetSize(1, 1)
+        modelFrame:SetPoint("TOPLEFT")
+        modelFrame:SetAlpha(0)
+        modelFrame:EnableMouse(false)
+        modelFrame:SetScript("OnModelLoaded", function(self)
+            local npc = self.pendingNPC
+            if not npc then
+                return
+            end
+            local ok, displayID = pcall(self.GetDisplayInfo, self)
+            if ok and displayID and displayID ~= 0 then
+                npc.displayID = displayID
+            end
+            local okFile, fileID = pcall(self.GetModelFileID, self)
+            if okFile and fileID and fileID ~= 0 then
+                npc.modelFileID = fileID
+            end
+        end)
+    end
+    return modelFrame
+end
+
+local function RequestDisplayInfo(unit, npc)
     pcall(function()
-        modelFrame = modelFrame or CreateFrame("PlayerModel")
-        modelFrame:SetUnit(unit)
-        if modelFrame.GetDisplayInfo then
-            displayID = modelFrame:GetDisplayInfo()
-        end
-        if modelFrame.GetModelFileID then
-            fileID = modelFrame:GetModelFileID()
+        local frame = GetModelFrame()
+        frame.pendingNPC = npc
+        frame:SetUnit(unit)
+        -- If the model was already cached the callback may not fire; read now too
+        local displayID = frame:GetDisplayInfo()
+        if displayID and displayID ~= 0 then
+            npc.displayID = displayID
         end
     end)
-    return displayID, fileID
 end
 
 local function DescribeSpeaker(db, speaker)
@@ -59,9 +83,9 @@ local function DescribeSpeaker(db, speaker)
         npc.sex = UnitSex(unit)
         npc.creatureType = UnitCreatureType(unit)
         npc.level = UnitLevel(unit)
-        local displayID, fileID = DisplayInfo(unit)
-        npc.displayID = displayID or npc.displayID
-        npc.modelFileID = fileID or npc.modelFileID
+        if not npc.displayID or npc.displayID == 0 then
+            RequestDisplayInfo(unit, npc)
+        end
     end
     db.npcs[key] = npc
     return key
