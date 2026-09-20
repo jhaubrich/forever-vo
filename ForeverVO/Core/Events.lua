@@ -9,6 +9,12 @@ goes to Capture so that lines without audio can be generated later.
 local Events = {}
 ns.Events = Events
 
+local function NotifyUnvoiced(what)
+    if ns.db.notifyUnvoiced then
+        ns.Print(format("no voice yet for %s. |cffffd100/fvo export|r to contribute it.", what))
+    end
+end
+
 local currentQuestItem, currentGossipItem
 local lastGossipOptions, selectedGossipOption
 
@@ -65,7 +71,7 @@ local function QueueQuest(event, text)
     })
 
     if not path then
-        ns.Debug("no audio for quest", questID, event, title)
+        NotifyUnvoiced(format("\"%s\" (%s)", title or questID, event))
         return
     end
     if (event == "accept" and not ns.db.playAccept)
@@ -143,7 +149,7 @@ local function QueueGossip(event, text)
     })
 
     if not path then
-        ns.Debug("no audio for gossip from", speaker.name)
+        NotifyUnvoiced(format("%s's %s", speaker.name or "this NPC", event == "greeting" and "greeting" or "gossip"))
         return
     end
     if (event == "greeting" and not ns.db.playGreeting) or (event == "gossip" and not ns.db.playGossip) then

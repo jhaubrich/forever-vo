@@ -40,6 +40,7 @@ ns.defaults = {
 
     -- Data collection for generating new voice lines
     capture = true,
+    notifyUnvoiced = true,
     debug = false,
 }
 
