@@ -93,7 +93,8 @@ def next_version(pack: str) -> str:
     today = date.today().strftime("%Y.%m.%d")
     last = state.get(pack, {}).get("version", "")
     if last.startswith(today):
-        n = int(last.split(".")[4]) + 1 if last.count(".") == 4 else 2
+        parts = last.split(".")
+        n = int(parts[3]) + 1 if len(parts) == 4 else 2   # 2026.09.20 -> .2 -> .3 ...
         return f"{today}.{n}"
     return today
 
@@ -131,7 +132,8 @@ def write_manifest(stage: Path, spec: dict, version: str) -> None:
     )
 
 
-def build(pack: str, version: str) -> tuple[Path, dict]:
+def stage_tables(pack: str, version: str) -> tuple[Path, dict]:
+    """Writes the manifest and tables for the pack; returns (stage dir, stats with the file set)."""
     spec = PACKS[pack]
     sources = load_sources()
     classic_ids = classic_quest_ids()
@@ -140,11 +142,15 @@ def build(pack: str, version: str) -> tuple[Path, dict]:
     if stage.exists():
         shutil.rmtree(stage)
     write_manifest(stage, spec, version)
-
     sound_index = json.loads(SOUND_INDEX.read_text()) if SOUND_INDEX.exists() else {}
-    # Tables first (against the working audio), then copy only the files they reference
     stats = rebuild_tables(items, sound_index, data_dir=stage / "Data", pack_global=f"{spec['folder']}Pack",
                            sounds_dir=SOUNDS_DIR, write_index=False)
+    return stage, stats
+
+
+def package(pack: str, version: str, stage: Path, stats: dict) -> Path:
+    """Re-encodes the referenced audio into the stage dir and zips it."""
+    spec = PACKS[pack]
     for base in sorted(stats["files"]):
         folder = sound_folder(base)
         transcode(SOUNDS_DIR / folder / f"{base}.mp3", stage / "Sounds" / folder / f"{base}.mp3")
@@ -156,7 +162,7 @@ def build(pack: str, version: str) -> tuple[Path, dict]:
                 zf.write(path, str(Path(spec["folder"]) / path.relative_to(stage)))
     size_mb = zip_path.stat().st_size / 1e6
     print(f"{zip_path.name}: {stats['quests']} quests, {stats['gossip']} gossip lines, {len(stats['files'])} files, {size_mb:.0f} MB")
-    return zip_path, stats
+    return zip_path
 
 
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
@@ -232,7 +238,7 @@ def main(argv: list[str]) -> int:
             return 0
 
     version = next_version(args.pack)
-    zip_path, stats = build(args.pack, version)
+    stage, stats = stage_tables(args.pack, version)
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
     fingerprint = sorted(stats["files"])
@@ -246,8 +252,9 @@ def main(argv: list[str]) -> int:
         if not due:
             print(f"not due: {new_files} new files since the last release {age_days} days ago "
                   f"(need {args.min_new} new or {args.max_age_days} days); nothing to do")
-            zip_path.unlink(missing_ok=True)
             return 0
+
+    zip_path = package(args.pack, version, stage, stats)
 
     if args.upload:
         upload(args.pack, zip_path, version, stats, args.release_type)
