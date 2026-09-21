@@ -5,8 +5,9 @@ local Util = ns.Util
 "/fvo export": packs this session's unvoiced lines into a string players can
 paste into a GitHub issue (see .github/ISSUE_TEMPLATE/capture.yml). The
 string is JSON, zlib-compressed and base64-encoded with the client's own
-C_EncodingUtil, prefixed with "FVO1:". The player's character name is replaced
-by the $n placeholder before export, so nothing identifying leaves the client.
+C_EncodingUtil, prefixed with "FVO1:". The character's name, class and race are
+replaced by the $n/$c/$r placeholders (Util.Tokenize) at capture, so nothing
+identifying leaves the client and no line is voiced for one class only.
 tools/exportfile.py decodes it.
 ]]
 
@@ -17,14 +18,6 @@ ns.Export = Export
 
 local NUDGE_AFTER = 10
 local PREFIX = "FVO1:"
-
-local function Anonymize(text, playerName)
-    if not text or not playerName or playerName == "" then
-        return text
-    end
-    local escaped = playerName:gsub("(%W)", "%%%1")
-    return (text:gsub(escaped, "$n"))
-end
 
 --- Builds the export table from ForeverVOCaptureDB: only lines without audio.
 function Export:Collect()
@@ -39,7 +32,7 @@ function Export:Collect()
             e = entry.event,
             q = entry.questID,
             t = entry.title,
-            x = Anonymize(entry.text, entry.player),
+            x = Util.Tokenize(entry.text, entry.player, entry.class, entry.race),
             n = entry.npc,
             s = entry.name,
             o = entry.isObject,

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Lines no longer call you by the wrong class. The client fills in $n, $c and $r
+  before an addon can read the text, so a quest first heard on a rogue was
+  recorded saying "rogue" and then said that to everyone. Captures now store the
+  placeholders, and the narrator says "adventurer" instead.
+- Gossip matches whoever is reading it. A greeting recorded on one class used to
+  hash differently for every other class, so it often fell back to fuzzy matching
+  or went silent.
 - The narrator's voice is now yours to pick. Quests and gossip from objects and
   items have no speaker, so a narrator reads them; voice packs can carry those
   lines in several voices, and Options > Audio > Narrator voice chooses one

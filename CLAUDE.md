@@ -68,9 +68,19 @@ game's own recordings).
   (creature ID, negative for game objects) plus a text hash, with a Jaccard
   fuzzy fallback.
 - **The text hash must stay identical in Lua and Python**:
-  `Util.NormalizeText`/`Util.HashText` in `Core/Util.lua` and
-  `tools/textkey.py`. Parity was tested; if you touch one, touch the other
-  and re-test.
+  `Util.Tokenize`/`Util.NormalizeText`/`Util.HashText` in `Core/Util.lua` and
+  `tools/textkey.py`. If you touch one, touch the other and re-test with
+  `nix shell nixpkgs#lua5_1 -c ./tools/run.sh tools/textkey_parity.py`, which
+  runs both over the real captures, the tokenised quest cache and edge cases.
+- **The client expands `$n`, `$c` and `$r` before any addon sees the text.** A
+  line first heard on a rogue would otherwise be recorded saying "rogue" and
+  voiced that way for everyone, and its gossip hash would only match other
+  rogues. `Util.Tokenize` puts the placeholders back at capture time (capture
+  version 3 also records the reader's class and race), `FindGossip` tokenises
+  the live text before hashing, and `NormalizeText` drops the placeholders on
+  both sides so one recording matches every class. `LEGACY_CHARACTERS` in
+  `tools/config.py` covers captures made before version 3; `ingest.py` re-runs
+  the reversal on every ingest, which is idempotent.
 - `luac -p` every changed Lua file (`nix shell nixpkgs#lua5_1 -c luac -p`).
   There is no in-game test harness; the owner tests by `/reload`.
 
@@ -91,16 +101,20 @@ build artifact, never hand-edited):
    (versioned). Precedence when merging: capture > questcache > classic.
 3. `generate.py` picks a voice per speaker, synthesises with Chatterbox on the
    GPU, writes mp3s under `ForeverVO_Data/Sounds/`, rebuilds the tables every
-   25 files, and records the voice used per file in `sound_index.json` so a
-   file is regenerated when its resolved voice changes (e.g. a guessed
-   Skyborne male giver turns out female once captured). Narrator lines (quests
-   and gossip from objects, items and speakers with no gender) are generated
-   once per voice in `config.NARRATOR_VOICES`: the first entry is the default
-   and keeps the plain path and `sound_index` key, the rest go to
-   `Sounds/<Quests|Gossip>/Narrator/<voice>/` with `Narrator/<voice>/<base>` as
-   their index key. The addon needs each alternate's own duration, so quests
-   get `Data/Narrator.lua` (`pack.narrator`, indexed into
-   `pack.narratorVoices`) and gossip entries get an `n` field indexed the same
+   25 files, and records the voice (`v`) and a hash of the spoken text (`t`)
+   per file in `sound_index.json`, so a file is regenerated when its resolved
+   voice changes (e.g. a guessed Skyborne male giver turns out female once
+   captured) or when the text itself is corrected — a quest file keeps its
+   `<questID>-<event>` name, so nothing else would notice. Entries written
+   before `t` existed have none and are left alone rather than all regenerated.
+   Narrator lines (quests and gossip from objects, items and speakers with no
+   gender) are generated once per voice in `config.NARRATOR_VOICES`: the first
+   entry is the default and keeps the plain path and `sound_index` key, the
+   rest go to `Sounds/<Quests|Gossip>/Narrator/<voice>/` with
+   `Narrator/<voice>/<base>` as their index key. The addon needs each
+   alternate's own duration, so quests get `Data/Narrator.lua`
+   (`pack.narrator`, indexed into `pack.narratorVoices`) and gossip entries get
+   an `n` field indexed the same
    way. Alternates sort last in the todo list, so a time-boxed run still spends
    its GPU on unvoiced lines; `--narrator-only` / `--narrator-voices` control a
    dedicated pass.

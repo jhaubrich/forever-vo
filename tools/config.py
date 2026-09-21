@@ -84,3 +84,15 @@ CURSEFORGE_PROJECTS = {
     "delta": 1705094,   # Forever Voiceover Data: Forever
     "base": 1705100,    # Forever Voiceover Data: Base (Classic set)
 }
+
+# The client resolves $n, $c and $r against whoever is reading before any addon
+# can see the text, so a line first seen on a rogue is captured saying "rogue".
+# Capture version 3 records the reader's class and race so ingest.py can put the
+# placeholders back; these are the characters whose captures predate it. Derived
+# by aligning the captured text against the raw $c still held in
+# tools/data/bulk/questcache.json (and confirmed by the owner for Agravain).
+LEGACY_CHARACTERS = {
+    "Myrlin Fixpoint": {"class": "Mage"},
+    "Pellinore Fixpoint": {"class": "Hunter"},
+    "Agravain Fixpoint": {"class": "Rogue"},
+}

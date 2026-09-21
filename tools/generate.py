@@ -74,7 +74,7 @@ class Item:
 
     @property
     def hash(self) -> str:
-        return text_key(self.raw_text, self.entry.get("player"))
+        return text_key(self.raw_text, self.entry.get("player"), self.entry.get("class"), self.entry.get("race"))
 
     @property
     def base_name(self) -> str:
@@ -140,6 +140,13 @@ class Target(NamedTuple):
     @property
     def key(self) -> str:
         return index_key(self.base, self.location)
+
+    @property
+    def fingerprint(self) -> str:
+        """Hash of the words actually spoken. Recorded alongside the voice so a
+        corrected text regenerates, the way a changed voice already does: a quest
+        file keeps its <questID>-<event> name, so nothing else would notice."""
+        return text_key(self.text)
 
     @property
     def path(self) -> Path:
@@ -488,6 +495,10 @@ def main(argv: list[str]) -> int:
         if not target.path.exists() or args.force:
             return True
         recorded = sound_index.get(target.key)
+        previous_text = recorded.get("t") if isinstance(recorded, dict) else None
+        if previous_text is not None and previous_text != target.fingerprint:
+            skipped["text changed, regenerating"] = skipped.get("text changed, regenerating", 0) + 1
+            return True
         previous_voice = recorded.get("v") if isinstance(recorded, dict) else None
         if previous_voice is None or previous_voice == target.voice or target.voice == args.assume_voice:
             return False
@@ -552,7 +563,7 @@ def main(argv: list[str]) -> int:
             item = target.item
             t0 = time.time()
             duration = synth.speak(target.text, target.voice, target.path)
-            sound_index[target.key] = {"d": duration, "v": target.voice}
+            sound_index[target.key] = {"d": duration, "v": target.voice, "t": target.fingerprint}
             print(f"[{n}/{len(todo)}] {target.label} {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{target.voice}] {item.entry.get('title') or item.entry.get('name')}")
             if n % 25 == 0:
                 # Keep the pack tables current so a client restart picks up what exists so far.

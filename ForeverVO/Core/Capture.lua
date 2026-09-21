@@ -22,7 +22,7 @@ local function GetDB()
         db = {}
         ForeverVOCaptureDB = db
     end
-    db.version = 2
+    db.version = 3   -- 3: text is tokenised ($n/$c/$r) and class/race recorded
     db.quests = db.quests or {}
     db.gossip = db.gossip or {}
     db.npcs = db.npcs or {}
@@ -103,13 +103,15 @@ function Capture:Record(line)
         event = line.event,
         questID = line.questID,
         title = line.title,
-        text = line.text,
+        text = Util.Tokenize(line.text),
         npc = npcKey,
         name = line.speaker.name,
         isObject = line.speaker.isObject or nil,
         found = line.found or nil,
         pack = line.pack and line.pack.name or nil,
         player = UnitName("player"),
+        class = UnitClass("player"),
+        race = UnitRace("player"),
         mapID = mapID,
         zone = GetZoneText(),
         subzone = GetSubZoneText(),
@@ -122,7 +124,7 @@ function Capture:Record(line)
         end
         db.quests[format("%d-%s", line.questID, line.event)] = entry
     else
-        db.gossip[format("%s|%s", npcKey or line.speaker.name or "?", Util.TextKey(line.text, entry.player))] = entry
+        db.gossip[format("%s|%s", npcKey or line.speaker.name or "?", Util.TextKey(entry.text))] = entry
     end
     if ns.Export then
         ns.Export:OnLineCaptured(line.found)

@@ -251,8 +251,11 @@ function Packs:FindGossip(speakerKey, text)
     if not speakerKey or not text then
         return nil
     end
-    local playerName = UnitName("player")
-    local hash = Util.TextKey(text, playerName)
+    -- Pack text carries the placeholders; the client has already expanded them
+    -- in what we were handed. Tokenise once so both the hash and the fuzzy
+    -- word sets compare like with like whoever is reading.
+    local tokenized = Util.Tokenize(text)
+    local hash = Util.TextKey(tokenized)
     local bestEntry, bestPack, bestScore
 
     for _, pack in ipairs(self.list) do
@@ -268,7 +271,7 @@ function Packs:FindGossip(speakerKey, text)
                 break
             end
             for _, entry in ipairs(entries) do
-                local score = Util.Similarity(text, entry.t or "")
+                local score = Util.Similarity(tokenized, entry.t or "")
                 if score >= FUZZY_THRESHOLD and (not bestScore or score > bestScore) then
                     bestEntry, bestPack, bestScore = entry, pack, score
                 end

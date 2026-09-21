@@ -49,16 +49,63 @@ end
 -- Text normalisation and hashing (mirrored by tools/textkey.py)
 -- ---------------------------------------------------------------------------
 
---- Strips everything that can vary between clients: case, punctuation, whitespace,
---- and the player's own name.
-function Util.NormalizeText(text, playerName)
+--- Escapes a literal string for use as a Lua pattern, optionally matching it in
+--- either case, so a name or class can be found however the server wrote it.
+local function LiteralPattern(text, ignoreCase)
+    return (text:gsub(".", function(char)
+        if ignoreCase and char:match("%a") then
+            return "[" .. char:lower() .. char:upper() .. "]"
+        elseif char:match("%W") then
+            return "%" .. char
+        end
+        return char
+    end))
+end
+
+--- Puts the server's own placeholders back where the client expanded them.
+--- $n, $c and $r are resolved against the character reading the line before any
+--- addon can see the text, so a line first seen on a rogue is stored saying
+--- "rogue" and would be voiced that way for everyone. Capitalisation is kept, so
+--- a capitalised match becomes $N/$C/$R and the pipeline reads it as a
+--- sentence-initial "Adventurer". Defaults to the current character.
+function Util.Tokenize(text, playerName, className, raceName)
+    if not text or text == "" then
+        return text
+    end
+    if playerName == nil then playerName = UnitName("player") end
+    if className == nil then className = UnitClass("player") end
+    if raceName == nil then raceName = UnitRace("player") end
+    local function put(subject, value, token)
+        if not value or value == "" then
+            return subject
+        end
+        return (subject:gsub(LiteralPattern(value, true), function(match)
+            return match:match("^%u") and token:upper() or token
+        end))
+    end
+    text = put(text, playerName, "$n")
+    local firstName = playerName and playerName:match("%S+")   -- $n is the bare first name
+    if firstName and firstName ~= playerName then
+        text = put(text, firstName, "$n")
+    end
+    text = put(text, className, "$c")
+    text = put(text, raceName, "$r")
+    return text
+end
+
+--- Strips everything that can vary between characters and clients: case,
+--- punctuation, whitespace, and the reader's own name, class and race, whether
+--- the text still carries the placeholders or the client already expanded them.
+--- Both sides have to agree: pack text keeps $c, live text says "hunter", and
+--- only dropping each leaves the same string to hash.
+function Util.NormalizeText(text, playerName, className, raceName)
     if not text then
         return ""
     end
+    text = Util.Tokenize(text, playerName, className, raceName)
     text = text:lower()
-    if playerName and playerName ~= "" then
-        text = text:gsub(playerName:lower(), "", 1) -- plain replace of the first occurrence
-    end
+    text = text:gsub("%$g[^;]*;", "")   -- $g male:female; branch
+    text = text:gsub("%$%a", "")        -- $n, $c, $r, $b, ...
     text = text:gsub("[^a-z0-9]", "")
     return text
 end
@@ -72,8 +119,8 @@ function Util.HashText(normalized)
     return format("%08x", hash)
 end
 
-function Util.TextKey(text, playerName)
-    return Util.HashText(Util.NormalizeText(text, playerName))
+function Util.TextKey(text, playerName, className, raceName)
+    return Util.HashText(Util.NormalizeText(text, playerName, className, raceName))
 end
 
 --- Word set for fuzzy matching (lowercase alphanumeric words).
