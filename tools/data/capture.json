@@ -16,6 +16,7 @@
   "10668|19e45338": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789993443,
    "mapID": 1413,
    "name": "Beaten Corpse",
    "npc": "10668",
@@ -28,6 +29,7 @@
   "10668|36aec325": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789993444,
    "mapID": 1413,
    "name": "Beaten Corpse",
    "npc": "10668",
@@ -196,6 +198,7 @@
   "16227|c5ceacbe": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789995120,
    "mapID": 1413,
    "name": "Bragok",
    "npc": "16227",
@@ -682,6 +685,7 @@
   "3318|2f8d506f": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789993860,
    "mapID": 1454,
    "name": "Koma",
    "npc": "3318",
@@ -707,6 +711,7 @@
   "3345|335c06e7": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789995843,
    "mapID": 1454,
    "name": "Godan",
    "npc": "3345",
@@ -1903,6 +1908,7 @@
   "1486-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789994787,
    "found": true,
    "mapID": 1414,
    "name": "Nalpak",
@@ -1919,6 +1925,7 @@
   "1487-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789994785,
    "found": true,
    "mapID": 1414,
    "name": "Ebru",
@@ -1995,6 +2002,7 @@
   "1491-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789995061,
    "found": true,
    "mapID": 1413,
    "name": "Mebok Mizzyrix",
@@ -2241,6 +2249,7 @@
   "3281-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789994554,
    "found": true,
    "mapID": 1413,
    "name": "Gazrog",
@@ -2257,6 +2266,7 @@
   "3281-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789994552,
    "mapID": 1413,
    "name": "Gazrog",
    "npc": "3464",
@@ -3060,6 +3070,7 @@
   "4921-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789994581,
    "found": true,
    "mapID": 1413,
    "name": "Mankrik",
@@ -3393,6 +3404,7 @@
   "865-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789995058,
    "found": true,
    "mapID": 1413,
    "name": "Mebok Mizzyrix",
@@ -3409,6 +3421,7 @@
   "865-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789995057,
    "mapID": 1413,
    "name": "Mebok Mizzyrix",
    "npc": "3446",
@@ -3853,6 +3866,7 @@
   "95774-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789994583,
    "mapID": 1413,
    "name": "Mankrik",
    "npc": "3432",
@@ -3899,6 +3913,7 @@
   "962-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789994256,
    "found": true,
    "mapID": 1456,
    "name": "Apothecary Zamah",
