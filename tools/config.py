@@ -78,7 +78,7 @@ ZONE_RACE_HINTS = {
 }
 
 # CurseForge project IDs. The player addon's ID also lives in its TOC. The
-# API key stays out of git (.env: CURSEFORGE_API_KEY).
+# API key stays out of git (.env: CF_API_KEY, or CURSEFORGE_API_KEY).
 CURSEFORGE_PROJECTS = {
     "addon": 1705010,   # Forever Voiceover
     "delta": 1705094,   # Forever Voiceover Data: Forever

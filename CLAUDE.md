@@ -167,9 +167,14 @@ Three CurseForge projects, three release paths:
   `move-folders` so only `ForeverVO/` ships. Push a `v*` tag: the GitHub
   workflow builds a release with the BigWigs packager, and CurseForge's own
   packager (repo linked as Source, tags only) publishes the same zip. Do
-  **not** set the `CF_API_KEY` GitHub secret, or files upload twice.
-  `CHANGELOG.md` is the release notes. Dry-run with the packager's
-  `release.sh -d -g 1.60.1` (needs zip, unzip, pandoc). The TOC carries
+  **not** set the `CF_API_KEY` GitHub *secret*, or files upload twice. (The
+  same name in the local `.env` is a different thing and *must* be set: that
+  one is for the voice packs, below. Repo secret unset, `.env` set.)
+  `CHANGELOG.md` is the release notes. The packager's own dry run
+  (`release.sh -d -g 1.60.1`, needs zip, unzip, pandoc) is no longer practical
+  here: it walks the whole working tree, and `ForeverVO_Data/Sounds/` now holds
+  thousands of mp3s, so it hangs in `find` for many minutes. CI never hits this
+  because the mp3s are gitignored and the checkout has no audio. The TOC carries
   `## X-Curse-Project-ID`; the packager maps Interface 16001 to game version
   "1.60.1" itself, there is no version field to fill.
 - **Delta pack** "Forever Voiceover Data: Forever" (1705094): lines whose
@@ -187,8 +192,11 @@ a fresh manifest per pack (`<Folder>Pack` global, `Register.lua`), and
 uploads through the CurseForge upload API (`wow.curseforge.com/api`). Pack
 versions are date based (`2026.09.20`, `.2` on the same day) and tracked in
 `tools/data/release_state.json`. Project IDs are the `CURSEFORGE_PROJECTS`
-constant in `tools/config.py`; the API key is `CURSEFORGE_API_KEY` in the
-gitignored `.env`, read by `load_dotenv()` in `release_pack.py`.
+constant in `tools/config.py`; the API key is `CF_API_KEY` in the
+gitignored `.env`, read by `load_dotenv()` in `release_pack.py`
+(`CURSEFORGE_API_KEY` is still accepted; it was renamed 2026-09-21 to match
+the packager's name). This is the local file, not the GitHub secret of the
+same name, which stays unset — see the addon entry above.
 
 CurseForge moderation holds new projects and their first files for a day or
 so; nothing needs doing meanwhile. The project logo must be original art

@@ -21,7 +21,8 @@ everything on the maintainer's machine):
 Audio is re-encoded for release (mono 48 kbps mp3) into tools/data/release/.
 Versions are date based (2026.09.21, then 2026.09.21.2 on the same day).
 
-The API key comes from the repo's .env (gitignored): CURSEFORGE_API_KEY=...
+The API key comes from the repo's .env (gitignored): CF_API_KEY=... (the name
+the BigWigs packager uses too; CURSEFORGE_API_KEY is still accepted).
 Project IDs are in config.CURSEFORGE_PROJECTS.
 """
 from __future__ import annotations
@@ -188,7 +189,7 @@ def load_dotenv() -> None:
 def curseforge_config(pack: str) -> tuple[str | None, int | None]:
     """(api token, project id) for the pack."""
     load_dotenv()
-    key = os.environ.get("CURSEFORGE_API_KEY") or os.environ.get("CF_API_KEY")
+    key = os.environ.get("CF_API_KEY") or os.environ.get("CURSEFORGE_API_KEY")
     return key, CURSEFORGE_PROJECTS.get(pack)
 
 
@@ -203,7 +204,7 @@ def game_version_id(key: str) -> int:
 def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: str) -> None:
     key, project = curseforge_config(pack)
     if not key or not project:
-        raise SystemExit(f"upload needs CURSEFORGE_API_KEY in .env and a project id for {pack} in config.CURSEFORGE_PROJECTS")
+        raise SystemExit(f"upload needs CF_API_KEY in .env and a project id for {pack} in config.CURSEFORGE_PROJECTS")
     changelog = (f"{version}: {stats['quests']} quests, {stats['gossip']} gossip lines, {len(stats['files'])} sound files.\n\n"
                  f"Generated from lines captured by players; see https://github.com/quinn-dougherty/forever-vo")
     metadata = {
@@ -239,7 +240,7 @@ def main(argv: list[str]) -> int:
     if args.upload:
         key, project = curseforge_config(args.pack)
         if not key or not project:
-            print(f"CurseForge upload not configured for {args.pack}: need CURSEFORGE_API_KEY in .env and a project id in config.CURSEFORGE_PROJECTS; skipping")
+            print(f"CurseForge upload not configured for {args.pack}: need CF_API_KEY in .env and a project id in config.CURSEFORGE_PROJECTS; skipping")
             return 0
 
     version = next_version(args.pack)
