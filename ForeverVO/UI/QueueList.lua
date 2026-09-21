@@ -41,7 +41,8 @@ function QueueList:GetFrame()
 
     frame.Empty = frame:CreateFontString(nil, "ARTWORK")
     frame.Empty:SetFontObject("GameFontDisableSmall")
-    frame.Empty:SetPoint("TOP", frame.Header, "BOTTOM", 0, -10)
+    frame.Empty:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -34)
+    frame.Empty:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, -34)
     frame.Empty:SetText("Nothing else is waiting to play.")
 
     frame.More = frame:CreateFontString(nil, "ARTWORK")
