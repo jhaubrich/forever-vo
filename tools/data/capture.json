@@ -13,6 +13,30 @@
    "time": 1789935907,
    "zone": "The Barrens"
   },
+  "10668|19e45338": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Beaten Corpse",
+   "npc": "10668",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Southern Barrens",
+   "text": "The body is that of a female orc warrior.\n\nIt is clear that she died in battle, probably against the quilboar in the area.",
+   "time": 1789993443,
+   "zone": "The Barrens"
+  },
+  "10668|36aec325": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Beaten Corpse",
+   "npc": "10668",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Southern Barrens",
+   "text": "You turn the body over and see the marks from blades and spells upon the deceased orc--her armor all but destroyed, her hair matted to her face.\n\nBased on Mankrik's description of her, there is no doubt in your mind that this was his wife.\n\nHe will be upset by the news, but you are sure he should know the truth.",
+   "time": 1789993444,
+   "zone": "The Barrens"
+  },
   "11044|0556ba58": {
    "build": "69913",
    "event": "gossip",
@@ -168,6 +192,18 @@
    "text": "Ah, you there!  I have tasks to give, and I need not waste time explaining their crucial nature.  Listen close.",
    "time": 1789953488,
    "zone": "Tirisfal Glades"
+  },
+  "16227|c5ceacbe": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Bragok",
+   "npc": "16227",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Ratchet",
+   "text": "Where would you like to fly to?",
+   "time": 1789995120,
+   "zone": "The Barrens"
   },
   "1937|19122c56": {
    "build": "69913",
@@ -517,7 +553,7 @@
    "player": "Myrlin Fixpoint",
    "subzone": "",
    "text": "When mounted on the back of a wind rider, one sees that its reputation for strength and speed is well earned.",
-   "time": 1789937445,
+   "time": 1789994367,
    "zone": "Thunder Bluff"
   },
   "3004|dfa12b04": {
@@ -589,13 +625,15 @@
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789924607,
+   "found": true,
    "mapID": 1454,
    "name": "Karus",
    "npc": "3309",
+   "pack": "Forever",
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1789924607,
+   "time": 1789995991,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
@@ -610,20 +648,22 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Strength",
    "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
-   "time": 1789941149,
+   "time": 1789996065,
    "zone": "Orgrimmar"
   },
   "3309|ae78a458": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789924497,
+   "found": true,
    "mapID": 1454,
    "name": "Karus",
    "npc": "3309",
+   "pack": "Forever",
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1789924497,
+   "time": 1789996126,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
@@ -636,7 +676,19 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Strength",
    "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
-   "time": 1789992133,
+   "time": 1789993916,
+   "zone": "Orgrimmar"
+  },
+  "3318|2f8d506f": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Koma",
+   "npc": "3318",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Valley of Strength",
+   "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
+   "time": 1789993860,
    "zone": "Orgrimmar"
   },
   "3318|ae78a458": {
@@ -652,9 +704,22 @@
    "time": 1789924612,
    "zone": "Orgrimmar"
   },
+  "3345|335c06e7": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1454,
+   "name": "Godan",
+   "npc": "3345",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Drag",
+   "text": "You may have what it takes. Let's find out! ",
+   "time": 1789995843,
+   "zone": "Orgrimmar"
+  },
   "3390|eb12150e": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789992990,
    "mapID": 1413,
    "name": "Apothecary Helbrim",
    "npc": "3390",
@@ -680,25 +745,27 @@
   "3432|3d594cb5": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789993164,
    "mapID": 1413,
    "name": "Mankrik",
    "npc": "3432",
    "player": "Myrlin Fixpoint",
    "subzone": "The Crossroads",
    "text": "I came to the Crossroads from the south seeking help, mage, but I find only cowards who turn their backs on me--even the mighty Thork insults me so. He is a good leader, but his dismissal of my plea causes me greater anger.\n\nHe claims my rage makes me hasty--that it clouds my judgement--but I will not rest until I have vengeance!",
-   "time": 1789993164,
+   "time": 1789994579,
    "zone": "The Barrens"
   },
   "3446|fa56d5e5": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789992325,
    "mapID": 1413,
    "name": "Mebok Mizzyrix",
    "npc": "3446",
    "player": "Myrlin Fixpoint",
    "subzone": "Ratchet",
    "text": "Yes yes yes!  You're just the orc I'm looking for!\n\nSit!  We have much to discuss!!",
-   "time": 1789992325,
+   "time": 1789995063,
    "zone": "The Barrens"
   },
   "3448|c2224a6c": {
@@ -1064,6 +1131,13 @@
    "name": "Omusa Thunderhorn",
    "sex": 2
   },
+  "10668": {
+   "creatureType": "Humanoid",
+   "level": 16,
+   "modelFileID": 949470,
+   "name": "Beaten Corpse",
+   "sex": 3
+  },
   "11044": {
    "creatureType": "Humanoid",
    "level": 25,
@@ -1146,6 +1220,13 @@
    "level": 14,
    "modelFileID": 959310,
    "name": "Magistrate Sevren",
+   "sex": 2
+  },
+  "16227": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 124224,
+   "name": "Bragok",
    "sex": 2
   },
   "1738": {
@@ -1410,12 +1491,26 @@
    "name": "Koma",
    "sex": 2
   },
+  "3345": {
+   "creatureType": "Humanoid",
+   "level": 35,
+   "modelFileID": 917116,
+   "name": "Godan",
+   "sex": 2
+  },
   "3390": {
    "creatureType": "Humanoid",
    "level": 22,
    "modelFileID": 959310,
    "name": "Apothecary Helbrim",
    "sex": 2
+  },
+  "3419": {
+   "creatureType": "Humanoid",
+   "level": 22,
+   "modelFileID": 997378,
+   "name": "Apothecary Zamah",
+   "sex": 3
   },
   "3429": {
    "creatureType": "Humanoid",
@@ -1549,6 +1644,20 @@
    "modelFileID": 123961,
    "name": "Undercity Guardian",
    "sex": 1
+  },
+  "5767": {
+   "creatureType": "Humanoid",
+   "level": 14,
+   "modelFileID": 968705,
+   "name": "Nalpak",
+   "sex": 2
+  },
+  "5768": {
+   "creatureType": "Humanoid",
+   "level": 14,
+   "modelFileID": 921844,
+   "name": "Ebru",
+   "sex": 3
   },
   "5769": {
    "creatureType": "Humanoid",
@@ -1713,6 +1822,7 @@
   "1358-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789992993,
    "found": true,
    "mapID": 1413,
    "name": "Apothecary Helbrim",
@@ -1729,6 +1839,7 @@
   "1358-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789992992,
    "mapID": 1413,
    "name": "Apothecary Helbrim",
    "npc": "3390",
@@ -1789,6 +1900,38 @@
    "title": "Zinge's Delivery",
    "zone": "Undercity"
   },
+  "1486-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1414,
+   "name": "Nalpak",
+   "npc": "5767",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 1486,
+   "subzone": "Wailing Caverns",
+   "text": "As Naralex descended deeper into his nightmare, a strange breed of beasts arose from beneath the Barrens into the Wailing Caverns.\n\nThese deviate creatures have strange, otherworldly properties. While evil in nature, it is my opinion that some good can come from their existence here in Kalimdor. I believe their hides will be of particular use in the ways of leatherworking.\n\nIf you feel up to the task, venture into the caves below and retrieve some deviate hides.",
+   "time": 1789994787,
+   "title": "Deviate Hides",
+   "zone": "The Wailing Caverns"
+  },
+  "1487-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1414,
+   "name": "Ebru",
+   "npc": "5768",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 1487,
+   "subzone": "Wailing Caverns",
+   "text": "Naralex had a noble goal.\n\nOur great leader aspired to enter the Emerald Dream and help regrow these harsh lands back into the lush forest it once was. But something went terribly wrong.\n\nNaralex's dream turned into a nightmare and corrupt creatures began to inhabit the caverns.\n\nWhile some Disciples of Naralex seek to awake our master, my concern is with ridding these caves of the evil beasts.\n\nBrave the caverns, Myrlin, and eradicate the deviate spawn.",
+   "time": 1789994785,
+   "title": "Deviate Eradication",
+   "zone": "The Wailing Caverns"
+  },
   "1489-accept": {
    "build": "69913",
    "event": "accept",
@@ -1848,6 +1991,22 @@
    "time": 1789936579,
    "title": "Nara Wildmane",
    "zone": "Thunder Bluff"
+  },
+  "1491-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Mebok Mizzyrix",
+   "npc": "3446",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 1491,
+   "subzone": "Ratchet",
+   "text": "Ok, so the raptor horns didn't work so well.  But that's all right -- no one got rich on their first try!  And besides, I think I found something that'll work even better in my smart drinks!\n\nThere is a substance called Wailing Essence, and I think it is the cause of the strange plants and animals in the Barrens.  Get me some and I'll try it in my drink!\n\nI heard the essence gathers in ectoplasmic creatures in the Wailing Caverns to the west.  Hunt those creatures and gather the essence.",
+   "time": 1789995061,
+   "title": "Smart Drinks",
+   "zone": "The Barrens"
   },
   "179-accept": {
    "build": "69913",
@@ -2065,6 +2224,7 @@
   "3281-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789992978,
    "found": true,
    "mapID": 1413,
    "name": "Gazrog",
@@ -2075,6 +2235,36 @@
    "subzone": "The Crossroads",
    "text": "You may have killed the raptors, but the silver they stole must be recovered!  I have reports that the raptors have a large grouping of nests south of Ratchet, known as the Raptor Grounds.  It is likely that they brought our stolen silver there.\n\nGo to this raptor haven and search for the stolen silver.  When you find it, return it to me.",
    "time": 1789992978,
+   "title": "Stolen Silver",
+   "zone": "The Barrens"
+  },
+  "3281-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1413,
+   "name": "Gazrog",
+   "npc": "3464",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 3281,
+   "subzone": "The Crossroads",
+   "text": "Aha!  So the raptors did hide the silver at their lair.  It's hard to believe these beasts would have the desire for silver.  Perhaps the stories of their intelligence are not as far from the mark as I thought!\n\nThank you, Myrlin.  Take this as a reward for your service to us, and know that the guards of the crossroads owe their next month's pay to you.",
+   "time": 1789994554,
+   "title": "Stolen Silver",
+   "zone": "The Barrens"
+  },
+  "3281-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1413,
+   "name": "Gazrog",
+   "npc": "3464",
+   "player": "Myrlin Fixpoint",
+   "questID": 3281,
+   "subzone": "The Crossroads",
+   "text": "Do you have the silver?",
+   "time": 1789994552,
    "title": "Stolen Silver",
    "zone": "The Barrens"
   },
@@ -2853,6 +3043,7 @@
   "4921-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789993163,
    "found": true,
    "mapID": 1413,
    "name": "Mankrik",
@@ -2863,6 +3054,22 @@
    "subzone": "The Crossroads",
    "text": "We battled in a small tauren camp when we were separated--she held three of the Bristlebacks off by herself. But the odds began to overwhelm us. I led some away only to see her overwhelmed by newcomers. In my rage, I turned to face my enemies, but they brought me down easily with their vast numbers.\n\nI awoke to a tauren druid tending my wounds--he had come across me on the Gold Road as I fell.\n\nPlease, mage, find some sign of my wife.",
    "time": 1789993163,
+   "title": "Lost in Battle",
+   "zone": "The Barrens"
+  },
+  "4921-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1413,
+   "name": "Mankrik",
+   "npc": "3432",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 4921,
+   "subzone": "The Crossroads",
+   "text": "I understand. Thank you, mage.",
+   "time": 1789994581,
    "title": "Lost in Battle",
    "zone": "The Barrens"
   },
@@ -3169,6 +3376,7 @@
   "865-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789992324,
    "found": true,
    "mapID": 1413,
    "name": "Mebok Mizzyrix",
@@ -3182,9 +3390,40 @@
    "title": "Raptor Horns",
    "zone": "The Barrens"
   },
+  "865-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1413,
+   "name": "Mebok Mizzyrix",
+   "npc": "3446",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 865,
+   "subzone": "Ratchet",
+   "text": "Great, you got them!  Now I just need to ground them down and mix them with some wine, and...",
+   "time": 1789995058,
+   "title": "Raptor Horns",
+   "zone": "The Barrens"
+  },
+  "865-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1413,
+   "name": "Mebok Mizzyrix",
+   "npc": "3446",
+   "player": "Myrlin Fixpoint",
+   "questID": 865,
+   "subzone": "Ratchet",
+   "text": "Did you get the horns, Myrlin?  Those things are going to make me a fortune!",
+   "time": 1789995057,
+   "title": "Raptor Horns",
+   "zone": "The Barrens"
+  },
   "869-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789992977,
    "found": true,
    "mapID": 1413,
    "name": "Gazrog",
@@ -3201,6 +3440,7 @@
   "869-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789992976,
    "mapID": 1413,
    "name": "Gazrog",
    "npc": "3464",
@@ -3610,9 +3850,24 @@
    "title": "The New Plague",
    "zone": "Undercity"
   },
+  "95774-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1413,
+   "name": "Mankrik",
+   "npc": "3432",
+   "player": "Myrlin Fixpoint",
+   "questID": 95774,
+   "subzone": "The Crossroads",
+   "text": "The healer who saved me could not save her, and she has died in battle. Her name is Olgra, and I will never forget her.\r\n\r\nYou did not find her adornments on her body? She wore many jewels of polished bone.\r\n\r\nSlay the Razormane Raiders near where she fell, and find her precious works of art!\r\n\r\nI will place them with the memorial that I build in her memory.",
+   "time": 1789994583,
+   "title": "Her Name Is Olgra",
+   "zone": "The Barrens"
+  },
   "959-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789992310,
    "found": true,
    "mapID": 1413,
    "name": "Crane Operator Bigglefuzz",
@@ -3640,6 +3895,22 @@
    "time": 1789951582,
    "title": "Watching the Roads",
    "zone": "Silverpine Forest"
+  },
+  "962-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1456,
+   "name": "Apothecary Zamah",
+   "npc": "3419",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 962,
+   "subzone": "The Pools of Vision",
+   "text": "The Royal Apothecary Society, based in the great Undercity of Lordaeron, has sent me here for a very specific service, Myrlin. Perhaps you wish to aid me, and in turn The Dark Lady in our efforts to advance the Forsaken.\n\nRecently I studied a rare specimen of flora named Serpentbloom. I believe in greater quantities this herb has great potential.\n\nUnfortunately Serpentbloom can only be found in the darkest recesses of the Wailing Caverns, a dangerous cave system located in the Barrens.",
+   "time": 1789994256,
+   "title": "Serpentbloom",
+   "zone": "Thunder Bluff"
   },
   "96895-accept": {
    "build": "69913",
