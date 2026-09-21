@@ -1,6 +1,6 @@
 name: Release addon
 
-# Tag a commit (v0.2.0) to package ForeverVO with the BigWigs packager and
+# Tag a commit (v0.1.1) to package ForeverVO with the BigWigs packager and
 # publish it to GitHub Releases. Leave the CF_API_KEY secret UNSET: the
 # repository is linked to CurseForge as a Source, so their own packager picks
 # the tag up and uploads it. Setting the key here would upload the file twice.

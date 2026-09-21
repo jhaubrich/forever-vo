@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0
+## 0.1.1
 
 - Lines no longer call you by the wrong class. The client fills in $n, $c and $r
   before an addon can read the text, so a quest first heard on a rogue was
