@@ -14,6 +14,8 @@ tools/data/bulk/classic.json
 tools/data/generate.log
 tools/data/daily.log
 tools/data/daily.lock
+tools/data/ingest.log
+tools/data/ingest.lock
 tools/data/capture.sources.json
 tools/data/release/
 tools/data/release_state.json
