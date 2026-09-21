@@ -1,6 +1,6 @@
 {
  "gossip": {
-  "10378|bbe052dd": {
+  "10378|4fa5b9c3": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789935907,
@@ -9,7 +9,7 @@
    "npc": "10378",
    "player": "Myrlin Fixpoint",
    "subzone": "Camp Taurajo",
-   "text": "Where can I send you today mage?",
+   "text": "Where can I send you today $c?",
    "time": 1789935907,
    "zone": "The Barrens"
   },
@@ -52,7 +52,7 @@
    "time": 1789931444,
    "zone": "Undercity"
   },
-  "11044|98f6d0c2": {
+  "11044|386a9ec7": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789931442,
@@ -61,7 +61,7 @@
    "npc": "11044",
    "player": "Myrlin Fixpoint",
    "subzone": "The Apothecarium",
-   "text": "Once, it is true, I was human. What might otherwise be a shortcoming works to our advantage, Myrlin, for I know human weaknesses intimately.",
+   "text": "Once, it is true, I was human. What might otherwise be a shortcoming works to our advantage, $N, for I know human weaknesses intimately.",
    "time": 1789931442,
    "zone": "Undercity"
   },
@@ -104,7 +104,7 @@
    "time": 1789961949,
    "zone": "Undercity"
   },
-  "11833|65ba1433": {
+  "11833|eb2e4319": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789936555,
@@ -113,11 +113,11 @@
    "npc": "11833",
    "player": "Myrlin Fixpoint",
    "subzone": "Elder Rise",
-   "text": "Well met, mage. You may speak to me unless you have direct business with my mistress Magatha.\n\nI deal with most of her tasks for her so she can concentrate on more important matters. Perhaps there are some things we could discuss before you seek audience with her?",
+   "text": "Well met, $c. You may speak to me unless you have direct business with my mistress Magatha.\n\nI deal with most of her tasks for her so she can concentrate on more important matters. Perhaps there are some things we could discuss before you seek audience with her?",
    "time": 1789942019,
    "zone": "Thunder Bluff"
   },
-  "11835|e914bd74": {
+  "11835|0f923099": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789952107,
@@ -126,7 +126,7 @@
    "npc": "11835",
    "player": "Myrlin Fixpoint",
    "subzone": "The Apothecarium",
-   "text": "Hello, Myrlin.",
+   "text": "Hello, $N.",
    "time": 1789962169,
    "zone": "Undercity"
   },
@@ -247,7 +247,7 @@
    "time": 1789949570,
    "zone": "Silverpine Forest"
   },
-  "1952|01aed514": {
+  "1952|7327dd7a": {
    "build": "69913",
    "event": "greeting",
    "firstSeen": 1789949800,
@@ -256,7 +256,7 @@
    "npc": "1952",
    "player": "Myrlin Fixpoint",
    "subzone": "The Sepulcher",
-   "text": "Hello, Mage.  If you're here, then you must know that Silverpine is saturated with our enemies.  To survive, the Forsaken must drive them back!",
+   "text": "Hello, $C.  If you're here, then you must know that Silverpine is saturated with our enemies.  To survive, the Forsaken must drive them back!",
    "time": 1789949800,
    "zone": "Silverpine Forest"
   },
@@ -299,7 +299,7 @@
    "time": 1789956660,
    "zone": "Silverpine Forest"
   },
-  "2425|4aecbd96": {
+  "2425|7dca81fc": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789931596,
@@ -308,13 +308,14 @@
    "npc": "2425",
    "player": "Myrlin Fixpoint",
    "subzone": "Royal Quarter",
-   "text": "Do not presume to speak to me as though you are my equal, mage. Sylvanas is my queen, and I will do as she bids.\n\nIf you do not show the proper respect, I assure you, we can find a more than suitable place for you in the Nether.\n\nBut there is no reason we cannot have words if you wish to aid the Dark Lady...",
+   "text": "Do not presume to speak to me as though you are my equal, $c. Sylvanas is my queen, and I will do as she bids.\n\nIf you do not show the proper respect, I assure you, we can find a more than suitable place for you in the Nether.\n\nBut there is no reason we cannot have words if you wish to aid the Dark Lady...",
    "time": 1789945460,
    "zone": "Undercity"
   },
   "246152|7a71eb1d": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790001973,
    "mapID": 1420,
    "name": "Shari Stilwell",
    "npc": "246152",
@@ -337,7 +338,7 @@
    "time": 1789932632,
    "zone": "The Barrens"
   },
-  "2492|aa6f2374": {
+  "2492|6e89a35a": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789952315,
@@ -346,7 +347,7 @@
    "npc": "2492",
    "player": "Myrlin Fixpoint",
    "subzone": "Magic Quarter",
-   "text": "As a mage, you are one of a select group that can conjure a portal to transport you back to this very place.  I can teach you if you are ready.",
+   "text": "As a $c, you are one of a select group that can conjure a portal to transport you back to this very place.  I can teach you if you are ready.",
    "time": 1789952315,
    "zone": "Undercity"
   },
@@ -357,10 +358,10 @@
    "mapID": 2521,
    "name": "Yala Windwatcher",
    "npc": "249363",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "subzone": "Thendal Grove",
    "text": "The Wind Spirits have left us. \r\n\r\nNow, only mindless echoes now remain. Be wary, however. These winds are neither kind, nor gentle.",
-   "time": 1789927130,
+   "time": 1790004384,
    "zone": "Zephras Isle"
   },
   "250686|3c4152a4": {
@@ -396,10 +397,22 @@
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "subzone": "Thendal Village",
    "text": "What do you need of me, child of Zephras?",
-   "time": 1789927412,
+   "time": 1790004470,
+   "zone": "Zephras Isle"
+  },
+  "251362|dd20804f": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Ailee Farheart",
+   "npc": "251362",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "Hello, hunter.",
+   "time": 1790002332,
    "zone": "Zephras Isle"
   },
   "251373|86bf8d52": {
@@ -422,13 +435,13 @@
    "mapID": 2521,
    "name": "Tai'ree Farsight",
    "npc": "251376",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "subzone": "Thendal Village",
    "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a hunter, I can give you the tools to survive the wilds.",
-   "time": 1789927679,
+   "time": 1790003603,
    "zone": "Zephras Isle"
   },
-  "251389|87ef59fc": {
+  "251389|a046a01a": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789927588,
@@ -437,8 +450,32 @@
    "npc": "251389",
    "player": "Agravain Fixpoint",
    "subzone": "Thendal Village",
-   "text": "Slay your enemies and swoon your paramours with this one weird trick.\r\n\r\nIf you follow the path of the rogue, I can teach you... for a cost, of course.",
+   "text": "Slay your enemies and swoon your paramours with this one weird trick.\r\n\r\nIf you follow the path of the $c, I can teach you... for a cost, of course.",
    "time": 1789927588,
+   "zone": "Zephras Isle"
+  },
+  "251487|06790c88": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Ventaari Brightwish",
+   "npc": "251487",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "Zephras is in a state of decline, unfortunately. The elemental wind spirits that brought us here to Skywall so many thousands of years ago have vanished, causing us to lose much of the magic on which we've depended for millennia.\r\n\r\nThe island itself is also dangerously unstable, and we've even lost contact with the other island provinces of the shen'dorei. The few Windshapers that still possess the gift of skysight have attempted to contact our brothers and sisters on the other islands, but we have had no response.\r\n\r\nMany among us are worried that the shen'dorei here on Zephras are all that is left of our people.",
+   "time": 1790003369,
+   "zone": "Zephras Isle"
+  },
+  "251487|ba1aa782": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Ventaari Brightwish",
+   "npc": "251487",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "The shen'dorei will always owe the spirits a debt for their aid, and the Windshapers have sworn an oath to repay that debt and restore things to the way they were before. Unfortunately, we are dangerously blind to what is happening around us within Skywall without the spirits to guide us.\r\n\r\nThe High Order are shortsighted and arrogant, just like their Highborne ancestors. They seek to master and control the magic of this place. This is very path that led us to flee from Kalimdor and reside here in the first place. I fear that much like our forebears their confidence has vastly outpaced their competence and the end result could be disastrous.",
+   "time": 1790003370,
    "zone": "Zephras Isle"
   },
   "251487|e92a645e": {
@@ -448,11 +485,204 @@
    "mapID": 2521,
    "name": "Ventaari Brightwish",
    "npc": "251487",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "subzone": "Thendal Village",
    "text": "What may I do for you, fellow windshaper?",
-   "time": 1789927210,
+   "time": 1790003367,
    "zone": "Zephras Isle"
+  },
+  "251523|14e578ce": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Constable Aonda",
+   "npc": "251523",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "<Constable Aonda wears an intense look on her face, clearly deep in thought.>",
+   "time": 1790005352,
+   "zone": "Zephras Isle"
+  },
+  "251523|191d4b60": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Constable Aonda",
+   "npc": "251523",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "More than I'd like, I'm afraid. We've been harassed by a group of bandits camping out in a cave to the north, and the Al'Aketh cult recently took over Falaath Village to the south of us. I trust every peacekeeper and citizen here, but we are far too few to keep the village secure. \r\n\r\nIf the cult decides to continue their expansion here, there's little we can do to stop them.",
+   "time": 1790005353,
+   "zone": "Zephras Isle"
+  },
+  "251902|1e4f0028": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "In all of our years dealing with the wind spirits, at no point did they speak of the Windlord as a figure of reverence. They acknowledged the existence of a being named Al'Akir, but they avoided invoking his name, almost as if they feared him. \r\n\r\nEven if this Al'Akir is an all-powerful \"Windlord\" or ruler of the wind elementals, my centuries of communion with the spirits has convinced me that at the very least he is not universally loved amongst the denizens of Skywall. I fear that attempting to treat with Al'Akir could merely hasten our doom.",
+   "time": 1790005392,
+   "zone": "Zephras Isle"
+  },
+  "251902|243962a6": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "The Cult? They are zealots and killers. They believe that we are being punished for some unspecific sin. The reality is that those that lead them are opportunists leftover from a dubious order of so-called \"Priests\" of Al'Akir, the Windlord. \r\n\r\nThey now find themselves in a position to weaponize the fear of our people to consolidate their own power... and they have been quick to do so.",
+   "time": 1790005391,
+   "zone": "Zephras Isle"
+  },
+  "251902|3fda086f": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "Many disagree on this point.  I believe that simple communication is the key. The songs of the wind rang so clearly to us when the spirits where still here. Since they left, its grown quiet and our power as windshapers has weakened. \r\n\r\nHowever, there are those of us who can still hear something. A hushed tone. Fragments of a melody. Those that can still hear and see into the elemental planes must grow in strength. I believe that is the key to our salvation.",
+   "time": 1790005389,
+   "zone": "Zephras Isle"
+  },
+  "251902|9162c2da": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "Where to begin? Our home is failing. The wards have fallen and the three provinces have begun to drift apart. There was a time not long ago when the spires of Shen'dramar were visible from the western watchtower. No longer. The anchor pylons are weakening, and if the chains finally break...",
+   "time": 1790005396,
+   "zone": "Zephras Isle"
+  },
+  "251902|96f13309": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "Why is this happening? Put simply, the spirits of the wind just... vanished. They were there one day, and they were gone the next. I can't quite describe the feeling that we windshapers felt when it happened. It was as if a great silence fell over all of us and then... a profound absence.\r\n\r\nThe petty wraiths you've likely encountered out there are just shades of the glory of the true spirits of wind. Non-sentient, aimless, and a far cry from the kindly spirits we lived in harmony alongside for thousands of years.",
+   "time": 1790005397,
+   "zone": "Zephras Isle"
+  },
+  "251902|c0af861a": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "Alas, I have prattled on long enough. Seek out my apprentice Ayessa Dawnsinger in the port of Valanaar if you find yourself out that way. She still hears the song--if only faintly.  I am old and much of my power has left me. Ayessa represents the future of our people and the path we must now walk to survive. It's up to her and young skyborne such as yourself to carry the hopes for our people forward.",
+   "time": 1790005394,
+   "zone": "Zephras Isle"
+  },
+  "251902|dd8cdee4": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "You must remember that while this realm has been our home for millennia, we will always be somewhat alien to this place. We are not in the terrestrial world that birthed our people. We are in the realm of Skywall, a part of the elemental plane.\r\n\r\nWe arrived here as the guests of spirits with whom we found common cause in ages past. Now that we Shen'dorei find ourselves bereft of their presence--and potentially--their protection, there's no telling how the other denizens of this plane may perceive us.",
+   "time": 1790005393,
+   "zone": "Zephras Isle"
+  },
+  "251902|f56638d6": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "Greetings, child. I am Illaya Amberwind and I am the Elder Windshaper here on Zephras Isle. It's always nice to meet young new faces that make their way down from the grove.\r\n\r\nDon't let this old shaman hold you up, no doubt you've got many adventures to see to. Do feel free to stop by later if you'd like.",
+   "time": 1790005402,
+   "zone": "Zephras Isle"
+  },
+  "251905|3541aa81": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Zerril Softbreeze",
+   "npc": "251905",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "If you need training as a cook, I have a few tips and tricks I could pass on! Ho ho! Throw on an apron and let's get started!",
+   "time": 1790005285,
+   "zone": "Zephras Isle"
+  },
+  "251993|453a25ae": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Indari Sunseam",
+   "npc": "251993",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "I can teach you to craft fine leather armor, if you have the aptitude.",
+   "time": 1790005320,
+   "zone": "Zephras Isle"
+  },
+  "254082|4d87d665": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Aarnor Galestrike",
+   "npc": "254082",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "The spirits of the wind may have left us, but the power of the elements is not entirely out of reach for those with the patience to seek them out.\r\n\r\nIf you are initiated in the ways of the shaman, I can help you grasp them.",
+   "time": 1790005249,
+   "zone": "Zephras Isle"
+  },
+  "254084|fb6560cd": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Elayaa Easewind",
+   "npc": "254084",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a hunter, I can give you the tools to survive the wilds.",
+   "time": 1790005438,
+   "zone": "Zephras Isle"
+  },
+  "254089|9cc50b7d": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Coriella Calmbreeze",
+   "npc": "254089",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "Welcome to the Calmbreeze Inn, traveler. Would you like some refreshment?",
+   "time": 1790005682,
+   "zone": "Zephras Isle"
+  },
+  "256388|13e9970d": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789932623,
+   "mapID": 1413,
+   "name": "Jornah",
+   "npc": "256388",
+   "player": "Myrlin Fixpoint",
+   "subzone": "",
+   "text": "Greetings and well met, $N! Your arrival is timely, and we here at the Durotar Supply and Logistics company are always in need of new contractors.\r\n\r\nIf you are someone with a knack for gathering useful materials or the skills to craft something from scratch, you have a place here.\r\n\r\nPlease let me know if you have any questions.",
+   "time": 1789932623,
+   "zone": "The Barrens"
   },
   "256388|631ab615": {
    "build": "69913",
@@ -467,7 +697,7 @@
    "time": 1789932622,
    "zone": "The Barrens"
   },
-  "256388|6578af6f": {
+  "256388|7f467a54": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789932624,
@@ -476,22 +706,57 @@
    "npc": "256388",
    "player": "Myrlin Fixpoint",
    "subzone": "",
-   "text": "I am glad you asked! We are far more than just a delivery service, Myrlin. We employ and contract craftsman across a variety of specialties and trades, and keep our ear to the ground for any new opportunities to keep their hands busy and goods flowing. We cannot possibly predict the emergent needs of any potential client, so we depend on their crafting orders to arrive to us.\r\n\r\nYou can imagine that this pipeline is... not as effective as we would hope. We encourage any crafters to satisfy these demands and deliver the goods directly to the customers,  wherever they may be. Worry not, you will be fairly compensated for your troubles and earn respect among our organization.",
+   "text": "I am glad you asked! We are far more than just a delivery service, $N. We employ and contract craftsman across a variety of specialties and trades, and keep our ear to the ground for any new opportunities to keep their hands busy and goods flowing. We cannot possibly predict the emergent needs of any potential client, so we depend on their crafting orders to arrive to us.\r\n\r\nYou can imagine that this pipeline is... not as effective as we would hope. We encourage any crafters to satisfy these demands and deliver the goods directly to the customers,  wherever they may be. Worry not, you will be fairly compensated for your troubles and earn respect among our organization.",
    "time": 1789932624,
    "zone": "The Barrens"
   },
-  "256388|70cda348": {
+  "257024|ec1a6e0b": {
    "build": "69913",
    "event": "gossip",
-   "firstSeen": 1789932623,
-   "mapID": 1413,
-   "name": "Jornah",
-   "npc": "256388",
-   "player": "Myrlin Fixpoint",
-   "subzone": "",
-   "text": "Greetings and well met, Myrlin! Your arrival is timely, and we here at the Durotar Supply and Logistics company are always in need of new contractors.\r\n\r\nIf you are someone with a knack for gathering useful materials or the skills to craft something from scratch, you have a place here.\r\n\r\nPlease let me know if you have any questions.",
-   "time": 1789932623,
-   "zone": "The Barrens"
+   "mapID": 2521,
+   "name": "Mendalass Tattermend",
+   "npc": "257024",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "I don't get too many Skinners in here looking for training, but I guess I could teach you something if you're ready.",
+   "time": 1790005267,
+   "zone": "Zephras Isle"
+  },
+  "257554|41088e5c": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Halaan Hawk-Eye",
+   "npc": "257554",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "<The gaze of the ranger standing before you is fixed on the enormous anchor pylon in the distance.>",
+   "time": 1790002667,
+   "zone": "Zephras Isle"
+  },
+  "263113|81449513": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Myriaal Mistwake",
+   "npc": "263113",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "It can get boring up here, you know. I can only annoy that stuffy wretch Halaan so much before even that gets old.",
+   "time": 1790002648,
+   "zone": "Zephras Isle"
+  },
+  "263664|550c4a52": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Shen'dar Village",
+   "text": "Greetings, traveler.",
+   "time": 1790005592,
+   "zone": "Zephras Isle"
   },
   "266484|e94c420f": {
    "build": "69913",
@@ -506,7 +771,7 @@
    "time": 1789962082,
    "zone": "Undercity"
   },
-  "267009|ed3f7394": {
+  "267009|6f316d7a": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789953566,
@@ -515,7 +780,7 @@
    "npc": "267009",
    "player": "Myrlin Fixpoint",
    "subzone": "",
-   "text": "Be careful, mage. There are cultists nearby.",
+   "text": "Be careful, $c. There are cultists nearby.",
    "time": 1789953566,
    "zone": "Tirisfal Glades"
   },
@@ -623,7 +888,7 @@
    "time": 1789944440,
    "zone": "Thunder Bluff"
   },
-  "3216|4cb32313": {
+  "3216|13f1d3f9": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789940898,
@@ -632,7 +897,7 @@
    "npc": "3216",
    "player": "Myrlin Fixpoint",
    "subzone": "Cleft of Shadow",
-   "text": "Listen closely to what you are told and do not quickly trust, or distrust.  For even friends serve their own ends, mage.\n\nOur great Warchief knows this, and to prove that there are warlocks within the Horde who do not wish to destroy it from within or gain control over it, I have volunteered to aid our young leader in anyway I can.",
+   "text": "Listen closely to what you are told and do not quickly trust, or distrust.  For even friends serve their own ends, $c.\n\nOur great Warchief knows this, and to prove that there are warlocks within the Horde who do not wish to destroy it from within or gain control over it, I have volunteered to aid our young leader in anyway I can.",
    "time": 1789940898,
    "zone": "Orgrimmar"
   },
@@ -746,7 +1011,7 @@
    "time": 1789992990,
    "zone": "The Barrens"
   },
-  "3429|01a1e491": {
+  "3429|4e7d06f7": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789932275,
@@ -755,11 +1020,11 @@
    "npc": "3429",
    "player": "Myrlin Fixpoint",
    "subzone": "The Crossroads",
-   "text": "Welcome to the Crossroads, mage. My name is Thork--I lead the defenses here in the name of the Warchief.\n\nPlease, feel free to make yourself at home. As long as you mind your business, no one should have any problem with you taking up some space.\n\nThere are many threats to our safety here. If you've already become familiar with the lay of the land, speak to the others here--perhaps they have tasks for you to do.",
+   "text": "Welcome to the Crossroads, $c. My name is Thork--I lead the defenses here in the name of the Warchief.\n\nPlease, feel free to make yourself at home. As long as you mind your business, no one should have any problem with you taking up some space.\n\nThere are many threats to our safety here. If you've already become familiar with the lay of the land, speak to the others here--perhaps they have tasks for you to do.",
    "time": 1789932275,
    "zone": "The Barrens"
   },
-  "3432|3d594cb5": {
+  "3432|c1a3099b": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789993164,
@@ -768,7 +1033,7 @@
    "npc": "3432",
    "player": "Myrlin Fixpoint",
    "subzone": "The Crossroads",
-   "text": "I came to the Crossroads from the south seeking help, mage, but I find only cowards who turn their backs on me--even the mighty Thork insults me so. He is a good leader, but his dismissal of my plea causes me greater anger.\n\nHe claims my rage makes me hasty--that it clouds my judgement--but I will not rest until I have vengeance!",
+   "text": "I came to the Crossroads from the south seeking help, $c, but I find only cowards who turn their backs on me--even the mighty Thork insults me so. He is a good leader, but his dismissal of my plea causes me greater anger.\n\nHe claims my rage makes me hasty--that it clouds my judgement--but I will not rest until I have vengeance!",
    "time": 1789994579,
    "zone": "The Barrens"
   },
@@ -785,7 +1050,7 @@
    "time": 1789995063,
    "zone": "The Barrens"
   },
-  "3448|c2224a6c": {
+  "3448|dcea3712": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789934529,
@@ -794,7 +1059,7 @@
    "npc": "3448",
    "player": "Myrlin Fixpoint",
    "subzone": "The Crossroads",
-   "text": "The times we live in are as fickle as the shifting winds, mage.  It is important to remember what is true and lasting in this world, and to preserve that.  Everything else is a waste.",
+   "text": "The times we live in are as fickle as the shifting winds, $c.  It is important to remember what is true and lasting in this world, and to preserve that.  Everything else is a waste.",
    "time": 1789934529,
    "zone": "The Barrens"
   },
@@ -863,7 +1128,7 @@
    "time": 1789951790,
    "zone": "Undercity"
   },
-  "4568|4670f054": {
+  "4568|a9a4b6a0": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789953091,
@@ -872,7 +1137,7 @@
    "npc": "4568",
    "player": "Myrlin Fixpoint",
    "subzone": "Magic Quarter",
-   "text": "Greetings.  I'm an undead mage trainer, and you're a mage.",
+   "text": "Greetings.  I'm an undead $c trainer, and you're a $c.",
    "time": 1789963304,
    "zone": "Undercity"
   },
@@ -993,7 +1258,7 @@
    "time": 1789957536,
    "zone": "Undercity"
   },
-  "5769|c626a1cf": {
+  "5769|c9ae2675": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789936570,
@@ -1002,11 +1267,11 @@
    "npc": "5769",
    "player": "Myrlin Fixpoint",
    "subzone": "Elder Rise",
-   "text": "The earth keeps many secrets, mage; it is our duty to ensure that those that must remain a secret for the good of all stays as such.",
+   "text": "The earth keeps many secrets, $c; it is our duty to ensure that those that must remain a secret for the good of all stays as such.",
    "time": 1789936570,
    "zone": "Thunder Bluff"
   },
-  "5885|a7455611": {
+  "5885|f341dff7": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789941234,
@@ -1015,7 +1280,7 @@
    "npc": "5885",
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Spirits",
-   "text": "Greetings, mage.  Are you here to learn of the hidden arts?",
+   "text": "Greetings, $c.  Are you here to learn of the hidden arts?",
    "time": 1789941234,
    "zone": "Orgrimmar"
   },
@@ -1031,6 +1296,18 @@
    "text": "I can train you in First Aid techniques.",
    "time": 1789925033,
    "zone": "Durotar"
+  },
+  "6491|22357dc5": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Spirit Healer",
+   "npc": "6491",
+   "player": "Pellinore Fixpoint",
+   "subzone": "Thendal Village",
+   "text": "It is not yet your time. I shall aid your journey back to the realm of the living... for a price.",
+   "time": 1790004124,
+   "zone": "Zephras Isle"
   },
   "658|003beda2": {
    "build": "69913",
@@ -1097,7 +1374,7 @@
    "time": 1789931505,
    "zone": "Undercity"
   },
-  "7683|dc498649": {
+  "7683|a4ef73af": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789931358,
@@ -1106,7 +1383,7 @@
    "npc": "7683",
    "player": "Myrlin Fixpoint",
    "subzone": "The Apothecarium",
-   "text": "Welcome to Blue Moon Odds and Ends, mage.  If you have any questions, please let me know.",
+   "text": "Welcome to Blue Moon Odds and Ends, $c.  If you have any questions, please let me know.",
    "time": 1789931510,
    "zone": "Undercity"
   },
@@ -1372,12 +1649,33 @@
    "name": "Rorian the Dayseeker",
    "sex": 2
   },
+  "251362": {
+   "creatureType": "Humanoid",
+   "level": 1,
+   "modelFileID": 7478494,
+   "name": "Ailee Farheart",
+   "sex": 3
+  },
+  "251363": {
+   "creatureType": "Humanoid",
+   "level": 1,
+   "modelFileID": 7478494,
+   "name": "Dalia the Collector",
+   "sex": 3
+  },
   "251366": {
    "creatureType": "Humanoid",
    "level": 10,
    "modelFileID": 7478494,
    "name": "Aetheen of the Gales",
    "sex": 3
+  },
+  "251368": {
+   "creatureType": "Humanoid",
+   "level": 20,
+   "modelFileID": 1100087,
+   "name": "Elatrell Featherlight",
+   "sex": 2
   },
   "251373": {
    "creatureType": "Humanoid",
@@ -1407,6 +1705,62 @@
    "name": "Ventaari Brightwish",
    "sex": 3
   },
+  "251523": {
+   "creatureType": "Humanoid",
+   "level": 20,
+   "modelFileID": 7478494,
+   "name": "Constable Aonda",
+   "sex": 3
+  },
+  "251902": {
+   "creatureType": "Humanoid",
+   "level": 20,
+   "modelFileID": 7478494,
+   "name": "Illaya Amberwind",
+   "sex": 3
+  },
+  "251905": {
+   "creatureType": "Humanoid",
+   "level": 20,
+   "modelFileID": 7478487,
+   "name": "Zerril Softbreeze",
+   "sex": 2
+  },
+  "251993": {
+   "creatureType": "Humanoid",
+   "level": 5,
+   "modelFileID": 7478487,
+   "name": "Indari Sunseam",
+   "sex": 2
+  },
+  "252095": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 1100258,
+   "name": "Hanaa Nightwind",
+   "sex": 3
+  },
+  "254082": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478487,
+   "name": "Aarnor Galestrike",
+   "sex": 2
+  },
+  "254084": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478494,
+   "name": "Elayaa Easewind",
+   "sex": 3
+  },
+  "254089": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478494,
+   "name": "Coriella Calmbreeze",
+   "sex": 3
+  },
   "256388": {
    "creatureType": "Humanoid",
    "level": 30,
@@ -1414,12 +1768,40 @@
    "name": "Jornah",
    "sex": 3
   },
+  "257024": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478487,
+   "name": "Mendalass Tattermend",
+   "sex": 2
+  },
   "257551": {
    "creatureType": "Humanoid",
    "level": 10,
    "modelFileID": 1100258,
    "name": "Valreaa Valewind",
    "sex": 3
+  },
+  "257554": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478487,
+   "name": "Halaan Hawk-Eye",
+   "sex": 2
+  },
+  "263113": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478494,
+   "name": "Myriaal Mistwake",
+   "sex": 3
+  },
+  "263664": {
+   "creatureType": "Humanoid",
+   "level": 12,
+   "modelFileID": 7478487,
+   "name": "Raan Wildwind",
+   "sex": 2
   },
   "266484": {
    "creatureType": "Undead",
@@ -1712,6 +2094,13 @@
    "name": "Rawrk",
    "sex": 2
   },
+  "6491": {
+   "creatureType": "Humanoid",
+   "level": 60,
+   "modelFileID": 126042,
+   "name": "Spirit Healer",
+   "sex": 3
+  },
   "658": {
    "creatureType": "Humanoid",
    "level": 5,
@@ -1776,7 +2165,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1013,
    "subzone": "The Apothecarium",
-   "text": "Myrlin, Shadowfang Keep holds a book, the Book of Ur, which would be much prized in my collection.  Ur was a great mage of Dalaran before the coming of the Scourge, his studies in other worlds are of much value to ... certain parties among the Forsaken.\n\nEnter Shadowfang Keep and find the book.  Bring it to me, and I will report your service to our Dark Lady...",
+   "text": "$N, Shadowfang Keep holds a book, the Book of Ur, which would be much prized in my collection.  Ur was a great $c of Dalaran before the coming of the Scourge, his studies in other worlds are of much value to ... certain parties among the Forsaken.\n\nEnter Shadowfang Keep and find the book.  Bring it to me, and I will report your service to our Dark Lady...",
    "time": 1789952042,
    "title": "The Book of Ur",
    "zone": "Undercity"
@@ -1791,7 +2180,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1014,
    "subzone": "The Sepulcher",
-   "text": "Arugal still resides in Shadowfang Keep. We cannot claim Silverpine as a strategic stronghold for the Dark Lady until Arugal is slain.\n\nI shall see to it that his magic is eradicated, Myrlin. But I leave it in your hands to see that Arugal meets the death he so deserves.\n\nTravel to Shadowfang Keep and put an end to Arugal's foul spells once and for all. Bring to me the vile wizard's head!",
+   "text": "Arugal still resides in Shadowfang Keep. We cannot claim Silverpine as a strategic stronghold for the Dark Lady until Arugal is slain.\n\nI shall see to it that his magic is eradicated, $N. But I leave it in your hands to see that Arugal meets the death he so deserves.\n\nTravel to Shadowfang Keep and put an end to Arugal's foul spells once and for all. Bring to me the vile wizard's head!",
    "time": 1789963641,
    "title": "Arugal Must Die",
    "zone": "Silverpine Forest"
@@ -1821,7 +2210,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1098,
    "subzone": "The Sepulcher",
-   "text": "In preparation for an assault on Shadowfang, two deathstalkers were sent to the keep to gather intelligence.  It has been many days and they have not returned, but we must receive their report if we're to have any hope of a successful attack!\n\nSo here is your task, Myrlin.  Go to Shadowfang Keep to the south and find the Deathstalkers Adamant and Vincent.  Find them, and if they require aid then give it.\n\nThis mission is as dangerous as is it critical, Myrlin.  Do not fail.",
+   "text": "In preparation for an assault on Shadowfang, two deathstalkers were sent to the keep to gather intelligence.  It has been many days and they have not returned, but we must receive their report if we're to have any hope of a successful attack!\n\nSo here is your task, $N.  Go to Shadowfang Keep to the south and find the Deathstalkers Adamant and Vincent.  Find them, and if they require aid then give it.\n\nThis mission is as dangerous as is it critical, $N.  Do not fail.",
    "time": 1789963659,
    "title": "Deathstalkers in Shadowfang",
    "zone": "Silverpine Forest"
@@ -1855,7 +2244,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1358,
    "subzone": "The Crossroads",
-   "text": "Ah, very good.  If initial reports are true, then the toxicity of these hearts could lead to further advances in our knowledge of poisons.\n\nThis is a welcome delivery, Myrlin.  Your reward is well earned.",
+   "text": "Ah, very good.  If initial reports are true, then the toxicity of these hearts could lead to further advances in our knowledge of poisons.\n\nThis is a welcome delivery, $N.  Your reward is well earned.",
    "time": 1789992993,
    "title": "Sample for Helbrim",
    "zone": "The Barrens"
@@ -1953,7 +2342,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1487,
    "subzone": "Wailing Caverns",
-   "text": "Naralex had a noble goal.\n\nOur great leader aspired to enter the Emerald Dream and help regrow these harsh lands back into the lush forest it once was. But something went terribly wrong.\n\nNaralex's dream turned into a nightmare and corrupt creatures began to inhabit the caverns.\n\nWhile some Disciples of Naralex seek to awake our master, my concern is with ridding these caves of the evil beasts.\n\nBrave the caverns, Myrlin, and eradicate the deviate spawn.",
+   "text": "Naralex had a noble goal.\n\nOur great leader aspired to enter the Emerald Dream and help regrow these harsh lands back into the lush forest it once was. But something went terribly wrong.\n\nNaralex's dream turned into a nightmare and corrupt creatures began to inhabit the caverns.\n\nWhile some Disciples of Naralex seek to awake our master, my concern is with ridding these caves of the evil beasts.\n\nBrave the caverns, $N, and eradicate the deviate spawn.",
    "time": 1789994785,
    "title": "Deviate Eradication",
    "zone": "The Wailing Caverns"
@@ -1983,7 +2372,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1489,
    "subzone": "Elder Rise",
-   "text": "I bid you greetings, Myrlin.  You are welcome here, and I suggest you gather all your strength.  For the task we now set before you ... is a dire one.",
+   "text": "I bid you greetings, $N.  You are welcome here, and I suggest you gather all your strength.  For the task we now set before you ... is a dire one.",
    "time": 1789936571,
    "title": "Hamuul Runetotem",
    "zone": "Thunder Bluff"
@@ -2013,7 +2402,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1490,
    "subzone": "Elder Rise",
-   "text": "Yes, it is true.  I know of the druids in the Wailing Caverns.  I have seen their twisted, scaled faces.  I know their crimes, and I know their plans.\n\nYou must stop them, Myrlin.",
+   "text": "Yes, it is true.  I know of the druids in the Wailing Caverns.  I have seen their twisted, scaled faces.  I know their crimes, and I know their plans.\n\nYou must stop them, $N.",
    "time": 1789936579,
    "title": "Nara Wildmane",
    "zone": "Thunder Bluff"
@@ -2081,7 +2470,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1960,
    "subzone": "Magic Quarter",
-   "text": "Very good, Myrlin.  The creatures within these containment coffers will be studied by our finest minds, and the reason behind their presence in the Undercity will be determined.\n\nIf their appearance is caused by a rift in the natural flow of magic, then we must determine if the rift was random.  If it was not random, but instead an attack by some magical force, then we must prepare for future, more serious disturbances.",
+   "text": "Very good, $N.  The creatures within these containment coffers will be studied by our finest minds, and the reason behind their presence in the Undercity will be determined.\n\nIf their appearance is caused by a rift in the natural flow of magic, then we must determine if the rift was random.  If it was not random, but instead an attack by some magical force, then we must prepare for future, more serious disturbances.",
    "time": 1789953094,
    "title": "Investigate the Alchemist Shop",
    "zone": "Undercity"
@@ -2096,7 +2485,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1960,
    "subzone": "Magic Quarter",
-   "text": "Have you investigated the disturbance, Myrlin?  Have you captured the creatures?",
+   "text": "Have you investigated the disturbance, $N?  Have you captured the creatures?",
    "time": 1789953092,
    "title": "Investigate the Alchemist Shop",
    "zone": "Undercity"
@@ -2113,7 +2502,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1961,
    "subzone": "Magic Quarter",
-   "text": "It is time for you to don your first mage's robes, Myrlin.  They are a sign of your station, and a testament to your worth.\n\nTo gain the robes, you must gather the mana gems from the Dalaran mages of Silverpine.  Their beliefs are similar to ours and so killing them is somewhat distasteful, but if they lack the strength to resist us, then they do not deserve their lives.\n\nBring the gems and a supply of linen to Josef Gregorian at the Magic Quarter's tailor shop.",
+   "text": "It is time for you to don your first $c's robes, $N.  They are a sign of your station, and a testament to your worth.\n\nTo gain the robes, you must gather the mana gems from the Dalaran $cs of Silverpine.  Their beliefs are similar to ours and so killing them is somewhat distasteful, but if they lack the strength to resist us, then they do not deserve their lives.\n\nBring the gems and a supply of linen to Josef Gregorian at the Magic Quarter's tailor shop.",
    "time": 1789953094,
    "title": "Gathering Materials",
    "zone": "Undercity"
@@ -2162,7 +2551,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1962,
    "subzone": "Magic Quarter",
-   "text": "Here are your robes, Myrlin.  Wear them well.",
+   "text": "Here are your robes, $N.  Wear them well.",
    "time": 1789956866,
    "title": "Spellfire Robes",
    "zone": "Undercity"
@@ -2177,7 +2566,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 264,
    "subzone": "The Pools of Vision",
-   "text": "Filthy scum! Leaves me for his damn crusade. Because \"the Light is the most important thing we have against the threats the undead pose.\"\n\nWell, what about his children?! What about ME?! Night after night I sat patiently waiting for him... always second to his blasted duty!\n\nWell, witness what \"justice\" brings you, Myrlin! He's dead and I'm bearing the very thing he was trying to stop!\n\nTake this piece of junk and put it on his tomb at the Sepulcher. I want nothing to do with it anymore... or him!",
+   "text": "Filthy scum! Leaves me for his damn crusade. Because \"the Light is the most important thing we have against the threats the undead pose.\"\n\nWell, what about his children?! What about ME?! Night after night I sat patiently waiting for him... always second to his blasted duty!\n\nWell, witness what \"justice\" brings you, $N! He's dead and I'm bearing the very thing he was trying to stop!\n\nTake this piece of junk and put it on his tomb at the Sepulcher. I want nothing to do with it anymore... or him!",
    "time": 1789936824,
    "title": "Until Death Do Us Part",
    "zone": "Thunder Bluff"
@@ -2277,7 +2666,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 3281,
    "subzone": "The Crossroads",
-   "text": "Aha!  So the raptors did hide the silver at their lair.  It's hard to believe these beasts would have the desire for silver.  Perhaps the stories of their intelligence are not as far from the mark as I thought!\n\nThank you, Myrlin.  Take this as a reward for your service to us, and know that the guards of the crossroads owe their next month's pay to you.",
+   "text": "Aha!  So the raptors did hide the silver at their lair.  It's hard to believe these beasts would have the desire for silver.  Perhaps the stories of their intelligence are not as far from the mark as I thought!\n\nThank you, $N.  Take this as a reward for your service to us, and know that the guards of the crossroads owe their next month's pay to you.",
    "time": 1789994554,
    "title": "Stolen Silver",
    "zone": "The Barrens"
@@ -2324,7 +2713,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 3301,
    "subzone": "The Sepulcher",
-   "text": "Ah, what is this?  This shell has an inner glow, as if it still pulses with life.  Amazing!  I must study it further.\n\nThank you, Myrlin.  With luck, this shell will hold a secret I can use to aid the poor land of Silverpine.",
+   "text": "Ah, what is this?  This shell has an inner glow, as if it still pulses with life.  Amazing!  I must study it further.\n\nThank you, $N.  With luck, this shell will hold a secret I can use to aid the poor land of Silverpine.",
    "time": 1789949756,
    "title": "Mura Runetotem",
    "zone": "Silverpine Forest"
@@ -2339,7 +2728,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 3301,
    "subzone": "The Sepulcher",
-   "text": "I can smell the dust of the Barrens on you, mage.  You have traveled far.",
+   "text": "I can smell the dust of the Barrens on you, $c.  You have traveled far.",
    "time": 1789949755,
    "title": "Mura Runetotem",
    "zone": "Silverpine Forest"
@@ -2407,7 +2796,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 421,
    "subzone": "The Sepulcher",
-   "text": "You have served me well, mage.  It is obvious to me that you will be a worthy aide to me as I prepare to rid Silverpine Forest of Arugal's curse.",
+   "text": "You have served me well, $c.  It is obvious to me that you will be a worthy aide to me as I prepare to rid Silverpine Forest of Arugal's curse.",
    "time": 1789950059,
    "title": "Prove Your Worth",
    "zone": "Silverpine Forest"
@@ -2441,7 +2830,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 422,
    "subzone": "The Sepulcher",
-   "text": "This is precisely the spell I was in search of, mage.  If your dedication to The Dark Lady's cause remains infallible you will find you have quite a future amongst The Forsaken.",
+   "text": "This is precisely the spell I was in search of, $c.  If your dedication to The Dark Lady's cause remains infallible you will find you have quite a future amongst The Forsaken.",
    "time": 1789950335,
    "title": "Arugal's Folly",
    "zone": "Silverpine Forest"
@@ -2456,7 +2845,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 422,
    "subzone": "The Sepulcher",
-   "text": "Before I know what we are dealing with here, mage, I need to study the spell known as Remedy of Arugal.  Bring it to me now or I shall be forced to find myself a worthy servant.",
+   "text": "Before I know what we are dealing with here, $c, I need to study the spell known as Remedy of Arugal.  Bring it to me now or I shall be forced to find myself a worthy servant.",
    "time": 1789950333,
    "title": "Arugal's Folly",
    "zone": "Silverpine Forest"
@@ -2524,7 +2913,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 435,
    "subzone": "The Ivar Patch",
-   "text": "Thank you for the aid, Myrlin.  I had feared Erland was overcome by the dangers of Silverpine.  With your help, I see that he has not.",
+   "text": "Thank you for the aid, $N.  I had feared Erland was overcome by the dangers of Silverpine.  With your help, I see that he has not.",
    "time": 1789949573,
    "title": "Escorting Erland",
    "zone": "Silverpine Forest"
@@ -2558,7 +2947,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 437,
    "subzone": "The Sepulcher",
-   "text": "I heard of your successful raid against the rot hides, Myrlin, and this essence is proof of Nightlash's death.\n\nThe Scourge have lost ground this day.  Your value to the Forsaken grows.",
+   "text": "I heard of your successful raid against the rot hides, $N, and this essence is proof of Nightlash's death.\n\nThe Scourge have lost ground this day.  Your value to the Forsaken grows.",
    "time": 1789950783,
    "title": "The Dead Fields",
    "zone": "Silverpine Forest"
@@ -2573,7 +2962,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 437,
    "subzone": "The Sepulcher",
-   "text": "Have you defeated Nightlash, Myrlin?  Our success against the rot hides depends on her destruction!",
+   "text": "Have you defeated Nightlash, $N?  Our success against the rot hides depends on her destruction!",
    "time": 1789950782,
    "title": "The Dead Fields",
    "zone": "Silverpine Forest"
@@ -2590,7 +2979,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 438,
    "subzone": "The Sepulcher",
-   "text": "Myrlin, we've discovered a new hive for the Scourge: the Decrepit Ferry.  The ferry lies east of the Sepulcher, and is heavily patrolled by rot hides and other undead.\n\nThere must be a reason for the Scourge's occupation of the area.  Go to the Decrepit Ferry and find out why the Scourge are there.",
+   "text": "$N, we've discovered a new hive for the Scourge: the Decrepit Ferry.  The ferry lies east of the Sepulcher, and is heavily patrolled by rot hides and other undead.\n\nThere must be a reason for the Scourge's occupation of the area.  Go to the Decrepit Ferry and find out why the Scourge are there.",
    "time": 1789950784,
    "title": "The Decrepit Ferry",
    "zone": "Silverpine Forest"
@@ -2657,7 +3046,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 439,
    "subzone": "The Sepulcher",
-   "text": "Myrlin.  You return, so I assume your investigations bore fruit?",
+   "text": "$N.  You return, so I assume your investigations bore fruit?",
    "time": 1789951091,
    "title": "Rot Hide Clues",
    "zone": "Silverpine Forest"
@@ -2706,7 +3095,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 440,
    "subzone": "Brill Town Hall",
-   "text": "Hello, Myrlin.  What brings you back to Brill?",
+   "text": "Hello, $N.  What brings you back to Brill?",
    "time": 1789953490,
    "title": "The Engraved Ring",
    "zone": "Tirisfal Glades"
@@ -2740,7 +3129,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 441,
    "subzone": "Trade Quarter",
-   "text": "Yes, this ring was my wife's.  Her fate was the fate of all who fail to endure these harsh times.  I feel nothing for her death, nor for the story you tell of her body's abduction.\n\nSuch feelings have long since grown cold within me.  But desire does still burn in my dead heart, Myrlin.\n\nDesire for revenge.",
+   "text": "Yes, this ring was my wife's.  Her fate was the fate of all who fail to endure these harsh times.  I feel nothing for her death, nor for the story you tell of her body's abduction.\n\nSuch feelings have long since grown cold within me.  But desire does still burn in my dead heart, $N.\n\nDesire for revenge.",
    "time": 1789953768,
    "title": "Raleigh and the Undercity",
    "zone": "Undercity"
@@ -2804,7 +3193,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 447,
    "subzone": "The Apothecarium",
-   "text": "Hail, mage.  What business do you have with the Royal Apothecary Society?",
+   "text": "Hail, $c.  What business do you have with the Royal Apothecary Society?",
    "time": 1789962206,
    "title": "A Recipe For Death",
    "zone": "Undercity"
@@ -2838,7 +3227,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 449,
    "subzone": "The Sepulcher",
-   "text": "I hadn't accounted for the level of Scourge presence we've seen in Silverpine Forest, nor for the troubles our Deathstalkers have had in their scouting efforts.\n\nYour aid to our Deathstalkers was invaluable, Myrlin.  And you will be commended.",
+   "text": "I hadn't accounted for the level of Scourge presence we've seen in Silverpine Forest, nor for the troubles our Deathstalkers have had in their scouting efforts.\n\nYour aid to our Deathstalkers was invaluable, $N.  And you will be commended.",
    "time": 1789949803,
    "title": "The Deathstalkers' Report",
    "zone": "Silverpine Forest"
@@ -2932,7 +3321,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 478,
    "subzone": "The Sepulcher",
-   "text": "Have you learned anything useful, Myrlin?",
+   "text": "Have you learned anything useful, $N?",
    "time": 1789951536,
    "title": "Maps and Runes",
    "zone": "Silverpine Forest"
@@ -2949,7 +3338,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 479,
    "subzone": "The Sepulcher",
-   "text": "Dalar is attempting to locate the source of the wizards' spellcasting. For now, we'll have to slow their progress in any way we can...\n\nThe conjurers, mages and protectors are no doubt carrying the pendants. Remove and retrieve them.\n\nTake the main road south and the eastern fork into Ambermill.",
+   "text": "Dalar is attempting to locate the source of the wizards' spellcasting. For now, we'll have to slow their progress in any way we can...\n\nThe conjurers, $cs and protectors are no doubt carrying the pendants. Remove and retrieve them.\n\nTake the main road south and the eastern fork into Ambermill.",
    "time": 1789951574,
    "title": "Ambermill Investigations",
    "zone": "Silverpine Forest"
@@ -3030,7 +3419,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 481,
    "subzone": "The Sepulcher",
-   "text": "Yes, mage? What is it?",
+   "text": "Yes, $c? What is it?",
    "time": 1789951559,
    "title": "Dalar's Analysis",
    "zone": "Silverpine Forest"
@@ -3064,7 +3453,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 482,
    "subzone": "The Sepulcher",
-   "text": "Ill news you bring, Myrlin. If Dalar is correct--and I've no reason to believe he isn't--we must move quickly.\n\nI must confer with him on our plan of attack. But in the meanwhile we will have to delay their progress.",
+   "text": "Ill news you bring, $N. If Dalar is correct--and I've no reason to believe he isn't--we must move quickly.\n\nI must confer with him on our plan of attack. But in the meanwhile we will have to delay their progress.",
    "time": 1789951571,
    "title": "Dalaran's Intentions",
    "zone": "Silverpine Forest"
@@ -3081,7 +3470,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 4921,
    "subzone": "The Crossroads",
-   "text": "We battled in a small tauren camp when we were separated--she held three of the Bristlebacks off by herself. But the odds began to overwhelm us. I led some away only to see her overwhelmed by newcomers. In my rage, I turned to face my enemies, but they brought me down easily with their vast numbers.\n\nI awoke to a tauren druid tending my wounds--he had come across me on the Gold Road as I fell.\n\nPlease, mage, find some sign of my wife.",
+   "text": "We battled in a small tauren camp when we were separated--she held three of the Bristlebacks off by herself. But the odds began to overwhelm us. I led some away only to see her overwhelmed by newcomers. In my rage, I turned to face my enemies, but they brought me down easily with their vast numbers.\n\nI awoke to a tauren druid tending my wounds--he had come across me on the Gold Road as I fell.\n\nPlease, $c, find some sign of my wife.",
    "time": 1789993163,
    "title": "Lost in Battle",
    "zone": "The Barrens"
@@ -3098,7 +3487,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 4921,
    "subzone": "The Crossroads",
-   "text": "I understand. Thank you, mage.",
+   "text": "I understand. Thank you, $c.",
    "time": 1789994581,
    "title": "Lost in Battle",
    "zone": "The Barrens"
@@ -3188,7 +3577,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5723,
    "subzone": "Elder Rise",
-   "text": "I am glad to see you took Magatha's task seriously. Thank you, Myrlin. I'm sure the troggs will have a harder time coming to the surface with their numbers so greatly reduced.\n\nPerhaps in the future we can take time to figure out where such creatures came from, and what they really want.",
+   "text": "I am glad to see you took Magatha's task seriously. Thank you, $N. I'm sure the troggs will have a harder time coming to the surface with their numbers so greatly reduced.\n\nPerhaps in the future we can take time to figure out where such creatures came from, and what they really want.",
    "time": 1789942018,
    "title": "Testing an Enemy's Strength",
    "zone": "Thunder Bluff"
@@ -3203,7 +3592,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5724,
    "subzone": "Elder Rise",
-   "text": "Excellent, Myrlin. Thank you.\n\nMagatha told me that if you were successful in finding her clansman that you be given this. Please, take it in thanks.",
+   "text": "Excellent, $N. Thank you.\n\nMagatha told me that if you were successful in finding her clansman that you be given this. Please, take it in thanks.",
    "time": 1789942022,
    "title": "Returning the Lost Satchel",
    "zone": "Thunder Bluff"
@@ -3218,7 +3607,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5724,
    "subzone": "Elder Rise",
-   "text": "Were you able to find anything, Myrlin? Any clues as to why one of her clansman had to die needlessly would be helpful.",
+   "text": "Were you able to find anything, $N? Any clues as to why one of her clansman had to die needlessly would be helpful.",
    "time": 1789942021,
    "title": "Returning the Lost Satchel",
    "zone": "Thunder Bluff"
@@ -3248,7 +3637,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5725,
    "subzone": "Royal Quarter",
-   "text": "Good, mage. You have done well in serving the Dark Lady. Your continued perseverance and ambition will be of great use to the Lady's subjects. Return to me again in the future. Perhaps I will have other tasks for you that will aid the Dark Lady in her attempts at overtaking the Lich King and completely freeing the Scourge.",
+   "text": "Good, $c. You have done well in serving the Dark Lady. Your continued perseverance and ambition will be of great use to the Lady's subjects. Return to me again in the future. Perhaps I will have other tasks for you that will aid the Dark Lady in her attempts at overtaking the Lich King and completely freeing the Scourge.",
    "time": 1789945462,
    "title": "The Power to Destroy...",
    "zone": "Undercity"
@@ -3263,7 +3652,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5725,
    "subzone": "Royal Quarter",
-   "text": "There are a hundred other tasks awaiting my attention, mage. Do you have the books?",
+   "text": "There are a hundred other tasks awaiting my attention, $c. Do you have the books?",
    "time": 1789945461,
    "title": "The Power to Destroy...",
    "zone": "Undercity"
@@ -3278,7 +3667,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5728,
    "subzone": "Grommash Hold",
-   "text": "I am glad you've returned, Myrlin. Some of those loyal to me brought word immediately that the caverns below Orgrimmar were in disarray now that their leaders have been slain. I even heard reports that Neeru was more than agitated. It seems we've put a dent in his armor. I can't say I'm displeased... even with such a minor victory.",
+   "text": "I am glad you've returned, $N. Some of those loyal to me brought word immediately that the caverns below Orgrimmar were in disarray now that their leaders have been slain. I even heard reports that Neeru was more than agitated. It seems we've put a dent in his armor. I can't say I'm displeased... even with such a minor victory.",
    "time": 1789940658,
    "title": "Hidden Enemies",
    "zone": "Orgrimmar"
@@ -3308,7 +3697,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5729,
    "subzone": "Cleft of Shadow",
-   "text": "What is it?! Oh, you, mage... my apologies. My anger rivals that of a rabid kodo bull... but perhaps it is my own fault. In sending travelers into Ragefire Chasm, I should have seen the possibility that some harm would come from it. It seems both Bazzalan and Jergosh were taken unaware and slain by some of Thrall's do-gooders. A most inopportune time, but there is nothing that can be done about it now.",
+   "text": "What is it?! Oh, you, $c... my apologies. My anger rivals that of a rabid kodo bull... but perhaps it is my own fault. In sending travelers into Ragefire Chasm, I should have seen the possibility that some harm would come from it. It seems both Bazzalan and Jergosh were taken unaware and slain by some of Thrall's do-gooders. A most inopportune time, but there is nothing that can be done about it now.",
    "time": 1789940900,
    "title": "Hidden Enemies",
    "zone": "Orgrimmar"
@@ -3323,7 +3712,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5730,
    "subzone": "Cleft of Shadow",
-   "text": "You are one of my lieutenants! Prepare yourself, mage. I will call upon you soon.\n\nMy time spent on the Searing Blade may be all but wasted now, but that does not mean that the Shadow Council's schemes elsewhere must suffer. I will do what I can to minimize the damage here in Ragefire Chasm. In the meantime, I will have my agents in the Barrens and Ashenvale begin work on our newest agenda. Return to me soon.",
+   "text": "You are one of my lieutenants! Prepare yourself, $c. I will call upon you soon.\n\nMy time spent on the Searing Blade may be all but wasted now, but that does not mean that the Shadow Council's schemes elsewhere must suffer. I will do what I can to minimize the da$c here in Ragefire Chasm. In the meantime, I will have my agents in the Barrens and Ashenvale begin work on our newest agenda. Return to me soon.",
    "time": 1789940901,
    "title": "Hidden Enemies",
    "zone": "Orgrimmar"
@@ -3338,7 +3727,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5730,
    "subzone": "Grommash Hold",
-   "text": "Ashenvale? Hmm, I had not heard of any presence of the Council or the Burning Blade in Ashenvale. My spies will investigate, Myrlin. You have done well.\n\nFor now, rest, and keep yourself occupied with other tasks. I will call upon you again soon.\n\nLok-Tar Ogar!",
+   "text": "Ashenvale? Hmm, I had not heard of any presence of the Council or the Burning Blade in Ashenvale. My spies will investigate, $N. You have done well.\n\nFor now, rest, and keep yourself occupied with other tasks. I will call upon you again soon.\n\nLok-Tar Ogar!",
    "time": 1789940991,
    "title": "Hidden Enemies",
    "zone": "Orgrimmar"
@@ -3353,7 +3742,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5761,
    "subzone": "Cleft of Shadow",
-   "text": "Ha! You've done it! Thrall will be so pleased.\n\nI will ensure this heart is taken care of properly.\n\nFor now though, you must celebrate your victory. I will inform Thrall of your success.\n\nThank you for your aid, mage.",
+   "text": "Ha! You've done it! Thrall will be so pleased.\n\nI will ensure this heart is taken care of properly.\n\nFor now though, you must celebrate your victory. I will inform Thrall of your success.\n\nThank you for your aid, $c.",
    "time": 1789940571,
    "title": "Slaying the Beast",
    "zone": "Orgrimmar"
@@ -3383,7 +3772,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 6386,
    "subzone": "The Crossroads",
-   "text": "Hah!  I guess she liked it!  Nothing brings red to a lady's cheeks like a big, juicy steak!\n\nThank you, Myrlin.  You've done me a great service.  Here is some money for your trouble, and don't be surprised if I invite you to my wedding!",
+   "text": "Hah!  I guess she liked it!  Nothing brings red to a lady's cheeks like a big, juicy steak!\n\nThank you, $N.  You've done me a great service.  Here is some money for your trouble, and don't be surprised if I invite you to my wedding!",
    "time": 1789932301,
    "title": "Return to the Crossroads",
    "zone": "The Barrens"
@@ -3447,7 +3836,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 865,
    "subzone": "Ratchet",
-   "text": "Did you get the horns, Myrlin?  Those things are going to make me a fortune!",
+   "text": "Did you get the horns, $N?  Those things are going to make me a fortune!",
    "time": 1789995057,
    "title": "Raptor Horns",
    "zone": "The Barrens"
@@ -3464,7 +3853,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 869,
    "subzone": "The Crossroads",
-   "text": "You got rid of the raptors!\n\nThank you, Myrlin.  You are a mage of worth.",
+   "text": "You got rid of the raptors!\n\nThank you, $N.  You are a $c of worth.",
    "time": 1789992977,
    "title": "Raptor Thieves",
    "zone": "The Barrens"
@@ -3479,7 +3868,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 869,
    "subzone": "The Crossroads",
-   "text": "Do you have those heads, Myrlin?",
+   "text": "Do you have those heads, $N?",
    "time": 1789992976,
    "title": "Raptor Thieves",
    "zone": "The Barrens"
@@ -3509,7 +3898,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 871,
    "subzone": "The Crossroads",
-   "text": "All the quilboars are our enemies, Myrlin. Some just prove to be more of a nuisance than others.\n\nThe Razormane tribe has been attacking our supply lines from Durotar, causing us no end of annoyance. I have scouts seeking the leader of these raids, but until then, any losses you can inflict on the filthy pig men would aid us.\n\nStart in the northeast towards Durotar. You can always tell their dens from the huge thorny vines that come up from the earth. Seek them out, and slay them.",
+   "text": "All the quilboars are our enemies, $N. Some just prove to be more of a nuisance than others.\n\nThe Razormane tribe has been attacking our supply lines from Durotar, causing us no end of annoyance. I have scouts seeking the leader of these raids, but until then, any losses you can inflict on the filthy pig men would aid us.\n\nStart in the northeast towards Durotar. You can always tell their dens from the huge thorny vines that come up from the earth. Seek them out, and slay them.",
    "time": 1789932277,
    "title": "Disrupt the Attacks",
    "zone": "The Barrens"
@@ -3554,7 +3943,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 880,
    "subzone": "The Crossroads",
-   "text": "Your findings are incredible, Myrlin.  These oases hold properties that must come from an outside source.  Or perhaps an inside one.\n\nI want to know how these fissures are affecting the beasts who drink from the oases' water.\n\nHunt oasis snapjaws at the Lushwater and Stagnant Oases.  Bring me their shells so I may examine them.",
+   "text": "Your findings are incredible, $N.  These oases hold properties that must come from an outside source.  Or perhaps an inside one.\n\nI want to know how these fissures are affecting the beasts who drink from the oases' water.\n\nHunt oasis snapjaws at the Lushwater and Stagnant Oases.  Bring me their shells so I may examine them.",
    "time": 1789933078,
    "title": "Altered Beings",
    "zone": "The Barrens"
@@ -3569,7 +3958,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 880,
    "subzone": "The Crossroads",
-   "text": "Thank you, Myrlin.  Studying the beasts of an area can tell much about the area itself.  We shall see what tale these shells tell.\n\nPlease accept my gratitude for your aid ... and perhaps you can use these coins.  I find that I do not need them.",
+   "text": "Thank you, $N.  Studying the beasts of an area can tell much about the area itself.  We shall see what tale these shells tell.\n\nPlease accept my gratitude for your aid ... and perhaps you can use these coins.  I find that I do not need them.",
    "time": 1789934526,
    "title": "Altered Beings",
    "zone": "The Barrens"
@@ -3599,7 +3988,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 914,
    "subzone": "Elder Rise",
-   "text": "The druids in the Wailing Caverns, the Druids of the Fang, are an aberration.  They were part of an order of noble druids whose plan was to heal the Barrens, but now seek to remake that land to match their own, twisted dreams.\n\nThe Druids of the Fang have four leaders, and each possesses a dream gem.  Even now their faces haunt me!  Defeat the leaders and bring me their gems, and the Barrens may again know peace.\n\nGo, Myrlin.  You will find them lurking deep within the Wailing Caverns.",
+   "text": "The druids in the Wailing Caverns, the Druids of the Fang, are an aberration.  They were part of an order of noble druids whose plan was to heal the Barrens, but now seek to remake that land to match their own, twisted dreams.\n\nThe Druids of the Fang have four leaders, and each possesses a dream gem.  Even now their faces haunt me!  Defeat the leaders and bring me their gems, and the Barrens may again know peace.\n\nGo, $N.  You will find them lurking deep within the Wailing Caverns.",
    "time": 1789936580,
    "title": "Leaders of the Fang",
    "zone": "Thunder Bluff"
@@ -3689,7 +4078,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 92422,
    "subzone": "",
-   "text": "Reports have come in from the Lordamere Overlook deep within the Ruins of Lordaeron. An unholy fog has taken over the streets and graveyard, affording the scourge up there some measure of stealth. \r\n\r\nOur scouts indicate they're being conjured by a new power within their ranks, a necromancer known as Rath'mael. We do not have the luxury of waiting this one out, Myrlin.\r\n\r\nIf you have allies, summon them and their aid to the Forsaken. Drive this creature out of our lands.",
+   "text": "Reports have come in from the Lordamere Overlook deep within the Ruins of Lordaeron. An unholy fog has taken over the streets and graveyard, affording the scourge up there some measure of stealth. \r\n\r\nOur scouts indicate they're being conjured by a new power within their ranks, a necromancer known as Rath'mael. We do not have the luxury of waiting this one out, $N.\r\n\r\nIf you have allies, summon them and their aid to the Forsaken. Drive this creature out of our lands.",
    "time": 1789953406,
    "title": "The Wrath of Rath'mael",
    "zone": "Tirisfal Glades"
@@ -3704,23 +4093,191 @@
    "player": "Myrlin Fixpoint",
    "questID": 92422,
    "subzone": "",
-   "text": "While I have no doubt something of his kind will be replaced, we can only hope their ranks thin in the meantime.\r\n\r\nThank you Myrlin.",
+   "text": "While I have no doubt something of his kind will be replaced, we can only hope their ranks thin in the meantime.\r\n\r\nThank you $N.",
    "time": 1789962887,
    "title": "The Wrath of Rath'mael",
    "zone": "Tirisfal Glades"
+  },
+  "92460-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Ailee Farheart",
+   "npc": "251362",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92460,
+   "subzone": "Thendal Village",
+   "text": "Look at you, bright eyed and ready for adventure! We've been awaiting your arrival and anticipating your much needed help here in Thendal Village. I imagine you are brimming with both nerves and excitement for what is to come. After all, you only get to come of age once in a lifetime.\r\n\r\n<Ailee smiles kindly.>\r\n\r\nGo, seek out our village leader Rorian the Dayseeker at the entrance to the greatfather tree just west of here. He will get you started on your journey.",
+   "time": 1790002334,
+   "title": "Coming of Age",
+   "zone": "Zephras Isle"
+  },
+  "92460-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "player": "Pellinore Fixpoint",
+   "questID": 92460,
+   "subzone": "Thendal Village",
+   "text": "Gale's greetings, $N. I am honored to bestow your coming of age relic today as you are recognized for the potential you bring to the shen'dorei. Our people have faced great hardship and persecution in our complex history.\r\n\r\nToday you are given this relic which is one of many held by those before you. Someday when your ashes are scattered to the winds it will pass to another to continue our tradition.\r\n\r\nAs you take this relic with you know that the winds of home will be with you wherever you travel.",
+   "time": 1790002345,
+   "title": "Coming of Age",
+   "zone": "Zephras Isle"
+  },
+  "92461-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92461,
+   "subzone": "Thendal Village",
+   "text": "We live in times of great uncertainty for our people. We face unprecedented challenges that may require bold solutions, but we also must contend with the ordinary and mundane here in Thendal Grove. Take, for example, the recent unsustainable rise in the vuldren population.\r\n\r\nThe vuldren are a vital part of our ecosystem. However, imbalances must be corrected to maintain the delicate harmony that all creatures in Thendal Grove share.\r\n\r\nHead east and cull some of the vuldren there.",
+   "time": 1790002346,
+   "title": "Harmony in Balance",
+   "zone": "Zephras Isle"
+  },
+  "92461-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "player": "Pellinore Fixpoint",
+   "questID": 92461,
+   "subzone": "Thendal Village",
+   "text": "Thank you for your service to Zephras, young hunter.\r\n\r\nThe vuldren are typically quite docile, but the animals that call Zephras home can sense when the magic on the winds is out of balance, which can lead to dangerous and unpredictable behavior if left unchecked.",
+   "time": 1790002560,
+   "title": "Harmony in Balance",
+   "zone": "Zephras Isle"
+  },
+  "92462-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Elatrell Featherlight",
+   "npc": "251368",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92462,
+   "subzone": "Thendal Village",
+   "text": "One of our rangers recently reported an infestation of cirrusflies here in Thendal Grove. \r\n\r\nCirrusflies can be dangerous if the swarm is allowed to grow too large, so please head to the eastern end of the Grove and exterminate as many as you can.",
+   "time": 1790002363,
+   "title": "Infestation Investigation",
+   "zone": "Zephras Isle"
+  },
+  "92462-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Elatrell Featherlight",
+   "npc": "251368",
+   "player": "Pellinore Fixpoint",
+   "questID": 92462,
+   "subzone": "Thendal Village",
+   "text": "Judging by the amount of bug entrails covering you, this must be quite the infestation.",
+   "time": 1790002956,
+   "title": "Infestation Investigation",
+   "zone": "Zephras Isle"
+  },
+  "92463-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Elatrell Featherlight",
+   "npc": "251368",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92463,
+   "subzone": "Thendal Village",
+   "text": "If the forest is as thick with these insects as it sounds, simply killing the workers won't be enough.\r\n\r\nGo deeper into the forest and find the queen. She'll be close to the hive and surrounded by bigger and more aggressive soldiers, so be careful.\r\n\r\nPut her down and return here when it's done. That'll be one less problem to think about around here.",
+   "time": 1790002958,
+   "title": "The Cirrusfly Queen",
+   "zone": "Zephras Isle"
+  },
+  "92463-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Elatrell Featherlight",
+   "npc": "251368",
+   "player": "Pellinore Fixpoint",
+   "questID": 92463,
+   "subzone": "Thendal Village",
+   "text": "Excellent work, $N. You'd make a fine ranger if this whole \"adventurer\" thing doesn't work out for you.",
+   "time": 1790003155,
+   "title": "The Cirrusfly Queen",
+   "zone": "Zephras Isle"
+  },
+  "92464-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92464,
+   "subzone": "Thendal Village",
+   "text": "Ever since our elemental benefactors left us, it seems that we are simply moving from one unrest to another. The problem we face now is that the manifestations of the winds near the standing stones to the northeast are agitated.\r\n\r\nNot truly self-aware like the sentient wind spirits that once lived here, these simple sprites respond in kind to forces, emotions, and intentions of the creatures around them. \r\n\r\nMy apprentice Yala Windwatcher went to observe them. Seek her out and discover what she's learned.",
+   "time": 1790002566,
+   "title": "Elemental Unrest",
+   "zone": "Zephras Isle"
+  },
+  "92464-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Yala Windwatcher",
+   "npc": "249363",
+   "player": "Pellinore Fixpoint",
+   "questID": 92464,
+   "subzone": "Thendal Grove",
+   "text": "Rorian sent you? Good. I could use your aid.",
+   "time": 1790003221,
+   "title": "Elemental Unrest",
+   "zone": "Zephras Isle"
+  },
+  "92465-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Yala Windwatcher",
+   "npc": "249363",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92465,
+   "subzone": "Thendal Grove",
+   "text": "The Al'Aketh cult is a blight upon this island. These cultists are surely the ones responsible for agitating the simple wind sprites that reside here and turning them violent.\r\n\r\nRegrettably, we'll need to disperse these roiling winds here before they harm someone. We also need to send a clear message to the cult that they are not welcome in the grove.\r\n\r\nWill you lend me your aid, hunter?",
+   "time": 1790003222,
+   "title": "Agitators",
+   "zone": "Zephras Isle"
   },
   "92465-complete": {
    "build": "69913",
    "event": "complete",
    "firstSeen": null,
+   "found": true,
    "mapID": 2521,
    "name": "Yala Windwatcher",
    "npc": "249363",
-   "player": "Agravain Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
    "questID": 92465,
    "subzone": "Thendal Grove",
    "text": "It pains me to shed shen'dorei blood here in the grove, but we do what we must.",
-   "time": 1789927131,
+   "time": 1790004385,
    "title": "Agitators",
    "zone": "Zephras Isle"
   },
@@ -3733,11 +4290,11 @@
    "name": "Yala Windwatcher",
    "npc": "249363",
    "pack": "Forever",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "questID": 92469,
    "subzone": "Thendal Grove",
-   "text": "You've done enough here, rogue. I'll stay and clean up any stragglers down there.\r\n\r\nHead back to the Village and tell Rorian about the cult's presence. He will not be pleased.",
-   "time": 1789927134,
+   "text": "You've done enough here, hunter. I'll stay and clean up any stragglers down there.\r\n\r\nHead back to the Village and tell Rorian about the cult's presence. He will not be pleased.",
+   "time": 1790004386,
    "title": "Return to Rorian",
    "zone": "Zephras Isle"
   },
@@ -3745,14 +4302,16 @@
    "build": "69913",
    "event": "complete",
    "firstSeen": 1789927248,
+   "found": true,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
-   "player": "Agravain Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
    "questID": 92469,
    "subzone": "Thendal Village",
-   "text": "This is most troubling, but unfortunately unsurprising. We've been aware of the cult's movements for some time, but we've been content to watch from afar. Their agitation of the wind spirits near the standing stones is a clear escalation on their part.\r\n\r\nYou've performed a difficult but necessary service for Thendal Grove, Agravain. Thank you.",
-   "time": 1789927248,
+   "text": "This is most troubling, but unfortunately unsurprising. We've been aware of the cult's movements for some time, but we've been content to watch from afar. Their agitation of the wind spirits near the standing stones is a clear escalation on their part.\r\n\r\nYou've performed a difficult but necessary service for Thendal Grove, $N. Thank you.",
+   "time": 1790004479,
    "title": "Return to Rorian",
    "zone": "Zephras Isle"
   },
@@ -3765,11 +4324,39 @@
    "name": "Aetheen of the Gales",
    "npc": "251366",
    "pack": "Forever",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "questID": 92470,
    "subzone": "Thendal Village",
    "text": "Rorian informed you that I've been watching you. I now offer you a test of resolve. However, be warned--it will send you into great danger.\r\n\r\nGo to the caves to the south. Thin out the ursera's numbers there, and find their matriarch, one the rangers call \"Urs'anah\". Put her down and bring me proof of her demise. Once you have done that, you will have taken an important step on your path.",
-   "time": 1789927286,
+   "time": 1790003624,
+   "title": "Foul Matriarch",
+   "zone": "Zephras Isle"
+  },
+  "92470-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Aetheen of the Gales",
+   "npc": "251366",
+   "player": "Pellinore Fixpoint",
+   "questID": 92470,
+   "subzone": "Thendal Village",
+   "text": "Very well done. You've felled beasts and laid low cultist interlopers. You have shown great promise but your path must soon take you beyond the relative safety of Thendal Village.",
+   "time": 1790004164,
+   "title": "Foul Matriarch",
+   "zone": "Zephras Isle"
+  },
+  "92470-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Aetheen of the Gales",
+   "npc": "251366",
+   "player": "Pellinore Fixpoint",
+   "questID": 92470,
+   "subzone": "Thendal Village",
+   "text": "What I ask of you is not easy, but you must be prepared for much greater challenges if you are to survive long enough to be of service to Zephras Isle.",
+   "time": 1790004162,
    "title": "Foul Matriarch",
    "zone": "Zephras Isle"
   },
@@ -3782,11 +4369,11 @@
    "name": "Rorian the Dayseeker",
    "npc": "251361",
    "pack": "Forever",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "questID": 92471,
    "subzone": "Thendal Village",
    "text": "You may not realize this but everything you've done has been a trial of sorts. A test for what is to come for you. It's a big island out there, and Zephras needs spirited young adventurers such as yourself if we are to survive the trials our people face.\r\n\r\nThe one called Aetheen of the Gales is one of the leaders of our people here on Zephras Isle, and she has been watching you. She has a task that you must complete. Speak with her to learn more.",
-   "time": 1789927255,
+   "time": 1790003613,
    "title": "Aetheen of the Gales",
    "zone": "Zephras Isle"
   },
@@ -3794,15 +4381,47 @@
    "build": "69913",
    "event": "complete",
    "firstSeen": 1789927280,
+   "found": true,
    "mapID": 2521,
    "name": "Aetheen of the Gales",
    "npc": "251366",
-   "player": "Agravain Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
    "questID": 92471,
    "subzone": "Thendal Village",
    "text": "Rorian has told me much of you. I am likely unknown to you, but I am a member of the Council of Elders here on Zephras Isle. I've come to read the flow of the winds here in Thendal Grove. I'm also here to assess young shen'dorei such as yourself that are coming of age.\r\n\r\nSo tell me, are you ready to take your next step? Are you ready to serve Zephras Isle?",
-   "time": 1789927280,
+   "time": 1790003620,
    "title": "Aetheen of the Gales",
+   "zone": "Zephras Isle"
+  },
+  "92472-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Aetheen of the Gales",
+   "npc": "251366",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92472,
+   "subzone": "Thendal Village",
+   "text": "One of the most pervasive threats on Zephras Isle is the Al'Aketh Cult. They are religious zealots devoted to the worship of the supposed elemental ruler of Skywall, Al'Akir the Windlord. They are brutal, single minded, and their power and ambitions are growing more deadly by the day.\r\n\r\nYour path will soon take you to Shen'dar Village to the south. Present yourself to Constable Aonda when you arrive. The cult threatens Shen'dar and they are in need of aid. Tell Aonda that I sent you.",
+   "time": 1790004171,
+   "title": "The Next Step",
+   "zone": "Zephras Isle"
+  },
+  "92472-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Constable Aonda",
+   "npc": "251523",
+   "player": "Pellinore Fixpoint",
+   "questID": 92472,
+   "subzone": "Shen'dar Village",
+   "text": "Aetheen sent you, then? I'll confess, you don't look like much to me, but Shen'dar Village won't turn down willing aid, much less aid sent from Elder Aetheen herself.",
+   "time": 1790005348,
+   "title": "The Next Step",
    "zone": "Zephras Isle"
   },
   "92473-accept": {
@@ -3814,27 +4433,311 @@
    "name": "Valreaa Valewind",
    "npc": "257551",
    "pack": "Forever",
-   "player": "Agravain Fixpoint",
+   "player": "Pellinore Fixpoint",
    "questID": 92473,
    "subzone": "Thendal Village",
    "text": "The ursera den to the southwest is rapidly becoming a problem. Just last week the rangers had to kill an adolescent ursera who wandered too close to the village and attempted to attack a boy playing near the base of the elder tree in the center of the village.\r\n\r\nWe were fortunate that the boy escaped with his life. Hunger and desperation makes these beasts too dangerous to be left unchecked. Go south and put the scrawniest among the ursera down. Bring me their claws as proof when it is done.",
-   "time": 1789927310,
+   "time": 1790003718,
    "title": "Aggressive Encroachment",
+   "zone": "Zephras Isle"
+  },
+  "92473-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Valreaa Valewind",
+   "npc": "257551",
+   "player": "Pellinore Fixpoint",
+   "questID": 92473,
+   "subzone": "Thendal Village",
+   "text": "Well done, hunter. The Rangers of the Grove are in your debt.",
+   "time": 1790004686,
+   "title": "Aggressive Encroachment",
+   "zone": "Zephras Isle"
+  },
+  "92473-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Valreaa Valewind",
+   "npc": "257551",
+   "player": "Pellinore Fixpoint",
+   "questID": 92473,
+   "subzone": "Thendal Village",
+   "text": "The ursera have grown far more aggressive of late. I wonder what has changed to cause this shift in behavior?",
+   "time": 1790004684,
+   "title": "Aggressive Encroachment",
+   "zone": "Zephras Isle"
+  },
+  "92474-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Myriaal Mistwake",
+   "npc": "263113",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92474,
+   "subzone": "Thendal Village",
+   "text": "Well hello there, $N! Want to play a game?\r\n\r\nAll you've got to do is step up on that ledge... then jump! Use your innate ability to walk on the air to slow your fall and see how far forward you can float.\r\n\r\nThe rules are made up and the points don't matter, but you get bonus points if you can land right in front of Rorian the Dayseeker and startle him! He won't like it but I'll certainly get a good laugh if you can get him all worked up! Hah!",
+   "time": 1790002658,
+   "title": "Falling With Style",
+   "zone": "Zephras Isle"
+  },
+  "92474-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "player": "Pellinore Fixpoint",
+   "questID": 92474,
+   "subzone": "Thendal Village",
+   "text": "How many times do I need to tell Myriaal not to encourage others to make reckless usage of our skyborne gifts!\r\n\r\nThat being said, I suppose that a little bit of practice in the relative safety of the village is... acceptable.\r\n\r\nIn the future I'd simply suggest you to use your ability judiciously. You do not want to exhaust your magic thoughtlessly and then not be able to use it when you truly need it.",
+   "time": 1790002696,
+   "title": "Falling With Style",
+   "zone": "Zephras Isle"
+  },
+  "92482-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "player": "Pellinore Fixpoint",
+   "questID": 92482,
+   "subzone": "Thendal Village",
+   "text": "While you were away dealing with our vuldren problem, our resident hunter trainer--Tai'ree Farsight--left this note for you. You can find her just over yonder near the center of the village. Read the note then seek her out.",
+   "time": 1790002570,
+   "title": "The Way of the Hunter",
+   "zone": "Zephras Isle"
+  },
+  "92482-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Tai'ree Farsight",
+   "npc": "251376",
+   "player": "Pellinore Fixpoint",
+   "questID": 92482,
+   "subzone": "Thendal Village",
+   "text": "The way of the hunter is fraught with danger, and only those with the keenest senses and quickest reflexes can thrive in the wilds. I look at you and I am reminded of myself when I stood before my mentor, so many years ago. I believe that you have what it takes, but in the end that is up to you alone.\r\n\r\nSpeak with me again if you wish to take your next steps.",
+   "time": 1790002591,
+   "title": "The Way of the Hunter",
+   "zone": "Zephras Isle"
+  },
+  "92482-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Tai'ree Farsight",
+   "npc": "251376",
+   "player": "Pellinore Fixpoint",
+   "questID": 92482,
+   "subzone": "Thendal Village",
+   "text": "<Tai'ree nods at you curtly.>",
+   "time": 1790002590,
+   "title": "The Way of the Hunter",
+   "zone": "Zephras Isle"
+  },
+  "92514-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Constable Aonda",
+   "npc": "251523",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92514,
+   "subzone": "Shen'dar Village",
+   "text": "You've got that \"Windshaper\" air about you. Something about how I can feel a tiny bit of static on my skin when near someone spirit-touched that gives it away. Before I properly put you to work around here, you should check in with our resident Windshaper elder, Illaya Amberwind. She's just outside, near the center of town.\r\n\r\nOh, and check in with Coriella Calmbreeze as well, she runs the local inn and can provide lodging and supplies, should you need them.",
+   "time": 1790005350,
+   "title": "Welcome to Shen'dar Village",
+   "zone": "Zephras Isle"
+  },
+  "92544-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Hanaa Nightwind",
+   "npc": "252095",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92544,
+   "subzone": "Thendal Grove",
+   "text": "A band of Al'Aketh cult ruffians have taken up residence near the temple ruins just southwest of here, led by a real monster called Malduko Cloudcrush. This rabble has no doubt been dispatched here by High Priestess Lorthuna at the Shrine of Akir to attack travelers and coerce our people into joining the cult.\r\n\r\nI need to stay here at my post to alert travelers leaving the grove of the danger, but I would be grateful if you could do something about those cultists and their leader for me.",
+   "time": 1790004768,
+   "title": "Al'Aketh Thugs",
+   "zone": "Zephras Isle"
+  },
+  "92544-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Hanaa Nightwind",
+   "npc": "252095",
+   "player": "Pellinore Fixpoint",
+   "questID": 92544,
+   "subzone": "Thendal Grove",
+   "text": "It was all I could do to stop myself from going over and joining you from my position here. I can only hope that these louts got the message and clear out of here soon. \r\n\r\nThank you, hunter. You have the gratitude of the Rangers of Thendal Grove.",
+   "time": 1790005027,
+   "title": "Al'Aketh Thugs",
+   "zone": "Zephras Isle"
+  },
+  "92595-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92595,
+   "subzone": "Shen'dar Village",
+   "text": "<Illaya smiles warmly at you.>\r\n\r\nI am glad you returned to speak with me, child of the winds. I knew it the first moment you walked into my presence, that you were strong in the skysight. Do you find this surprising? Even those who have not trained as a Shaman may possess the gift. \r\n\r\nCome, let us speak about the mandate of the Windshapers, the nature of our struggles on Zephras, and the plight of our people.",
+   "time": 1790005382,
+   "title": "The Windshapers",
+   "zone": "Zephras Isle"
+  },
+  "92595-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "player": "Pellinore Fixpoint",
+   "questID": 92595,
+   "subzone": "Shen'dar Village",
+   "text": "I think you now understand how important the mission of the Windshapers is. Every soul who commands the skysight is of vital importance if we hope to establish dialogue with the spirits of the winds once again.\r\n\r\nBetween threats from within such as the Al'Aketh, and the uncertainty of our safety here in Skywall, it is our responsibility as Windshapers to use our gifts to save our home and ensure that the Shen'dorei can survive these trying times.",
+   "time": 1790005401,
+   "title": "The Windshapers",
+   "zone": "Zephras Isle"
+  },
+  "92598-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Ventaari Brightwish",
+   "npc": "251487",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 92598,
+   "subzone": "Thendal Village",
+   "text": "As a Windshaper, you have the ability to use the sacred skysight gifted to us by the elemental spirits. Travel to the standing stones to the northeast of the village. Find the elemental convergence there and use your gift.\r\n\r\nYou'll find that you may draw upon the skysight anywhere, but its boon is much more powerful if you do so in the presence of an elemental convergence. You may at times receive other bits of wisdom from the spirits that are drawn to such places of power, as well.",
+   "time": 1790002547,
+   "title": "The Gift of Skysight",
    "zone": "Zephras Isle"
   },
   "92598-complete": {
    "build": "69913",
    "event": "complete",
    "firstSeen": 1789927212,
+   "found": true,
    "mapID": 2521,
    "name": "Ventaari Brightwish",
    "npc": "251487",
-   "player": "Agravain Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
    "questID": 92598,
    "subzone": "Thendal Village",
    "text": "Like a muscle, your skysight must be exercised if you hope to grow stronger in the gift. Leveraging your skysight to bridge the distance between the mortal and the spiritual may prove invaluable to you in your adventures.\r\n\r\nYou'd do well to remember what you've learned here today. Our ability to use our gifts to hear what the elements tell us could be the key to our survival.",
-   "time": 1789927212,
+   "time": 1790003355,
    "title": "The Gift of Skysight",
+   "zone": "Zephras Isle"
+  },
+  "93552-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Dalia the Collector",
+   "npc": "251363",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 93552,
+   "subzone": "Thendal Village",
+   "text": "Windstones are a critical resource on Zephras Isle as they contain the raw, concentrated energy of the winds themselves. The wind elementals who used to live here on zephras with us vanished several centuries ago, and since then, the magic that sustains this island is slowly fading. Not without limitations, the windstones are still a reliable energy source, and are incredibly valuable to us.\r\n\r\nYou'll find raw windstones scattered around the grove, think you can help me harvest them?",
+   "time": 1790002629,
+   "title": "Harvesting Windstones",
+   "zone": "Zephras Isle"
+  },
+  "93552-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Dalia the Collector",
+   "npc": "251363",
+   "player": "Pellinore Fixpoint",
+   "questID": 93552,
+   "subzone": "Thendal Village",
+   "text": "Thank you very much for these. As elves we all have a deep connection to magic and these windstones are becoming more and more precious as the magic imbued into this island by the great anchor pylons continues to fade. \r\n\r\nWindstones aren't the only beneficial thing you can harvest from the land. Please, take one of these manuals.",
+   "time": 1790002971,
+   "title": "Harvesting Windstones",
+   "zone": "Zephras Isle"
+  },
+  "93552-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Dalia the Collector",
+   "npc": "251363",
+   "player": "Pellinore Fixpoint",
+   "questID": 93552,
+   "subzone": "Thendal Village",
+   "text": "Hello there, hunter.",
+   "time": 1790002970,
+   "title": "Harvesting Windstones",
+   "zone": "Zephras Isle"
+  },
+  "94411-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Illaya Amberwind",
+   "npc": "251902",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 94411,
+   "subzone": "Shen'dar Village",
+   "text": "Be warned, members of the High Order have been seen in the vicinity of the standing stones north of the village. We have warned them time and again to not meddle at our sacred sites, but they are growing more bold in pushing us. Prove your resolve to us by going to the standing stones and dispersing them.\r\n\r\nI am loathe to condone outright bloodshed, but do what you must to drive them off. Return to me when its done.",
+   "time": 1790005403,
+   "title": "Meddlesome Mages",
+   "zone": "Zephras Isle"
+  },
+  "94414-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 2521,
+   "name": "Halaan Hawk-Eye",
+   "npc": "257554",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 94414,
+   "subzone": "Thendal Village",
+   "text": "Greetings, young $N. I often times come here to look upon the ancient anchor pylon. Gifts from the spirits of the winds, they bind and sustain our island. Of late however, their magic has grown unstable and inconsistent.\r\n\r\nThey suffer no distress I can see. Their splendor has not changed.\r\n\r\nIf you'd like, I can lend you my gift to look upon them yourself.",
+   "time": 1790002662,
+   "title": "The Anchors of Zephras",
+   "zone": "Zephras Isle"
+  },
+  "94414-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Halaan Hawk-Eye",
+   "npc": "257554",
+   "player": "Pellinore Fixpoint",
+   "questID": 94414,
+   "subzone": "Thendal Village",
+   "text": "Thank you for taking a moment to share this with me. I will continue to watch over the grove, and ponder on the state of our homeland.",
+   "time": 1790002668,
+   "title": "The Anchors of Zephras",
    "zone": "Zephras Isle"
   },
   "95216-accept": {
@@ -3929,6 +4832,34 @@
    "title": "Watching the Roads",
    "zone": "Silverpine Forest"
   },
+  "96101-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "questID": 96101,
+   "subzone": "Shen'dar Village",
+   "text": "Greetings, hunter. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "time": 1790005135,
+   "title": "The Great Outdoors",
+   "zone": "Zephras Isle"
+  },
+  "96101-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "questID": 96101,
+   "subzone": "Shen'dar Village",
+   "text": "So now that we've learned the basics, why don't you go and learn a tradeskill from the trainers in the village nearby. They will also teach you how to create a camp fixture suitable to your new profession.",
+   "time": 1790005230,
+   "title": "The Great Outdoors",
+   "zone": "Zephras Isle"
+  },
   "962-accept": {
    "build": "69913",
    "event": "accept",
@@ -3941,10 +4872,66 @@
    "player": "Myrlin Fixpoint",
    "questID": 962,
    "subzone": "The Pools of Vision",
-   "text": "The Royal Apothecary Society, based in the great Undercity of Lordaeron, has sent me here for a very specific service, Myrlin. Perhaps you wish to aid me, and in turn The Dark Lady in our efforts to advance the Forsaken.\n\nRecently I studied a rare specimen of flora named Serpentbloom. I believe in greater quantities this herb has great potential.\n\nUnfortunately Serpentbloom can only be found in the darkest recesses of the Wailing Caverns, a dangerous cave system located in the Barrens.",
+   "text": "The Royal Apothecary Society, based in the great Undercity of Lordaeron, has sent me here for a very specific service, $N. Perhaps you wish to aid me, and in turn The Dark Lady in our efforts to advance the Forsaken.\n\nRecently I studied a rare specimen of flora named Serpentbloom. I believe in greater quantities this herb has great potential.\n\nUnfortunately Serpentbloom can only be found in the darkest recesses of the Wailing Caverns, a dangerous cave system located in the Barrens.",
    "time": 1789994256,
    "title": "Serpentbloom",
    "zone": "Thunder Bluff"
+  },
+  "96638-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Aetheen of the Gales",
+   "npc": "251366",
+   "player": "Pellinore Fixpoint",
+   "questID": 96638,
+   "subzone": "Thendal Village",
+   "text": "More and more adventurers like yourself have been seeking glory and fortune outside of the safety of Thendal Grove. There's one such adventurer who has made a camp outside of Shen'dar Village, along the road leading southwest out of Thendal Grove.\r\n\r\nSeek him out and see what you can learn from him that may help you in your own travels.",
+   "time": 1790004173,
+   "title": "The Adventurer",
+   "zone": "Zephras Isle"
+  },
+  "96638-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "questID": 96638,
+   "subzone": "Shen'dar Village",
+   "text": "Well met!",
+   "time": 1790005133,
+   "title": "The Adventurer",
+   "zone": "Zephras Isle"
+  },
+  "96646-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "questID": 96646,
+   "subzone": "Shen'dar Village",
+   "text": "So you want to learn more about camping, huh? Good for you, hunter. The first step any adventurer needs to take is to become a cook and learn how to make a campfire.\r\n\r\nCooking's not just about making tasty foods. It's also the foundation for your camp.",
+   "time": 1790005233,
+   "title": "Camping 101: Cooking",
+   "zone": "Zephras Isle"
+  },
+  "96646-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Zerril Softbreeze",
+   "npc": "251905",
+   "player": "Pellinore Fixpoint",
+   "questID": 96646,
+   "subzone": "Shen'dar Village",
+   "text": "With this, you'll be able to set up a camp anywhere out in the wilderness. What you've learned is just the basics, so you won't be able to place too many furnishings around it.\r\n\r\nRaise your cooking skill and you might just be able to learn to make even bigger fires.\r\n\r\nYou can also learn the basics of furnishing your campsites from other tradeskill trainers if you're savvy in their skills.",
+   "time": 1790005286,
+   "title": "Camping 101: Cooking",
+   "zone": "Zephras Isle"
   },
   "96895-accept": {
    "build": "69913",
@@ -3971,7 +4958,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 96895,
    "subzone": "",
-   "text": "Stay low and try not to be seen, mage. These cultists are not to be trifled with.",
+   "text": "Stay low and try not to be seen, $c. These cultists are not to be trifled with.",
    "time": 1789953561,
    "title": "The Argent Emissary",
    "zone": "Tirisfal Glades"
@@ -4225,7 +5212,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 97558,
    "subzone": "",
-   "text": "One part of undeath no one mentions is what happens when we are injured. How does the skin of an undead heal itself?\r\n\r\nWell, it doesn't.\r\n\r\nOurs is a cursed life, Myrlin. We must take from the living to further our own existence.\r\n\r\nWhen we sustain an injury, we must replace our skin which usually means animal hides. Since different hide thicknesses are better for different places on our bodies a variety is key!\r\n\r\nBring me wing membranes of a duskbat, hides from a darkhound and skin of a Vile Fin murloc.",
+   "text": "One part of undeath no one mentions is what happens when we are injured. How does the skin of an undead heal itself?\r\n\r\nWell, it doesn't.\r\n\r\nOurs is a cursed life, $N. We must take from the living to further our own existence.\r\n\r\nWhen we sustain an injury, we must replace our skin which usually means animal hides. Since different hide thicknesses are better for different places on our bodies a variety is key!\r\n\r\nBring me wing membranes of a duskbat, hides from a darkhound and skin of a Vile Fin murloc.",
    "time": 1789953422,
    "title": "Hides for the Forsaken",
    "zone": "Tirisfal Glades"
@@ -4274,6 +5261,48 @@
    "time": 1789925034,
    "title": "Camping 101: First Aid",
    "zone": "Durotar"
+  },
+  "97969-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "questID": 97969,
+   "subzone": "Shen'dar Village",
+   "text": "You've become a leatherworker. Good for you, hunter. I reckon I know someone that can teach you how to make yourself a tent that will keep you cool on hot days, and dry on rainy days.\r\n\r\nWith a good tent over your head, you'll ensure that you get all the rest you need to stay sharp on your travels.",
+   "time": 1790005594,
+   "title": "Camping 101: Leatherworking",
+   "zone": "Zephras Isle"
+  },
+  "97971-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "questID": 97971,
+   "subzone": "Shen'dar Village",
+   "text": "Being able to skillfully harvest the skins and hides of fallen beasts is one of the more valuable skills an adventurer can possess.\r\n\r\nI reckon I know someone that can teach you how to craft a Camp Chair for your camp. Sometimes it's important to just take a load off, and you can use some of those hides you've gathered to make a comfy chair to sit in. A bit of relaxation can help ensure that you are at your peak condition and can strike where it counts the next time you find yourself in a dust-up.",
+   "time": 1790005234,
+   "title": "Camping 101: Skinning",
+   "zone": "Zephras Isle"
+  },
+  "97971-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Mendalass Tattermend",
+   "npc": "257024",
+   "player": "Pellinore Fixpoint",
+   "questID": 97971,
+   "subzone": "Shen'dar Village",
+   "text": "There you have it, you can now craft your very own Camp Chair. Most folk don't care much for camps being set up in the center of town, so you'll need to head into the wilderness if you want to test it out.\r\n\r\nOh, and just remember, no camp is complete without a campfire. You'll need one of those before you start up your camp. Most cooks can teach you to make a fire. If you haven't already, you might want to check in with someone who can train you in the culinary arts to learn the basics.",
+   "time": 1790005269,
+   "title": "Camping 101: Skinning",
+   "zone": "Zephras Isle"
   },
   "99052-complete": {
    "build": "69913",
