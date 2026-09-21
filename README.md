@@ -60,12 +60,19 @@ ln -s "$PWD/ForeverVO" "$B/ForeverVO"
 ln -s "$PWD/ForeverVO_Data" "$B/ForeverVO_Data"
 ```
 
-Provide `tools/voices/narrator.wav` (10 to 20 s of clean speech) for quests
-given by items and objects.
+Provide `tools/voices/narrator.wav` (10 to 20 s of clean speech) for quests and
+gossip from items and objects. Those lines are generated again in each voice in
+`config.NARRATOR_VOICES`, under `Sounds/<Quests|Gossip>/Narrator/<voice>/`, so
+players can pick the narrator they prefer in the options. The extra passes sort after
+every line that has no audio at all; `--narrator-voices none` leaves them out
+of a run and `--narrator-only` makes a run of nothing else.
 
 ## In game
 
-- `/fvo` opens the options. `/fvo pause|resume|skip|clear|replay|queue|head|reset|status|debug`.
+- `/fvo` opens the options. `/fvo pause|resume|skip|clear|replay|queue|head|reset|narrator|status|debug`.
+- The narrator reads the lines with no speaker to voice them: quests and
+  chatter from objects, items and signs. Options > Audio > Narrator voice picks
+  which voice that is, from whatever the pack carries; `/fvo narrator` cycles.
 - Right-click the talking head to skip; the X clears the queue; "Queue" shows
   what is waiting; drag to move (lockable in options).
 - The addon compartment entry (next to the minimap) has the same controls.

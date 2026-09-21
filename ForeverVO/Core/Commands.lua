@@ -17,6 +17,26 @@ local function Status()
     end
 end
 
+--- Cycles through the narrator voices the installed packs carry. The pick is
+--- kept in a CVar, so unlike the other settings it survives a session.
+local function NextNarratorVoice()
+    local voices = ns.Packs:NarratorVoices()
+    if #voices < 2 then
+        ns.Print("no alternate narrator voices are installed; the voice pack has the default narrator only.")
+        return
+    end
+    local current, index = ns.Packs:NarratorVoice(), 1
+    for i, voice in ipairs(voices) do
+        if voice == current then
+            index = i
+        end
+    end
+    local chosen = voices[index % #voices + 1]
+    ns.Packs:SetNarratorVoice(chosen)
+    ns.Print(format("narrator voice: |cffffd100%s|r (read the options tooltip for what the narrator covers)",
+        ns.Packs.NarratorVoiceLabel(chosen)))
+end
+
 local commands = {
     pause  = { "Pause playback", function() Queue:Pause() end },
     resume = { "Resume playback", function() Queue:Resume() end },
@@ -31,6 +51,7 @@ local commands = {
     reset  = { "Reset the talking head position", function()
         ns.UI.TalkingHead.frame:ResetPosition()
     end },
+    narrator = { "Switch to the next narrator voice", NextNarratorVoice },
     status = { "Show loaded packs and capture counts", Status },
     export = { "Copy this session's unvoiced lines to contribute", function() ns.Export:Show() end },
     welcome = { "Show the welcome message again", function() ns.Welcome:Show() end },

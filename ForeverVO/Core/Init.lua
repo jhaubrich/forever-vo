@@ -29,6 +29,7 @@ ns.defaults = {
 
     -- Audio
     soundChannel = "Master",             -- Master | Dialog | SFX | Music | Ambience
+    narratorVoice = "narrator",          -- voice for quests given by objects and items (see Packs.lua)
     muteGameDialog = true,
     stopOnClose = false,
 
@@ -38,7 +39,7 @@ ns.defaults = {
     headScale = 1,
     showText = true,
     showQueuePanel = false,
-    factionHead = false,
+    factionHead = true,
     showMinimapButton = true,
     lockMinimapButton = false,
     minimapAngle = 225,

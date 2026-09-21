@@ -16,15 +16,29 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
     },
     gossip = {
       [speakerKey] = {
-        { f = "288-1a2b3c4d", h = "1a2b3c4d", t = "original text", d = 4.5, g = true },
+        { f = "288-1a2b3c4d", h = "1a2b3c4d", t = "original text", d = 4.5, g = true,
+          n = { [1] = 4.7 } },   -- duration per alternate narrator voice
       },
     },
     npcs = { [speakerKey] = "Name" },
+    narratorVoices = { "human-female", "dwarf-male" },
+    narrator = {
+      [questID] = { [1] = { a = 5.4, c = 3.3 }, [2] = { a = 5.1 } },
+      -- the same quest read in each alternate narrator voice, indexed into
+      -- narratorVoices, with that recording's own durations
+    },
   }
 
 Files live at Sounds\Quests\<questID>-accept.mp3 (with m-/f- prefix when g is
 set) and Sounds\Gossip\<f>.mp3. Higher priority packs are consulted first, so a
 pack of new or revised lines can sit on top of a base pack.
+
+Lines with no speaker to clone - quests and gossip from objects and items - are
+read by a narrator. Packs may carry those lines again in other voices, under
+Sounds\<Quests|Gossip>\Narrator\<voice>\, and the player picks one
+(ns.db.narratorVoice); a line the chosen voice has no recording for falls back
+to the default narrator. Quest alternates are in the narrator table, gossip
+alternates in each entry's n field, both indexed into narratorVoices.
 ]]
 
 local Packs = {
@@ -46,6 +60,9 @@ function ns.RegisterPack(pack)
     pack.quests = pack.quests or {}
     pack.gossip = pack.gossip or {}
     pack.npcs = pack.npcs or {}
+    pack.narrator = pack.narrator or {}
+    pack.narratorVoices = pack.narratorVoices or {}
+    Packs.voices = nil -- the menu is the union over packs; rebuild it on demand
     pack.nameToKey = {}
     for key, name in pairs(pack.npcs) do
         pack.nameToKey[name] = pack.nameToKey[name] or key
@@ -76,6 +93,95 @@ local function SoundPath(pack, subfolder, base)
     return format("Interface\\AddOns\\%s\\Sounds\\%s\\%s.mp3", pack.folder, subfolder, base)
 end
 
+-- ---------------------------------------------------------------------------
+-- Narrator voice
+-- ---------------------------------------------------------------------------
+
+local DEFAULT_NARRATOR = "narrator"
+local NARRATOR_CVAR = "ForeverVO_narratorVoice"
+local RACE_LABELS = {
+    human = "Human", dwarf = "Dwarf", nightelf = "Night elf", orc = "Orc", troll = "Troll",
+    tauren = "Tauren", gnome = "Gnome", goblin = "Goblin", bloodelf = "Blood elf",
+    scourge = "Undead", skyborne = "Skyborne", draenei = "Draenei",
+}
+
+Packs.defaultNarrator = DEFAULT_NARRATOR
+
+--- The voices the player may pick for narrated quests: the default first, then
+--- every alternate the installed packs carry.
+function Packs:NarratorVoices()
+    if self.voices then
+        return self.voices
+    end
+    local voices, seen = { DEFAULT_NARRATOR }, { [DEFAULT_NARRATOR] = true }
+    for _, pack in ipairs(self.list) do
+        for _, voice in ipairs(pack.narratorVoices) do
+            if not seen[voice] then
+                seen[voice] = true
+                table.insert(voices, voice)
+            end
+        end
+    end
+    self.voices = voices
+    return voices
+end
+
+--- "dwarf-male" -> "Dwarf male". Unknown races keep their own name, capitalised.
+function Packs.NarratorVoiceLabel(voice)
+    if voice == DEFAULT_NARRATOR then
+        return "Narrator"
+    end
+    local race, gender = voice:match("^(.+)%-(%a+)$")
+    if not race then
+        return voice
+    end
+    return format("%s %s", RACE_LABELS[race] or (race:sub(1, 1):upper() .. race:sub(2)), gender)
+end
+
+function Packs:NarratorVoice()
+    local voice = ns.db.narratorVoice or DEFAULT_NARRATOR
+    for _, available in ipairs(self:NarratorVoices()) do
+        if available == voice then
+            return voice
+        end
+    end
+    return DEFAULT_NARRATOR -- the pack that carried it is no longer installed
+end
+
+--- Picks the narrator voice, and remembers it in an addon CVar: this client
+--- writes saved variables but never reads them back (see Welcome.lua).
+function Packs:SetNarratorVoice(voice)
+    ns.db.narratorVoice = voice
+    pcall(C_CVar.SetCVar, NARRATOR_CVAR, voice)
+end
+
+ns.OnInit(function()
+    pcall(C_CVar.RegisterCVar, NARRATOR_CVAR, DEFAULT_NARRATOR)
+end)
+
+ns.OnLogin(function()
+    local stored = C_CVar.GetCVar(NARRATOR_CVAR)
+    if stored and stored ~= "" then
+        ns.db.narratorVoice = stored
+    end
+end)
+
+--- Where a voice sits in this pack's narratorVoices, or nil when it has none.
+local function NarratorIndex(pack, voice)
+    for index, name in ipairs(pack.narratorVoices) do
+        if name == voice then
+            return index
+        end
+    end
+end
+
+--- The record a pack holds for a narrated quest in the chosen voice, or nil.
+local function NarratorRecord(pack, questID, voice)
+    local alternates = pack.narrator[questID]
+    local index = alternates and NarratorIndex(pack, voice)
+    return index and alternates[index] or nil
+end
+
 --- Finds the audio for a quest event. Returns path, duration, pack or nil.
 ---@param questID number
 ---@param event "accept"|"progress"|"complete"
@@ -90,6 +196,13 @@ function Packs:FindQuest(questID, event)
             local base = format("%d-%s", questID, event)
             if entry.g then
                 base = Util.PlayerGenderPrefix() .. base
+            end
+            local voice = self:NarratorVoice()
+            if voice ~= DEFAULT_NARRATOR then
+                local alternate = NarratorRecord(pack, questID, voice)
+                if alternate and alternate[field] then
+                    return SoundPath(pack, "Quests\\Narrator\\" .. voice, base), alternate[field], pack
+                end
             end
             return SoundPath(pack, "Quests", base), entry[field], pack
         end
@@ -171,5 +284,13 @@ function Packs:FindGossip(speakerKey, text)
         base = Util.PlayerGenderPrefix() .. base
     end
     ns.Debug(format("gossip match %.2f for %s", bestScore, base))
+    local voice = self:NarratorVoice()
+    if voice ~= DEFAULT_NARRATOR and bestEntry.n then
+        local index = NarratorIndex(bestPack, voice)
+        local seconds = index and bestEntry.n[index]
+        if seconds then
+            return SoundPath(bestPack, "Gossip\\Narrator\\" .. voice, base), seconds, bestPack
+        end
+    end
     return SoundPath(bestPack, "Gossip", base), bestEntry.d, bestPack
 end

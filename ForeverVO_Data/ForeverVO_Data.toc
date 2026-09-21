@@ -11,4 +11,5 @@ Data\Pack.lua
 Data\Quests.lua
 Data\Gossip.lua
 Data\NPCs.lua
+Data\Narrator.lua
 Data\Register.lua

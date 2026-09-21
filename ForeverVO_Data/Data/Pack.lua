@@ -1,4 +1,4 @@
--- Voice pack manifest. The tables are filled by Quests.lua, Gossip.lua and NPCs.lua
+-- Voice pack manifest. The tables are filled by Quests.lua, Gossip.lua, NPCs.lua and Narrator.lua
 -- (generated files) and handed to Forever Voiceover by Register.lua.
 ForeverVO_DataPack = {
     name = "Forever",
@@ -8,4 +8,6 @@ ForeverVO_DataPack = {
     quests = {},
     gossip = {},
     npcs = {},
+    narrator = {},
+    narratorVoices = {},
 }

@@ -56,6 +56,22 @@ FALLBACK_VOICES = {
     "pandaren": "human", "dracthyr": "bloodelf",
 }
 
+# Quests handed out by objects and items have no speaker to clone, so they are
+# read by the narrator. That voice is a matter of taste, so every narrator line
+# is also generated in the alternates below and the player picks one in the
+# addon's options. NARRATOR_VOICE is the default and keeps the plain sound path
+# (Sounds\Quests\<base>.mp3); the alternates live in Sounds\Quests\Narrator\<voice>\.
+# Adding a voice here costs one more pass over every narrator line.
+NARRATOR_VOICE = "narrator"
+NARRATOR_VOICES = [
+    NARRATOR_VOICE,
+    "human-female",
+    "dwarf-male",
+    "nightelf-female",
+    "orc-male",
+    "troll-female",
+]
+
 # When the client tables give no race for a speaker, the zone is a strong hint.
 ZONE_RACE_HINTS = {
     "Zephras Isle": "skyborne",
