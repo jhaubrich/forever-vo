@@ -1,11 +1,14 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
 
 - Lines no longer call you by the wrong class. The client fills in $n, $c and $r
   before an addon can read the text, so a quest first heard on a rogue was
   recorded saying "rogue" and then said that to everyone. Captures now store the
   placeholders, and the narrator says "adventurer" instead.
+- `/fvo export` no longer carries your character's name, class or race: the
+  placeholders go back in as the line is captured, so a submission says what the
+  NPC said and nothing about who heard it.
 - Gossip matches whoever is reading it. A greeting recorded on one class used to
   hash differently for every other class, so it often fell back to fuzzy matching
   or went silent.
