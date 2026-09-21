@@ -42,6 +42,7 @@
   "11049|8b5e44c8": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789956846,
    "mapID": 1458,
    "name": "Rhiannon Davis",
    "npc": "11049",
@@ -223,6 +224,7 @@
   "2055|288436fb": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789962630,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -469,6 +471,7 @@
   "271613|0980e046": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789962224,
    "mapID": 1458,
    "name": "Unfinished Abomination",
    "npc": "271613",
@@ -756,6 +759,7 @@
   "4576|4eaf08fa": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789956865,
    "mapID": 1458,
    "name": "Josef Gregorian",
    "npc": "4576",
@@ -768,6 +772,7 @@
   "4612|5acaa152": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789961999,
    "mapID": 1458,
    "name": "Boyle",
    "npc": "4612",
@@ -793,6 +798,7 @@
   "4616|ac0ef905": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789963166,
    "mapID": 1458,
    "name": "Lavinia Crowe",
    "npc": "4616",
@@ -857,6 +863,7 @@
   "5624|f669426b": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789957536,
    "mapID": 1458,
    "name": "Undercity Guardian",
    "npc": "5624",
@@ -1573,6 +1580,7 @@
   "1014-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789963641,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
    "npc": "1938",
@@ -1602,6 +1610,7 @@
   "1098-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789963659,
    "mapID": 1421,
    "name": "High Executor Hadrec",
    "npc": "1952",
@@ -1825,6 +1834,7 @@
   "1961-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789956854,
    "found": true,
    "mapID": 1458,
    "name": "Josef Gregorian",
@@ -1841,6 +1851,7 @@
   "1961-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789956852,
    "mapID": 1458,
    "name": "Josef Gregorian",
    "npc": "4576",
@@ -1855,6 +1866,7 @@
   "1962-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789956866,
    "found": true,
    "mapID": 1458,
    "name": "Josef Gregorian",
@@ -2449,6 +2461,7 @@
   "447-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789962206,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -2608,6 +2621,7 @@
   "479-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789956644,
    "found": true,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
@@ -2624,6 +2638,7 @@
   "479-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789956643,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
    "npc": "2121",
@@ -3156,6 +3171,7 @@
   "92401-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789963581,
    "mapID": 1421,
    "name": "Tabitha Heartweaver",
    "npc": "250686",
@@ -3185,6 +3201,7 @@
   "92421-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962085,
    "mapID": 1458,
    "name": "Morbin Lightbane",
    "npc": "266484",
@@ -3199,6 +3216,7 @@
   "92421-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789962084,
    "mapID": 1458,
    "name": "Morbin Lightbane",
    "npc": "266484",
@@ -3228,6 +3246,7 @@
   "92422-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962887,
    "mapID": 1420,
    "name": "Deathguard Kristof",
    "npc": "251001",
@@ -3385,6 +3404,7 @@
   "95216-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962171,
    "mapID": 1458,
    "name": "Theodore Griffs",
    "npc": "11835",
@@ -3399,6 +3419,7 @@
   "95216-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789962170,
    "mapID": 1458,
    "name": "Theodore Griffs",
    "npc": "11835",
@@ -3488,6 +3509,7 @@
   "97288-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789958562,
    "isObject": true,
    "name": "Unknown",
    "player": "Myrlin Fixpoint",
@@ -3501,6 +3523,7 @@
   "97288-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962209,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3515,6 +3538,7 @@
   "97288-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789962209,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3529,6 +3553,7 @@
   "97289-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789962210,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3543,6 +3568,7 @@
   "97289-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962227,
    "mapID": 1458,
    "name": "Unfinished Abomination",
    "npc": "271613",
@@ -3557,6 +3583,7 @@
   "97289-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789962226,
    "mapID": 1458,
    "name": "Unfinished Abomination",
    "npc": "271613",
@@ -3571,6 +3598,7 @@
   "97290-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789962228,
    "mapID": 1458,
    "name": "Unfinished Abomination",
    "npc": "271613",
@@ -3585,6 +3613,7 @@
   "97290-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962250,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3599,6 +3628,7 @@
   "97291-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789962257,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3613,6 +3643,7 @@
   "97291-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962587,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3627,6 +3658,7 @@
   "97291-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789962586,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3641,6 +3673,7 @@
   "97292-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789962588,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3655,6 +3688,7 @@
   "97292-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789962632,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
@@ -3669,6 +3703,7 @@
   "97292-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789962631,
    "mapID": 1458,
    "name": "Master Apothecary Faranell",
    "npc": "2055",
