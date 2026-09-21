@@ -636,7 +636,7 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Valley of Strength",
    "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
-   "time": 1789941717,
+   "time": 1789992133,
    "zone": "Orgrimmar"
   },
   "3318|ae78a458": {
@@ -652,6 +652,18 @@
    "time": 1789924612,
    "zone": "Orgrimmar"
   },
+  "3390|eb12150e": {
+   "build": "69913",
+   "event": "greeting",
+   "mapID": 1413,
+   "name": "Apothecary Helbrim",
+   "npc": "3390",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Crossroads",
+   "text": "The Barrens holds a wealth of substances for which we, the apothecaries or Lordaeron, may find use.",
+   "time": 1789992990,
+   "zone": "The Barrens"
+  },
   "3429|01a1e491": {
    "build": "69913",
    "event": "gossip",
@@ -663,6 +675,30 @@
    "subzone": "The Crossroads",
    "text": "Welcome to the Crossroads, mage. My name is Thork--I lead the defenses here in the name of the Warchief.\n\nPlease, feel free to make yourself at home. As long as you mind your business, no one should have any problem with you taking up some space.\n\nThere are many threats to our safety here. If you've already become familiar with the lay of the land, speak to the others here--perhaps they have tasks for you to do.",
    "time": 1789932275,
+   "zone": "The Barrens"
+  },
+  "3432|3d594cb5": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Mankrik",
+   "npc": "3432",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Crossroads",
+   "text": "I came to the Crossroads from the south seeking help, mage, but I find only cowards who turn their backs on me--even the mighty Thork insults me so. He is a good leader, but his dismissal of my plea causes me greater anger.\n\nHe claims my rage makes me hasty--that it clouds my judgement--but I will not rest until I have vengeance!",
+   "time": 1789993164,
+   "zone": "The Barrens"
+  },
+  "3446|fa56d5e5": {
+   "build": "69913",
+   "event": "greeting",
+   "mapID": 1413,
+   "name": "Mebok Mizzyrix",
+   "npc": "3446",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Ratchet",
+   "text": "Yes yes yes!  You're just the orc I'm looking for!\n\nSit!  We have much to discuss!!",
+   "time": 1789992325,
    "zone": "The Barrens"
   },
   "3448|c2224a6c": {
@@ -1374,6 +1410,13 @@
    "name": "Koma",
    "sex": 2
   },
+  "3390": {
+   "creatureType": "Humanoid",
+   "level": 22,
+   "modelFileID": 959310,
+   "name": "Apothecary Helbrim",
+   "sex": 2
+  },
   "3429": {
    "creatureType": "Humanoid",
    "level": 42,
@@ -1381,11 +1424,32 @@
    "name": "Thork",
    "sex": 2
   },
+  "3432": {
+   "creatureType": "Humanoid",
+   "level": 15,
+   "modelFileID": 917116,
+   "name": "Mankrik",
+   "sex": 2
+  },
+  "3446": {
+   "creatureType": "Humanoid",
+   "level": 17,
+   "modelFileID": 119376,
+   "name": "Mebok Mizzyrix",
+   "sex": 2
+  },
   "3448": {
    "creatureType": "Humanoid",
    "level": 22,
    "modelFileID": 968705,
    "name": "Tonga Runetotem",
+   "sex": 2
+  },
+  "3464": {
+   "creatureType": "Humanoid",
+   "level": 25,
+   "modelFileID": 917116,
+   "name": "Gazrog",
    "sex": 2
   },
   "3489": {
@@ -1401,6 +1465,13 @@
    "modelFileID": 997378,
    "name": "Shelene Rhobart",
    "sex": 3
+  },
+  "3665": {
+   "creatureType": "Humanoid",
+   "level": 18,
+   "modelFileID": 119376,
+   "name": "Crane Operator Bigglefuzz",
+   "sex": 2
   },
   "4047": {
    "creatureType": "Humanoid",
@@ -1638,6 +1709,36 @@
    "time": 1789952122,
    "title": "Sample for Helbrim",
    "zone": "Undercity"
+  },
+  "1358-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1413,
+   "name": "Apothecary Helbrim",
+   "npc": "3390",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 1358,
+   "subzone": "The Crossroads",
+   "text": "Ah, very good.  If initial reports are true, then the toxicity of these hearts could lead to further advances in our knowledge of poisons.\n\nThis is a welcome delivery, Myrlin.  Your reward is well earned.",
+   "time": 1789992993,
+   "title": "Sample for Helbrim",
+   "zone": "The Barrens"
+  },
+  "1358-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1413,
+   "name": "Apothecary Helbrim",
+   "npc": "3390",
+   "player": "Myrlin Fixpoint",
+   "questID": 1358,
+   "subzone": "The Crossroads",
+   "text": "You have a package for me?",
+   "time": 1789992992,
+   "title": "Sample for Helbrim",
+   "zone": "The Barrens"
   },
   "1359-accept": {
    "build": "69913",
@@ -1960,6 +2061,22 @@
    "time": 1789949833,
    "title": "Speak with Renferrel",
    "zone": "Silverpine Forest"
+  },
+  "3281-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Gazrog",
+   "npc": "3464",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 3281,
+   "subzone": "The Crossroads",
+   "text": "You may have killed the raptors, but the silver they stole must be recovered!  I have reports that the raptors have a large grouping of nests south of Ratchet, known as the Raptor Grounds.  It is likely that they brought our stolen silver there.\n\nGo to this raptor haven and search for the stolen silver.  When you find it, return it to me.",
+   "time": 1789992978,
+   "title": "Stolen Silver",
+   "zone": "The Barrens"
   },
   "3301-accept": {
    "build": "69913",
@@ -2733,6 +2850,22 @@
    "title": "Dalaran's Intentions",
    "zone": "Silverpine Forest"
   },
+  "4921-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Mankrik",
+   "npc": "3432",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 4921,
+   "subzone": "The Crossroads",
+   "text": "We battled in a small tauren camp when we were separated--she held three of the Bristlebacks off by herself. But the odds began to overwhelm us. I led some away only to see her overwhelmed by newcomers. In my rage, I turned to face my enemies, but they brought me down easily with their vast numbers.\n\nI awoke to a tauren druid tending my wounds--he had come across me on the Gold Road as I fell.\n\nPlease, mage, find some sign of my wife.",
+   "time": 1789993163,
+   "title": "Lost in Battle",
+   "zone": "The Barrens"
+  },
   "5041-accept": {
    "build": "69913",
    "event": "accept",
@@ -3031,6 +3164,52 @@
    "text": "Have you returned from Orgrimmar?  Did Gryshka like the meat I sent her?",
    "time": 1789932300,
    "title": "Return to the Crossroads",
+   "zone": "The Barrens"
+  },
+  "865-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Mebok Mizzyrix",
+   "npc": "3446",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 865,
+   "subzone": "Ratchet",
+   "text": "The raptors of the Barrens are smarter than raptors in other lands.  And I think all that smarts is hiding in their horns!  If so, then I could grind their horns into powder and use it to make \"smart drinks.\"  I could sell them for a fortune!!!\n\nAnd you can help me.  Find me intact raptor horns from sunscale scytheclaws.  They roam in the southern Barrens, and in the northern Barrens near the border of Ashenvale Forest.",
+   "time": 1789992324,
+   "title": "Raptor Horns",
+   "zone": "The Barrens"
+  },
+  "869-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1413,
+   "name": "Gazrog",
+   "npc": "3464",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 869,
+   "subzone": "The Crossroads",
+   "text": "You got rid of the raptors!\n\nThank you, Myrlin.  You are a mage of worth.",
+   "time": 1789992977,
+   "title": "Raptor Thieves",
+   "zone": "The Barrens"
+  },
+  "869-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1413,
+   "name": "Gazrog",
+   "npc": "3464",
+   "player": "Myrlin Fixpoint",
+   "questID": 869,
+   "subzone": "The Crossroads",
+   "text": "Do you have those heads, Myrlin?",
+   "time": 1789992976,
+   "title": "Raptor Thieves",
    "zone": "The Barrens"
   },
   "870-complete": {
@@ -3430,6 +3609,22 @@
    "time": 1789962170,
    "title": "The New Plague",
    "zone": "Undercity"
+  },
+  "959-accept": {
+   "build": "69913",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Crane Operator Bigglefuzz",
+   "npc": "3665",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 959,
+   "subzone": "Ratchet",
+   "text": "Oops!\n\nHad a little mishap, as you can see! The morning cargo shipment from Booty Bay was huge. Huge I say! Never seen so many crates. Well, I was trying to expedite things so I started unloading a bit more than I could handle. That's when everything came tumbling down.\n\nBefore I knew what was going on, I saw that menace, Mad Magglish, go running off with a bottle of 99-year-old port. Chased him all the way to Wailing Caverns. No way I was going in there.\n\nMaybe you're brave enough to find him?",
+   "time": 1789992310,
+   "title": "Trouble at the Docks",
+   "zone": "The Barrens"
   },
   "95981-accept": {
    "build": "69913",
