@@ -8,7 +8,26 @@ from __future__ import annotations
 
 import re
 
-# Same substitutions as upstream tts_cli/tts_utils.py REPLACE_DICT
+# Same substitutions as upstream tts_cli/tts_utils.py REPLACE_DICT.
+#
+# $c (the player's class) renders as "adventurer" like $n, which has two known
+# faults: a line carrying both says "adventurer" twice, and "adventurer" is
+# vowel-initial, so the 74 lines written "a $c" ("I cannot train a $c such as
+# yourself") come out "a adventurer". "friend" fixes both -- consonant-initial,
+# what Classic NPCs actually call you, and correct in every position the corpus
+# uses -- at the cost of 2 possessive lines ("your first friend's robes").
+#
+# Deliberately NOT changed yet: 1,246 lines carry $c and 318 of them already
+# have audio, so swapping the word costs ~1.1 h of GPU that the first full
+# generation needs more. The fingerprints are seeded (generate.py --reindex), so
+# whenever this changes, `generate.py --stale-only` finds exactly the affected
+# files by itself. Revisit once the bulk backlog is done.
+#
+# One word for everyone either way: the audio is rendered once, so a per-player
+# choice would mean a full extra copy of every $c line (~1,270 files, ~4.6 h)
+# per option, and the word cannot be spliced in at runtime -- the client only
+# has PlaySoundFile, and the clip would need to exist in each of the ~38 cloned
+# voices to match the line around it.
 REPLACE = {
     "$b": "\n", "$B": "\n",
     "$n": "adventurer", "$N": "Adventurer",

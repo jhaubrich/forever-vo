@@ -467,6 +467,13 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--only", choices=["quests", "gossip"], help="restrict to one kind")
     parser.add_argument("--quest", type=int, action="append", help="restrict to quest ID(s)")
     parser.add_argument("--tables-only", action="store_true", help="skip synthesis, rebuild tables")
+    parser.add_argument("--stale-only", action="store_true",
+                        help="only regenerate files whose recorded text fingerprint no longer matches, "
+                             "skipping lines that have no audio yet")
+    parser.add_argument("--reindex", action="store_true",
+                        help="record the current text's fingerprint for files that already exist, without "
+                             "generating anything, so a later text change is detected (files made before the "
+                             "fingerprint existed have none and are otherwise left alone)")
     parser.add_argument("--captured", action="store_true", help="only lines captured in game (not bulk sources)")
     parser.add_argument("--zone", type=int, action="append", help="only quests with this QuestSortID / AreaTable ID (from the client cache)")
     parser.add_argument("--assume-voice", help="voice for quests whose speaker is unknown, e.g. skyborne-male (default: skip them)")
@@ -490,6 +497,8 @@ def main(argv: list[str]) -> int:
     todo: list[Target] = []
     skipped: dict[str, int] = {}
 
+    stale: set[str] = set()
+
     def wanted(target: Target) -> bool:
         """False when the file is already there in the voice it should be in."""
         if not target.path.exists() or args.force:
@@ -498,6 +507,7 @@ def main(argv: list[str]) -> int:
         previous_text = recorded.get("t") if isinstance(recorded, dict) else None
         if previous_text is not None and previous_text != target.fingerprint:
             skipped["text changed, regenerating"] = skipped.get("text changed, regenerating", 0) + 1
+            stale.add(target.key)
             return True
         previous_voice = recorded.get("v") if isinstance(recorded, dict) else None
         if previous_voice is None or previous_voice == target.voice or target.voice == args.assume_voice:
@@ -534,7 +544,23 @@ def main(argv: list[str]) -> int:
             candidates = [] if args.narrator_only else [Target(item, base, text, item.voice)]
             if item.is_narrator:
                 candidates += [Target(item, base, text, voice, True) for voice in alternate_voices]
+            if args.reindex:
+                for target in candidates:
+                    recorded = sound_index.get(target.key)
+                    if isinstance(recorded, dict) and target.path.exists():
+                        recorded["t"] = target.fingerprint
+                continue
             todo.extend(target for target in candidates if wanted(target))
+    if args.reindex:
+        SOUND_INDEX.parent.mkdir(parents=True, exist_ok=True)
+        SOUND_INDEX.write_text(json.dumps(sound_index, indent=1, sort_keys=True), encoding="utf-8")
+        stamped = sum(1 for value in sound_index.values() if isinstance(value, dict) and value.get("t"))
+        print(f"reindexed: {stamped} of {len(sound_index)} entries now carry a text fingerprint")
+        return 0
+
+    if args.stale_only:
+        todo = [target for target in todo if target.key in stale]
+
     # Low-level content first so early zones are playable soonest, and every line
     # in its own voice before any alternate, so a time-boxed run still adds breadth
     todo.sort(key=lambda t: (t.alternate, t.item.kind != "quests", t.item.entry.get("level") or 0, t.base, t.voice))
