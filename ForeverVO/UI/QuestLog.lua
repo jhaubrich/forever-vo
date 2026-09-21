@@ -2,14 +2,18 @@ local _, ns = ...
 local Packs, Queue, Util = ns.Packs, ns.Queue, ns.Util
 
 --[[
-Play/stop buttons in front of quest titles in the quest log (QuestScrollFrame
-from Blizzard_UIPanels_Game), for quests that have a voiced accept text.
+A "Play" button beside "Back" in the quest details panel (QuestMapFrame from
+Blizzard_UIPanels_Game), for quests that have a voiced accept text.
+
+There is deliberately no button on the quest list rows: the title frames put
+their own status icon ("..." in progress, "?" ready to turn in) at the left of
+the row, and anything anchored there covers it. The details panel is also where
+the text is, so that is where the button to hear it belongs. Because the button
+is parented to the details panel's BackFrame, it shows and hides with the panel
+on its own.
 ]]
 
-local BUTTON_SIZE = 18
-
 local QuestLog = {
-    buttons = {},   -- title frame -> button
     queued = {},    -- questID -> queue item started from the log
 }
 ns.UI.QuestLog = QuestLog
@@ -29,21 +33,6 @@ local function QuestItem(questID)
         path = path, duration = duration, pack = pack,
     }
 end
-
-function QuestLog:UpdateTexture(button)
-    local item = button.questID and self.queued[button.questID]
-    local playing = item and Queue:Contains(item)
-    button:SetNormalTexture(ns.mediaPath .. (playing and "Stop" or "Play"))
-end
-
-function QuestLog:UpdateAllTextures()
-    for _, button in pairs(self.buttons) do
-        self:UpdateTexture(button)
-    end
-    self:UpdateDetailsButton()
-end
-
--- "Play" button next to "Back" in the quest details panel -----------------
 
 function QuestLog:GetDetailsButton()
     if self.detailsButton then
@@ -99,69 +88,21 @@ function QuestLog:OnClick(button)
         if self.queued[questID] == item then
             self.queued[questID] = nil
         end
-        self:UpdateAllTextures()
+        self:UpdateDetailsButton()
     end
     self.queued[questID] = item
     Queue:Add(item)
-    self:UpdateAllTextures()
-end
-
-function QuestLog:GetButton(titleFrame)
-    local button = self.buttons[titleFrame]
-    if button then
-        return button
-    end
-    button = CreateFrame("Button", nil, titleFrame)
-    button:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    button:SetPoint("TOPLEFT", titleFrame, "TOPLEFT", 9, -7)
-    button:SetHitRectInsets(1, 1, 1, 1)
-    button:SetNormalTexture(ns.mediaPath .. "Play")
-    button:SetDisabledTexture(ns.mediaPath .. "Play")
-    button:GetDisabledTexture():SetDesaturated(true)
-    button:GetDisabledTexture():SetAlpha(0.33)
-    button:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight", "ADD")
-    button:SetScript("OnClick", function(self)
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        QuestLog:OnClick(self)
-    end)
-    button:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(self:IsEnabled() and "Play quest voiceover" or "No voiceover for this quest", 1, 1, 1)
-        GameTooltip:Show()
-    end)
-    button:SetScript("OnLeave", GameTooltip_Hide)
-    self.buttons[titleFrame] = button
-    return button
-end
-
-function QuestLog:Update()
-    if not QuestScrollFrame or not QuestScrollFrame.titleFramePool then
-        return
-    end
-    for titleFrame in QuestScrollFrame.titleFramePool:EnumerateActive() do
-        local questID = titleFrame.questID
-        local button = self:GetButton(titleFrame)
-        button.questID = questID
-        local hasSound = questID ~= nil and Packs:FindQuest(questID, "accept") ~= nil
-        button:SetEnabled(hasSound)
-        self:UpdateTexture(button)
-        button:Show()
-    end
+    self:UpdateDetailsButton()
 end
 
 local function TryHook()
     if QuestLog.hooked then
         return true
     end
-    if QuestLogQuests_Update then
-        hooksecurefunc("QuestLogQuests_Update", function()
-            QuestLog:Update()
+    if QuestMapFrame_ShowQuestDetails then
+        hooksecurefunc("QuestMapFrame_ShowQuestDetails", function()
+            QuestLog:UpdateDetailsButton()
         end)
-        if QuestMapFrame_ShowQuestDetails then
-            hooksecurefunc("QuestMapFrame_ShowQuestDetails", function()
-                QuestLog:UpdateDetailsButton()
-            end)
-        end
         QuestLog.hooked = true
     end
     return QuestLog.hooked
@@ -173,8 +114,8 @@ ns.OnInit(function()
         EventUtil.ContinueOnAddOnLoaded("Blizzard_UIPanels_Game", TryHook)
     end
     Queue:RegisterCallback("OnPacksChanged", function()
-        if QuestMapFrame and QuestMapFrame:IsShown() then
-            QuestLog:Update()
+        if QuestMapFrame and QuestMapFrame.DetailsFrame and QuestMapFrame.DetailsFrame:IsShown() then
+            QuestLog:UpdateDetailsButton()
         end
     end, QuestLog)
 end)

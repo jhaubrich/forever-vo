@@ -11,6 +11,10 @@
   Options > Talking head > Faction parchment style for the dark panel.
 - Fixed the queue panel's "nothing else is waiting to play" line hanging off
   the left edge of the panel.
+- The play buttons on the quest list rows are gone: they covered the status
+  icon the quest log draws there ("..." for in progress, "?" for ready to turn
+  in). Open a quest to read it and the Play button beside Back does the same
+  job, next to the text it reads.
 
 ## 0.1.0
 
