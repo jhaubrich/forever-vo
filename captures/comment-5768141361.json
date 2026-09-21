@@ -1,0 +1,101 @@
+{
+ "gossip": {
+  "1569|e2fc85be": {
+   "build": "69913",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Shadow Priest Sarvis",
+   "npc": "1569",
+   "questID": null,
+   "source": "community",
+   "text": "No other race on Azeroth has suffered as much as our people, $c. To laugh in the face of death has become second nature for all of us.",
+   "title": null,
+   "zone": "Tirisfal Glades"
+  },
+  "244808|3f8410df": {
+   "build": "69913",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": null,
+   "source": "community",
+   "text": "Welcome back to the light, friend. Do you require training?",
+   "title": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "1569": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Shadow Priest Sarvis",
+   "sex": 2
+  },
+  "244808": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Aramis Hammerhand",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5768141361",
+ "quests": {
+  "90902-accept": {
+   "build": "69913",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": 90902,
+   "source": "community",
+   "text": "I am proud to welcome another newly risen $c to our ranks. As you begin to reconnect w$nh the light you may notice that certain abil$nies that were once second nature to you may cause you considerable pain to use now, particularly those involving channeling the light to heal yourself or others. \r\n\r\nThe only way around this problem is--unfortunately--to go through $n. Like any other muscle that has atrophied, you must push through the pain and exercise the flesh for $n to return to full function.",
+   "title": "Rediscovering the Light",
+   "zone": "Tirisfal Glades"
+  },
+  "98601-accept": {
+   "build": "69913",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Shadow Priest Sarvis",
+   "npc": "1569",
+   "questID": 98601,
+   "source": "community",
+   "text": "While you were off dealing w$nh the mindless Scourge, this scroll arrived for you. $N reeks of the light, so I imagine $ns of some importance to a $c like yourself.\r\n\r\nRead $n before heading out again. Just please--step away when you do. $Cs make me qu$ne uneasy.",
+   "title": "A Difficult Path",
+   "zone": "Tirisfal Glades"
+  },
+  "98601-complete": {
+   "build": "69913",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": 98601,
+   "source": "community",
+   "text": "Your training can now begin in earnest, $c. I see great promise in you, but take care not to turn away from the light, even for a moment. Embrace the pain $n will cause you. That pain is a crucible, and you will emerge from $n stronger than you ever were in your previous life.",
+   "title": "A Difficult Path",
+   "zone": "Tirisfal Glades"
+  },
+  "98601-progress": {
+   "build": "69913",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": 98601,
+   "source": "community",
+   "text": "Through pain comes resolve.",
+   "title": "A Difficult Path",
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
