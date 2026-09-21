@@ -93,7 +93,17 @@ build artifact, never hand-edited):
    GPU, writes mp3s under `ForeverVO_Data/Sounds/`, rebuilds the tables every
    25 files, and records the voice used per file in `sound_index.json` so a
    file is regenerated when its resolved voice changes (e.g. a guessed
-   Skyborne male giver turns out female once captured).
+   Skyborne male giver turns out female once captured). Narrator lines (quests
+   and gossip from objects, items and speakers with no gender) are generated
+   once per voice in `config.NARRATOR_VOICES`: the first entry is the default
+   and keeps the plain path and `sound_index` key, the rest go to
+   `Sounds/<Quests|Gossip>/Narrator/<voice>/` with `Narrator/<voice>/<base>` as
+   their index key. The addon needs each alternate's own duration, so quests
+   get `Data/Narrator.lua` (`pack.narrator`, indexed into
+   `pack.narratorVoices`) and gossip entries get an `n` field indexed the same
+   way. Alternates sort last in the todo list, so a time-boxed run still spends
+   its GPU on unvoiced lines; `--narrator-only` / `--narrator-voices` control a
+   dedicated pass.
 4. `build_voice_references.py` makes cloning clips under `tools/voices/`
    from the client's own audio via wago.tools: race voices from shared NPC
    greeting kits, Skyborne from `VocalUISounds`, and `--named` for NPCs whose
@@ -117,6 +127,12 @@ Installed by `tools/install-timer.sh`:
   work the bulk backlog for 2 h, rebuild tables, commit and push.
 - `forever-vo-bulk.service` — the long bulk run, `Restart=on-failure` so a
   CUDA context lost to suspend just resumes (existing files are skipped).
+  `WantedBy=default.target` (since 2026-09-21), so a reboot resumes it on its
+  own; `Restart=on-failure` only covers a crash while running, not a reboot.
+  Because it is then normally up at 04:00, `daily.sh` stops it for the duration
+  of the nightly run and restarts it from an `EXIT` trap — it used to just
+  bail out, which would have skipped the captured pass, the table rebuild and
+  the delta upload for as long as bulk stayed up.
 
 Do not add a periodic pull timer; the owner declined it. Do not run two
 generators at once by hand (they share `sound_index.json`).
@@ -171,6 +187,16 @@ The owner's machine picks those up on the next sync.
   different terminators or the Write tool.
 - `pkill -f 'tools/generate.py'` matches the shell that runs it; use
   `pgrep -f` to look and `systemctl --user stop forever-vo-bulk` to stop.
+- A suspend can kill the GPU outright, not just the CUDA context: on
+  2026-09-21 the resume logged `Xid 31` then `Xid 154, GPU recovery action
+  changed to 0x2 (Node Reboot Required)`, and every later process got "CUDA
+  unknown error" from `torch.cuda.is_available()` until a reboot. `nvidia-smi`
+  still answers in that state, so it is not a good health check; the kernel log
+  (`journalctl -k | grep Xid`) is. `generate.py` now refuses to run on the CPU
+  unless `--cpu` is given, because the silent fallback is ~18x slower than real
+  time and looks like a working run. The bulk unit holds a
+  `systemd-inhibit --what=idle` lock to keep the machine from idling into
+  suspend mid-run in the first place.
 - The wago.tools CSV export is complete for client tables, but the beta's
   `BroadcastText` really is 12 rows; gossip is server-pushed on this engine.
 - `questcache.wdb` records have a variable fixed part; `wdbcache.py` scans
@@ -186,6 +212,11 @@ The owner's machine picks those up on the next sync.
 - Sound file names: quests are `<questID>-<event>`, gossip `<speaker>-<hash>`.
   Tell them apart by the last segment (`generate.sound_folder`), not by
   whether the first segment is numeric, since speaker keys are numeric too.
+- Alternate narrator files keep the same base name and are told apart by their
+  folder (`Quests/Narrator/<voice>/`, `Gossip/Narrator/<voice>/`), so anything
+  that walks sounds by `glob("*/*.mp3")` (the two-level scan in
+  `rebuild_tables`) misses them by design; they have their own scan and their
+  own set in the stats (`narratorFiles`, paths relative to `Sounds/`).
 - The bulk generator's `sound_index.json` is written every 25 files; the
   release script and the nightly table rebuild reload sources so files made
   by another run are still indexed.
@@ -209,9 +240,15 @@ The owner's machine picks those up on the next sync.
 - `--assume-voice` on `generate.py` voices cache-only quests whose giver is
   unknown (used once for Zephras Isle with `skyborne-male`); the voice-change
   check fixes them once a capture names the giver.
-- The talking head defaults to Blizzard's dark panel ("Normal" kit); the
-  faction parchment is an opt-in because gold text vanished on it. Title
-  colors per kit are in `FONT_COLORS` in `UI/TalkingHead.lua`.
+- `NARRATOR_VOICES` is the narrator menu: five alternates beside the default,
+  over ~1,040 narrated quest and ~336 narrated gossip lines in the full Classic
+  set (6,865 files, ~20 h of GPU). The player's pick lives in the
+  `ForeverVO_narratorVoice` CVar, because saved variables do not survive a
+  session on this beta.
+- The talking head defaults to the faction parchment; clearing `factionHead`
+  gives Blizzard's dark panel (the "Normal" kit). Gold text vanished on the
+  parchment until each kit got its own dark Name/Title/Text and no shadow:
+  `FONT_COLORS` in `UI/TalkingHead.lua`. Check both kits after touching it.
 
 ## Things the owner wants next
 

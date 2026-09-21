@@ -54,6 +54,11 @@ UNIT
 # Long-running bulk generation. Each file is written as it finishes and existing
 # files are skipped on start, so it survives crashes (a CUDA context lost to
 # suspend, for one) by simply restarting where it left off.
+#
+# systemd-inhibit --what=idle holds off the idle suspend that would otherwise
+# take the machine down overnight mid-run (the GPU loses its CUDA context, the
+# run dies and resumes only when someone wakes the box). Only the *idle* timer
+# is blocked: closing the lid or suspending by hand still works.
 cat >"$UNIT_DIR/forever-vo-bulk.service" <<UNIT
 [Unit]
 Description=Forever Voiceover: bulk voice generation (resumable)
@@ -63,10 +68,13 @@ Type=simple
 WorkingDirectory=$ROOT
 Environment=PATH=$UNIT_PATH
 Environment=HOME=$HOME
-ExecStart=$ROOT/tools/run.sh tools/generate.py
+ExecStart=/run/current-system/sw/bin/systemd-inhibit --what=idle --mode=block --who="Forever Voiceover" --why="bulk voice generation" $ROOT/tools/run.sh tools/generate.py
 Restart=on-failure
 RestartSec=60
 Nice=10
+
+[Install]
+WantedBy=default.target
 UNIT
 
 {
@@ -88,6 +96,9 @@ UNIT
 systemctl --user daemon-reload
 systemctl --user enable --now forever-vo-daily.timer
 systemctl --user enable --now forever-vo-ingest.path
+# Enabled but not started here: a reboot then resumes the bulk backlog on its
+# own (the run is resumable and skips files that already exist).
+systemctl --user enable forever-vo-bulk.service
 systemctl --user list-timers forever-vo-daily.timer --no-pager
 echo "watching:"
 grep PathModified "$UNIT_DIR/forever-vo-ingest.path"

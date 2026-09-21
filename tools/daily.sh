@@ -25,8 +25,27 @@ cd "$ROOT"
 # Sync with GitHub (pull, ingest, push) whatever else is going on
 ./tools/ingest.sh || true
 
+# The bulk service now starts at boot, so it is normally running when this job
+# fires. Stop it for the duration: this run needs the GPU and sole ownership of
+# sound_index.json, and bailing out instead would skip the captured-line pass,
+# the table rebuild and the delta pack upload for as long as bulk stays up.
+BULK_WAS_ACTIVE=0
+if systemctl --user is-active --quiet forever-vo-bulk.service; then
+    BULK_WAS_ACTIVE=1
+    echo "stopping forever-vo-bulk.service for the duration of this run"
+    systemctl --user stop forever-vo-bulk.service || true
+fi
+restore_bulk() {
+    if [ "$BULK_WAS_ACTIVE" = 1 ]; then
+        echo "restarting forever-vo-bulk.service"
+        systemctl --user start forever-vo-bulk.service || true
+    fi
+}
+trap restore_bulk EXIT
+
+# A generate.py that is not the service (a manual run) still makes us stand down.
 if pgrep -f 'tools/generate.py' >/dev/null; then
-    echo "a generate.py process is already running (bulk service?); leaving generation to it"
+    echo "a manual generate.py is running; leaving generation to it"
     exit 0
 fi
 ./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
