@@ -403,7 +403,7 @@
    "time": 1790004470,
    "zone": "Zephras Isle"
   },
-  "251362|dd20804f": {
+  "251362|0f923099": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1790002332,
@@ -412,7 +412,7 @@
    "npc": "251362",
    "player": "Pellinore Fixpoint",
    "subzone": "Thendal Village",
-   "text": "Hello, hunter.",
+   "text": "Hello, $c.",
    "time": 1790002332,
    "zone": "Zephras Isle"
   },
@@ -429,7 +429,7 @@
    "time": 1789927417,
    "zone": "Zephras Isle"
   },
-  "251376|fb6560cd": {
+  "251376|55e8c5e1": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789927679,
@@ -438,7 +438,7 @@
    "npc": "251376",
    "player": "Pellinore Fixpoint",
    "subzone": "Thendal Village",
-   "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a hunter, I can give you the tools to survive the wilds.",
+   "text": "The $cs and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
    "time": 1790003603,
    "zone": "Zephras Isle"
   },
@@ -663,7 +663,7 @@
    "time": 1790005249,
    "zone": "Zephras Isle"
   },
-  "254084|fb6560cd": {
+  "254084|55e8c5e1": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1790005438,
@@ -672,7 +672,7 @@
    "npc": "254084",
    "player": "Pellinore Fixpoint",
    "subzone": "Shen'dar Village",
-   "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a hunter, I can give you the tools to survive the wilds.",
+   "text": "The $cs and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
    "time": 1790005438,
    "zone": "Zephras Isle"
   },
@@ -925,6 +925,7 @@
   },
   "3309|2f8d506f": {
    "build": "69913",
+   "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789924607,
    "found": true,
@@ -933,9 +934,10 @@
    "npc": "3309",
    "pack": "Forever",
    "player": "Myrlin Fixpoint",
+   "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1789995991,
+   "time": 1790005796,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
@@ -955,6 +957,7 @@
   },
   "3309|ae78a458": {
    "build": "69913",
+   "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789924497,
    "found": true,
@@ -963,9 +966,10 @@
    "npc": "3309",
    "pack": "Forever",
    "player": "Myrlin Fixpoint",
+   "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1789996126,
+   "time": 1790005918,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
@@ -4180,7 +4184,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 92461,
    "subzone": "Thendal Village",
-   "text": "Thank you for your service to Zephras, young hunter.\r\n\r\nThe vuldren are typically quite docile, but the animals that call Zephras home can sense when the magic on the winds is out of balance, which can lead to dangerous and unpredictable behavior if left unchecked.",
+   "text": "Thank you for your service to Zephras, young $c.\r\n\r\nThe vuldren are typically quite docile, but the animals that call Zephras home can sense when the magic on the winds is out of balance, which can lead to dangerous and unpredictable behavior if left unchecked.",
    "time": 1790002560,
    "title": "Harmony in Balance",
    "zone": "Zephras Isle"
@@ -4293,7 +4297,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 92465,
    "subzone": "Thendal Grove",
-   "text": "The Al'Aketh cult is a blight upon this island. These cultists are surely the ones responsible for agitating the simple wind sprites that reside here and turning them violent.\r\n\r\nRegrettably, we'll need to disperse these roiling winds here before they harm someone. We also need to send a clear message to the cult that they are not welcome in the grove.\r\n\r\nWill you lend me your aid, hunter?",
+   "text": "The Al'Aketh cult is a blight upon this island. These cultists are surely the ones responsible for agitating the simple wind sprites that reside here and turning them violent.\r\n\r\nRegrettably, we'll need to disperse these roiling winds here before they harm someone. We also need to send a clear message to the cult that they are not welcome in the grove.\r\n\r\nWill you lend me your aid, $c?",
    "time": 1790003222,
    "title": "Agitators",
    "zone": "Zephras Isle"
@@ -4327,7 +4331,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 92469,
    "subzone": "Thendal Grove",
-   "text": "You've done enough here, hunter. I'll stay and clean up any stragglers down there.\r\n\r\nHead back to the Village and tell Rorian about the cult's presence. He will not be pleased.",
+   "text": "You've done enough here, $c. I'll stay and clean up any stragglers down there.\r\n\r\nHead back to the Village and tell Rorian about the cult's presence. He will not be pleased.",
    "time": 1790004386,
    "title": "Return to Rorian",
    "zone": "Zephras Isle"
@@ -4489,7 +4493,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 92473,
    "subzone": "Thendal Village",
-   "text": "Well done, hunter. The Rangers of the Grove are in your debt.",
+   "text": "Well done, $c. The Rangers of the Grove are in your debt.",
    "time": 1790004686,
    "title": "Aggressive Encroachment",
    "zone": "Zephras Isle"
@@ -4551,7 +4555,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 92482,
    "subzone": "Thendal Village",
-   "text": "While you were away dealing with our vuldren problem, our resident hunter trainer--Tai'ree Farsight--left this note for you. You can find her just over yonder near the center of the village. Read the note then seek her out.",
+   "text": "While you were away dealing with our vuldren problem, our resident $c trainer--Tai'ree Farsight--left this note for you. You can find her just over yonder near the center of the village. Read the note then seek her out.",
    "time": 1790002570,
    "title": "The Way of the Hunter",
    "zone": "Zephras Isle"
@@ -4566,7 +4570,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 92482,
    "subzone": "Thendal Village",
-   "text": "The way of the hunter is fraught with danger, and only those with the keenest senses and quickest reflexes can thrive in the wilds. I look at you and I am reminded of myself when I stood before my mentor, so many years ago. I believe that you have what it takes, but in the end that is up to you alone.\r\n\r\nSpeak with me again if you wish to take your next steps.",
+   "text": "The way of the $c is fraught with danger, and only those with the keenest senses and quickest reflexes can thrive in the wilds. I look at you and I am reminded of myself when I stood before my mentor, so many years ago. I believe that you have what it takes, but in the end that is up to you alone.\r\n\r\nSpeak with me again if you wish to take your next steps.",
    "time": 1790002591,
    "title": "The Way of the Hunter",
    "zone": "Zephras Isle"
@@ -4630,7 +4634,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 92544,
    "subzone": "Thendal Grove",
-   "text": "It was all I could do to stop myself from going over and joining you from my position here. I can only hope that these louts got the message and clear out of here soon. \r\n\r\nThank you, hunter. You have the gratitude of the Rangers of Thendal Grove.",
+   "text": "It was all I could do to stop myself from going over and joining you from my position here. I can only hope that these louts got the message and clear out of here soon. \r\n\r\nThank you, $c. You have the gratitude of the Rangers of Thendal Grove.",
    "time": 1790005027,
    "title": "Al'Aketh Thugs",
    "zone": "Zephras Isle"
@@ -4743,7 +4747,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 93552,
    "subzone": "Thendal Village",
-   "text": "Hello there, hunter.",
+   "text": "Hello there, $c.",
    "time": 1790002970,
    "title": "Harvesting Windstones",
    "zone": "Zephras Isle"
@@ -4899,7 +4903,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 96101,
    "subzone": "Shen'dar Village",
-   "text": "Greetings, hunter. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "text": "Greetings, $c. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
    "time": 1790005135,
    "title": "The Great Outdoors",
    "zone": "Zephras Isle"
@@ -4976,7 +4980,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 96646,
    "subzone": "Shen'dar Village",
-   "text": "So you want to learn more about camping, huh? Good for you, hunter. The first step any adventurer needs to take is to become a cook and learn how to make a campfire.\r\n\r\nCooking's not just about making tasty foods. It's also the foundation for your camp.",
+   "text": "So you want to learn more about camping, huh? Good for you, $c. The first step any adventurer needs to take is to become a cook and learn how to make a campfire.\r\n\r\nCooking's not just about making tasty foods. It's also the foundation for your camp.",
    "time": 1790005233,
    "title": "Camping 101: Cooking",
    "zone": "Zephras Isle"
@@ -5335,7 +5339,7 @@
    "player": "Pellinore Fixpoint",
    "questID": 97969,
    "subzone": "Shen'dar Village",
-   "text": "You've become a leatherworker. Good for you, hunter. I reckon I know someone that can teach you how to make yourself a tent that will keep you cool on hot days, and dry on rainy days.\r\n\r\nWith a good tent over your head, you'll ensure that you get all the rest you need to stay sharp on your travels.",
+   "text": "You've become a leatherworker. Good for you, $c. I reckon I know someone that can teach you how to make yourself a tent that will keep you cool on hot days, and dry on rainy days.\r\n\r\nWith a good tent over your head, you'll ensure that you get all the rest you need to stay sharp on your travels.",
    "time": 1790005594,
    "title": "Camping 101: Leatherworking",
    "zone": "Zephras Isle"
