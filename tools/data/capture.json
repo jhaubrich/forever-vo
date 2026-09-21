@@ -499,6 +499,7 @@
   "4552|0c543544": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789948640,
    "mapID": 1458,
    "name": "Eunice Burch",
    "npc": "4552",
