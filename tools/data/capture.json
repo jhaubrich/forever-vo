@@ -150,10 +150,10 @@
    "mapID": 1411,
    "name": "Snurk Bucksquick",
    "npc": "12136",
-   "player": "Myrlin Fixpoint",
+   "player": "Fixpoint Fix",
    "subzone": "",
    "text": "Hey there cutie, you looking for a ride to Grom'gol? I hear it gets mighty steamy down in those jungles, maybe I could join you for a short vacation, show you a real jungle cat.",
-   "time": 1789944735,
+   "time": 1790001595,
    "zone": "Durotar"
   },
   "123456|927dcf86": {
@@ -311,6 +311,18 @@
    "text": "Do not presume to speak to me as though you are my equal, mage. Sylvanas is my queen, and I will do as she bids.\n\nIf you do not show the proper respect, I assure you, we can find a more than suitable place for you in the Nether.\n\nBut there is no reason we cannot have words if you wish to aid the Dark Lady...",
    "time": 1789945460,
    "zone": "Undercity"
+  },
+  "246152|7a71eb1d": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1420,
+   "name": "Shari Stilwell",
+   "npc": "246152",
+   "player": "Fixpoint Fix",
+   "subzone": "Brill",
+   "text": "The light is a beacon that shines for all. What can I do for you, paladin?",
+   "time": 1790001973,
+   "zone": "Tirisfal Glades"
   },
   "248199|4ee395b7": {
    "build": "69913",
@@ -1105,10 +1117,10 @@
    "mapID": 1411,
    "name": "Frezza",
    "npc": "9564",
-   "player": "Myrlin Fixpoint",
+   "player": "Fixpoint Fix",
    "subzone": "",
    "text": "Of course there's no danger in everything catching flames and exploding like a huge helium bomb. This baby will get you to Undercity faster and safer than any boat, and the view is truly breathtaking. Speaking of breath, smoking is not allowed while on board the zeppelin, and fire spells are banned from being cast during the trip.",
-   "time": 1789944717,
+   "time": 1790001650,
    "zone": "Durotar"
   },
   "9566|fc033aae": {
@@ -1310,6 +1322,13 @@
    "modelFileID": 123673,
    "name": "Varimathras",
    "sex": 2
+  },
+  "246152": {
+   "creatureType": "Humanoid",
+   "level": 16,
+   "modelFileID": 997378,
+   "name": "Shari Stilwell",
+   "sex": 3
   },
   "248199": {
    "creatureType": "Humanoid",
