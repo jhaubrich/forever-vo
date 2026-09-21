@@ -1,0 +1,29 @@
+{
+ "gossip": {
+  "1569|e2fc85be": {
+   "build": "69913",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Shadow Priest Sarvis",
+   "npc": "1569",
+   "questID": null,
+   "source": "community",
+   "text": "No other race on Azeroth has suffered as much as our people, $c. To laugh in the face of death has become second nature for all of us.",
+   "title": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "1569": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Shadow Priest Sarvis",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5768033087",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
