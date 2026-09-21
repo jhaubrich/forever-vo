@@ -406,6 +406,7 @@
   "251362|dd20804f": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790002332,
    "mapID": 2521,
    "name": "Ailee Farheart",
    "npc": "251362",
@@ -457,6 +458,7 @@
   "251487|06790c88": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790003369,
    "mapID": 2521,
    "name": "Ventaari Brightwish",
    "npc": "251487",
@@ -469,6 +471,7 @@
   "251487|ba1aa782": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790003370,
    "mapID": 2521,
    "name": "Ventaari Brightwish",
    "npc": "251487",
@@ -494,6 +497,7 @@
   "251523|14e578ce": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005352,
    "mapID": 2521,
    "name": "Constable Aonda",
    "npc": "251523",
@@ -506,6 +510,7 @@
   "251523|191d4b60": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005353,
    "mapID": 2521,
    "name": "Constable Aonda",
    "npc": "251523",
@@ -518,6 +523,7 @@
   "251902|1e4f0028": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005392,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -530,6 +536,7 @@
   "251902|243962a6": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005391,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -542,6 +549,7 @@
   "251902|3fda086f": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005389,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -554,6 +562,7 @@
   "251902|9162c2da": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005396,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -566,6 +575,7 @@
   "251902|96f13309": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005397,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -578,6 +588,7 @@
   "251902|c0af861a": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005394,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -590,6 +601,7 @@
   "251902|dd8cdee4": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005393,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -602,6 +614,7 @@
   "251902|f56638d6": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005402,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -614,6 +627,7 @@
   "251905|3541aa81": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005285,
    "mapID": 2521,
    "name": "Zerril Softbreeze",
    "npc": "251905",
@@ -626,6 +640,7 @@
   "251993|453a25ae": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005320,
    "mapID": 2521,
    "name": "Indari Sunseam",
    "npc": "251993",
@@ -638,6 +653,7 @@
   "254082|4d87d665": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005249,
    "mapID": 2521,
    "name": "Aarnor Galestrike",
    "npc": "254082",
@@ -650,6 +666,7 @@
   "254084|fb6560cd": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005438,
    "mapID": 2521,
    "name": "Elayaa Easewind",
    "npc": "254084",
@@ -662,6 +679,7 @@
   "254089|9cc50b7d": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005682,
    "mapID": 2521,
    "name": "Coriella Calmbreeze",
    "npc": "254089",
@@ -713,6 +731,7 @@
   "257024|ec1a6e0b": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005267,
    "mapID": 2521,
    "name": "Mendalass Tattermend",
    "npc": "257024",
@@ -725,6 +744,7 @@
   "257554|41088e5c": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790002667,
    "mapID": 2521,
    "name": "Halaan Hawk-Eye",
    "npc": "257554",
@@ -737,6 +757,7 @@
   "263113|81449513": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790002648,
    "mapID": 2521,
    "name": "Myriaal Mistwake",
    "npc": "263113",
@@ -749,6 +770,7 @@
   "263664|550c4a52": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790005592,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
@@ -1300,6 +1322,7 @@
   "6491|22357dc5": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1790004124,
    "mapID": 2521,
    "name": "Spirit Healer",
    "npc": "6491",
@@ -4101,6 +4124,7 @@
   "92460-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002334,
    "found": true,
    "mapID": 2521,
    "name": "Ailee Farheart",
@@ -4117,6 +4141,7 @@
   "92460-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790002345,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
@@ -4131,6 +4156,7 @@
   "92461-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002346,
    "found": true,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
@@ -4147,6 +4173,7 @@
   "92461-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790002560,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
@@ -4161,6 +4188,7 @@
   "92462-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002363,
    "found": true,
    "mapID": 2521,
    "name": "Elatrell Featherlight",
@@ -4177,6 +4205,7 @@
   "92462-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790002956,
    "mapID": 2521,
    "name": "Elatrell Featherlight",
    "npc": "251368",
@@ -4191,6 +4220,7 @@
   "92463-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002958,
    "found": true,
    "mapID": 2521,
    "name": "Elatrell Featherlight",
@@ -4207,6 +4237,7 @@
   "92463-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790003155,
    "mapID": 2521,
    "name": "Elatrell Featherlight",
    "npc": "251368",
@@ -4221,6 +4252,7 @@
   "92464-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002566,
    "found": true,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
@@ -4237,6 +4269,7 @@
   "92464-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790003221,
    "mapID": 2521,
    "name": "Yala Windwatcher",
    "npc": "249363",
@@ -4251,6 +4284,7 @@
   "92465-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790003222,
    "found": true,
    "mapID": 2521,
    "name": "Yala Windwatcher",
@@ -4335,6 +4369,7 @@
   "92470-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790004164,
    "mapID": 2521,
    "name": "Aetheen of the Gales",
    "npc": "251366",
@@ -4349,6 +4384,7 @@
   "92470-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1790004162,
    "mapID": 2521,
    "name": "Aetheen of the Gales",
    "npc": "251366",
@@ -4397,6 +4433,7 @@
   "92472-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790004171,
    "found": true,
    "mapID": 2521,
    "name": "Aetheen of the Gales",
@@ -4413,6 +4450,7 @@
   "92472-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790005348,
    "mapID": 2521,
    "name": "Constable Aonda",
    "npc": "251523",
@@ -4444,6 +4482,7 @@
   "92473-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790004686,
    "mapID": 2521,
    "name": "Valreaa Valewind",
    "npc": "257551",
@@ -4458,6 +4497,7 @@
   "92473-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1790004684,
    "mapID": 2521,
    "name": "Valreaa Valewind",
    "npc": "257551",
@@ -4472,6 +4512,7 @@
   "92474-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002658,
    "found": true,
    "mapID": 2521,
    "name": "Myriaal Mistwake",
@@ -4488,6 +4529,7 @@
   "92474-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790002696,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
@@ -4502,6 +4544,7 @@
   "92482-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002570,
    "mapID": 2521,
    "name": "Rorian the Dayseeker",
    "npc": "251361",
@@ -4516,6 +4559,7 @@
   "92482-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790002591,
    "mapID": 2521,
    "name": "Tai'ree Farsight",
    "npc": "251376",
@@ -4530,6 +4574,7 @@
   "92482-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1790002590,
    "mapID": 2521,
    "name": "Tai'ree Farsight",
    "npc": "251376",
@@ -4544,6 +4589,7 @@
   "92514-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790005350,
    "found": true,
    "mapID": 2521,
    "name": "Constable Aonda",
@@ -4560,6 +4606,7 @@
   "92544-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790004768,
    "found": true,
    "mapID": 2521,
    "name": "Hanaa Nightwind",
@@ -4576,6 +4623,7 @@
   "92544-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790005027,
    "mapID": 2521,
    "name": "Hanaa Nightwind",
    "npc": "252095",
@@ -4590,6 +4638,7 @@
   "92595-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790005382,
    "found": true,
    "mapID": 2521,
    "name": "Illaya Amberwind",
@@ -4606,6 +4655,7 @@
   "92595-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790005401,
    "mapID": 2521,
    "name": "Illaya Amberwind",
    "npc": "251902",
@@ -4620,6 +4670,7 @@
   "92598-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002547,
    "found": true,
    "mapID": 2521,
    "name": "Ventaari Brightwish",
@@ -4653,6 +4704,7 @@
   "93552-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002629,
    "found": true,
    "mapID": 2521,
    "name": "Dalia the Collector",
@@ -4669,6 +4721,7 @@
   "93552-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790002971,
    "mapID": 2521,
    "name": "Dalia the Collector",
    "npc": "251363",
@@ -4683,6 +4736,7 @@
   "93552-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1790002970,
    "mapID": 2521,
    "name": "Dalia the Collector",
    "npc": "251363",
@@ -4697,6 +4751,7 @@
   "94411-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790005403,
    "found": true,
    "mapID": 2521,
    "name": "Illaya Amberwind",
@@ -4713,6 +4768,7 @@
   "94414-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790002662,
    "found": true,
    "mapID": 2521,
    "name": "Halaan Hawk-Eye",
@@ -4729,6 +4785,7 @@
   "94414-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790002668,
    "mapID": 2521,
    "name": "Halaan Hawk-Eye",
    "npc": "257554",
@@ -4835,6 +4892,7 @@
   "96101-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790005135,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
@@ -4849,6 +4907,7 @@
   "96101-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790005230,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
@@ -4880,6 +4939,7 @@
   "96638-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790004173,
    "mapID": 2521,
    "name": "Aetheen of the Gales",
    "npc": "251366",
@@ -4894,6 +4954,7 @@
   "96638-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790005133,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
@@ -4908,6 +4969,7 @@
   "96646-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790005233,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
@@ -4922,6 +4984,7 @@
   "96646-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790005286,
    "mapID": 2521,
    "name": "Zerril Softbreeze",
    "npc": "251905",
@@ -5265,6 +5328,7 @@
   "97969-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790005594,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
@@ -5279,6 +5343,7 @@
   "97971-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1790005234,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
@@ -5293,6 +5358,7 @@
   "97971-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1790005269,
    "mapID": 2521,
    "name": "Mendalass Tattermend",
    "npc": "257024",
