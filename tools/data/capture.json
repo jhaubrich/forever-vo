@@ -638,7 +638,7 @@
    "race": "Windshaper Skyborne",
    "subzone": "Shen'dar Village",
    "text": "If you need training as a cook, I have a few tips and tricks I could pass on! Ho ho! Throw on an apron and let's get started!",
-   "time": 1790006190,
+   "time": 1790021940,
    "zone": "Zephras Isle"
   },
   "251906|e9380575": {
@@ -653,7 +653,21 @@
    "race": "Windshaper Skyborne",
    "subzone": "Shen'dar Village",
    "text": "Unless you are here on business pertaining to V.L.O., I'm afraid I won't have a lot of time for chatter. If you want to pitch in and help out around town, I'll certainly put you to work though.\r\n\r\nOh, what does V.L.O. stand for? Village Live Operations, of course. Even frontier towns like these don't manage themselves. Between major incidents, unplanned wind power outages, and bug infestations, keeping this place moving forward is no joke.",
-   "time": 1790006144,
+   "time": 1790021774,
+   "zone": "Zephras Isle"
+  },
+  "251913|70e7404c": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Aedi Thriceforged",
+   "npc": "251913",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "I can teach you to swing a blacksmith's hammer, if you are willing to learn.",
+   "time": 1790021782,
    "zone": "Zephras Isle"
   },
   "251991|8173c391": {
@@ -668,7 +682,21 @@
    "race": "Windshaper Skyborne",
    "subzone": "Shen'dar Village",
    "text": "The clothcraft of the Shen'dorei is a harmonious imitation of the flowing, carefree currents of the winds. While the spirits have left us, and I know not when I may see them dance once more... I find great comfort in my art, if only as a distraction.\r\n\r\nI can teach you to work the cloth as well, if you'd like to learn?",
-   "time": 1790006223,
+   "time": 1790021797,
+   "zone": "Zephras Isle"
+  },
+  "251992|f5ff5fa7": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Fenn Fairweather",
+   "npc": "251992",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "Welcome to Shen'dar Village, some of the best fishing this side of the mountain range. If you are looking to catch fish I can teach you, for a price.",
+   "time": 1790021744,
    "zone": "Zephras Isle"
   },
   "251993|453a25ae": {
@@ -683,7 +711,7 @@
    "race": "Windshaper Skyborne",
    "subzone": "Shen'dar Village",
    "text": "I can teach you to craft fine leather armor, if you have the aptitude.",
-   "time": 1790006594,
+   "time": 1790022090,
    "zone": "Zephras Isle"
   },
   "254082|4d87d665": {
@@ -824,17 +852,33 @@
    "time": 1790006284,
    "zone": "Zephras Isle"
   },
+  "257018|d62b45b0": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Naleeia Tattermend",
+   "npc": "257018",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "Gales greetings, friend. Is there something I can help you with?",
+   "time": 1790020488,
+   "zone": "Zephras Isle"
+  },
   "257024|ec1a6e0b": {
    "build": "69913",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1790005267,
    "mapID": 2521,
    "name": "Mendalass Tattermend",
    "npc": "257024",
    "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
    "subzone": "Shen'dar Village",
    "text": "I don't get too many Skinners in here looking for training, but I guess I could teach you something if you're ready.",
-   "time": 1790005267,
+   "time": 1790020596,
    "zone": "Zephras Isle"
   },
   "257554|41088e5c": {
@@ -865,15 +909,17 @@
   },
   "263664|550c4a52": {
    "build": "69913",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1790005592,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "npc": "263664",
    "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
    "subzone": "Shen'dar Village",
    "text": "Greetings, traveler.",
-   "time": 1790005592,
+   "time": 1790020643,
    "zone": "Zephras Isle"
   },
   "266484|e94c420f": {
@@ -1421,15 +1467,17 @@
   },
   "6491|22357dc5": {
    "build": "69913",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1790004124,
    "mapID": 2521,
    "name": "Spirit Healer",
    "npc": "6491",
    "player": "Pellinore Fixpoint",
-   "subzone": "Thendal Village",
+   "race": "Windshaper Skyborne",
+   "subzone": "West Pylon Watchtower",
    "text": "It is not yet your time. I shall aid your journey back to the realm of the living... for a price.",
-   "time": 1790004124,
+   "time": 1790021343,
    "zone": "Zephras Isle"
   },
   "658|003beda2": {
@@ -1856,12 +1904,26 @@
    "name": "Teeri Wellwind",
    "sex": 3
   },
+  "251913": {
+   "creatureType": "Humanoid",
+   "level": 20,
+   "modelFileID": 7478487,
+   "name": "Aedi Thriceforged",
+   "sex": 2
+  },
   "251991": {
    "creatureType": "Humanoid",
    "level": 20,
    "modelFileID": 7478494,
    "name": "Taleen Shimmerthread",
    "sex": 3
+  },
+  "251992": {
+   "creatureType": "Humanoid",
+   "level": 5,
+   "modelFileID": 7478487,
+   "name": "Fenn Fairweather",
+   "sex": 2
   },
   "251993": {
    "creatureType": "Humanoid",
@@ -1876,6 +1938,13 @@
    "modelFileID": 1100258,
    "name": "Hanaa Nightwind",
    "sex": 3
+  },
+  "252172": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478487,
+   "name": "Danarii Bellowveil",
+   "sex": 2
   },
   "254082": {
    "creatureType": "Humanoid",
@@ -1911,6 +1980,13 @@
    "modelFileID": 7478487,
    "name": "Captured Bandit",
    "sex": 2
+  },
+  "257018": {
+   "creatureType": "Humanoid",
+   "level": 10,
+   "modelFileID": 7478494,
+   "name": "Naleeia Tattermend",
+   "sex": 3
   },
   "257024": {
    "creatureType": "Humanoid",
@@ -4760,6 +4836,38 @@
    "title": "The Problem With Prideclaws",
    "zone": "Zephras Isle"
   },
+  "92515-complete": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Indari Sunseam",
+   "npc": "251993",
+   "player": "Pellinore Fixpoint",
+   "questID": 92515,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "I didn't say it wouldn't be a dirty job, did I?",
+   "time": 1790020516,
+   "title": "The Problem With Prideclaws",
+   "zone": "Zephras Isle"
+  },
+  "92515-progress": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Indari Sunseam",
+   "npc": "251993",
+   "player": "Pellinore Fixpoint",
+   "questID": 92515,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "If you ask me, I think Prideclaws are actually kind of cute. From a safe distance... and while standing behind someone holding a sword, of course.",
+   "time": 1790020515,
+   "title": "The Problem With Prideclaws",
+   "zone": "Zephras Isle"
+  },
   "92516-accept": {
    "build": "69913",
    "class": "Hunter",
@@ -4776,6 +4884,22 @@
    "subzone": "Shen'dar Village",
    "text": "A flock of Hippogryph have recently established nesting grounds southeast of Shen'dar Village and they've been wreaking havoc on travelers on the road. I need someone to head down there and thin them out for us.",
    "time": 1790006148,
+   "title": "Hippogryph Harrassment",
+   "zone": "Zephras Isle"
+  },
+  "92516-complete": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Teeri Wellwind",
+   "npc": "251906",
+   "player": "Pellinore Fixpoint",
+   "questID": 92516,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "Well done, and quickly too. Not too bad at all.",
+   "time": 1790021776,
    "title": "Hippogryph Harrassment",
    "zone": "Zephras Isle"
   },
@@ -4846,6 +4970,38 @@
    "subzone": "Shen'dar Village",
    "text": "Up for a bit of work? I could use a bit of muscle from a strong adventuring-type such as yourself. With how dangerous things are getting around here, no one's had much time to hunt or forage of late, and I need someone to get out there and source me fresh eggs and strider meat to keep this village fed.\r\n\r\nI'd be happy to teach you one of my famous recipes if you can bring me what I need. What do you say?",
    "time": 1790006191,
+   "title": "Restocking the Larders",
+   "zone": "Zephras Isle"
+  },
+  "92553-complete": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Zerril Softbreeze",
+   "npc": "251905",
+   "player": "Pellinore Fixpoint",
+   "questID": 92553,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "These eggs aren't easy to get but wind save me, they are DELICIOUS fried up in a bit of ursera tallow.\r\n\r\nIf you've got a bit of time to spare and you enjoy cooking, I can teach you a few tips and tricks I've picked up. Say the word and I'd be happy to train you.",
+   "time": 1790021812,
+   "title": "Restocking the Larders",
+   "zone": "Zephras Isle"
+  },
+  "92553-progress": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Zerril Softbreeze",
+   "npc": "251905",
+   "player": "Pellinore Fixpoint",
+   "questID": 92553,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "No matter how much things change here on Zephras and how uncertain things get, I always say that a pipe full of dried peacebloom and nice full belly is a comfort that can't be beat!",
+   "time": 1790021811,
    "title": "Restocking the Larders",
    "zone": "Zephras Isle"
   },
@@ -4934,6 +5090,38 @@
    "title": "WANTED: Vulgara the Insatiable",
    "zone": "Zephras Isle"
   },
+  "93318-complete": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Danarii Bellowveil",
+   "npc": "252172",
+   "player": "Pellinore Fixpoint",
+   "questID": 93318,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "If we didn't have enough on our plates between the cult and the highlands bandits, we don't need a giant vuldren terrorizing our citizens as well. You've done a great thing here today. As promised, here is your reward.",
+   "time": 1790021910,
+   "title": "WANTED: Vulgara the Insatiable",
+   "zone": "Zephras Isle"
+  },
+  "93318-progress": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Danarii Bellowveil",
+   "npc": "252172",
+   "player": "Pellinore Fixpoint",
+   "questID": 93318,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "I'll need the creature's head as proof of the deed.",
+   "time": 1790021908,
+   "title": "WANTED: Vulgara the Insatiable",
+   "zone": "Zephras Isle"
+  },
   "93319-accept": {
    "build": "69913",
    "class": "Hunter",
@@ -5016,6 +5204,38 @@
    "subzone": "Shen'dar Village",
    "text": "The Hippogryph that have taken up residence southwest of the village can be a nuisance, but they also present a rather unique opportunity to obtain their feathers. Many skyborne love to adorn their hair with vibrant plumes and the down feathers of a hippogryph are exceptionally vibrant and more importantly, silky soft.\r\n\r\nIf you are heading that way, try and gather as many of the fallen feathers as you can from in and around their nesting grounds. Do be careful, as wild hippogryph are not tolerant of guests.",
    "time": 1790006224,
+   "title": "A Little Beauty",
+   "zone": "Zephras Isle"
+  },
+  "93951-complete": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Taleen Shimmerthread",
+   "npc": "251991",
+   "player": "Pellinore Fixpoint",
+   "questID": 93951,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "It might seem a bit of a vain triviality, gathering feathers for our hair. However, even in times like these, one needs to embrace the small joys as much as possible. \r\n\r\nIf one thing I create brings someone joy, then I will consider that to be a good day. Thank you for bringing me these and helping me bring some joy to Zephras.",
+   "time": 1790021799,
+   "title": "A Little Beauty",
+   "zone": "Zephras Isle"
+  },
+  "93951-progress": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "progress",
+   "mapID": 2521,
+   "name": "Taleen Shimmerthread",
+   "npc": "251991",
+   "player": "Pellinore Fixpoint",
+   "questID": 93951,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "What beautiful things did you bring me?",
+   "time": 1790021798,
    "title": "A Little Beauty",
    "zone": "Zephras Isle"
   },
@@ -5595,6 +5815,22 @@
    "time": 1789925034,
    "title": "Camping 101: First Aid",
    "zone": "Durotar"
+  },
+  "97965-accept": {
+   "build": "69913",
+   "class": "Hunter",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "player": "Pellinore Fixpoint",
+   "questID": 97965,
+   "race": "Windshaper Skyborne",
+   "subzone": "Shen'dar Village",
+   "text": "So you've taken up First Aid? That's an honorable... and pragmatic pursuit as a $c.\r\n\r\nI reckon I know someone that can teach you how to craft a First Aid Kit for your camp. Injuries are a reality in the world of adventuring and offering some much-needed healing at your camp could even save lives.",
+   "time": 1790020645,
+   "title": "Camping 101: First Aid",
+   "zone": "Zephras Isle"
   },
   "97969-accept": {
    "build": "69913",
