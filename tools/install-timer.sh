@@ -55,6 +55,9 @@ UNIT
 # files are skipped on start, so it survives crashes (a CUDA context lost to
 # suspend, for one) by simply restarting where it left off.
 #
+# tools/bulk.sh runs several generate.py shards; one stream leaves the GPU ~60%
+# idle (1.68x realtime against 2.28x for two).
+#
 # systemd-inhibit --what=idle holds off the idle suspend that would otherwise
 # take the machine down overnight mid-run (the GPU loses its CUDA context, the
 # run dies and resumes only when someone wakes the box). Only the *idle* timer
@@ -68,7 +71,7 @@ Type=simple
 WorkingDirectory=$ROOT
 Environment=PATH=$UNIT_PATH
 Environment=HOME=$HOME
-ExecStart=/run/current-system/sw/bin/systemd-inhibit --what=idle --mode=block --who="Forever Voiceover" --why="bulk voice generation" $ROOT/tools/run.sh tools/generate.py
+ExecStart=/run/current-system/sw/bin/systemd-inhibit --what=idle --mode=block --who="Forever Voiceover" --why="bulk voice generation" $ROOT/tools/bulk.sh
 Restart=on-failure
 RestartSec=60
 Nice=10

@@ -146,10 +146,18 @@ Installed by `tools/install-timer.sh`:
   Because it is then normally up at 04:00, `daily.sh` stops it for the duration
   of the nightly run and restarts it from an `EXIT` trap — it used to just
   bail out, which would have skipped the captured pass, the table rebuild and
-  the delta upload for as long as bulk stayed up.
+  the delta upload for as long as bulk stayed up. It runs `tools/bulk.sh`,
+  which starts `FOREVER_VO_WORKERS` (default 2) `generate.py --shard i/N`
+  processes: one autoregressive stream leaves the GPU about 60% idle, and on
+  the 3080 two together measured 2.59x realtime against 1.68x for one, while
+  three were no better than two and crowd the 16 GB. Set
+  `FOREVER_VO_WORKERS=1` to give the GPU back to the game.
 
-Do not add a periodic pull timer; the owner declined it. Do not run two
-generators at once by hand (they share `sound_index.json`).
+Do not add a periodic pull timer; the owner declined it. Parallel *shards* are
+fine — `sound_index.json` is re-read and merged before every write, and the
+pack tables are written through a temporary file and renamed, so neither is
+torn by two writers. Two *unsharded* generators are still wrong: they would
+walk the same todo list and race for the same files.
 
 ## Releases
 
