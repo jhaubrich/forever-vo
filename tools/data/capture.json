@@ -39,6 +39,18 @@
    "time": 1789931442,
    "zone": "Undercity"
   },
+  "11049|8b5e44c8": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Rhiannon Davis",
+   "npc": "11049",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Magic Quarter",
+   "text": "Good, you've got some grit! I like that. Well then, let's get going!",
+   "time": 1789956846,
+   "zone": "Undercity"
+  },
   "11066|b615098a": {
    "build": "69913",
    "event": "gossip",
@@ -55,13 +67,14 @@
   "11067|e8016bc8": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789952001,
    "mapID": 1458,
    "name": "Malcomb Wynn",
    "npc": "11067",
    "player": "Myrlin Fixpoint",
    "subzone": "The Apothecarium",
    "text": "You don't look like much to me, but who knows, maybe there's an enchanter hidden in there somewhere!",
-   "time": 1789952001,
+   "time": 1789961949,
    "zone": "Undercity"
   },
   "11833|65ba1433": {
@@ -80,13 +93,14 @@
   "11835|e914bd74": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789952107,
    "mapID": 1458,
    "name": "Theodore Griffs",
    "npc": "11835",
    "player": "Myrlin Fixpoint",
    "subzone": "The Apothecarium",
    "text": "Hello, Myrlin.",
-   "time": 1789952107,
+   "time": 1789962169,
    "zone": "Undercity"
   },
   "11870|3a5c3d7e": {
@@ -144,6 +158,7 @@
   "1499|9cb5b422": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789953488,
    "mapID": 1420,
    "name": "Magistrate Sevren",
    "npc": "1499",
@@ -156,6 +171,7 @@
   "1937|19122c56": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789949832,
    "mapID": 1421,
    "name": "Apothecary Renferrel",
    "npc": "1937",
@@ -168,18 +184,20 @@
   "1938|cd4928e4": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789951558,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
    "npc": "1938",
    "player": "Myrlin Fixpoint",
    "subzone": "The Sepulcher",
    "text": "The Kirin Tor did not heed my warnings! The Alliance is a sham. Arugal is a reckless fool.",
-   "time": 1789951558,
+   "time": 1789963639,
    "zone": "Silverpine Forest"
   },
   "1950|aa9cd6e2": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789949570,
    "mapID": 1421,
    "name": "Rane Yorick",
    "npc": "1950",
@@ -192,6 +210,7 @@
   "1952|01aed514": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789949800,
    "mapID": 1421,
    "name": "High Executor Hadrec",
    "npc": "1952",
@@ -201,28 +220,42 @@
    "time": 1789949800,
    "zone": "Silverpine Forest"
   },
+  "2055|288436fb": {
+   "build": "69913",
+   "event": "greeting",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "The Royal Apothecary Society shall heed The Dark Lady's call to uncover the New Plague and drive Arthas and his heathen Scourge Army from the world once and for all.",
+   "time": 1789962630,
+   "zone": "Undercity"
+  },
   "2121|bf7b697c": {
    "build": "69913",
    "event": "greeting",
+   "firstSeen": 1789951580,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
    "npc": "2121",
    "player": "Myrlin Fixpoint",
    "subzone": "The Sepulcher",
    "text": "Information... With our scouts and agents, we control the flow of information in Lordaeron. Scourge movements, their holdings, all underneath our watchful eyes...",
-   "time": 1789951580,
+   "time": 1789956642,
    "zone": "Silverpine Forest"
   },
   "2226|dd7de3ae": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789951656,
    "mapID": 1421,
    "name": "Karos Razok",
    "npc": "2226",
    "player": "Myrlin Fixpoint",
    "subzone": "The Sepulcher",
    "text": "Greetings.  Our bats are well trained and fed.  You'll not find faster.",
-   "time": 1789951656,
+   "time": 1789956660,
    "zone": "Silverpine Forest"
   },
   "2425|4aecbd96": {
@@ -254,6 +287,7 @@
   "2492|aa6f2374": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789952315,
    "mapID": 1458,
    "name": "Lexington Mortaim",
    "npc": "2492",
@@ -279,25 +313,27 @@
   "250686|3c4152a4": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789949729,
    "mapID": 1421,
    "name": "Tabitha Heartweaver",
    "npc": "250686",
    "player": "Myrlin Fixpoint",
    "subzone": "The Sepulcher",
    "text": "Praise to the Banshee Queen, it isn't often I have visitors out here.",
-   "time": 1789949729,
+   "time": 1789963579,
    "zone": "Silverpine Forest"
   },
   "251001|5d6f0b28": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789953405,
    "mapID": 1420,
    "name": "Deathguard Kristof",
    "npc": "251001",
    "player": "Myrlin Fixpoint",
    "subzone": "",
    "text": "What are you looking for?",
-   "time": 1789953405,
+   "time": 1789962885,
    "zone": "Tirisfal Glades"
   },
   "251361|d8b5b5c2": {
@@ -414,12 +450,13 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Royal Quarter",
    "text": "We paladins must earn our place amongst our Forsaken kin each day, lest we be judged as fanatics like the Scarlet Crusade. The light is not simply a tool of our foes, but a conduit for our righteous fury! It is in our devotion to the Dark Lady and the love of our home that we may channel the light to bring justice to our enemies.\r\n\r\nThe Banshee Queen keeps a close eye on us. Let her. She will see that our resolve shall never waver. We are Forsaken!",
-   "time": 1789945496,
+   "time": 1789962082,
    "zone": "Undercity"
   },
   "267009|ed3f7394": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789953566,
    "mapID": 1420,
    "name": "Hadric Harlson",
    "npc": "267009",
@@ -428,6 +465,18 @@
    "text": "Be careful, mage. There are cultists nearby.",
    "time": 1789953566,
    "zone": "Tirisfal Glades"
+  },
+  "271613|0980e046": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Unfinished Abomination",
+   "npc": "271613",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "<The body looks incomplete and awaiting a head.>",
+   "time": 1789962224,
+   "zone": "Undercity"
   },
   "2798|a28d29e1": {
    "build": "69913",
@@ -445,6 +494,7 @@
   "2934|2cd97b51": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789952051,
    "mapID": 1458,
    "name": "Keeper Bel'dugur",
    "npc": "2934",
@@ -641,6 +691,7 @@
   "3549|2cec462d": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789953420,
    "mapID": 1420,
    "name": "Shelene Rhobart",
    "npc": "3549",
@@ -673,7 +724,7 @@
    "player": "Myrlin Fixpoint",
    "subzone": "Trade Quarter",
    "text": "How may I be of service?",
-   "time": 1789931286,
+   "time": 1789963461,
    "zone": "Undercity"
   },
   "4552|0c543544": {
@@ -692,18 +743,44 @@
   "4568|4670f054": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789953091,
    "mapID": 1458,
    "name": "Anastasia Hartwell",
    "npc": "4568",
    "player": "Myrlin Fixpoint",
    "subzone": "Magic Quarter",
    "text": "Greetings.  I'm an undead mage trainer, and you're a mage.",
-   "time": 1789953091,
+   "time": 1789963304,
+   "zone": "Undercity"
+  },
+  "4576|4eaf08fa": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Josef Gregorian",
+   "npc": "4576",
+   "player": "Myrlin Fixpoint",
+   "subzone": "Magic Quarter",
+   "text": "I will instruct you when the time is right... that time is not now. You have much more to learn first!",
+   "time": 1789956865,
+   "zone": "Undercity"
+  },
+  "4612|5acaa152": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Boyle",
+   "npc": "4612",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "ssSSLIMES!! Rrraagh...",
+   "time": 1789961999,
    "zone": "Undercity"
   },
   "4616|9948e984": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789952007,
    "mapID": 1458,
    "name": "Lavinia Crowe",
    "npc": "4616",
@@ -711,6 +788,18 @@
    "subzone": "The Apothecarium",
    "text": "No, no, you'll need FAR more training before you're ready to learn from me! Go talk to that uptight dabbler Malcomb Wynn. He's the one buried in books over there.",
    "time": 1789952007,
+   "zone": "Undercity"
+  },
+  "4616|ac0ef905": {
+   "build": "69913",
+   "event": "gossip",
+   "mapID": 1458,
+   "name": "Lavinia Crowe",
+   "npc": "4616",
+   "player": "Myrlin Fixpoint",
+   "subzone": "The Apothecarium",
+   "text": "Hmm, you scratch my back, I'll scratch yours. If you do what I ask, and do it well, maybe we can discuss your training.",
+   "time": 1789963166,
    "zone": "Undercity"
   },
   "4949|9255c79c": {
@@ -729,37 +818,52 @@
   "5624|4b4eb4b7": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789951916,
    "mapID": 1458,
    "name": "Undercity Guardian",
    "npc": "5624",
    "player": "Myrlin Fixpoint",
-   "subzone": "Trade Quarter",
+   "subzone": "Magic Quarter",
    "text": "You go to inner ring of The Apothecarium.  Lavinia Crowe is there.",
-   "time": 1789951916,
+   "time": 1789956977,
    "zone": "Undercity"
   },
   "5624|5d6f0b28": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789951913,
    "mapID": 1458,
    "name": "Undercity Guardian",
    "npc": "5624",
    "player": "Myrlin Fixpoint",
-   "subzone": "Trade Quarter",
+   "subzone": "War Quarter",
    "text": "What are you looking for?",
-   "time": 1789951913,
+   "time": 1789957531,
    "zone": "Undercity"
   },
   "5624|ef767f20": {
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": 1789951914,
+   "mapID": 1458,
+   "name": "Undercity Guardian",
+   "npc": "5624",
+   "player": "Myrlin Fixpoint",
+   "subzone": "War Quarter",
+   "text": "Which profession?",
+   "time": 1789957533,
+   "zone": "Undercity"
+  },
+  "5624|f669426b": {
    "build": "69913",
    "event": "gossip",
    "mapID": 1458,
    "name": "Undercity Guardian",
    "npc": "5624",
    "player": "Myrlin Fixpoint",
-   "subzone": "Trade Quarter",
-   "text": "Which profession?",
-   "time": 1789951914,
+   "subzone": "War Quarter",
+   "text": "Us know her good.  She Mary Edras at inner ring of Rogues' Quarter.",
+   "time": 1789957536,
    "zone": "Undercity"
   },
   "5769|c626a1cf": {
@@ -817,6 +921,7 @@
   "6739|fde1fb79": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": 1789951079,
    "mapID": 1421,
    "name": "Innkeeper Bates",
    "npc": "6739",
@@ -922,6 +1027,13 @@
    "modelFileID": 959310,
    "name": "Doctor Martin Felben",
    "sex": 2
+  },
+  "11049": {
+   "creatureType": "Humanoid",
+   "level": 32,
+   "modelFileID": 997378,
+   "name": "Rhiannon Davis",
+   "sex": 3
   },
   "11066": {
    "creatureType": "Humanoid",
@@ -1040,6 +1152,13 @@
    "level": 14,
    "modelFileID": 959310,
    "name": "Raleigh Andrean",
+   "sex": 2
+  },
+  "2055": {
+   "creatureType": "Humanoid",
+   "level": 50,
+   "modelFileID": 959310,
+   "name": "Master Apothecary Faranell",
    "sex": 2
   },
   "2121": {
@@ -1167,6 +1286,13 @@
    "modelFileID": 959310,
    "name": "Hadric Harlson",
    "sex": 2
+  },
+  "271613": {
+   "creatureType": "Humanoid",
+   "level": 35,
+   "modelFileID": 353152,
+   "name": "Unfinished Abomination",
+   "sex": 1
   },
   "2798": {
    "creatureType": "Humanoid",
@@ -1297,6 +1423,20 @@
    "name": "Anastasia Hartwell",
    "sex": 3
   },
+  "4576": {
+   "creatureType": "Humanoid",
+   "level": 45,
+   "modelFileID": 959310,
+   "name": "Josef Gregorian",
+   "sex": 2
+  },
+  "4612": {
+   "creatureType": "Undead",
+   "level": 30,
+   "modelFileID": 126570,
+   "name": "Boyle",
+   "sex": 1
+  },
   "4616": {
    "creatureType": "Humanoid",
    "level": 35,
@@ -1418,6 +1558,7 @@
   "1013-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789952042,
    "mapID": 1458,
    "name": "Keeper Bel'dugur",
    "npc": "2934",
@@ -1428,6 +1569,20 @@
    "time": 1789952042,
    "title": "The Book of Ur",
    "zone": "Undercity"
+  },
+  "1014-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1421,
+   "name": "Dalar Dawnweaver",
+   "npc": "1938",
+   "player": "Myrlin Fixpoint",
+   "questID": 1014,
+   "subzone": "The Sepulcher",
+   "text": "Arugal still resides in Shadowfang Keep. We cannot claim Silverpine as a strategic stronghold for the Dark Lady until Arugal is slain.\n\nI shall see to it that his magic is eradicated, Myrlin. But I leave it in your hands to see that Arugal meets the death he so deserves.\n\nTravel to Shadowfang Keep and put an end to Arugal's foul spells once and for all. Bring to me the vile wizard's head!",
+   "time": 1789963641,
+   "title": "Arugal Must Die",
+   "zone": "Silverpine Forest"
   },
   "1061-accept": {
    "build": "69913",
@@ -1444,9 +1599,24 @@
    "title": "The Spirits of Stonetalon",
    "zone": "Orgrimmar"
   },
+  "1098-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1421,
+   "name": "High Executor Hadrec",
+   "npc": "1952",
+   "player": "Myrlin Fixpoint",
+   "questID": 1098,
+   "subzone": "The Sepulcher",
+   "text": "In preparation for an assault on Shadowfang, two deathstalkers were sent to the keep to gather intelligence.  It has been many days and they have not returned, but we must receive their report if we're to have any hope of a successful attack!\n\nSo here is your task, Myrlin.  Go to Shadowfang Keep to the south and find the Deathstalkers Adamant and Vincent.  Find them, and if they require aid then give it.\n\nThis mission is as dangerous as is it critical, Myrlin.  Do not fail.",
+   "time": 1789963659,
+   "title": "Deathstalkers in Shadowfang",
+   "zone": "Silverpine Forest"
+  },
   "1358-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789952122,
    "found": true,
    "mapID": 1458,
    "name": "Apothecary Zinge",
@@ -1463,6 +1633,7 @@
   "1359-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949834,
    "found": true,
    "mapID": 1421,
    "name": "Apothecary Renferrel",
@@ -1479,6 +1650,7 @@
   "1359-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789952121,
    "found": true,
    "mapID": 1458,
    "name": "Apothecary Zinge",
@@ -1495,6 +1667,7 @@
   "1359-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789952120,
    "mapID": 1458,
    "name": "Apothecary Zinge",
    "npc": "5204",
@@ -1586,6 +1759,7 @@
   "1960-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789952337,
    "found": true,
    "mapID": 1458,
    "name": "Anastasia Hartwell",
@@ -1602,6 +1776,7 @@
   "1960-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789953094,
    "found": true,
    "mapID": 1458,
    "name": "Anastasia Hartwell",
@@ -1618,6 +1793,7 @@
   "1960-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789953092,
    "mapID": 1458,
    "name": "Anastasia Hartwell",
    "npc": "4568",
@@ -1632,6 +1808,7 @@
   "1961-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953094,
    "found": true,
    "mapID": 1458,
    "name": "Anastasia Hartwell",
@@ -1643,6 +1820,52 @@
    "text": "It is time for you to don your first mage's robes, Myrlin.  They are a sign of your station, and a testament to your worth.\n\nTo gain the robes, you must gather the mana gems from the Dalaran mages of Silverpine.  Their beliefs are similar to ours and so killing them is somewhat distasteful, but if they lack the strength to resist us, then they do not deserve their lives.\n\nBring the gems and a supply of linen to Josef Gregorian at the Magic Quarter's tailor shop.",
    "time": 1789953094,
    "title": "Gathering Materials",
+   "zone": "Undercity"
+  },
+  "1961-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1458,
+   "name": "Josef Gregorian",
+   "npc": "4576",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 1961,
+   "subzone": "Magic Quarter",
+   "text": "This is very good material, and although I lack the talent to gauge the quality of these mana gems, we'll soon know if they possess the power needed to create spellfire robes...",
+   "time": 1789956854,
+   "title": "Gathering Materials",
+   "zone": "Undercity"
+  },
+  "1961-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Josef Gregorian",
+   "npc": "4576",
+   "player": "Myrlin Fixpoint",
+   "questID": 1961,
+   "subzone": "Magic Quarter",
+   "text": "Anastasia said you would come to me, and I am prepared to fashion your robes.  Do you have the gems and the linen?",
+   "time": 1789956852,
+   "title": "Gathering Materials",
+   "zone": "Undercity"
+  },
+  "1962-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1458,
+   "name": "Josef Gregorian",
+   "npc": "4576",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 1962,
+   "subzone": "Magic Quarter",
+   "text": "Here are your robes, Myrlin.  Wear them well.",
+   "time": 1789956866,
+   "title": "Spellfire Robes",
    "zone": "Undercity"
   },
   "264-accept": {
@@ -1663,6 +1886,7 @@
   "264-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789949741,
    "found": true,
    "mapID": 1421,
    "name": "Clarice Foster",
@@ -1679,6 +1903,7 @@
   "264-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789949740,
    "mapID": 1421,
    "name": "Clarice Foster",
    "npc": "5543",
@@ -1693,6 +1918,7 @@
   "3221-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949805,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -1709,6 +1935,7 @@
   "3221-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789949833,
    "found": true,
    "mapID": 1421,
    "name": "Apothecary Renferrel",
@@ -1740,6 +1967,7 @@
   "3301-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789949756,
    "found": true,
    "mapID": 1421,
    "name": "Mura Runetotem",
@@ -1756,6 +1984,7 @@
   "3301-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789949755,
    "mapID": 1421,
    "name": "Mura Runetotem",
    "npc": "8385",
@@ -1770,6 +1999,7 @@
   "356-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953418,
    "found": true,
    "mapID": 1420,
    "name": "Deathguard Linnea",
@@ -1786,6 +2016,7 @@
   "358-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953494,
    "found": true,
    "mapID": 1420,
    "name": "Magistrate Sevren",
@@ -1802,6 +2033,7 @@
   "421-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949850,
    "found": true,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
@@ -1818,6 +2050,7 @@
   "421-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789950059,
    "found": true,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
@@ -1834,6 +2067,7 @@
   "422-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789950060,
    "found": true,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
@@ -1850,6 +2084,7 @@
   "422-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789950335,
    "found": true,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
@@ -1866,6 +2101,7 @@
   "422-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789950333,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
    "npc": "1938",
@@ -1880,6 +2116,7 @@
   "423-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789950337,
    "found": true,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
@@ -1896,6 +2133,7 @@
   "429-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949572,
    "found": true,
    "mapID": 1421,
    "name": "Rane Yorick",
@@ -1912,6 +2150,7 @@
   "435-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949463,
    "found": true,
    "mapID": 1421,
    "name": "Deathstalker Erland",
@@ -1928,6 +2167,7 @@
   "435-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789949573,
    "found": true,
    "mapID": 1421,
    "name": "Rane Yorick",
@@ -1944,6 +2184,7 @@
   "437-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949808,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -1960,6 +2201,7 @@
   "437-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789950783,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -1976,6 +2218,7 @@
   "437-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789950782,
    "mapID": 1421,
    "name": "High Executor Hadrec",
    "npc": "1952",
@@ -1990,6 +2233,7 @@
   "438-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789950784,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -2006,6 +2250,7 @@
   "438-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789950965,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -2022,6 +2267,7 @@
   "439-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789950968,
    "found": true,
    "isObject": true,
    "mapID": 1421,
@@ -2039,6 +2285,7 @@
   "439-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789951093,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -2055,6 +2302,7 @@
   "439-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789951091,
    "mapID": 1421,
    "name": "High Executor Hadrec",
    "npc": "1952",
@@ -2069,6 +2317,7 @@
   "440-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951604,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -2085,6 +2334,7 @@
   "440-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789953491,
    "found": true,
    "mapID": 1420,
    "name": "Magistrate Sevren",
@@ -2101,6 +2351,7 @@
   "440-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789953490,
    "mapID": 1420,
    "name": "Magistrate Sevren",
    "npc": "1499",
@@ -2115,6 +2366,7 @@
   "441-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953491,
    "found": true,
    "mapID": 1420,
    "name": "Magistrate Sevren",
@@ -2131,6 +2383,7 @@
   "441-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789953768,
    "found": true,
    "mapID": 1458,
    "name": "Raleigh Andrean",
@@ -2147,6 +2400,7 @@
   "441-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789953767,
    "mapID": 1458,
    "name": "Raleigh Andrean",
    "npc": "2050",
@@ -2161,6 +2415,7 @@
   "443-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951093,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -2177,6 +2432,7 @@
   "447-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949786,
    "found": true,
    "mapID": 1421,
    "name": "Apothecary Renferrel",
@@ -2190,9 +2446,24 @@
    "title": "A Recipe For Death",
    "zone": "Silverpine Forest"
   },
+  "447-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 447,
+   "subzone": "The Apothecarium",
+   "text": "Hail, mage.  What business do you have with the Royal Apothecary Society?",
+   "time": 1789962206,
+   "title": "A Recipe For Death",
+   "zone": "Undercity"
+  },
   "449-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949574,
    "found": true,
    "mapID": 1421,
    "name": "Rane Yorick",
@@ -2209,6 +2480,7 @@
   "449-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789949803,
    "found": true,
    "mapID": 1421,
    "name": "High Executor Hadrec",
@@ -2225,6 +2497,7 @@
   "449-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789949802,
    "mapID": 1421,
    "name": "High Executor Hadrec",
    "npc": "1952",
@@ -2239,6 +2512,7 @@
   "477-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949843,
    "found": true,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
@@ -2255,6 +2529,7 @@
   "477-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789951299,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
    "npc": "2121",
@@ -2269,6 +2544,7 @@
   "478-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951301,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
    "npc": "2121",
@@ -2283,6 +2559,7 @@
   "478-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789951538,
    "found": true,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
@@ -2299,6 +2576,7 @@
   "478-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789951536,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
    "npc": "2121",
@@ -2313,6 +2591,7 @@
   "479-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951574,
    "found": true,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
@@ -2326,9 +2605,40 @@
    "title": "Ambermill Investigations",
    "zone": "Silverpine Forest"
   },
+  "479-complete": {
+   "build": "69913",
+   "event": "complete",
+   "found": true,
+   "mapID": 1421,
+   "name": "Shadow Priest Allister",
+   "npc": "2121",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "questID": 479,
+   "subzone": "The Sepulcher",
+   "text": "Dalar has found that the weaving is quite far along, despite the setback.\n\nA wizard of great power is guiding the magic energy. He must be stopped quickly.",
+   "time": 1789956644,
+   "title": "Ambermill Investigations",
+   "zone": "Silverpine Forest"
+  },
+  "479-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1421,
+   "name": "Shadow Priest Allister",
+   "npc": "2121",
+   "player": "Myrlin Fixpoint",
+   "questID": 479,
+   "subzone": "The Sepulcher",
+   "text": "We must hurry, their plans must not come to fruition, or we may lose our hold on Silverpine Forest.",
+   "time": 1789956643,
+   "title": "Ambermill Investigations",
+   "zone": "Silverpine Forest"
+  },
   "481-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951539,
    "found": true,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
@@ -2345,6 +2655,7 @@
   "481-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789951560,
    "found": true,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
@@ -2361,6 +2672,7 @@
   "481-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": 1789951559,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
    "npc": "1938",
@@ -2375,6 +2687,7 @@
   "482-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951561,
    "found": true,
    "mapID": 1421,
    "name": "Dalar Dawnweaver",
@@ -2391,6 +2704,7 @@
   "482-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789951571,
    "found": true,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
@@ -2422,6 +2736,7 @@
   "516-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951542,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
    "npc": "2121",
@@ -2436,6 +2751,7 @@
   "530-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953769,
    "mapID": 1458,
    "name": "Raleigh Andrean",
    "npc": "2050",
@@ -2825,6 +3141,7 @@
   "92401-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789949730,
    "mapID": 1421,
    "name": "Tabitha Heartweaver",
    "npc": "250686",
@@ -2833,6 +3150,20 @@
    "subzone": "The Sepulcher",
    "text": "It's my husband Edward...\r\n\r\nHe has not returned from his weekly journey to the graveyard in the Lordaeron ruins. Our son was lost when Arthas razed the city, and my dear Edward is still filled with guilt and sorrow that we never found his body. I've tried to warn him against searching those overrun ruins, but he refuses to give up. I try not worry, but it's been days.\r\n\r\nThere are things there I cannot contend with but if you are willing, I need to know the fate of my husband.",
    "time": 1789949730,
+   "title": "A Frightened Request",
+   "zone": "Silverpine Forest"
+  },
+  "92401-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1421,
+   "name": "Tabitha Heartweaver",
+   "npc": "250686",
+   "player": "Myrlin Fixpoint",
+   "questID": 92401,
+   "subzone": "The Sepulcher",
+   "text": "What I asked of you was not fair, nor would it have been unjust for you to simply walk away. Thank you stranger. I am unable to repay you in kind but I hope one of these is acceptable.\r\n\r\nI hope our paths cross again without such sorrow.",
+   "time": 1789963581,
    "title": "A Frightened Request",
    "zone": "Silverpine Forest"
   },
@@ -2851,9 +3182,38 @@
    "title": "Light's Justice",
    "zone": "Undercity"
   },
+  "92421-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Morbin Lightbane",
+   "npc": "266484",
+   "player": "Myrlin Fixpoint",
+   "questID": 92421,
+   "subzone": "Royal Quarter",
+   "text": "Let those who fall from the Banshee Queen's grace meet our justice!\r\n\r\nWith these parts, our brothers and sisters have hope to see another day. You do Captain Bandarion proud.",
+   "time": 1789962085,
+   "title": "Light's Justice",
+   "zone": "Undercity"
+  },
+  "92421-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Morbin Lightbane",
+   "npc": "266484",
+   "player": "Myrlin Fixpoint",
+   "questID": 92421,
+   "subzone": "Royal Quarter",
+   "text": "What remains of the invading scourge? Have you managed to find suitable replacement parts?",
+   "time": 1789962084,
+   "title": "Light's Justice",
+   "zone": "Undercity"
+  },
   "92422-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953406,
    "mapID": 1420,
    "name": "Deathguard Kristof",
    "npc": "251001",
@@ -2862,6 +3222,20 @@
    "subzone": "",
    "text": "Reports have come in from the Lordamere Overlook deep within the Ruins of Lordaeron. An unholy fog has taken over the streets and graveyard, affording the scourge up there some measure of stealth. \r\n\r\nOur scouts indicate they're being conjured by a new power within their ranks, a necromancer known as Rath'mael. We do not have the luxury of waiting this one out, Myrlin.\r\n\r\nIf you have allies, summon them and their aid to the Forsaken. Drive this creature out of our lands.",
    "time": 1789953406,
+   "title": "The Wrath of Rath'mael",
+   "zone": "Tirisfal Glades"
+  },
+  "92422-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1420,
+   "name": "Deathguard Kristof",
+   "npc": "251001",
+   "player": "Myrlin Fixpoint",
+   "questID": 92422,
+   "subzone": "",
+   "text": "While I have no doubt something of his kind will be replaced, we can only hope their ranks thin in the meantime.\r\n\r\nThank you Myrlin.",
+   "time": 1789962887,
    "title": "The Wrath of Rath'mael",
    "zone": "Tirisfal Glades"
   },
@@ -2996,6 +3370,7 @@
   "95216-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789952108,
    "mapID": 1458,
    "name": "Theodore Griffs",
    "npc": "11835",
@@ -3007,9 +3382,38 @@
    "title": "The New Plague",
    "zone": "Undercity"
   },
+  "95216-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Theodore Griffs",
+   "npc": "11835",
+   "player": "Myrlin Fixpoint",
+   "questID": 95216,
+   "subzone": "The Apothecarium",
+   "text": "You killed it??\r\n\r\nHmmph. Lucky for you this should be enough ichor to reverse engineer its properties. You do not wish to be an enemy of the Royal Apothecary Society.\r\n\r\nGet out of my sight!",
+   "time": 1789962171,
+   "title": "The New Plague",
+   "zone": "Undercity"
+  },
+  "95216-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Theodore Griffs",
+   "npc": "11835",
+   "player": "Myrlin Fixpoint",
+   "questID": 95216,
+   "subzone": "The Apothecarium",
+   "text": "Any fool can tell you the most potent transmission method will always be through the blood.\r\n\r\nI must see this strain for myself!",
+   "time": 1789962170,
+   "title": "The New Plague",
+   "zone": "Undercity"
+  },
   "95981-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789951582,
    "mapID": 1421,
    "name": "Shadow Priest Allister",
    "npc": "2121",
@@ -3024,6 +3428,7 @@
   "96895-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953462,
    "mapID": 1420,
    "name": "Deathguard Terrence",
    "npc": "1738",
@@ -3038,6 +3443,7 @@
   "96895-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": 1789953561,
    "mapID": 1420,
    "name": "Hadric Harlson",
    "npc": "267009",
@@ -3052,6 +3458,7 @@
   "96897-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953563,
    "mapID": 1420,
    "name": "Hadric Harlson",
    "npc": "267009",
@@ -3066,6 +3473,7 @@
   "96898-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953567,
    "mapID": 1420,
    "name": "Hadric Harlson",
    "npc": "267009",
@@ -3077,9 +3485,205 @@
    "title": "Remnants of War",
    "zone": "Tirisfal Glades"
   },
+  "97288-accept": {
+   "build": "69913",
+   "event": "accept",
+   "isObject": true,
+   "name": "Unknown",
+   "player": "Myrlin Fixpoint",
+   "questID": 97288,
+   "subzone": "King's Alley",
+   "text": "<As the creature falls, its head comes toppling off. It seems as if it has been reattached several times, and the connection gets weaker with each reconnection.\r\n\r\nSomeone in the Undercity would know more about this unique abomination.>",
+   "time": 1789958562,
+   "title": "Unending Torment",
+   "zone": "Ruins of Lordaeron"
+  },
+  "97288-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97288,
+   "subzone": "The Apothecarium",
+   "text": "Oho! I believe I know this head. A cruel joke by our Dark Lady. A delicious one at that.\r\n\r\nI think I have a use for this.",
+   "time": 1789962209,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97288-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97288,
+   "subzone": "The Apothecarium",
+   "text": "What have we here?",
+   "time": 1789962209,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97289-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97289,
+   "subzone": "The Apothecarium",
+   "text": "We craft abomination heads all the time, but this one is special. It belonged to a Grand Marshal of the alliance once. A particularly unpleasant one. The Dark Lady had the pleasure of dispatching of this one herself.\r\n\r\nOoh the secrets it could tell if it could talk. And it can! If we reattach it to an appropriate host.\r\n\r\nGo ahead and place it next to the available body in the next room. But don't attach it. Not yet.",
+   "time": 1789962210,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97289-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Unfinished Abomination",
+   "npc": "271613",
+   "player": "Myrlin Fixpoint",
+   "questID": 97289,
+   "subzone": "The Apothecarium",
+   "text": "<The body twitches to life, panicking as it relives its final moments.>\r\n\r\nYou...",
+   "time": 1789962227,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97289-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Unfinished Abomination",
+   "npc": "271613",
+   "player": "Myrlin Fixpoint",
+   "questID": 97289,
+   "subzone": "The Apothecarium",
+   "text": "<The abomination remains lifeless without a head to control it.>",
+   "time": 1789962226,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97290-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1458,
+   "name": "Unfinished Abomination",
+   "npc": "271613",
+   "player": "Myrlin Fixpoint",
+   "questID": 97290,
+   "subzone": "The Apothecarium",
+   "text": "You... abomination...\r\n\r\nWhy should... help you...\r\n\r\nBe gone...",
+   "time": 1789962228,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97290-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97290,
+   "subzone": "The Apothecarium",
+   "text": "Not cooperating, eh? Excellent. I always love a challenge.",
+   "time": 1789962250,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97291-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97291,
+   "subzone": "The Apothecarium",
+   "text": "With the head reattached, all we need now is to bind it to the Dark Lady's will. This should not be a problem. The beast barely has brains left as it is after all the beatings it's taken.\r\n\r\nWe simply need to motivate it.\r\n\r\nFetch me a Toxic Skullcap from Miss Grisette in the Trade Quarter. Oh, and some Blisterweed from our local herbalist trainers, the Alliestars. Feel free to just take some, they owe me. And lastly a bit of Essence of Agony. Any old poison vendor should do.\r\n\r\nWe have a potion to make!",
+   "time": 1789962257,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97291-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97291,
+   "subzone": "The Apothecarium",
+   "text": "These will do nicely. We will see how much bravado our honored guest retains after he is subjected to my masterpiece.",
+   "time": 1789962587,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97291-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97291,
+   "subzone": "The Apothecarium",
+   "text": "It will be ever so lovely to have our lost sheep returned to the fold, don't you think?",
+   "time": 1789962586,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97292-accept": {
+   "build": "69913",
+   "event": "accept",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97292,
+   "subzone": "The Apothecarium",
+   "text": "I have concocted a lovely serum that our new guest is sure to find quite... stimulating.\r\n\r\nTake this. Feed it into the workings dripping from above him. Let's see if we can't show him why it's in his best interest to serve loyally.\r\n\r\nAnd try not to drop it. I can't afford a new assistant.",
+   "time": 1789962588,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97292-complete": {
+   "build": "69913",
+   "event": "complete",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97292,
+   "subzone": "The Apothecarium",
+   "text": "Excellent. We'll let his flesh simmer for awhile. Give him time to acclimate to his new home.\r\n\r\nI have no further use for the wretch for now, but we shall keep an eye on him. I have many plans for Othmar's future.",
+   "time": 1789962632,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
+  "97292-progress": {
+   "build": "69913",
+   "event": "progress",
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "player": "Myrlin Fixpoint",
+   "questID": 97292,
+   "subzone": "The Apothecarium",
+   "text": "For Othmar's crimes against the Dark Lady, placing him under that oozing specimen is the least he deserves.\r\n\r\nAnd it's funny...",
+   "time": 1789962631,
+   "title": "Unending Torment",
+   "zone": "Undercity"
+  },
   "97558-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": 1789953422,
    "mapID": 1420,
    "name": "Shelene Rhobart",
    "npc": "3549",
