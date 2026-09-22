@@ -239,8 +239,9 @@ same name, which stays unset — see the addon entry above.
 
 CurseForge moderation holds new projects and their first files for a day or
 so; nothing needs doing meanwhile. The project logo must be original art
-(`docs/logo.svg` / `logo.png`); Blizzard icons are fine inside the client but
-rejected as a storefront logo.
+(`docs/logo.png`, a 1408x768 banner since 2026-09-22; the earlier square SVG
+icon is gone); Blizzard icons are fine inside the client but rejected as a
+storefront logo.
 
 ## Crowdsourcing
 
