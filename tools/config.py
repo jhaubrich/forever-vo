@@ -106,3 +106,15 @@ LEGACY_CHARACTERS = {
 COMMUNITY_CHARACTERS = {
     "comment-5768141361": {"player": "It", "class": "Paladin", "restoreName": True},
 }
+
+# Chatterbox conditioning, per voice. The reference clips are short NPC greetings,
+# so the model keeps the timbre but drifts to its own neutral accent unless pushed:
+# dwarves came out sounding American until exaggeration went up and cfg_weight down.
+# Raising exaggeration only helps when the reference is a few long clips rather than
+# a montage of barks - on the stitched version it just amplifies the seams.
+EXAGGERATION = 0.45
+CFG_WEIGHT = 0.5
+VOICE_TUNING = {
+    "dwarf-male": {"exaggeration": 0.75, "cfg_weight": 0.3},
+    "dwarf-female": {"exaggeration": 0.75, "cfg_weight": 0.3},
+}

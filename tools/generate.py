@@ -44,8 +44,9 @@ import time
 from pathlib import Path
 from typing import NamedTuple
 
-from config import (CAPTURE_JSON, DATA_DIR, FALLBACK_VOICES, NARRATOR_VOICE, NARRATOR_VOICES,
-                    PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR, VOICES_DIR)
+from config import (CAPTURE_JSON, CFG_WEIGHT, DATA_DIR, EXAGGERATION, FALLBACK_VOICES,
+                    NARRATOR_VOICE, NARRATOR_VOICES, PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR,
+                    VOICE_TUNING, VOICES_DIR)
 from luatable import lua_string
 from textclean import chunk, clean, has_gender_branch, is_speakable, split_gender
 from textkey import text_key
@@ -144,10 +145,17 @@ class Target(NamedTuple):
 
     @property
     def fingerprint(self) -> str:
-        """Hash of the words actually spoken. Recorded alongside the voice so a
-        corrected text regenerates, the way a changed voice already does: a quest
-        file keeps its <questID>-<event> name, so nothing else would notice."""
-        return text_key(self.text)
+        """Hash of the words actually spoken, plus this voice's conditioning when it
+        is not the default. Recorded alongside the voice so a corrected text - or a
+        retuned voice - regenerates, the way a changed voice already does: a quest
+        file keeps its <questID>-<event> name, so nothing else would notice. Voices
+        left on the default tuning hash exactly as before, so tuning one voice does
+        not restage every other file."""
+        key = text_key(self.text)
+        tuning = VOICE_TUNING.get(self.voice)
+        if tuning:
+            key += "+" + ",".join(f"{name}={tuning[name]}" for name in sorted(tuning))
+        return key
 
     @property
     def path(self) -> Path:
@@ -255,7 +263,10 @@ class Synth:
         silence = self.torch.zeros(1, int(self.sr * 0.35))
         for part in chunk(text):
             kwargs = {"audio_prompt_path": str(reference)} if reference else {}
-            wav = self.model.generate(part, exaggeration=0.45, cfg_weight=0.5, **kwargs)
+            tuning = VOICE_TUNING.get(voice, {})
+            wav = self.model.generate(part,
+                                      exaggeration=tuning.get("exaggeration", EXAGGERATION),
+                                      cfg_weight=tuning.get("cfg_weight", CFG_WEIGHT), **kwargs)
             pieces.append(wav.cpu())
             pieces.append(silence)
         audio = self.torch.cat(pieces[:-1], dim=-1)
