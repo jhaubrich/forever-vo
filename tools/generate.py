@@ -423,7 +423,13 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
             record = quests.setdefault(quest_id, {})
             record[QUEST_EVENTS[item.event]] = round(duration, 3)
             if gendered:
-                record["g"] = True
+                # $G branches per line, not per quest: quest 170's accept text
+                # branches and its complete text does not. One flag for the quest
+                # made FindQuest prefix m-/f- onto every event and look up a file
+                # that was never written, so the turn-in played nothing. Record the
+                # events that actually branched; Packs.lua still accepts `true`.
+                letters = set(record.get("g") or "") | {QUEST_EVENTS[item.event]}
+                record["g"] = "".join(sorted(letters))
             if speaker is not None and record.get("npc") is None:
                 record["npc"] = speaker
             for voice, seconds in alternates.items():
