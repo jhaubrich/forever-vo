@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import functools
+from collections import Counter
 from pathlib import Path
 
 import requests
@@ -74,24 +75,75 @@ def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:
     return int(extra["DisplayRaceID"]), int(extra["DisplaySexID"])
 
 
+@functools.lru_cache(maxsize=None)
+def _race_sex_by_model_file() -> dict[int, Counter]:
+    """{CreatureModelData.FileDataID: Counter of (DisplayRaceID, DisplaySexID)} over every
+    CreatureDisplayInfo row that uses the model and has an "extra" record.
+
+    Built once: CreatureModelData.FileDataID -> CreatureModelData.ID -> CreatureDisplayInfo.ModelID
+    -> CreatureDisplayInfo.ExtendedDisplayInfoID -> CreatureDisplayInfoExtra.
+    """
+    # Several CreatureModelData rows can share one file, so map by model ID, not by file
+    file_by_model = {mid: int(row["FileDataID"] or 0) for mid, row in load_db2("CreatureModelData").items()}
+    extras = load_db2("CreatureDisplayInfoExtra")
+    result: dict[int, Counter] = {}
+    for cdi in load_db2("CreatureDisplayInfo").values():
+        fdid = file_by_model.get(int(cdi.get("ModelID") or 0))
+        extra = extras.get(int(cdi.get("ExtendedDisplayInfoID") or 0)) if fdid else None
+        if extra:
+            result.setdefault(fdid, Counter())[(int(extra["DisplayRaceID"]), int(extra["DisplaySexID"]))] += 1
+    return result
+
+
+def model_race_sex(
+    model_file_id: int | None, sex_id: int | None = None, preferred_races: set[int] | frozenset[int] = frozenset()
+) -> tuple[int | None, int | None]:
+    """Maps a captured GetModelFileID() to (DisplayRaceID, DisplaySexID).
+
+    The Forever client never fills GetDisplayInfo() (issue #2), but the model file
+    is captured and most models belong to one race. A model shared across races is
+    a majority vote over its display rows, narrowed to the captured sex and to
+    `preferred_races` (the zone hint, e.g. the Skyborne NPCs on Zephras Isle that
+    wear blood elf models) when any row matches; ties break on the lowest race ID.
+    """
+    if not model_file_id:
+        return None, None
+    tally = _race_sex_by_model_file().get(int(model_file_id))
+    if not tally:
+        return None, None
+    if sex_id is not None and any(s == sex_id for _, s in tally):
+        tally = Counter({k: n for k, n in tally.items() if k[1] == sex_id})
+    if any(r in preferred_races for r, _ in tally):
+        tally = Counter({k: n for k, n in tally.items() if k[0] in preferred_races})
+    (race, sex), _ = min(tally.items(), key=lambda kv: (-kv[1], kv[0]))
+    return race, sex
+
+
 def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
     """Picks a `race-gender` voice name for a captured NPC record.
 
-    Falls back to the in-game UnitSex (2 male, 3 female) when the display race is
-    unknown, and to the narrator for game objects, items and genderless units.
+    In order: the NPC's own cloned clip (npc-<displayID>.wav), the race and sex of
+    its displayID, the same via its modelFileID (the Forever client provides the
+    model file but never the display ID; the Classic export supplies display IDs for
+    unchanged NPCs), the zone hint, then human. Sex falls back to the in-game UnitSex
+    (2 male, 3 female); game objects, items and genderless units go to the narrator.
     """
     if not npc or npc.get("isObject") or npc.get("isObjectOrItem"):
         return "narrator"
     display_id = npc.get("displayID")
     if display_id and (VOICES_DIR / f"npc-{int(display_id)}.wav").exists():
         return f"npc-{int(display_id)}"  # cloned from this NPC's own recorded greetings
+    unit_sex = {2: 0, 3: 1}.get(npc.get("sex"))
+    hint = ZONE_RACE_HINTS.get(zone or npc.get("zone") or "")
     race_id, sex_id = display_race_sex(display_id)
+    if race_id is None:
+        hinted = {rid for rid, name in RACE_DICT.items() if name == hint} if hint else set()
+        race_id, sex_id = model_race_sex(npc.get("modelFileID"), unit_sex, hinted)
     race = RACE_DICT.get(race_id) if race_id is not None else None
     if sex_id is None:
-        unit_sex = npc.get("sex")
-        sex_id = {2: 0, 3: 1}.get(unit_sex)
+        sex_id = unit_sex
     if race is None:
-        race = ZONE_RACE_HINTS.get(zone or npc.get("zone") or "", "human")
+        race = hint or "human"
     if sex_id is None:
         return "narrator"
     return f"{race}-{GENDER_DICT[sex_id]}"
@@ -125,3 +177,6 @@ if __name__ == "__main__":
     lines = skyborne_voice_lines()
     print(f"{len(lines)} Skyborne voice files, e.g. {lines[:5]}")
     print("display 3157 ->", display_race_sex(3157))
+    print("model file 997378 ->", model_race_sex(997378), "(scourge; UnitSex male narrows to", model_race_sex(997378, 0), ")")
+    print("model file 7478487 ->", model_race_sex(7478487), "(skyborne male)")
+    print("model file 1100258 ->", model_race_sex(1100258), "(blood elf model; Zephras Isle hint gives", model_race_sex(1100258, 1, {95, 96}), ")")

@@ -123,7 +123,10 @@ build artifact, never hand-edited):
    greeting kits, Skyborne from `VocalUISounds`, and `--named` for NPCs whose
    greeting kit is theirs alone (Varimathras, Thrall, Sylvanas, ...).
    `wowdata.voice_for_npc` prefers `npc-<displayID>.wav`, then race+gender
-   from `CreatureDisplayInfoExtra`, then zone hints, then narrator.
+   from `CreatureDisplayInfoExtra` via the display ID, then the same via the
+   captured `modelFileID` (`CreatureModelData` -> the display rows using that
+   model, majority vote narrowed by UnitSex and the zone hint), then zone
+   hints, then narrator.
 
 Voice quality notes: Chatterbox on an RTX 3080 does ~6 s of audio in ~5 s
 with the game closed, roughly 3x slower with it open. Perth (the watermarker)
@@ -234,7 +237,12 @@ The owner's machine picks those up on the next sync.
   all 258 records of the owner's cache and was validated against Classic
   titles.
 - `PlayerModel:GetDisplayInfo()` returns 0 until the model loads; the capture
-  reads it in `OnModelLoaded`, and the merge ignores zero display IDs.
+  reads it in `OnModelLoaded`, and the merge ignores zero display IDs. On the
+  Forever client it never yields anything at all (0 of 146 captured NPCs), only
+  `GetModelFileID()` does; the Classic export supplies display IDs for
+  unchanged NPCs and the `modelFileID` fallback covers Forever-only ones. Several
+  `CreatureModelData` rows can share one file (Jornah's 949470 has two), so the
+  reverse index is keyed by model ID, not by file.
 - `wowdata.voice_for_npc` once silently used an old field name
   (`isObjectOrItem`) and a patch whose anchor text had drifted never applied.
   After editing with search-and-replace, grep for the new text; do not trust
