@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.3
+## 0.1.2
 
 - A character whose name is an ordinary word ("It") no longer has that word
   eaten out of every line it hears. The client always writes a character's
@@ -15,8 +15,8 @@
   addon asked for a gendered file that was never made and played silence. New
   packs record which events branch; packs built before this still work. Thanks
   to joergensentroels for the fix.
-- `/fvo export` records the addon version that wrote it, so the pipeline can
-  tell which repairs a submission needs.
+- The pipeline now reads the addon version an export carries, so it can tell
+  which repairs a submission needs.
 
 ## 0.1.1
 

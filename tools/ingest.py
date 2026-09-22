@@ -79,7 +79,7 @@ _NAME_TOKEN_UPPER = re.compile(r"\$(N)")
 # case-sensitively. The client always renders a character name capitalised, so
 # such an export can only hold the name as $N; a lowercase $n in it is the
 # server's own placeholder and must not be "restored" to the reader's name.
-NAME_CASE_SENSITIVE_SINCE = (0, 1, 3)
+NAME_CASE_SENSITIVE_SINCE = (0, 1, 2)
 
 
 def addon_version(entry: dict) -> tuple[int, ...]:
@@ -310,7 +310,7 @@ def ingest_file(capture: dict, path: Path, sources: SourceTexts | None, stats: R
     if not isinstance(db, dict):
         return (0, 0, 0)
     # Community exports: the issue comment they came from, and the addon that
-    # wrote them (absent before 0.1.3), both stamped on each entry
+    # wrote them (absent before 0.1.2), both stamped on each entry
     stamp = {field: db[field] for field in ("origin", "addon") if db.get(field)}
     quests = gossip = npcs = 0
     for key, entry in (db.get("quests") or {}).items():
