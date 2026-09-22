@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["requests"]
+# dependencies = ["requests", "requests-toolbelt"]
 # ///
 """Builds and (optionally) uploads voice pack releases.
 
@@ -18,8 +18,13 @@ everything on the maintainer's machine):
     ./tools/run.sh tools/release_pack.py delta --upload --if-changed   # nightly use
     ./tools/run.sh tools/release_pack.py base
 
-Audio is re-encoded for release (mono 48 kbps mp3) into tools/data/release/.
-Versions are date based (2026.09.21, then 2026.09.21.2 on the same day).
+Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz, about 14 MB per
+hour of speech; it was 48 kbps until 2026-09-22, when the base pack came to
+1.3 GB with a third of the lines still to go) into tools/data/release/. The
+zip stores the files uncompressed, since mp3 does not deflate. Versions are
+date based (2026.09.21, then 2026.09.21.2 on the same day). The base pack
+uploads as a "release" file and the delta as "beta" unless --release-type
+says otherwise: the CurseForge app hides beta files unless the user opts in.
 
 The API key comes from the repo's .env (gitignored): CF_API_KEY=... (the name
 the BigWigs packager uses too; CURSEFORGE_API_KEY is still accepted).
@@ -34,10 +39,12 @@ import shutil
 import subprocess
 import sys
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from pathlib import Path
 
 import requests
+from requests_toolbelt import MultipartEncoder
 
 from config import CURSEFORGE_PROJECTS, DATA_DIR, SOUND_INDEX, SOUNDS_DIR
 from generate import load_items, load_sources, rebuild_tables, sound_folder
@@ -100,11 +107,15 @@ def next_version(pack: str) -> str:
     return today
 
 
+RELEASE_BITRATE = "32k"
+TRANSCODE_WORKERS = 4   # ffmpeg is CPU work; leave cores for the GPU workers' own decoding
+
+
 def transcode(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-ac", "1", "-ar", "22050",
-         "-codec:a", "libmp3lame", "-b:a", "48k", str(dst)],
+         "-codec:a", "libmp3lame", "-b:a", RELEASE_BITRATE, str(dst)],
         check=True,
     )
 
@@ -152,15 +163,18 @@ def stage_tables(pack: str, version: str) -> tuple[Path, dict]:
 def package(pack: str, version: str, stage: Path, stats: dict) -> Path:
     """Re-encodes the referenced audio into the stage dir and zips it."""
     spec = PACKS[pack]
-    for base in sorted(stats["files"]):
-        folder = sound_folder(base)
-        transcode(SOUNDS_DIR / folder / f"{base}.mp3", stage / "Sounds" / folder / f"{base}.mp3")
+    jobs = [(SOUNDS_DIR / sound_folder(base) / f"{base}.mp3", stage / "Sounds" / sound_folder(base) / f"{base}.mp3")
+            for base in sorted(stats["files"])]
     # Alternate narrator voices carry their folder in the name (Quests/Narrator/<voice>/<base>)
-    for relative in sorted(stats.get("narratorFiles", ())):
-        transcode(SOUNDS_DIR / f"{relative}.mp3", stage / "Sounds" / f"{relative}.mp3")
+    jobs += [(SOUNDS_DIR / f"{relative}.mp3", stage / "Sounds" / f"{relative}.mp3")
+             for relative in sorted(stats.get("narratorFiles", ()))]
+    with ThreadPoolExecutor(max_workers=TRANSCODE_WORKERS) as pool:
+        for n, _ in enumerate(pool.map(lambda job: transcode(*job), jobs), 1):
+            if n % 1000 == 0 or n == len(jobs):
+                print(f"  re-encoded {n}/{len(jobs)}")
 
     zip_path = RELEASE_DIR / f"{spec['folder']}-{version}.zip"
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_STORED) as zf:   # mp3 does not deflate
         for path in sorted(stage.rglob("*")):
             if path.is_file():
                 zf.write(path, str(Path(spec["folder"]) / path.relative_to(stage)))
@@ -214,12 +228,17 @@ def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: s
         "gameVersions": [game_version_id(key)],
         "releaseType": release_type,
     }
+    # Streamed from disk: requests' own multipart encoding builds the whole body
+    # in memory, which for the base pack is over a gigabyte.
     with zip_path.open("rb") as f:
+        body = MultipartEncoder(fields={
+            "metadata": json.dumps(metadata),
+            "file": (zip_path.name, f, "application/zip"),
+        })
         response = requests.post(
             f"{CF_API}/projects/{project}/upload-file",
-            headers={"X-Api-Token": key},
-            data={"metadata": json.dumps(metadata)},
-            files={"file": (zip_path.name, f, "application/zip")},
+            headers={"X-Api-Token": key, "Content-Type": body.content_type},
+            data=body,
             timeout=3600,
         )
     if response.status_code != 200:
@@ -234,8 +253,10 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--if-changed", action="store_true", help="skip when the set of files is unchanged since the last release")
     parser.add_argument("--min-new", type=int, default=0, help="with --if-changed: skip unless at least this many files are new since the last release...")
     parser.add_argument("--max-age-days", type=int, default=0, help="...unless the last release is older than this many days and anything changed")
-    parser.add_argument("--release-type", default="beta", choices=["alpha", "beta", "release"])
+    parser.add_argument("--release-type", choices=["alpha", "beta", "release"],
+                        help="CurseForge file type (default: release for base, beta for delta)")
     args = parser.parse_args(argv)
+    release_type = args.release_type or ("release" if args.pack == "base" else "beta")
 
     if args.upload:
         key, project = curseforge_config(args.pack)
@@ -263,7 +284,7 @@ def main(argv: list[str]) -> int:
     zip_path = package(args.pack, version, stage, stats)
 
     if args.upload:
-        upload(args.pack, zip_path, version, stats, args.release_type)
+        upload(args.pack, zip_path, version, stats, release_type)
     state[args.pack] = {"version": version, "date": date.today().isoformat(), "files": fingerprint, "zip": str(zip_path)}
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
     return 0

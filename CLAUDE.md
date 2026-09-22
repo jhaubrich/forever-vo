@@ -221,12 +221,21 @@ Three CurseForge projects, three release paths:
   `tools/release_pack.py delta --upload --if-changed` runs at the end of the
   nightly job and uploads a dated beta when the file set changed.
 - **Base pack** "Forever Voiceover Data: Base" (1705100): the Classic-sourced
-  lines, priority 100, huge (~1.5 GB re-encoded), released by hand and
-  rarely: `tools/release_pack.py base --upload`.
+  lines, priority 100, huge (~0.9 GB at 32 kbps with the bulk run two thirds
+  done on 2026-09-22, ~1.3 GB when complete with the alternate narrators),
+  released by hand and rarely: `tools/release_pack.py base --upload`. It
+  uploads as a "release" file (the delta as "beta"), because the CurseForge
+  app hides beta files unless the user opts in. The first upload went up
+  before the bulk run finished, to get through moderation early; later
+  uploads are just newer dated versions.
 
 `release_pack.py` builds from the single working folder `ForeverVO_Data`
 (which holds everything on the owner's machine and is what the client loads
-locally), re-encodes to mono 48 kbps mp3 under `tools/data/release/`, writes
+locally), re-encodes to mono 32 kbps mp3 at 22.05 kHz under
+`tools/data/release/` (48 kbps until 2026-09-22; the originals in
+`ForeverVO_Data/Sounds/` stay at the generator's full quality, so the
+release bitrate can be raised again on any later build), streams the upload
+from disk (`requests-toolbelt`), writes
 a fresh manifest per pack (`<Folder>Pack` global, `Register.lua`), and
 uploads through the CurseForge upload API (`wow.curseforge.com/api`). Pack
 versions are date based (`2026.09.20`, `.2` on the same day) and tracked in
@@ -339,7 +348,6 @@ The owner's machine picks those up on the next sync.
 - Per-line configurability: let end users nudge text, voice, exaggeration or
   pacing for a line and re-run Chatterbox for it themselves.
 - A Discord bot as an alternative inbox for `FVO1:` strings (same decoder).
-- A first base pack release once the Classic bulk run finishes (it was at
-  ~900 of ~7,900 quest files on 2026-09-20 evening; gossip follows quests).
-- Lower bitrate for the base pack (32 kbps) if 1.5 GB proves too large for
-  CurseForge or for players.
+- A complete base pack release once the Classic bulk run finishes (the first,
+  partial one went up 2026-09-22 with ~12,900 of ~18,000 files; the alternate
+  narrator voices were all still to come).
