@@ -34,6 +34,26 @@ REPLACE = {
     "$c": "adventurer", "$C": "Adventurer",
     "$r": "traveler", "$R": "Traveler",
 }
+
+# Respellings for names Chatterbox gets wrong. The model takes plain text only
+# (no IPA or SSML), so the fix is spelling the word the way it should sound.
+# Whole words, any case; a shouted all-caps word stays all caps. Changing an
+# entry changes the spoken-text fingerprint, so `generate.py --stale-only`
+# regenerates exactly the affected files. Try candidates by ear first: of five
+# for Gnomeregan (/noʊmɹəˈgɑːn/), "Nomer-gahn" was natural, "Gnome-ruh-gahn"
+# was bad, and "Nome-ruh-GAHN" came out partly as numbers.
+PRONUNCIATIONS = {
+    "Gnomeregan": "Nomer-gahn",
+}
+_PRONUNCIATION = re.compile(r"\b(" + "|".join(map(re.escape, PRONUNCIATIONS)) + r")\b", re.IGNORECASE)
+_PRONUNCIATION_KEYS = {word.lower(): spoken for word, spoken in PRONUNCIATIONS.items()}
+
+
+def _respell(match: re.Match) -> str:
+    spoken = _PRONUNCIATION_KEYS[match.group(1).lower()]
+    return spoken.upper() if match.group(1).isupper() else spoken
+
+
 _GENDER = re.compile(r"\$[Gg]\s*([^:;]+?)\s*:\s*([^:;]+?)\s*;")
 _STAGE_DIRECTION = re.compile(r"<[^<>]*>\s?")
 _WHITESPACE = re.compile(r"\s+")
@@ -52,6 +72,7 @@ def clean(text: str) -> str:
     for key, value in REPLACE.items():
         text = text.replace(key, value)
     text = _STAGE_DIRECTION.sub("", text)
+    text = _PRONUNCIATION.sub(_respell, text)
     text = text.replace("\r", " ").replace("\n", " ")
     text = _WHITESPACE.sub(" ", text).strip()
     return text
