@@ -49,17 +49,31 @@ end
 -- Text normalisation and hashing (mirrored by tools/textkey.py)
 -- ---------------------------------------------------------------------------
 
---- Escapes a literal string for use as a Lua pattern, optionally matching it in
---- either case, so a name or class can be found however the server wrote it.
-local function LiteralPattern(text, ignoreCase)
+--- Escapes a literal string for use as a Lua pattern, matching ASCII letters in
+--- either case so a name or class is found however the server wrote it. Only
+--- ASCII folds: Lua patterns are bytes, so a multi-byte character is escaped
+--- byte by byte and matched exactly. textkey.py does the same, deliberately --
+--- %a and %W are locale dependent and disagree with Python on non-ASCII input.
+local function LiteralPattern(text)
     return (text:gsub(".", function(char)
-        if ignoreCase and char:match("%a") then
+        local byte = char:byte()
+        if (byte >= 65 and byte <= 90) or (byte >= 97 and byte <= 122) then
             return "[" .. char:lower() .. char:upper() .. "]"
-        elseif char:match("%W") then
-            return "%" .. char
+        elseif byte >= 48 and byte <= 57 then
+            return char
         end
-        return char
+        return "%" .. char
     end))
+end
+
+--- True for the ASCII alphanumerics a match may not touch, mirroring the
+--- (?<![0-9A-Za-z]) / (?![0-9A-Za-z]) lookarounds in textkey.py. Every byte of a
+--- multi-byte character is >= 0x80, so testing bytes and testing characters
+--- agree for any valid UTF-8. nil (before the first byte, after the last) is a
+--- boundary.
+local function IsAsciiAlnum(byte)
+    return byte ~= nil and ((byte >= 48 and byte <= 57)
+        or (byte >= 65 and byte <= 90) or (byte >= 97 and byte <= 122))
 end
 
 --- Puts the server's own placeholders back where the client expanded them.
@@ -79,12 +93,30 @@ function Util.Tokenize(text, playerName, className, raceName)
         if not value or value == "" then
             return subject
         end
-        -- Word boundaries matter: a short name ("It") is a substring of ordinary
-        -- words, and without them "with" captures as "w$nh". %f[%w]/%f[%W] are
-        -- zero width, so the match itself is still just the name.
-        return (subject:gsub("%f[%w]" .. LiteralPattern(value, true) .. "%f[%W]", function(match)
-            return match:match("^%u") and token:upper() or token
-        end))
+        -- The match may not touch an ASCII alphanumeric on either side: a short
+        -- name ("It") is a substring of ordinary words, and without the check
+        -- "with" captures as "w$nh". This is a scan rather than %f[%w], because
+        -- the frontier pattern cannot fire next to a multi-byte character, so a
+        -- name like "Osel" spelled with an umlaut was not redacted at all.
+        local pattern = LiteralPattern(value)
+        local out, pos = {}, 1
+        while true do
+            local first, last = subject:find(pattern, pos)
+            if not first then
+                break
+            end
+            if IsAsciiAlnum(subject:byte(first - 1)) or IsAsciiAlnum(subject:byte(last + 1)) then
+                out[#out + 1] = subject:sub(pos, first)   -- inside a word; step one byte on
+                pos = first + 1
+            else
+                out[#out + 1] = subject:sub(pos, first - 1)
+                local initial = subject:byte(first)
+                out[#out + 1] = (initial >= 65 and initial <= 90) and token:upper() or token
+                pos = last + 1
+            end
+        end
+        out[#out + 1] = subject:sub(pos)
+        return table.concat(out)
     end
     text = put(text, playerName, "$n")
     local firstName = playerName and playerName:match("%S+")   -- $n is the bare first name
