@@ -96,3 +96,13 @@ LEGACY_CHARACTERS = {
     "Pellinore Fixpoint": {"class": "Hunter"},
     "Agravain Fixpoint": {"class": "Rogue"},
 }
+
+# Community exports ("/fvo export") replace the reader's name with $n and carry
+# no class or race, so a glued placeholder from a pre-whole-word client (issue #5)
+# cannot be undone without help. This maps the capture file's origin (the issue
+# comment id) to what the poster told us. "restoreName" says the name is an
+# ordinary English word ("It"), so the old client turned every such word into
+# $n and ingest puts the word back wherever $n appears; only un-gluing otherwise.
+COMMUNITY_CHARACTERS = {
+    "comment-5768141361": {"player": "It", "class": "Paladin", "restoreName": True},
+}
