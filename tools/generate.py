@@ -35,6 +35,7 @@ run still spends its time on lines that have no audio at all:
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import os
 import subprocess
@@ -127,6 +128,31 @@ def index_key(base: str, voice: str = NARRATOR_VOICE) -> str:
     return base if voice == NARRATOR_VOICE else f"Narrator/{voice}/{base}"
 
 
+@functools.cache
+def reference_clip(voice: str) -> Path | None:
+    """The clip a voice is cloned from: its own, else its FALLBACK_VOICES race's, else
+    the narrator's. None only when not even human-male.wav is there."""
+    race, _, gender = voice.partition("-")
+    fallback = FALLBACK_VOICES.get(race)
+    candidates = [VOICES_DIR / f"{voice}.wav"]
+    if fallback:
+        candidates.append(VOICES_DIR / (f"{fallback}-{gender}.wav" if gender else f"{fallback}.wav"))
+        candidates.append(VOICES_DIR / f"{fallback}-male.wav")
+    candidates.append(VOICES_DIR / "narrator.wav")
+    candidates.append(VOICES_DIR / "human-male.wav")
+    return next((p for p in candidates if p.exists()), None)
+
+
+def tuning_for(voice: str) -> dict:
+    """The voice's VOICE_TUNING entry, else that of the clip it borrows. The drift the
+    tuning corrects belongs to the clip, so a Dark Iron dwarf cloned from dwarf-male.wav
+    needs dwarf-male's settings as much as a dwarf does."""
+    if voice in VOICE_TUNING:
+        return VOICE_TUNING[voice]
+    clip = reference_clip(voice)
+    return VOICE_TUNING.get(clip.stem, {}) if clip else {}
+
+
 class Target(NamedTuple):
     """One file to synthesise: a line's gender variant in one voice."""
     item: Item
@@ -152,7 +178,7 @@ class Target(NamedTuple):
         left on the default tuning hash exactly as before, so tuning one voice does
         not restage every other file."""
         key = text_key(self.text)
-        tuning = VOICE_TUNING.get(self.voice)
+        tuning = tuning_for(self.voice)
         if tuning:
             key += "+" + ",".join(f"{name}={tuning[name]}" for name in sorted(tuning))
         return key
@@ -242,28 +268,14 @@ class Synth:
             print("CUDA is not available; generating on the CPU because --cpu was given")
         self.model = ChatterboxTTS.from_pretrained(device=device)
         self.sr = self.model.sr
-        self._voice_cache: dict[str, Path | None] = {}
-
-    def reference_for(self, voice: str) -> Path | None:
-        if voice not in self._voice_cache:
-            race, _, gender = voice.partition("-")
-            fallback = FALLBACK_VOICES.get(race)
-            candidates = [VOICES_DIR / f"{voice}.wav"]
-            if fallback:
-                candidates.append(VOICES_DIR / (f"{fallback}-{gender}.wav" if gender else f"{fallback}.wav"))
-                candidates.append(VOICES_DIR / f"{fallback}-male.wav")
-            candidates.append(VOICES_DIR / "narrator.wav")
-            candidates.append(VOICES_DIR / "human-male.wav")
-            self._voice_cache[voice] = next((p for p in candidates if p.exists()), None)
-        return self._voice_cache[voice]
 
     def speak(self, text: str, voice: str, out_mp3: Path) -> float:
-        reference = self.reference_for(voice)
+        reference = reference_clip(voice)
+        tuning = tuning_for(voice)
         pieces = []
         silence = self.torch.zeros(1, int(self.sr * 0.35))
         for part in chunk(text):
             kwargs = {"audio_prompt_path": str(reference)} if reference else {}
-            tuning = VOICE_TUNING.get(voice, {})
             wav = self.model.generate(part,
                                       exaggeration=tuning.get("exaggeration", EXAGGERATION),
                                       cfg_weight=tuning.get("cfg_weight", CFG_WEIGHT), **kwargs)
@@ -524,9 +536,10 @@ def main(argv: list[str]) -> int:
                         help="only regenerate files whose recorded text fingerprint no longer matches, "
                              "skipping lines that have no audio yet")
     parser.add_argument("--reindex", action="store_true",
-                        help="record the current text's fingerprint for files that already exist, without "
-                             "generating anything, so a later text change is detected (files made before the "
-                             "fingerprint existed have none and are otherwise left alone)")
+                        help="record the current text's fingerprint for files that already exist and have "
+                             "none, without generating anything, so a later text change is detected (files made "
+                             "before the fingerprint existed are otherwise left alone). Existing fingerprints are "
+                             "kept, so a pending text change or retune is not marked done")
     parser.add_argument("--captured", action="store_true", help="only lines captured in game (not bulk sources)")
     parser.add_argument("--zone", type=int, action="append", help="only quests with this QuestSortID / AreaTable ID (from the client cache)")
     parser.add_argument("--assume-voice", help="voice for quests whose speaker is unknown, e.g. skyborne-male (default: skip them)")
@@ -562,11 +575,25 @@ def main(argv: list[str]) -> int:
             skipped["text changed, regenerating"] = skipped.get("text changed, regenerating", 0) + 1
             stale.add(target.key)
             return True
+        if previous_text is None and tuning_for(target.voice):
+            # Made before fingerprints existed, so before any tuning: it has the default
+            # conditioning, which this voice no longer uses
+            skipped["retuned, regenerating"] = skipped.get("retuned, regenerating", 0) + 1
+            stale.add(target.key)
+            return True
         previous_voice = recorded.get("v") if isinstance(recorded, dict) else None
         if previous_voice is None or previous_voice == target.voice or target.voice == args.assume_voice:
             return False
         skipped["voice changed, regenerating"] = skipped.get("voice changed, regenerating", 0) + 1
         return True
+
+    def in_voice(target: Target) -> bool:
+        """--voice names either the line's voice or the clip it is cloned from, so
+        restaging dwarf-male after its clip changes also takes the Dark Iron dwarves."""
+        if not args.voice or target.voice in args.voice:
+            return True
+        clip = reference_clip(target.voice)
+        return clip is not None and clip.stem in args.voice
 
     for item in items:
         if args.only and item.kind != args.only:
@@ -597,14 +624,18 @@ def main(argv: list[str]) -> int:
             candidates = [] if args.narrator_only else [Target(item, base, text, item.voice)]
             if item.is_narrator:
                 candidates += [Target(item, base, text, voice, True) for voice in alternate_voices]
+            candidates = [target for target in candidates if in_voice(target)]
             if args.reindex:
                 for target in candidates:
                     recorded = sound_index.get(target.key)
                     if isinstance(recorded, dict) and target.path.exists():
-                        recorded["t"] = target.fingerprint
+                        # Seed only: an existing fingerprint may be stale on purpose, and
+                        # overwriting it would mark the file current. The seed is the
+                        # untuned text key because that is how a file with none was made,
+                        # so a tuned voice's old files still come out stale afterwards
+                        recorded.setdefault("t", text_key(target.text))
                 continue
-            todo.extend(target for target in candidates
-                        if (not args.voice or target.voice in args.voice) and wanted(target))
+            todo.extend(target for target in candidates if wanted(target))
     if args.reindex:
         save_sound_index(sound_index)
         stamped = sum(1 for value in sound_index.values() if isinstance(value, dict) and value.get("t"))
