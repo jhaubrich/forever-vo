@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.3
+
+- A character whose name is an ordinary word ("It") no longer has that word
+  eaten out of every line it hears. The client always writes a character's
+  name capitalised, so the name is now matched only in its own case; class and
+  race still match in either case, because the server writes both.
+- Names beginning with a non-ASCII letter ("Ösel", "Élodie") are redacted
+  again. The whole-word check in 0.1.1 could not fire next to such a letter,
+  so those names were left in captured text and in `/fvo export`. Thanks to
+  jhaubrich for the report and the fix.
+- Quests whose greeting branches on your gender but whose turn-in does not now
+  play the turn-in. The pack recorded one flag for the whole quest, so the
+  addon asked for a gendered file that was never made and played silence. New
+  packs record which events branch; packs built before this still work. Thanks
+  to joergensentroels for the fix.
+- `/fvo export` records the addon version that wrote it, so the pipeline can
+  tell which repairs a submission needs.
+
 ## 0.1.1
 
 - Lines no longer call you by the wrong class. The client fills in $n, $c and $r

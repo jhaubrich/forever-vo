@@ -67,9 +67,30 @@ def tokenize_entry(entry: dict) -> dict:
 # Addon releases before the whole-word fix tokenised inside words, so a Paladin
 # named "It" captured "w$nh" for "with" and "$Cs" for "Paladins". Blizzard text
 # essentially never has a placeholder touching a letter or digit (6 of 18,126
-# Classic and beta-cache lines), so that shape is treated as corruption.
-_GLUED = re.compile(r"(?<=[A-Za-z0-9])\$([NnCcRr])|\$([NnCcRr])(?=[A-Za-z0-9])")
+# Classic and beta-cache lines), so that shape is treated as corruption. The
+# letter must not be the B of a $B line break: "$B$B$n" is the common way a
+# paragraph starts, and that alone accounts for 64 of the 70 placeholders that
+# touch a letter in the raw Classic and beta-cache text.
+_GLUED = re.compile(r"(?<!\$[Bb])(?<=[A-Za-z0-9])\$([NnCcRr])|\$([NnCcRr])(?=[A-Za-z0-9])")
 _NAME_TOKEN = re.compile(r"\$([Nn])")
+_NAME_TOKEN_UPPER = re.compile(r"\$(N)")
+
+# From this addon version Util.Tokenize matches the reader's name
+# case-sensitively. The client always renders a character name capitalised, so
+# such an export can only hold the name as $N; a lowercase $n in it is the
+# server's own placeholder and must not be "restored" to the reader's name.
+NAME_CASE_SENSITIVE_SINCE = (0, 1, 3)
+
+
+def addon_version(entry: dict) -> tuple[int, ...]:
+    """The exporting addon's version as a tuple, () when unknown ("dev", or an
+    export decoded before exportfile.py carried the field)."""
+    return tuple(int(part) for part in re.findall(r"\d+", str(entry.get("addon") or "")))
+
+
+def name_case_sensitive(entry: dict) -> bool:
+    version = addon_version(entry)
+    return bool(version) and version >= NAME_CASE_SENSITIVE_SINCE
 
 
 def _literal(word: str, code: str) -> str:
@@ -101,8 +122,11 @@ def unglue_entry(entry: dict) -> dict | None:
         return None
     if profile["restoreName"] and words["n"]:
         # The export tokenised its reader's name client side, and that name is an
-        # ordinary English word, so every $n it holds is that word, not the name
-        fixed = _NAME_TOKEN.sub(lambda m: _literal(words["n"], m.group(1)), fixed)
+        # ordinary English word, so every $n it holds is that word, not the name.
+        # An addon that matches the name case-sensitively can only have written
+        # $N, so its lowercase $n are genuine and stay.
+        token = _NAME_TOKEN_UPPER if name_case_sensitive(entry) else _NAME_TOKEN
+        fixed = token.sub(lambda m: _literal(words["n"], m.group(1)), fixed)
     if fixed == text:
         return entry
     entry = dict(entry)
@@ -285,14 +309,16 @@ def ingest_file(capture: dict, path: Path, sources: SourceTexts | None, stats: R
         db = variables.get(CAPTURE_VAR)
     if not isinstance(db, dict):
         return (0, 0, 0)
-    origin = db.get("origin")   # community exports: the issue comment they came from
+    # Community exports: the issue comment they came from, and the addon that
+    # wrote them (absent before 0.1.3), both stamped on each entry
+    stamp = {field: db[field] for field in ("origin", "addon") if db.get(field)}
     quests = gossip = npcs = 0
     for key, entry in (db.get("quests") or {}).items():
-        entry = repair_entry({**entry, "origin": origin} if origin else entry, "quests", str(key), sources, stats)
+        entry = repair_entry({**entry, **stamp} if stamp else entry, "quests", str(key), sources, stats)
         if entry is not None:
             quests += merge_entry(capture["quests"], str(key), entry)
     for key, entry in (db.get("gossip") or {}).items():
-        entry = repair_entry({**entry, "origin": origin} if origin else entry, "gossip", str(key), sources, stats)
+        entry = repair_entry({**entry, **stamp} if stamp else entry, "gossip", str(key), sources, stats)
         if entry is not None:
             gossip += merge_entry(capture["gossip"], gossip_key(key, entry), entry)
     for key, npc in (db.get("npcs") or {}).items():

@@ -62,14 +62,34 @@ NON_ASCII_CASES = [
     ("Elodie, hello.".replace("Elodie", "\u00c9lodie"), "\u00c9lodie", "Priest", "Human"),
 ]
 
+# The name matches case-sensitively, class and race do not. The client always
+# renders a character name capitalised, so a lowercase "it" read by "It" is the
+# word, never the name; "rogue" and "Rogue" are both the class. Each row is
+# asserted against its expected output in Python and goes through the Lua
+# comparison, so both sides have to agree on the case rule.
+CASE_CASES = [
+    ("It is done. Bring it to It, and it will be well.", "It", "Paladin", "Undead",
+     "$N is done. Bring it to $N, and it will be well."),
+    ("myrlin is not Myrlin, and MYRLIN is neither.", "Myrlin Fixpoint", "Rogue", "Human",
+     "myrlin is not $N, and MYRLIN is neither."),
+    ("A rogue, a Rogue and a ROGUE walk in; a human and a Human follow.", "Myrlin", "Rogue", "Human",
+     "A $c, a $C and a $C walk in; a $r and a $R follow."),
+]
+
 
 def check_substrings() -> int:
-    """A name may only tokenise as a whole word. Returns the number of failures."""
+    """A name may only tokenise as a whole word, and only in its own case.
+    Returns the number of failures."""
     failures = 0
     for text, player, class_name, race in SUBSTRING_CASES:
         got = tokenize(text, player, class_name, race)
         if got != text:
             print(f"substring guard FAILED for player {player!r}:\n  {text!r}\n  {got!r}")
+            failures += 1
+    for text, player, class_name, race, want in CASE_CASES:
+        got = tokenize(text, player, class_name, race)
+        if got != want:
+            print(f"case guard FAILED for player {player!r}:\n  {text!r}\n  want {want!r}\n  got  {got!r}")
             failures += 1
     return failures
 
@@ -116,6 +136,8 @@ def rows() -> list[dict]:
     for text in EDGE_CASES:
         out.append({"text": text, "player": "Myrlin", "class": "Rogue", "race": "Human"})
     for text, player, class_name, race in SUBSTRING_CASES + NON_ASCII_CASES:
+        out.append({"text": text, "player": player, "class": class_name, "race": race})
+    for text, player, class_name, race, _ in CASE_CASES:
         out.append({"text": text, "player": player, "class": class_name, "race": race})
     return out
 
