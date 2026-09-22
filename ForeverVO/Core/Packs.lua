@@ -9,9 +9,11 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
     name = "Forever", version = "0.1", priority = 100,
     folder = "ForeverVO_Data",          -- Interface\AddOns\<folder>\Sounds\...
     quests = {
-      [questID] = { a = 5.2, p = 2.0, c = 3.1, g = true, npc = 288 },
+      [questID] = { a = 5.2, p = 2.0, c = 3.1, g = "a", npc = 288 },
       -- a/p/c: duration in seconds of accept/progress/complete audio (absent = no file)
-      -- g: files exist as m-/f- variants for the player's gender
+      -- g: which of a/p/c exist as m-/f- variants, because $G branches per line
+      --    ("a" = only the accept text branches). `true` means all of them, as
+      --    packs built before this wrote it.
       -- npc: quest giver speaker key (creature ID, negative for game objects)
     },
     gossip = {
@@ -194,7 +196,11 @@ function Packs:FindQuest(questID, event)
         local entry = pack.quests[questID]
         if entry and entry[field] then
             local base = format("%d-%s", questID, event)
-            if entry.g then
+            -- g lists the events whose text branches on $G: a quest can branch on
+            -- its greeting and not on its turn-in, and prefixing an event that was
+            -- written unprefixed asks for a file that does not exist. Packs built
+            -- before this carry `true`, which still means every event.
+            if entry.g == true or (type(entry.g) == "string" and strfind(entry.g, field, 1, true)) then
                 base = Util.PlayerGenderPrefix() .. base
             end
             local voice = self:NarratorVoice()
