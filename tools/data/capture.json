@@ -705,6 +705,22 @@
    "time": 1790028263,
    "zone": "Zephras Isle"
   },
+  "251903|777ae0ec": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Rathiril Sunlance",
+   "npc": "251903",
+   "origin": "comment-5786207692",
+   "questID": null,
+   "source": "community",
+   "text": "Hello there, young $c. I am Rathiril Sunlance and I am an elder Magister of the High Order here on Zephras Isle. It's always good to see bright-eyed young shen'dorei, ready to do their duty in service to their homeland.\r\n\r\nDon't let this dusty old mage hold you up however, no doubt you've got many adventures to see to. Feel free to stop by later if you'd like to speak more.",
+   "title": null,
+   "zone": "Zephras Isle"
+  },
   "251904|202faeeb": {
    "build": "69913",
    "class": "Hunter",
@@ -855,6 +871,54 @@
    "subzone": "Shen'dar Village",
    "text": "I can teach you to craft fine leather armor, if you have the aptitude.",
    "time": 1790022090,
+   "zone": "Zephras Isle"
+  },
+  "252068|63df4aea": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Al'Aketh Stormcaller",
+   "npc": "252068",
+   "origin": "comment-5786207692",
+   "questID": null,
+   "source": "community",
+   "text": "Soon all Shen'dorei will see the truth... and those that refuse will be swept away in the coming storm!",
+   "title": null,
+   "zone": "Zephras Isle"
+  },
+  "252068|a66e8a24": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Al'Aketh Stormcaller",
+   "npc": "252068",
+   "origin": "comment-5786207692",
+   "questID": null,
+   "source": "community",
+   "text": "Does your heart beat in rhythm with the winds?",
+   "title": null,
+   "zone": "Zephras Isle"
+  },
+  "252068|aed1b76a": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "gossip",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Al'Aketh Stormcaller",
+   "npc": "252068",
+   "origin": "comment-5786207692",
+   "questID": null,
+   "source": "community",
+   "text": "Do not trouble me, recruit. Submit yourself to Commander Cyclas or Skypriest Aanders if your hands are idle.",
+   "title": null,
    "zone": "Zephras Isle"
   },
   "252068|d0d4acaa": {
@@ -2955,6 +3019,12 @@
    "name": "Illaya Amberwind",
    "sex": 3
   },
+  "251903": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Rathiril Sunlance",
+   "sex": 2
+  },
   "251904": {
    "creatureType": "Humanoid",
    "level": 7,
@@ -3156,6 +3226,12 @@
    "level": 13,
    "modelFileID": 7478494,
    "name": "Valennia Stormfist",
+   "sex": 3
+  },
+  "254081": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Naeluna Swiftmend",
    "sex": 3
   },
   "254082": {
@@ -8467,6 +8543,22 @@
    "text": "Direct conflict with our shen'dorei brothers and sisters only weakens us as a people, but decisive action must at times be taken to prevent greater tragedy.\r\n\r\nThe mages of the High Order have zero regard for the consequences of their magical meddling. The forces that bind our island are fragile and vulnerable and all it could take is one thoughtless action to destroy our home.",
    "time": 1790028264,
    "title": "Meddlesome Mages",
+   "zone": "Zephras Isle"
+  },
+  "94413-complete": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "complete",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Rathiril Sunlance",
+   "npc": "251903",
+   "origin": "comment-5786207692",
+   "questID": 94413,
+   "source": "community",
+   "text": "Sometimes I find it hard to distinguish between the blind zealotry of the Al'Aketh cult, and the stubborn refusal of the Windshapers to change.\r\n\r\nIf they truly believed the winds would guide us, they should be sensing the direction the winds are blowing and flow with them rather than against them.",
+   "title": "A Magical Affront",
    "zone": "Zephras Isle"
   },
   "94414-accept": {
