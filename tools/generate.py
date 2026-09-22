@@ -511,6 +511,10 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--progress", action="store_true", help="include quest progress texts")
     parser.add_argument("--only", choices=["quests", "gossip"], help="restrict to one kind")
     parser.add_argument("--quest", type=int, action="append", help="restrict to quest ID(s)")
+    parser.add_argument("--voice", action="append",
+                        help="restrict to lines in this voice, e.g. dwarf-male. Pairs with --force when a "
+                             "reference clip changes: the clip is not part of the text fingerprint, so "
+                             "nothing is restaged automatically the way a retuned voice is")
     parser.add_argument("--tables-only", action="store_true", help="skip synthesis, rebuild tables")
     parser.add_argument("--shard", metavar="I/N",
                         help="take every Nth file of the todo list (0/2 and 1/2 in two processes). "
@@ -599,7 +603,8 @@ def main(argv: list[str]) -> int:
                     if isinstance(recorded, dict) and target.path.exists():
                         recorded["t"] = target.fingerprint
                 continue
-            todo.extend(target for target in candidates if wanted(target))
+            todo.extend(target for target in candidates
+                        if (not args.voice or target.voice in args.voice) and wanted(target))
     if args.reindex:
         save_sound_index(sound_index)
         stamped = sum(1 for value in sound_index.values() if isinstance(value, dict) and value.get("t"))
