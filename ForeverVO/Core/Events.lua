@@ -69,7 +69,7 @@ local function QueueQuest(event, text)
         return
     end
     local speaker = ResolveQuestSpeaker(CurrentSpeaker(), questID)
-    local path, duration, pack = Packs:FindQuest(questID, event)
+    local path, duration, pack, parts = Packs:FindQuest(questID, event)
 
     ns.Capture:Record({
         kind = "quest", event = event, questID = questID, title = title, text = text,
@@ -89,7 +89,7 @@ local function QueueQuest(event, text)
     local item = {
         kind = "quest", event = event, questID = questID, title = title, text = text,
         name = speaker.name, speakerKey = speaker.speakerKey, guid = speaker.guid, isObject = speaker.isObject,
-        path = path, duration = duration, pack = pack,
+        path = path, duration = duration, pack = pack, parts = parts,
     }
     if Queue:Add(item) then
         currentQuestItem = item
@@ -147,7 +147,7 @@ local function QueueGossip(event, text)
         return -- dialog opened while a menu was up; nothing to attribute it to
     end
     local speakerKey = speaker.speakerKey or Packs:SpeakerKeyByName(speaker.name)
-    local path, duration, pack = Packs:FindGossip(speakerKey, text)
+    local path, duration, pack, parts = Packs:FindGossip(speakerKey, text)
 
     ns.Capture:Record({
         kind = "gossip", event = event, text = text, title = selectedGossipOption,
@@ -170,7 +170,7 @@ local function QueueGossip(event, text)
         kind = "gossip", event = event, text = text,
         title = selectedGossipOption and format("\"%s\"", selectedGossipOption) or nil,
         name = speaker.name, speakerKey = speakerKey, guid = speaker.guid, isObject = speaker.isObject,
-        path = path, duration = duration, pack = pack,
+        path = path, duration = duration, pack = pack, parts = parts,
     }
     if Queue:Add(item) then
         currentGossipItem = item

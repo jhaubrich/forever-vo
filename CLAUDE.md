@@ -157,7 +157,19 @@ Voice quality notes: Chatterbox on an RTX 3080 does ~6 s of audio in ~5 s
 with the game closed, roughly 3x slower with it open. Perth (the watermarker)
 needs `setuptools<81`. Text cleaning rules mirror the original VoiceOver
 tool (`$B` newlines, `$N`/`$C`/`$R` substitutions, `$G` gender branches as
-m-/f- file variants, angle-bracket stage directions stripped).
+m-/f- file variants). Angle-bracket stage directions are the narrator's: a
+speaker's whole-line file leaves them out, and the line also gets *parts*
+(`textclean.segments`, `Item.variants().parts`), one file each in reading
+order, `<questID>-p<i>-<event>` / `<speaker>-p<i>-<hash>`, the speaker's in
+their voice and the stage directions in the narrator's (plus every alternate
+narrator voice, under `Narrator/<voice>/`). The tables record them as
+`aP`/`pP`/`cP` on the quest record, `P`/`nP` on a gossip entry and
+`<letter>P` in the narrator table; the addon plays them back to back and
+swaps in the chosen narrator. The whole-line file stays for older addons; a
+line that is only a stage direction has parts and no whole-line file. The
+part number sits *before* the last name segment on purpose: `sound_folder`
+and every older tool tell quests from gossip by that segment, and an older
+generator still running probes any file it finds under `Sounds/`.
 
 ## Automation on the owner's machine (NixOS, systemd user units)
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3
+
+- Stage directions are read by the narrator. Lines like "Hmm... <Jorgen looks
+  up at you through squinted eyes.> All right, I'll help ya" used to skip the
+  part in angle brackets; now the narrator says it between the NPC's words, in
+  whichever narrator voice you picked. Lines that were nothing but a stage
+  direction, silent until now, are voiced too. Needs a voice pack built after
+  this change; older packs play as before.
+- The "no voice pack found" messages name the CurseForge packs to install.
+
 ## 0.1.2
 
 - A character whose name is an ordinary word ("It") no longer has that word

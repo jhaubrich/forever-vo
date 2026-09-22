@@ -10,6 +10,8 @@ The playback queue. Items are plain tables:
     questID, title, text, name,        -- what is being said and by whom
     speakerKey, guid, isObject,        -- who to show in the portrait
     path, duration, pack,              -- resolved audio
+    parts,                             -- optional { {path, duration}, ... } played back to
+                                       -- back: a line the speaker and the narrator share
     handle, timer,                     -- runtime playback state
     onStop,                            -- optional callback when removed
   }
@@ -27,6 +29,7 @@ Queue.items = {}
 Queue.nextID = 0
 
 local TAIL_SILENCE = 0.5
+local PART_GAP = 0.25   -- a beat between a speaker's words and the narrator's
 
 function Queue:Size()
     return #self.items
@@ -63,11 +66,30 @@ function Queue:IsPlaying()
 end
 
 local function StartPlayback(self, item)
-    item.handle = Audio.Play(item.path)
-    item.timer = C_Timer.NewTimer((item.duration or 0) + TAIL_SILENCE, function()
-        item.timer = nil
-        self:Remove(item, true)
-    end)
+    local parts = item.parts
+    if parts and #parts > 0 then
+        -- One file after another; the item's duration is their sum, which is
+        -- what the talking head pages the text against
+        local function PlayPart(index)
+            local part, nextPart = parts[index], parts[index + 1]
+            item.handle = Audio.Play(part.path)
+            item.timer = C_Timer.NewTimer((part.duration or 0) + (nextPart and PART_GAP or TAIL_SILENCE), function()
+                if nextPart then
+                    PlayPart(index + 1)
+                else
+                    item.timer = nil
+                    self:Remove(item, true)
+                end
+            end)
+        end
+        PlayPart(1)
+    else
+        item.handle = Audio.Play(item.path)
+        item.timer = C_Timer.NewTimer((item.duration or 0) + TAIL_SILENCE, function()
+            item.timer = nil
+            self:Remove(item, true)
+        end)
+    end
     self:TriggerEvent("OnPlay", item)
 end
 
