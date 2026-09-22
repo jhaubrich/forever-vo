@@ -79,7 +79,10 @@ function Util.Tokenize(text, playerName, className, raceName)
         if not value or value == "" then
             return subject
         end
-        return (subject:gsub(LiteralPattern(value, true), function(match)
+        -- Word boundaries matter: a short name ("It") is a substring of ordinary
+        -- words, and without them "with" captures as "w$nh". %f[%w]/%f[%W] are
+        -- zero width, so the match itself is still just the name.
+        return (subject:gsub("%f[%w]" .. LiteralPattern(value, true) .. "%f[%W]", function(match)
             return match:match("^%u") and token:upper() or token
         end))
     end
