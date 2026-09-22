@@ -20,7 +20,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from textkey import text_key  # noqa: E402
+from textkey import text_key, tokenize  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CAPTURE = ROOT / "tools" / "data" / "capture.json"
@@ -37,6 +37,29 @@ EDGE_CASES = [
     "Rogue at the start",
     "trailing $c",
 ]
+
+# Regression guard: a short character name is a substring of ordinary English.
+# Without word boundaries in Util.Tokenize a player called "It" turned "with"
+# into "w$nh", which the pipeline then voiced as "wadventurerh". Parity alone
+# would not catch this -- both sides were wrong identically -- so the text is
+# asserted unchanged here and the same rows go through the Lua comparison.
+SUBSTRING_CASES = [
+    ("Must have been quite a shock, with these items.", "It", "Paladin", "Undead"),
+    ("Recruits exploit the situation and sit down.", "It", "Paladin", "Undead"),
+    ("The Dalaran magi guard the council chamber.", "Mag", "Mage", "Human"),
+]
+
+
+def check_substrings() -> int:
+    """A name may only tokenise as a whole word. Returns the number of failures."""
+    failures = 0
+    for text, player, class_name, race in SUBSTRING_CASES:
+        got = tokenize(text, player, class_name, race)
+        if got != text:
+            print(f"substring guard FAILED for player {player!r}:\n  {text!r}\n  {got!r}")
+            failures += 1
+    return failures
+
 
 HARNESS = """
 format = string.format
@@ -68,6 +91,8 @@ def rows() -> list[dict]:
                 out.append({"text": entry["text"], "player": None, "class": None, "race": None})
     for text in EDGE_CASES:
         out.append({"text": text, "player": "Myrlin", "class": "Rogue", "race": "Human"})
+    for text, player, class_name, race in SUBSTRING_CASES:
+        out.append({"text": text, "player": player, "class": class_name, "race": race})
     return out
 
 
@@ -93,6 +118,8 @@ def main() -> int:
     if not shutil.which("lua"):
         print("lua 5.1 is not on PATH (nix shell nixpkgs#lua5_1 -c ...)", file=sys.stderr)
         return 2
+    if check_substrings():
+        return 1
     corpus = rows()
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)

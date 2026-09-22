@@ -32,8 +32,10 @@ def tokenize(
     def put(subject: str, value: str | None, token: str) -> str:
         if not value:
             return subject
+        # Word boundaries: see Util.Tokenize. Explicit lookarounds rather than \b,
+        # because Python's \w includes "_" and Lua's %w does not.
         return re.sub(
-            re.escape(value),
+            r"(?<![0-9A-Za-z])" + re.escape(value) + r"(?![0-9A-Za-z])",
             lambda m, t=token: t.upper() if m.group(0)[:1].isupper() else t,
             subject,
             flags=re.IGNORECASE,
