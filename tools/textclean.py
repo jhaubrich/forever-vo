@@ -41,9 +41,13 @@ REPLACE = {
 # entry changes the spoken-text fingerprint, so `generate.py --stale-only`
 # regenerates exactly the affected files. Try candidates by ear first: of five
 # for Gnomeregan (/noʊmɹəˈgɑːn/), "Nomer-gahn" was natural, "Gnome-ruh-gahn"
-# was bad, and "Nome-ruh-GAHN" came out partly as numbers.
+# was bad, and "Nome-ruh-GAHN" came out partly as numbers (so do not mark stress
+# with capitals). Ahn'Qiraj is fine as written; "Ahn Kih-rahj" adds a rolled r.
+# Quel'Thalas came out wrong; "Quell Thalas" and "Kwel-thalas" were both fine.
 PRONUNCIATIONS = {
+    "Ahn'Qiraj": "Ahn Kih-rahj",
     "Gnomeregan": "Nomer-gahn",
+    "Quel'Thalas": "Quell Thalas",
 }
 _PRONUNCIATION = re.compile(r"\b(" + "|".join(map(re.escape, PRONUNCIATIONS)) + r")\b", re.IGNORECASE)
 _PRONUNCIATION_KEYS = {word.lower(): spoken for word, spoken in PRONUNCIATIONS.items()}
