@@ -80,7 +80,11 @@ game's own recordings).
   the live text before hashing, and `NormalizeText` drops the placeholders on
   both sides so one recording matches every class. `LEGACY_CHARACTERS` in
   `tools/config.py` covers captures made before version 3; `ingest.py` re-runs
-  the reversal on every ingest, which is idempotent.
+  the reversal on every ingest, which is idempotent. Since addon 0.1.2 the
+  name is matched case-sensitively (the client always renders it capitalised,
+  so a lowercase match is the word, not the name) while class and race still
+  fold case (`$c` renders "rogue", `$C` "Rogue"); both sides are ASCII-only
+  on purpose, since Lua patterns cannot fold Unicode.
 - **Ingest repairs two ways Tokenize goes wrong**, in the same idempotent pass
   (`repair_entry`: tokenize, un-glue, reconcile). Addon releases before the
   whole-word fix tokenised inside words (`w$nh`, `$Cs`), and a placeholder
@@ -90,7 +94,11 @@ game's own recordings).
   `COMMUNITY_CHARACTERS` in `tools/config.py` maps an export's `origin` (the
   issue comment id, stamped on each entry at ingest) to what the poster said;
   `restoreName` marks a name that is an ordinary word ("It"), whose every `$n`
-  is put back. Tokenize also cannot tell a Mage's expanded `$c` from a literal
+  is put back; for exports from addon 0.1.2 on (`addon` in the decoded file,
+  stamped on each entry like `origin`) only `$N` is put back, since that addon
+  can only have written the name capitalised. The glued check skips the `B`
+  of a `$B` line break, or raw text (`$B$B$n`) would read as corruption.
+  Tokenize also cannot tell a Mage's expanded `$c` from a literal
   "mage", so where the raw text is known (`bulk/questcache.json` by quest key,
   `bulk/classic.json` gossip by speaker, closest line) a capture placeholder
   that aligns to a plain word there is restored to that word; the alignment

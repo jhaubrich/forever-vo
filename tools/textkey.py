@@ -15,11 +15,11 @@ _DOLLAR_CODE = re.compile(r"\$[a-z]")
 _GENDER_CODE = re.compile(r"\$g[^;]*;")
 
 
-def _literal(value: str) -> str:
-    """Mirror of LiteralPattern in Util.lua: ASCII letters match in either case,
-    everything else matches exactly."""
+def _literal(value: str, fold_case: bool) -> str:
+    """Mirror of LiteralPattern in Util.lua: with fold_case, ASCII letters match
+    in either case; everything else matches exactly."""
     return "".join(
-        "[" + ch.lower() + ch.upper() + "]" if ("a" <= ch <= "z" or "A" <= ch <= "Z") else re.escape(ch)
+        "[" + ch.lower() + ch.upper() + "]" if fold_case and ("a" <= ch <= "z" or "A" <= ch <= "Z") else re.escape(ch)
         for ch in value
     )
 
@@ -34,11 +34,16 @@ def tokenize(
 
     Capitalisation is kept, so a capitalised match becomes $N/$C/$R and
     textclean reads it as a sentence-initial "Adventurer".
+
+    The name is matched case-sensitively, class and race are not: the client
+    always renders a character name capitalised, so a lowercase match is never
+    the name (for a character called "It", it is the word "it"), whereas $c and
+    $C render as "rogue" and "Rogue".
     """
     if not text:
         return text
 
-    def put(subject: str, value: str | None, token: str) -> str:
+    def put(subject: str, value: str | None, token: str, fold_case: bool) -> str:
         if not value:
             return subject
         # Explicit lookarounds rather than \b, because Python's \w includes "_"
@@ -46,17 +51,17 @@ def tokenize(
         # Unicode and .isupper() is Unicode aware, but Lua patterns are bytes and
         # can do neither, so both sides are held to ASCII to stay identical.
         return re.sub(
-            r"(?<![0-9A-Za-z])" + _literal(value) + r"(?![0-9A-Za-z])",
+            r"(?<![0-9A-Za-z])" + _literal(value, fold_case) + r"(?![0-9A-Za-z])",
             lambda m, t=token: t.upper() if "A" <= m.group(0)[:1] <= "Z" else t,
             subject,
         )
 
-    text = put(text, player_name, "$n")
+    text = put(text, player_name, "$n", False)
     first_name = player_name.split()[0] if player_name and player_name.split() else None
     if first_name and first_name != player_name:
-        text = put(text, first_name, "$n")   # $n is the bare first name
-    text = put(text, class_name, "$c")
-    text = put(text, race_name, "$r")
+        text = put(text, first_name, "$n", False)   # $n is the bare first name
+    text = put(text, class_name, "$c", True)
+    text = put(text, race_name, "$r", True)
     return text
 
 

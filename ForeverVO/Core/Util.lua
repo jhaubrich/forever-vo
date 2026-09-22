@@ -49,17 +49,18 @@ end
 -- Text normalisation and hashing (mirrored by tools/textkey.py)
 -- ---------------------------------------------------------------------------
 
---- Escapes a literal string for use as a Lua pattern, matching ASCII letters in
---- either case so a name or class is found however the server wrote it. Only
---- ASCII folds: Lua patterns are bytes, so a multi-byte character is escaped
---- byte by byte and matched exactly. textkey.py does the same, deliberately --
---- %a and %W are locale dependent and disagree with Python on non-ASCII input.
-local function LiteralPattern(text)
+--- Escapes a literal string for use as a Lua pattern. With foldCase, ASCII
+--- letters match in either case so a class or race is found however the server
+--- wrote it ("rogue", "Rogue"). Only ASCII folds: Lua patterns are bytes, so a
+--- multi-byte character is escaped byte by byte and matched exactly. textkey.py
+--- does the same, deliberately -- %a and %W are locale dependent and disagree
+--- with Python on non-ASCII input.
+local function LiteralPattern(text, foldCase)
     return (text:gsub(".", function(char)
         local byte = char:byte()
-        if (byte >= 65 and byte <= 90) or (byte >= 97 and byte <= 122) then
+        if foldCase and ((byte >= 65 and byte <= 90) or (byte >= 97 and byte <= 122)) then
             return "[" .. char:lower() .. char:upper() .. "]"
-        elseif byte >= 48 and byte <= 57 then
+        elseif (byte >= 48 and byte <= 57) or (byte >= 65 and byte <= 90) or (byte >= 97 and byte <= 122) then
             return char
         end
         return "%" .. char
@@ -82,6 +83,13 @@ end
 --- "rogue" and would be voiced that way for everyone. Capitalisation is kept, so
 --- a capitalised match becomes $N/$C/$R and the pipeline reads it as a
 --- sentence-initial "Adventurer". Defaults to the current character.
+---
+--- The name is matched case-sensitively and class and race are not. The client
+--- always renders a character name capitalised, whatever the server wrote, so a
+--- lowercase match can never be the name: for a character called "It" it is
+--- the word "it", which case folding turned into $n in every line. A class or
+--- race is rendered in the server's case ($c "rogue", $C "Rogue"), so both must
+--- match.
 function Util.Tokenize(text, playerName, className, raceName)
     if not text or text == "" then
         return text
@@ -89,7 +97,7 @@ function Util.Tokenize(text, playerName, className, raceName)
     if playerName == nil then playerName = UnitName("player") end
     if className == nil then className = UnitClass("player") end
     if raceName == nil then raceName = UnitRace("player") end
-    local function put(subject, value, token)
+    local function put(subject, value, token, foldCase)
         if not value or value == "" then
             return subject
         end
@@ -98,7 +106,7 @@ function Util.Tokenize(text, playerName, className, raceName)
         -- "with" captures as "w$nh". This is a scan rather than %f[%w], because
         -- the frontier pattern cannot fire next to a multi-byte character, so a
         -- name like "Osel" spelled with an umlaut was not redacted at all.
-        local pattern = LiteralPattern(value)
+        local pattern = LiteralPattern(value, foldCase)
         local out, pos = {}, 1
         while true do
             local first, last = subject:find(pattern, pos)
@@ -118,13 +126,13 @@ function Util.Tokenize(text, playerName, className, raceName)
         out[#out + 1] = subject:sub(pos)
         return table.concat(out)
     end
-    text = put(text, playerName, "$n")
+    text = put(text, playerName, "$n", false)
     local firstName = playerName and playerName:match("%S+")   -- $n is the bare first name
     if firstName and firstName ~= playerName then
-        text = put(text, firstName, "$n")
+        text = put(text, firstName, "$n", false)
     end
-    text = put(text, className, "$c")
-    text = put(text, raceName, "$r")
+    text = put(text, className, "$c", true)
+    text = put(text, raceName, "$r", true)
     return text
 end
 
