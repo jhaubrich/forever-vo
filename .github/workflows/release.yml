@@ -1,10 +1,11 @@
 name: Release addon
 
-# Tag a commit (v0.1.1) to package ForeverVO with the BigWigs packager and
-# publish it to GitHub Releases. Leave the CF_API_KEY secret UNSET: the
-# repository is linked to CurseForge as a Source, so their own packager picks
-# the tag up and uploads it. Setting the key here would upload the file twice.
-# ForeverVO.toc carries ## X-Curse-Project-ID.
+# Tag a commit (v0.1.2) to package ForeverVO with the BigWigs packager and
+# publish it to GitHub Releases and to CurseForge. The CF_API_KEY secret is
+# set (since 2026-09-22): CurseForge's own source-linked packager never
+# picked the tags up, so this workflow does the upload. ForeverVO.toc carries
+# ## X-Curse-Project-ID, and the packager maps Interface 16001 to game
+# version 1.60.1 on its own.
 
 on:
   push:

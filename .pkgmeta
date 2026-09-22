@@ -16,6 +16,7 @@ ignore:
   - .gitignore
   - README.md
   - CHANGELOG.md
+  - CLAUDE.md
   - LICENSE
 
 enable-nolib-creation: no

@@ -201,11 +201,14 @@ Three CurseForge projects, three release paths:
 
 - **Addon** (1705010, slug `forever-vo`): `.pkgmeta` at the root uses
   `move-folders` so only `ForeverVO/` ships. Push a `v*` tag: the GitHub
-  workflow builds a release with the BigWigs packager, and CurseForge's own
-  packager (repo linked as Source, tags only) publishes the same zip. Do
-  **not** set the `CF_API_KEY` GitHub *secret*, or files upload twice. (The
-  same name in the local `.env` is a different thing and *must* be set: that
-  one is for the voice packs, below. Repo secret unset, `.env` set.)
+  workflow builds a release with the BigWigs packager, publishes it on
+  GitHub Releases and uploads it to CurseForge with the `CF_API_KEY` GitHub
+  *secret* (set 2026-09-22; CurseForge's own source-linked packager never
+  picked the tags up, so v0.1.2 was re-run with the secret and the log shows
+  the upload succeed). The same name in the local `.env` is a different
+  thing and is also set: that one is for the voice packs, below. Anything at
+  the repo root not in `.pkgmeta`'s ignore list ships in the zip as a stray
+  `forever-vo/` folder (CLAUDE.md did in v0.1.2), so add new root files there.
   `CHANGELOG.md` is the release notes. The packager's own dry run
   (`release.sh -d -g 1.60.1`, needs zip, unzip, pandoc) is no longer practical
   here: it walks the whole working tree, and `ForeverVO_Data/Sounds/` now holds
