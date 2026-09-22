@@ -15,6 +15,15 @@ _DOLLAR_CODE = re.compile(r"\$[a-z]")
 _GENDER_CODE = re.compile(r"\$g[^;]*;")
 
 
+def _literal(value: str) -> str:
+    """Mirror of LiteralPattern in Util.lua: ASCII letters match in either case,
+    everything else matches exactly."""
+    return "".join(
+        "[" + ch.lower() + ch.upper() + "]" if ("a" <= ch <= "z" or "A" <= ch <= "Z") else re.escape(ch)
+        for ch in value
+    )
+
+
 def tokenize(
     text: str | None,
     player_name: str | None = None,
@@ -32,13 +41,14 @@ def tokenize(
     def put(subject: str, value: str | None, token: str) -> str:
         if not value:
             return subject
-        # Word boundaries: see Util.Tokenize. Explicit lookarounds rather than \b,
-        # because Python's \w includes "_" and Lua's %w does not.
+        # Explicit lookarounds rather than \b, because Python's \w includes "_"
+        # and Lua's %w does not. ASCII only throughout -- re.IGNORECASE folds
+        # Unicode and .isupper() is Unicode aware, but Lua patterns are bytes and
+        # can do neither, so both sides are held to ASCII to stay identical.
         return re.sub(
-            r"(?<![0-9A-Za-z])" + re.escape(value) + r"(?![0-9A-Za-z])",
-            lambda m, t=token: t.upper() if m.group(0)[:1].isupper() else t,
+            r"(?<![0-9A-Za-z])" + _literal(value) + r"(?![0-9A-Za-z])",
+            lambda m, t=token: t.upper() if "A" <= m.group(0)[:1] <= "Z" else t,
             subject,
-            flags=re.IGNORECASE,
         )
 
     text = put(text, player_name, "$n")

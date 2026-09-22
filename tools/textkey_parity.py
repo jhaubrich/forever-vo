@@ -20,7 +20,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from textkey import text_key, tokenize  # noqa: E402
+from textkey import hash_text, text_key, tokenize  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CAPTURE = ROOT / "tools" / "data" / "capture.json"
@@ -49,6 +49,19 @@ SUBSTRING_CASES = [
     ("The Dalaran magi guard the council chamber.", "Mag", "Mage", "Human"),
 ]
 
+# A non-ASCII name must redact on both sides. %f[%w] could not fire next to a
+# multi-byte character, so Lua left the name in the text while Python replaced it
+# -- a divergence the corpus could not show, because every captured player name
+# is ASCII and the one non-ASCII edge case above is non-ASCII *text* read by
+# "Myrlin". These rows go through the key comparison and the tokenize comparison.
+NON_ASCII_CASES = [
+    ("Hello Osel and osel today.".replace("Osel", "\u00d6sel").replace("osel", "\u00f6sel"),
+     "\u00d6sel", "Mage", "Human"),
+    ("Greetings, Zoe. The mage guild awaits.".replace("Zoe", "Zo\u00eb"), "Zo\u00eb", "Mage", "Human"),
+    ("Senor, a word.".replace("Senor", "Se\u00f1or"), "Se\u00f1or", "Rogue", "Human"),
+    ("Elodie, hello.".replace("Elodie", "\u00c9lodie"), "\u00c9lodie", "Priest", "Human"),
+]
+
 
 def check_substrings() -> int:
     """A name may only tokenise as a whole word. Returns the number of failures."""
@@ -71,9 +84,20 @@ local ns = {}
 assert(loadfile(arg[1]))("ForeverVO", ns)
 for _, row in ipairs(assert(loadfile(arg[2]))()) do
     stubName, stubClass, stubRace = row.player, row.class, row.race
-    print(ns.Util.TextKey(row.text, row.player, row.class, row.race))
+    local tokenized = ns.Util.Tokenize(row.text, row.player, row.class, row.race) or ""
+    print(ns.Util.TextKey(row.text, row.player, row.class, row.race) .. ":" .. ns.Util.HashText(tokenized))
 end
 """
+
+
+
+def tokenized_hash(text, player, class_name, race) -> str:
+    """djb2 over the tokenize output as bytes, so the comparison sees the text
+    itself and not just the key. NormalizeText lowercases before stripping $x, so
+    a $N/$n split is invisible in the key alone. Lua works on UTF-8 bytes, hence
+    the latin-1 round trip."""
+    out = tokenize(text, player, class_name, race) or ""
+    return hash_text(out.encode("utf-8").decode("latin-1"))
 
 
 def rows() -> list[dict]:
@@ -91,7 +115,7 @@ def rows() -> list[dict]:
                 out.append({"text": entry["text"], "player": None, "class": None, "race": None})
     for text in EDGE_CASES:
         out.append({"text": text, "player": "Myrlin", "class": "Rogue", "race": "Human"})
-    for text, player, class_name, race in SUBSTRING_CASES:
+    for text, player, class_name, race in SUBSTRING_CASES + NON_ASCII_CASES:
         out.append({"text": text, "player": player, "class": class_name, "race": race})
     return out
 
@@ -115,7 +139,8 @@ def lua_string(value: str | None) -> str:
 
 
 def main() -> int:
-    if not shutil.which("lua"):
+    lua = shutil.which("lua5.1") or shutil.which("lua")
+    if not lua:
         print("lua 5.1 is not on PATH (nix shell nixpkgs#lua5_1 -c ...)", file=sys.stderr)
         return 2
     if check_substrings():
@@ -135,14 +160,18 @@ def main() -> int:
         )
         (tmp / "parity.lua").write_text(HARNESS, encoding="utf-8")
         result = subprocess.run(
-            ["lua", str(tmp / "parity.lua"), str(UTIL_LUA), str(tmp / "corpus.lua")],
+            [lua, str(tmp / "parity.lua"), str(UTIL_LUA), str(tmp / "corpus.lua")],
             capture_output=True, text=True,
         )
     if result.returncode != 0:
         print(result.stderr.strip(), file=sys.stderr)
         return 2
     actual = result.stdout.splitlines()
-    expected = [text_key(r["text"], r["player"], r["class"], r["race"]) for r in corpus]
+    expected = [
+        text_key(r["text"], r["player"], r["class"], r["race"])
+        + ":" + tokenized_hash(r["text"], r["player"], r["class"], r["race"])
+        for r in corpus
+    ]
     if len(actual) != len(expected):
         print(f"lua produced {len(actual)} keys, python {len(expected)}", file=sys.stderr)
         return 1
@@ -150,9 +179,9 @@ def main() -> int:
     for index, want, got in bad[:10]:
         print(f"row {index}: python {want} != lua {got}\n    {corpus[index]['text'][:120]!r}", file=sys.stderr)
     if bad:
-        print(f"{len(bad)} of {len(expected)} keys differ", file=sys.stderr)
+        print(f"{len(bad)} of {len(expected)} rows differ", file=sys.stderr)
         return 1
-    print(f"parity OK: {len(expected)} keys identical")
+    print(f"parity OK: {len(expected)} keys and tokenize outputs identical")
     return 0
 
 
