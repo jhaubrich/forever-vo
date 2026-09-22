@@ -81,6 +81,23 @@ game's own recordings).
   both sides so one recording matches every class. `LEGACY_CHARACTERS` in
   `tools/config.py` covers captures made before version 3; `ingest.py` re-runs
   the reversal on every ingest, which is idempotent.
+- **Ingest repairs two ways Tokenize goes wrong**, in the same idempotent pass
+  (`repair_entry`: tokenize, un-glue, reconcile). Addon releases before the
+  whole-word fix tokenised inside words (`w$nh`, `$Cs`), and a placeholder
+  touching a letter or digit is treated as corruption: the literal word is put
+  back when the reader is known, otherwise the entry is dropped so the line
+  gets re-captured. Community exports carry no name, class or race, so
+  `COMMUNITY_CHARACTERS` in `tools/config.py` maps an export's `origin` (the
+  issue comment id, stamped on each entry at ingest) to what the poster said;
+  `restoreName` marks a name that is an ordinary word ("It"), whose every `$n`
+  is put back. Tokenize also cannot tell a Mage's expanded `$c` from a literal
+  "mage", so where the raw text is known (`bulk/questcache.json` by quest key,
+  `bulk/classic.json` gossip by speaker, closest line) a capture placeholder
+  that aligns to a plain word there is restored to that word; the alignment
+  must score 0.9 or better, so lines Forever rewrote are left alone. Only the
+  placeholders are reconciled; the capture's text otherwise wins. Two readers
+  of different class or race who capture the same quest also settle it in
+  `merge_entry` (gossip keys differ by hash, so that only helps quests).
 - `luac -p` every changed Lua file (`nix shell nixpkgs#lua5_1 -c luac -p`).
   There is no in-game test harness; the owner tests by `/reload`.
 

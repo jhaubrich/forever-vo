@@ -203,6 +203,7 @@
    "mapID": 1420,
    "name": "Shadow Priest Sarvis",
    "npc": "1569",
+   "origin": "comment-5768141361",
    "questID": null,
    "source": "community",
    "text": "No other race on Azeroth has suffered as much as our people, $c. To laugh in the face of death has become second nature for all of us.",
@@ -329,10 +330,12 @@
   "244808|3f8410df": {
    "build": "69913",
    "event": "gossip",
+   "firstSeen": null,
    "isObject": null,
    "mapID": 1420,
    "name": "Aramis Hammerhand",
    "npc": "244808",
+   "origin": "comment-5768141361",
    "questID": null,
    "source": "community",
    "text": "Welcome back to the light, friend. Do you require training?",
@@ -374,7 +377,7 @@
    "npc": "2492",
    "player": "Myrlin Fixpoint",
    "subzone": "Magic Quarter",
-   "text": "As a $c, you are one of a select group that can conjure a portal to transport you back to this very place.  I can teach you if you are ready.",
+   "text": "As a mage, you are one of a select group that can conjure a portal to transport you back to this very place.  I can teach you if you are ready.",
    "time": 1789952315,
    "zone": "Undercity"
   },
@@ -471,7 +474,7 @@
    "time": 1789927417,
    "zone": "Zephras Isle"
   },
-  "251376|55e8c5e1": {
+  "251376|2becf397": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789927679,
@@ -480,7 +483,7 @@
    "npc": "251376",
    "player": "Pellinore Fixpoint",
    "subzone": "Thendal Village",
-   "text": "The $cs and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
+   "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
    "time": 1790003603,
    "zone": "Zephras Isle"
   },
@@ -997,7 +1000,7 @@
    "time": 1790030725,
    "zone": "Zephras Isle"
   },
-  "252389|55e8c5e1": {
+  "252389|2becf397": {
    "build": "69913",
    "class": "Hunter",
    "event": "gossip",
@@ -1008,7 +1011,7 @@
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
    "subzone": "Valanaar",
-   "text": "The $cs and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
+   "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
    "time": 1790045338,
    "zone": "Zephras Isle"
   },
@@ -1254,7 +1257,7 @@
    "time": 1790005249,
    "zone": "Zephras Isle"
   },
-  "254084|55e8c5e1": {
+  "254084|2becf397": {
    "build": "69913",
    "class": "Hunter",
    "event": "gossip",
@@ -1265,7 +1268,7 @@
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
    "subzone": "Shen'dar Village",
-   "text": "The $cs and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
+   "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
    "time": 1790028311,
    "zone": "Zephras Isle"
   },
@@ -2054,7 +2057,7 @@
    "npc": "4568",
    "player": "Myrlin Fixpoint",
    "subzone": "Magic Quarter",
-   "text": "Greetings.  I'm an undead $c trainer, and you're a $c.",
+   "text": "Greetings.  I'm an undead mage trainer, and you're a mage.",
    "time": 1789963304,
    "zone": "Undercity"
   },
@@ -3370,7 +3373,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1013,
    "subzone": "The Apothecarium",
-   "text": "$N, Shadowfang Keep holds a book, the Book of Ur, which would be much prized in my collection.  Ur was a great $c of Dalaran before the coming of the Scourge, his studies in other worlds are of much value to ... certain parties among the Forsaken.\n\nEnter Shadowfang Keep and find the book.  Bring it to me, and I will report your service to our Dark Lady...",
+   "text": "$N, Shadowfang Keep holds a book, the Book of Ur, which would be much prized in my collection.  Ur was a great mage of Dalaran before the coming of the Scourge, his studies in other worlds are of much value to ... certain parties among the Forsaken.\n\nEnter Shadowfang Keep and find the book.  Bring it to me, and I will report your service to our Dark Lady...",
    "time": 1789952042,
    "title": "The Book of Ur",
    "zone": "Undercity"
@@ -3707,7 +3710,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 1961,
    "subzone": "Magic Quarter",
-   "text": "It is time for you to don your first $c's robes, $N.  They are a sign of your station, and a testament to your worth.\n\nTo gain the robes, you must gather the mana gems from the Dalaran $cs of Silverpine.  Their beliefs are similar to ours and so killing them is somewhat distasteful, but if they lack the strength to resist us, then they do not deserve their lives.\n\nBring the gems and a supply of linen to Josef Gregorian at the Magic Quarter's tailor shop.",
+   "text": "It is time for you to don your first mage's robes, $N.  They are a sign of your station, and a testament to your worth.\n\nTo gain the robes, you must gather the mana gems from the Dalaran mages of Silverpine.  Their beliefs are similar to ours and so killing them is somewhat distasteful, but if they lack the strength to resist us, then they do not deserve their lives.\n\nBring the gems and a supply of linen to Josef Gregorian at the Magic Quarter's tailor shop.",
    "time": 1789953094,
    "title": "Gathering Materials",
    "zone": "Undercity"
@@ -4543,7 +4546,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 479,
    "subzone": "The Sepulcher",
-   "text": "Dalar is attempting to locate the source of the wizards' spellcasting. For now, we'll have to slow their progress in any way we can...\n\nThe conjurers, $cs and protectors are no doubt carrying the pendants. Remove and retrieve them.\n\nTake the main road south and the eastern fork into Ambermill.",
+   "text": "Dalar is attempting to locate the source of the wizards' spellcasting. For now, we'll have to slow their progress in any way we can...\n\nThe conjurers, mages and protectors are no doubt carrying the pendants. Remove and retrieve them.\n\nTake the main road south and the eastern fork into Ambermill.",
    "time": 1789951574,
    "title": "Ambermill Investigations",
    "zone": "Silverpine Forest"
@@ -4917,7 +4920,7 @@
    "player": "Myrlin Fixpoint",
    "questID": 5730,
    "subzone": "Cleft of Shadow",
-   "text": "You are one of my lieutenants! Prepare yourself, $c. I will call upon you soon.\n\nMy time spent on the Searing Blade may be all but wasted now, but that does not mean that the Shadow Council's schemes elsewhere must suffer. I will do what I can to minimize the da$c here in Ragefire Chasm. In the meantime, I will have my agents in the Barrens and Ashenvale begin work on our newest agenda. Return to me soon.",
+   "text": "You are one of my lieutenants! Prepare yourself, $c. I will call upon you soon.\n\nMy time spent on the Searing Blade may be all but wasted now, but that does not mean that the Shadow Council's schemes elsewhere must suffer. I will do what I can to minimize the damage here in Ragefire Chasm. In the meantime, I will have my agents in the Barrens and Ashenvale begin work on our newest agenda. Return to me soon.",
    "time": 1789940901,
    "title": "Hidden Enemies",
    "zone": "Orgrimmar"
@@ -5186,13 +5189,15 @@
   "90902-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": null,
    "isObject": null,
    "mapID": 1420,
    "name": "Aramis Hammerhand",
    "npc": "244808",
+   "origin": "comment-5768141361",
    "questID": 90902,
    "source": "community",
-   "text": "I am proud to welcome another newly risen $c to our ranks. As you begin to reconnect w$nh the light you may notice that certain abil$nies that were once second nature to you may cause you considerable pain to use now, particularly those involving channeling the light to heal yourself or others. \r\n\r\nThe only way around this problem is--unfortunately--to go through $n. Like any other muscle that has atrophied, you must push through the pain and exercise the flesh for $n to return to full function.",
+   "text": "I am proud to welcome another newly risen $c to our ranks. As you begin to reconnect with the light you may notice that certain abilities that were once second nature to you may cause you considerable pain to use now, particularly those involving channeling the light to heal yourself or others. \r\n\r\nThe only way around this problem is--unfortunately--to go through it. Like any other muscle that has atrophied, you must push through the pain and exercise the flesh for it to return to full function.",
    "title": "Rediscovering the Light",
    "zone": "Tirisfal Glades"
   },
@@ -8555,36 +8560,42 @@
   "98601-accept": {
    "build": "69913",
    "event": "accept",
+   "firstSeen": null,
    "isObject": null,
    "mapID": 1420,
    "name": "Shadow Priest Sarvis",
    "npc": "1569",
+   "origin": "comment-5768141361",
    "questID": 98601,
    "source": "community",
-   "text": "While you were off dealing w$nh the mindless Scourge, this scroll arrived for you. $N reeks of the light, so I imagine $ns of some importance to a $c like yourself.\r\n\r\nRead $n before heading out again. Just please--step away when you do. $Cs make me qu$ne uneasy.",
+   "text": "While you were off dealing with the mindless Scourge, this scroll arrived for you. It reeks of the light, so I imagine its of some importance to a $c like yourself.\r\n\r\nRead it before heading out again. Just please--step away when you do. Paladins make me quite uneasy.",
    "title": "A Difficult Path",
    "zone": "Tirisfal Glades"
   },
   "98601-complete": {
    "build": "69913",
    "event": "complete",
+   "firstSeen": null,
    "isObject": null,
    "mapID": 1420,
    "name": "Aramis Hammerhand",
    "npc": "244808",
+   "origin": "comment-5768141361",
    "questID": 98601,
    "source": "community",
-   "text": "Your training can now begin in earnest, $c. I see great promise in you, but take care not to turn away from the light, even for a moment. Embrace the pain $n will cause you. That pain is a crucible, and you will emerge from $n stronger than you ever were in your previous life.",
+   "text": "Your training can now begin in earnest, $c. I see great promise in you, but take care not to turn away from the light, even for a moment. Embrace the pain it will cause you. That pain is a crucible, and you will emerge from it stronger than you ever were in your previous life.",
    "title": "A Difficult Path",
    "zone": "Tirisfal Glades"
   },
   "98601-progress": {
    "build": "69913",
    "event": "progress",
+   "firstSeen": null,
    "isObject": null,
    "mapID": 1420,
    "name": "Aramis Hammerhand",
    "npc": "244808",
+   "origin": "comment-5768141361",
    "questID": 98601,
    "source": "community",
    "text": "Through pain comes resolve.",
