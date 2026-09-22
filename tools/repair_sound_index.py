@@ -14,9 +14,12 @@ generated in is still in the journal, one line per file:
     ./tools/run.sh tools/repair_sound_index.py            # last 14 days of journal
     ./tools/run.sh tools/repair_sound_index.py --since "30 days ago" --dry-run
 
-Only entries with no voice whose file exists are touched, and the last journal
-line for a file wins. Text fingerprints are not in the journal; run
-`generate.py --reindex` afterwards to stamp the current text on them.
+Only entries with no voice whose file exists are touched, and the last line
+for a file wins (tools/data/*.log from older runs are read as well). Text
+fingerprints are not logged; run `generate.py --reindex` afterwards to stamp
+the current text on them. Entries with no line anywhere keep no voice, which
+`wanted()` treats as "do not regenerate": the voice-change check stays blind
+for those files.
 """
 from __future__ import annotations
 
@@ -29,20 +32,24 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import generate  # noqa: E402
-from config import SOUND_INDEX, SOUNDS_DIR  # noqa: E402
+from config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR  # noqa: E402
 
 _LINE = re.compile(r"\[\d+/\d+\] (\S+)\.mp3\s+[\d.]+s audio in\s+[\d.]+s\s+\[([^\]]+)\]")
 UNITS = ("forever-vo-bulk", "forever-vo-daily")
 
 
 def journal_voices(since: str) -> dict[str, str]:
-    """index key -> voice, from every generated-file line in the units' journals."""
+    """index key -> voice, from every generated-file line in the units' journals
+    and in the gitignored tools/data/*.log files older runs wrote (the logs are
+    read first, so a newer journal line wins)."""
     voices: dict[str, str] = {}
+    texts = [path.read_text(encoding="utf-8", errors="replace") for path in sorted(DATA_DIR.glob("*.log"))]
     for unit in UNITS:
-        out = subprocess.run(
+        texts.append(subprocess.run(
             ["journalctl", "--user", "-u", unit, "--since", since, "--no-pager", "-o", "cat"],
             capture_output=True, text=True,
-        ).stdout
+        ).stdout)
+    for out in texts:
         for match in _LINE.finditer(out):
             parts = match.group(1).split("/")
             if len(parts) == 4 and parts[1] == "Narrator":
