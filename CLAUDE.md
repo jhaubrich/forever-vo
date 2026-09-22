@@ -182,10 +182,18 @@ Installed by `tools/install-timer.sh`:
   `FOREVER_VO_WORKERS=1` to give the GPU back to the game.
 
 Do not add a periodic pull timer; the owner declined it. Parallel *shards* are
-fine — `sound_index.json` is re-read and merged before every write, and the
-pack tables are written through a temporary file and renamed, so neither is
-torn by two writers. Two *unsharded* generators are still wrong: they would
-walk the same todo list and race for the same files.
+fine — `save_sound_index` merges only the keys a process wrote since its last
+save (`dirty`) into the file on disk, under an `flock`, and an entry never
+replaces one of higher `index_rank` (a duration probed by a table rebuild is
+rank 0, a generator's record with voice and fingerprint rank 3); the pack
+tables and the index are written through pid-named temporary files and
+renamed, and each mp3 is encoded to a `.part` file and renamed. Before
+2026-09-22 the merge let each worker's whole in-memory copy win, so the
+placeholders one worker probed for the other's fresh files erased the other's
+voice and fingerprint: 2,790 entries lost them in two days of two-worker runs
+(repaired from the journal, see `tools/repair_sound_index.py`). Two
+*unsharded* generators are still wrong: they would walk the same todo list and
+race for the same files.
 
 ## Releases
 
@@ -288,7 +296,10 @@ The owner's machine picks those up on the next sync.
   own set in the stats (`narratorFiles`, paths relative to `Sounds/`).
 - The bulk generator's `sound_index.json` is written every 25 files; the
   release script and the nightly table rebuild reload sources so files made
-  by another run are still indexed.
+  by another run are still indexed. An entry with `v: null` and no `t` is a
+  probed placeholder, not a generator record: the voice-change and
+  text-change checks are blind for it. `generate.py --reindex` restamps `t`;
+  the voice is only in the journal (`[voice]` on each generated line).
 - `uv run --with requests python -c ...` is the way to poke at `wowdata`
   from a one-liner; `run.sh python -c` gives a bare interpreter.
 - CurseForge's public web API (`curseforge.com/api/v1/...`) returns HTML to
