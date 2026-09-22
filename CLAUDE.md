@@ -245,8 +245,14 @@ The owner's machine picks those up on the next sync.
   (`journalctl -k | grep Xid`) is. `generate.py` now refuses to run on the CPU
   unless `--cpu` is given, because the silent fallback is ~18x slower than real
   time and looks like a working run. The bulk unit holds a
-  `systemd-inhibit --what=idle` lock to keep the machine from idling into
-  suspend mid-run in the first place.
+  `systemd-inhibit --what=idle` lock, but that only stops logind's own idle
+  action: GNOME's power plugin suspends on its own input-idle timer and never
+  consults logind inhibitors, and it did exactly that on 2026-09-22 at 00:53
+  (two hours after the last keypress, `sleep-inactive-ac-timeout` 7200) with
+  the lock held, killing the GPU again. The fix is on the desktop side:
+  `gsettings set org.gnome.settings-daemon.plugins.power
+  sleep-inactive-ac-type 'nothing'` (set 2026-09-22; battery left at
+  `suspend`). If a run dies at a round two-hour mark, check that setting first.
 - The wago.tools CSV export is complete for client tables, but the beta's
   `BroadcastText` really is 12 rows; gossip is server-pushed on this engine.
 - `questcache.wdb` records have a variable fixed part; `wdbcache.py` scans
