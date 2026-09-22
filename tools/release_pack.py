@@ -241,6 +241,16 @@ def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: s
             data=body,
             timeout=3600,
         )
+    if response.status_code == 413:
+        # Cloudflare in front of the upload API refuses large bodies (887 MB was
+        # refused on 2026-09-22; ~30 MB deltas pass). The website accepts up to 2 GB.
+        raise SystemExit(
+            f"upload refused as too large (HTTP 413) at {zip_path.stat().st_size / 1e6:.0f} MB.\n"
+            f"Upload it by hand instead: https://www.curseforge.com/project/{project}/files/upload\n"
+            f"  file: {zip_path}\n  game version: {GAME_VERSION_NAME}, type: {release_type}, "
+            f"display name: {metadata['displayName']}\n  changelog:\n{changelog}\n"
+            f"then add a '{pack}' entry to {STATE_FILE} (version, date, files, zip) as this script would have."
+        )
     if response.status_code != 200:
         raise SystemExit(f"upload failed: HTTP {response.status_code} {response.text[:300]}")
     print(f"uploaded to CurseForge project {project} as file {response.json().get('id')}")

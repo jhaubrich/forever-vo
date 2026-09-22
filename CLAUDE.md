@@ -223,11 +223,18 @@ Three CurseForge projects, three release paths:
 - **Base pack** "Forever Voiceover Data: Base" (1705100): the Classic-sourced
   lines, priority 100, huge (~0.9 GB at 32 kbps with the bulk run two thirds
   done on 2026-09-22, ~1.3 GB when complete with the alternate narrators),
-  released by hand and rarely: `tools/release_pack.py base --upload`. It
-  uploads as a "release" file (the delta as "beta"), because the CurseForge
-  app hides beta files unless the user opts in. The first upload went up
-  before the bulk run finished, to get through moderation early; later
-  uploads are just newer dated versions.
+  released by hand and rarely: `tools/release_pack.py base` builds the zip
+  under `tools/data/release/`, and it is then **uploaded through the
+  CurseForge website**, not the API: the upload API sits behind Cloudflare,
+  which answered `413 Payload Too Large` to the 887 MB zip on 2026-09-22
+  (the 30 MB delta goes through fine; the exact cap is unknown, a few
+  hundred MB at most), while the website takes files up to 2 GB (the
+  comparable AI VoiceOver vanilla pack is 1.1 GB there). Upload it as a
+  "release" file for game version 1.60.1 (the nightly delta stays "beta";
+  the CurseForge app hides beta files unless the user opts in), then record
+  it in `tools/data/release_state.json` the way the script would have. The
+  first one went up before the bulk run finished, to get through moderation
+  early; later uploads are just newer dated versions.
 
 `release_pack.py` builds from the single working folder `ForeverVO_Data`
 (which holds everything on the owner's machine and is what the client loads
