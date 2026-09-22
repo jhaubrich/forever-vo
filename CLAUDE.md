@@ -220,7 +220,9 @@ Three CurseForge projects, three release paths:
   source is not `classic` (captures, community, beta cache), priority 200.
   `tools/release_pack.py delta --upload --if-changed` runs at the end of the
   nightly job and uploads a dated beta when the file set changed.
-- **Base pack** "Forever Voiceover Data: Base" (1705100): the Classic-sourced
+- **Base pack** "Forever Voiceover Data: Base" (1705100, installs as
+  `ForeverVO_Data_Base`; the owner's working folder `ForeverVO_Data` is
+  never shipped): the Classic-sourced
   lines, priority 100, huge (~0.9 GB at 32 kbps with the bulk run two thirds
   done on 2026-09-22, ~1.3 GB when complete with the alternate narrators),
   released by hand and rarely: `tools/release_pack.py base` builds the zip

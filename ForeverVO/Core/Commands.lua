@@ -13,7 +13,7 @@ local function Status()
         packs, ns.Util.Plural(packs, "pack"), quests, ns.Util.Plural(quests, "text"), questsMissing,
         gossip, ns.Util.Plural(gossip, "text"), gossipMissing))
     if packs == 0 then
-        ns.Print("No voice pack found. Install ForeverVO_Data next to ForeverVO.")
+        ns.Print("No voice pack found. Install Forever Voiceover Data: Base and Data: Forever from CurseForge next to ForeverVO.")
     end
 end
 
@@ -118,6 +118,6 @@ end
 
 ns.OnLogin(function()
     if ns.Packs:Count() == 0 then
-        ns.Print("no voice pack found. Install ForeverVO_Data next to ForeverVO, or generate one with the tools in the repository.")
+        ns.Print("no voice pack found. Install Forever Voiceover Data: Base and Data: Forever from CurseForge next to ForeverVO, or generate one with the tools in the repository.")
     end
 end)

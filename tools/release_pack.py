@@ -7,8 +7,10 @@
 Two packs are released from the one working folder (ForeverVO_Data holds
 everything on the maintainer's machine):
 
-  base   ForeverVO_Data          Classic-era lines (source: classic). Huge,
-                                 rarely released.
+  base   ForeverVO_Data_Base     Classic-era lines (source: classic). Huge,
+                                 rarely released. (The maintainer's working
+                                 folder stays ForeverVO_Data; the two coexist
+                                 because their pack names differ from it.)
   delta  ForeverVO_Data_Forever  lines captured in game, from the beta cache
                                  or from the community. Small, released often,
                                  higher priority so it overrides the base.
@@ -78,7 +80,7 @@ def is_forever_line(entry: dict, classic_ids: set[int]) -> bool:
 
 PACKS = {
     "base": {
-        "folder": "ForeverVO_Data",
+        "folder": "ForeverVO_Data_Base",
         "title": "Forever Voiceover Data: Base",
         "pack_name": "Classic",
         "priority": 100,

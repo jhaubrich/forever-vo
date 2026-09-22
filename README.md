@@ -15,7 +15,7 @@ Three addons on CurseForge: the player, and two voice packs that stack.
   the quest log. It also records every line it sees so new audio can be
   generated for what is still missing.
 - **[Forever Voiceover Data: Base](https://www.curseforge.com/wow/addons/forever-voiceover-data-base)**
-  (`ForeverVO_Data`, priority 100) — the Classic lines. Big, and updated almost
+  (`ForeverVO_Data_Base`, priority 100) — the Classic lines. Big, and updated almost
   never: this is text that has not changed since Classic, so once a line is
   voiced it stays voiced. Install it once and forget it.
 - **[Forever Voiceover Data: Forever](https://www.curseforge.com/wow/addons/forever-voiceover-data-forever)**
