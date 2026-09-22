@@ -72,8 +72,8 @@ def main(argv: list[str]) -> int:
     repaired: dict[str, dict] = {}
     unresolved: list[str] = []
     for key, value in index.items():
-        if generate.index_rank(value) != 0 or not isinstance(value, dict):
-            continue
+        if not isinstance(value, dict) or value.get("v") is not None:
+            continue   # a generator's record, or a legacy bare duration
         voice = voices.get(key)
         if voice is None:
             unresolved.append(key)
