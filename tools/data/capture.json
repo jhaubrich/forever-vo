@@ -2160,7 +2160,7 @@
    "race": "Windshaper Skyborne",
    "subzone": "Valanaar",
    "text": "Welcome to the Bank of Valanaar. We can secure your belongings and valuables here should you so desire. Do you wish to access your deposit box?",
-   "time": 1790131618,
+   "time": 1790185341,
    "zone": "Zephras Isle"
   },
   "257065|819f44a1": {
@@ -2584,6 +2584,7 @@
    "build": "69977",
    "class": "Mage",
    "event": "gossip",
+   "firstSeen": 1790185061,
    "found": true,
    "mapID": 1454,
    "name": "Godan",
