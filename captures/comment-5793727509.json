@@ -1,0 +1,140 @@
+{
+ "addon": "0.1.1",
+ "gossip": {
+  "197|877c25a9": {
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Marshal McBride",
+   "npc": "197",
+   "questID": null,
+   "source": "community",
+   "text": "Hey, citizen!  You look like a stout one.  We guards are spread a little thin out here, and I could use your help...",
+   "title": null,
+   "zone": "Elwynn Forest"
+  },
+  "459|710d6c2c": {
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Drusilla La Salle",
+   "npc": "459",
+   "questID": null,
+   "source": "community",
+   "text": "The arcane only corrupts those who are weak. Even if you do not follow the path of the $c, you would do well to remember that.",
+   "title": null,
+   "zone": "Elwynn Forest"
+  },
+  "6373|721fd095": {
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Dane Winslow",
+   "npc": "6373",
+   "questID": null,
+   "source": "community",
+   "text": "Want to make your demons more powerful?  It'll cost you, but you've come to the right place.",
+   "title": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "npcs": {
+  "197": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Marshal McBride",
+   "sex": 2
+  },
+  "459": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Drusilla La Salle",
+   "sex": 3
+  },
+  "6373": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Dane Winslow",
+   "sex": 2
+  },
+  "823": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Deputy Willem",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5793727509",
+ "quests": {
+  "1598-accept": {
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Drusilla La Salle",
+   "npc": "459",
+   "questID": 1598,
+   "source": "community",
+   "text": "You there! $N, right?\n\nI hope you're sure about becoming a $c, because if you can't hold your own, you're likely to get pulled under.\n\nI'm to teach you, but I need to make sure you're strong enough first.\n\nThere was a novice studying at the Abbey who ran off to join the Defias Brotherhood. Why do I care? Well, he stole some important books.\n\nOne of those happens to be a book I've wanted for myself, the Powers of the Void. Steal it for me, they have it hidden at their tent in the Vineyards.",
+   "title": "The Stolen Tome",
+   "zone": "Elwynn Forest"
+  },
+  "5261-accept": {
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Willem",
+   "npc": "823",
+   "questID": 5261,
+   "source": "community",
+   "text": "Eagan Peltskinner is looking for someone to hunt wolves for him.  That's good news, because we're seeing a lot more wolves in Northshire Valley lately.\n\nIf you're interested then speak with Eagan.  He's around the side of the abbey, to the left.",
+   "title": "Eagan Peltskinner",
+   "zone": "Elwynn Forest"
+  },
+  "7-accept": {
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Marshal McBride",
+   "npc": "197",
+   "questID": 7,
+   "source": "community",
+   "text": "Your first task is one of cleansing, $N.  A clan of kobolds have infested the woods to the north.  Go there and fight the kobold vermin you find.  Reduce their numbers so that we may one day drive them from Northshire.",
+   "title": "Kobold Camp Cleanup",
+   "zone": "Elwynn Forest"
+  },
+  "783-accept": {
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Willem",
+   "npc": "823",
+   "questID": 783,
+   "source": "community",
+   "text": "I hope you strapped your belt on tight, young $c, because there is work to do here in Northshire.\n\nAnd I don't mean farming.\n\nThe Stormwind guards are hard pressed to keep the peace here, with so many of us in distant lands and so many threats pressing close.  And so we're enlisting the aid of anyone willing to defend their home.  And their alliance.\n\nIf you're here to answer the call, then speak with my superior, Marshal McBride.  He's inside the abbey behind me.",
+   "title": "A Threat Within",
+   "zone": "Elwynn Forest"
+  },
+  "783-complete": {
+   "build": "69977",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Marshal McBride",
+   "npc": "197",
+   "questID": 783,
+   "source": "community",
+   "text": "Ah, good.  Another volunteer.  We're getting a lot of you these days.\n\nI hope it's enough.\n\nThe $r lands are threatened from without, and so many of our forces have been marshaled abroad.  This, in turn, leaves room for corrupt and lawless groups to thrive within our borders.\n\nIt is a many-fronted battle we wage, $N.  Gird yourself for a long campaign.",
+   "title": "A Threat Within",
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
