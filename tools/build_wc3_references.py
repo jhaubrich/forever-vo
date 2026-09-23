@@ -57,8 +57,10 @@ SPECIES: dict[str, tuple[str, ...]] = {
     "banshee-female": ("banshee",),
     "dreadlord-male": ("herodreadlord", "tichondrius", "varimathras"),
     "fleshgolem-male": ("abomination",),
-    "humanmalekid-male": ("villagerkid",),
-    "humanfemalekid-female": ("villagerkid",),
+    # Children are NOT here: WC3's villagerkid is five clips totalling 4.1s, and
+    # it is one voice for both sexes, so boys came out sounding like girls. Retail
+    # has kul_tiran_kid with separate _m and _f line sets - see
+    # build_retail_references.py.
     "trolldire-male": ("foresttroll", "icetroll"),
     "naga-female": ("nagasiren", "ladyvashj"),
     "naga-male": ("nagamyrmidon", "nagaroyalguard"),

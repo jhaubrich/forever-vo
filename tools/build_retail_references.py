@@ -1,4 +1,4 @@
-# /// script
+﻿# /// script
 # requires-python = ">=3.11"
 # dependencies = ["requests"]
 # ///
@@ -55,7 +55,7 @@ COMBAT = re.compile(
 
 # label -> creature directory under sound/creature/. Generic NPC sets first: they
 # are ordinary voices, which is what most quest givers are.
-SOURCES: dict[str, str] = {
+SOURCES: dict[str, str | tuple[str, str]] = {
     # Sky elves: no pre-Forever recording exists, so retail elves stand in.
     # The generic npc_-_void_elf_* and nightborne_*_caster sets look ideal by name
     # and are a trap - every line in them is a swing, a shout or a death cry, with
@@ -86,6 +86,11 @@ SOURCES: dict[str, str] = {
     "troll-male-chieftain": "voljin",
     "troll-male-loa": "bwonsamdi",
     "troll-female-princess": "princess_talanji",
+    # Children. One folder holds both sexes, marked by an _m / _f suffix on the
+    # file, so each voice takes only its own - a shared reference makes every boy
+    # sound like a girl.
+    "humanmalekid-male": ("kul_tiran_kid", r"_m\.ogg$"),
+    "humanfemalekid-female": ("kul_tiran_kid", r"_f\.ogg$"),
     # Blood elves and humans are still on stitched barks.
     "bloodelf-female-generic": "genericdhbloodelffemale",
     "bloodelf-male-generic": "genericdhbloodelfmale",
@@ -107,16 +112,24 @@ def ensure_listfile() -> Path:
     return LISTFILE
 
 
-def fdids_for(listfile: Path, creature_dir: str) -> tuple[list[int], int]:
-    """(speech FileDataIDs, how many combat lines were rejected)."""
+def fdids_for(listfile: Path, source: str | tuple[str, str]) -> tuple[list[int], int]:
+    """(speech FileDataIDs, how many combat lines were rejected).
+
+    `source` is a creature folder, or (folder, pattern) when one folder holds more
+    than one voice - kul_tiran_kid carries both sexes, marked _m and _f.
+    """
+    creature_dir, extra = (source, None) if isinstance(source, str) else source
     pattern = re.compile(
         rf"^(\d+);sound/creature/{re.escape(creature_dir)}/(vo_[^/]*\.ogg)$", re.IGNORECASE
     )
+    within = re.compile(extra, re.IGNORECASE) if extra else None
     out, rejected = [], 0
     with listfile.open(encoding="utf-8", errors="replace") as f:
         for line in f:
             m = pattern.match(line.strip())
             if not m:
+                continue
+            if within and not within.search(m.group(2)):
                 continue
             if COMBAT.search(m.group(2)):
                 rejected += 1
