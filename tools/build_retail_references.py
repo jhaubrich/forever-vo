@@ -2,22 +2,22 @@
 # requires-python = ">=3.11"
 # dependencies = ["requests"]
 # ///
-"""Builds extra cloning references from retail World of Warcraft voice-over.
+"""Builds cloning references from retail World of Warcraft creature voice-over.
 
-Some speakers have no usable source in the Forever client or in a VoiceOver pack.
-The Skyborne are the worst case: they are new, so nothing predating Forever has
-their voice, and all of them end up sharing the one reference built from the
-client's player vocal lines. Retail has thousands of recorded elf and troll lines,
-including generic NPC voice sets - a void elf civilian rather than Alleria, whose
-voice is distinctive enough to distract - which is what a quest giver should sound
-like.
+Some speakers have no recorded voice in the Forever client and none in Warcraft
+III either (see build_wc3_references.py). Retail has them: kul_tiran_kid is a
+child's voice set with separate boy and girl lines, which is what the Human and
+Orcish Orphans need. Output lands in tools/voices/<species>-<gender>.wav, and
+wowdata.species_voice picks it up by name when a speaker's model names that
+species.
 
     python tools/build_retail_references.py --dry-run
-    python tools/build_retail_references.py --only skyborne-female
+    python tools/build_retail_references.py --only humanmalekid
 
 Files are fetched by FileDataID through wago.tools, so no CASC extraction is
-needed. Output lands in tools/voices/<race>-<gender>-<label>.wav, which
-build_voiceover_references.py then picks up as extra voices for that race.
+needed. Every entry in SOURCES must be a name generate.Synth.reference_for or
+species_voice will look for: the pack has no per-race voice variants, so a
+"skyborne-female-civilian.wav" would be written and never read.
 """
 from __future__ import annotations
 
@@ -53,49 +53,27 @@ COMBAT = re.compile(
     r"_(attack|attackcrit|battleshout|death|aggro|wound|pissed|flee|taunt|jump|"
     r"fall|gasp|grunt|pain|spell|cast)\w*_?\d*\.ogg$", re.I)
 
-# label -> creature directory under sound/creature/. Generic NPC sets first: they
-# are ordinary voices, which is what most quest givers are.
+# voice name -> creature directory under sound/creature/, or (directory, pattern)
+# when one folder holds more than one voice.
+#
+# Choosing a source: the generic npc_-_* sets look ideal by name and are often
+# a trap, every line a swing, a shout or a death cry with no speech at all; the
+# light/heavy/caster suffix is body and armour type, and heavy sets come out
+# raspy on a village herbalist; a named character's processed voice (Cho'gall)
+# does not generalise. A source that yields no speech after the combat filter
+# must be replaced, not re-filtered. Named sets that were tried and talk, for
+# whoever adds a per-race variant mechanism one day: nightborne_*_citizen and
+# _light, vereesa_windrunner, alleria_windrunner, first_arcanist_thalyssra,
+# lady_liadrin, lorthemar, magister_umbric, halduron_brightwing, rokhan,
+# voljin, bwonsamdi, princess_talanji, genericdhbloodelf{fe,}male, taelia,
+# danath_trollbane. Until then only names the pipeline looks up belong here.
 SOURCES: dict[str, str | tuple[str, str]] = {
-    # Sky elves: no pre-Forever recording exists, so retail elves stand in.
-    # The generic npc_-_void_elf_* and nightborne_*_caster sets look ideal by name
-    # and are a trap - every line in them is a swing, a shout or a death cry, with
-    # no speech whatsoever. Named characters and the nightborne citizen/light/heavy
-    # sets are the ones that actually talk.
-    "skyborne-female-civilian": "nightborne_female_light",
-    "skyborne-female-noble": "vereesa_windrunner",
-    # The light/heavy/caster suffix on an NPC voice set is body and armour type, and
-    # the heavy sets are the gruff armoured ones - cloned onto a village herbalist
-    # they come out raspy. These labels are cosmetic anyway: speakers are shared
-    # round-robin across the variants, so nothing keeps a "guard" voice away from a
-    # civilian. Prefer sets that sound like someone talking to you.
-    "skyborne-female-ranger": "alleria_windrunner",
-    "skyborne-female-arcane": "first_arcanist_thalyssra",
-    "skyborne-female-citizen": "nightborne_female_citizen",
-    "skyborne-female-priest": "lady_liadrin",
-    "skyborne-male-civilian": "nightborne_male_light",
-    "skyborne-male-noble": "lorthemar",
-    "skyborne-male-arcane": "magister_umbric",
-    "skyborne-male-citizen": "nightborne_male_citizen",
-    "skyborne-male-guard": "nightborne_male_heavy",
-    "skyborne-male-ranger": "halduron_brightwing",
-    # Darkspear country is not captured yet, so no speaker uses these. They are
-    # built now because the troll models are shared with orcs: the moment someone
-    # plays Sen'jin Village, those speakers need somewhere to go that is not
-    # twenty seconds of stitched grunting.
-    "troll-male-shadowhunter": "rokhan",
-    "troll-male-chieftain": "voljin",
-    "troll-male-loa": "bwonsamdi",
-    "troll-female-princess": "princess_talanji",
     # Children. One folder holds both sexes, marked by an _m / _f suffix on the
     # file, so each voice takes only its own - a shared reference makes every boy
-    # sound like a girl.
+    # sound like a girl. species_voice reaches these from the humanmalekid and
+    # humanfemalekid models, and the orc children through SPECIES_VOICE_ALIASES.
     "humanmalekid-male": ("kul_tiran_kid", r"_m\.ogg$"),
     "humanfemalekid-female": ("kul_tiran_kid", r"_f\.ogg$"),
-    # Blood elves and humans are still on stitched barks.
-    "bloodelf-female-generic": "genericdhbloodelffemale",
-    "bloodelf-male-generic": "genericdhbloodelfmale",
-    "human-female-generic": "taelia",
-    "human-male-generic": "danath_trollbane",
 }
 
 
