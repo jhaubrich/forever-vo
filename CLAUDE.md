@@ -328,6 +328,14 @@ The owner's machine picks those up on the next sync.
   that walks sounds by `glob("*/*.mp3")` (the two-level scan in
   `rebuild_tables`) misses them by design; they have their own scan and their
   own set in the stats (`narratorFiles`, paths relative to `Sounds/`).
+- A line that stops being narrated (a capture names the giver, a species clip
+  appears) leaves its whole-line alternate narrator files under
+  `Narrator/<voice>/`, and the addon plays an alternate whenever the table has
+  one for the quest and the player picked that voice. Since 2026-09-23
+  `rebuild_tables` lists whole-line alternates only for `is_narrator` items
+  and the generator deletes the leftovers (and their index entries: a dirty
+  key absent from memory is removed on save). Six quests (Tarindrella, Billy
+  Maclure) were already in that state.
 - The bulk generator's `sound_index.json` is written every 25 files; the
   release script and the nightly table rebuild reload sources so files made
   by another run are still indexed. An entry with `v: null` and no `t` is a

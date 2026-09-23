@@ -415,7 +415,12 @@ def save_sound_index(sound_index: dict, keys: set[str] | None = None) -> None:
                 merged = {}
         for key in list(keys if keys is not None else sound_index):
             value = sound_index.get(key)
-            if value is not None and index_rank(value) >= index_rank(merged.get(key)):
+            if value is None:
+                # A key this process dropped: the file behind it was removed (an
+                # alternate narrator recording of a line the narrator no longer
+                # reads), so the entry goes with it.
+                merged.pop(key, None)
+            elif index_rank(value) >= index_rank(merged.get(key)):
                 merged[key] = value
         tmp = SOUND_INDEX.with_suffix(f".json.{os.getpid()}.tmp")
         tmp.write_text(json.dumps(merged, indent=1, sort_keys=True), encoding="utf-8")
@@ -505,8 +510,12 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
 
         # The same line in the alternate narrator voices, each with its own
         # duration: voices differ in pace, and the text is paged against it.
+        # Only a line the narrator still reads: a speaker that gains a voice of
+        # its own (a dryad once a dryad clip exists) leaves its old alternates
+        # on disk until the generator removes them, and the addon would play
+        # one of those over the new voice for anyone with an alternate picked.
         alternates: dict[str, float] = {}
-        for voice, names in narrator_present.items():
+        for voice, names in narrator_present.items() if item.is_narrator else ():
             spoken = [v.base for v in variants if v.base in names]
             if not spoken:
                 continue
@@ -714,6 +723,19 @@ def main(argv: list[str]) -> int:
                     candidates.append(Target(item, base, text, item.voice))
                 if item.is_narrator:
                     candidates += [Target(item, base, text, voice, True) for voice in alternate_voices]
+            if not item.is_narrator and not args.dry_run and not args.reindex:
+                # A speaker that has gained a voice of its own (a species clip
+                # built, a capture naming the giver) leaves whole-line alternate
+                # narrator recordings behind. rebuild_tables no longer lists them,
+                # but they would still be probed into the index and shipped, and
+                # the line's own file is about to be regenerated anyway.
+                for voice in NARRATOR_VOICES[1:]:
+                    leftover = sound_path(item.subfolder, base, voice)
+                    if leftover.exists():
+                        leftover.unlink()
+                        sound_index.pop(index_key(base, voice), None)
+                        dirty.add(index_key(base, voice))
+                        skipped["stale narrator alternate removed"] = skipped.get("stale narrator alternate removed", 0) + 1
             # A line that mixes the speaker and the narrator: the speaker's parts
             # in their voice, each <stage direction> in the narrator's, and the
             # narrator's parts again in every alternate narrator voice.
