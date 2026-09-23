@@ -7,8 +7,8 @@ tools/voices/*.wav
 tools/voices/raw/
 tools/samples/
 *.wav
-ForeverVO_Data/Sounds/*/*.mp3
-ForeverVO_Data/Sounds/*/*.ogg
+ForeverVO_Data/Sounds/**/*.mp3
+ForeverVO_Data/Sounds/**/*.ogg
 tools/data/classicdb/
 tools/data/bulk/classic.json
 tools/data/generate.log
@@ -20,3 +20,4 @@ tools/data/capture.sources.json
 tools/data/release/
 tools/data/release_state.json
 tools/data/sound_index.lock
+ForeverVO_Data/Sounds/**/*.part
