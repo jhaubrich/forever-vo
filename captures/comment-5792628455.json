@@ -1,0 +1,30 @@
+{
+ "addon": "0.1.1",
+ "gossip": {
+  "1992|05f55f8a": {
+   "build": "69977",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Tarindrella",
+   "npc": "1992",
+   "questID": null,
+   "source": "community",
+   "text": "Only in Nature do we find purity.",
+   "title": null,
+   "zone": "Teldrassil"
+  }
+ },
+ "npcs": {
+  "1992": {
+   "creatureType": "Humanoid",
+   "modelFileID": 123698,
+   "name": "Tarindrella",
+   "sex": 3
+  }
+ },
+ "origin": "comment-5792628455",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
