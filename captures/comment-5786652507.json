@@ -1,0 +1,30 @@
+{
+ "addon": "0.1.2",
+ "gossip": {},
+ "npcs": {
+  "196": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Eagan Peltskinner",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5786652507",
+ "quests": {
+  "5261-complete": {
+   "build": "69913",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Eagan Peltskinner",
+   "npc": "196",
+   "questID": 5261,
+   "source": "community",
+   "text": "That's true.  I'm looking for someone to hunt me some wolves!  Are you that person?",
+   "title": "Eagan Peltskinner",
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
