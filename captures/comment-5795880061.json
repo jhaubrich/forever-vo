@@ -1,0 +1,44 @@
+{
+ "addon": "0.1.2",
+ "gossip": {
+  "255853|b64f61e0": {
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Urs'endris",
+   "npc": "255853",
+   "questID": null,
+   "source": "community",
+   "text": "The spirit of strength does not always allude to physical strength. To face adversity both from within and without is what it means to take my shape.",
+   "title": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "255853": {
+   "creatureType": "Beast",
+   "modelFileID": 4687804,
+   "name": "Urs'endris",
+   "sex": 1
+  }
+ },
+ "origin": "comment-5795880061",
+ "quests": {
+  "94638-complete": {
+   "build": "69977",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Urs'endris",
+   "npc": "255853",
+   "questID": 94638,
+   "source": "community",
+   "text": "The agony I feel over her loss is immeasurable, but it is what is necessary for the balance. You have demonstrated a resolve to persevere, even when a terrible price is asked.\r\n\r\nYou have done well, $c. I shall grant you the blessing to take on the shape of my kin. Be a beacon for those that lack the strength to persevere and a defender of those in need.\r\n\r\nGo now, and embrace the way of the claw, child.",
+   "title": "Strength and Mercy",
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
