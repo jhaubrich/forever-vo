@@ -1,0 +1,43 @@
+{
+ "addon": "0.1.2",
+ "gossip": {},
+ "npcs": {
+  "196": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Eagan Peltskinner",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5786660865",
+ "quests": {
+  "33-accept": {
+   "build": "69913",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Eagan Peltskinner",
+   "npc": "196",
+   "questID": 33,
+   "source": "community",
+   "text": "I hate those nasty timber wolves!  But I sure like eating wolf steaks...  Bring me tough wolf meat and I will exchange it for something you'll find useful.\n\nTough wolf meat is gathered from hunting the timber wolves and young wolves wandering the Northshire countryside.",
+   "title": "Wolves Across the Border",
+   "zone": "Elwynn Forest"
+  },
+  "5261-complete": {
+   "build": "69913",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Eagan Peltskinner",
+   "npc": "196",
+   "questID": 5261,
+   "source": "community",
+   "text": "That's true.  I'm looking for someone to hunt me some wolves!  Are you that person?",
+   "title": "Eagan Peltskinner",
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
