@@ -91,6 +91,22 @@
    "time": 1789940771,
    "zone": "Orgrimmar"
   },
+  "11066|f7f14434": {
+   "build": "69977",
+   "class": "Mage",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Jhag",
+   "npc": "11066",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "race": "Orc",
+   "subzone": "The Drag",
+   "text": "You come to wrong place. Talk to the expert Godan over there. You learn more from him.",
+   "time": 1790135741,
+   "zone": "Orgrimmar"
+  },
   "11067|e8016bc8": {
    "build": "69913",
    "event": "gossip",
@@ -2412,7 +2428,7 @@
    "zone": "Orgrimmar"
   },
   "3309|2f8d506f": {
-   "build": "69913",
+   "build": "69977",
    "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789924607,
@@ -2425,11 +2441,11 @@
    "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1790124270,
+   "time": 1790135653,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
-   "build": "69913",
+   "build": "69977",
    "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789924610,
@@ -2442,7 +2458,7 @@
    "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
-   "time": 1790124183,
+   "time": 1790133428,
    "zone": "Orgrimmar"
   },
   "3309|ae78a458": {
@@ -2502,20 +2518,24 @@
    "zone": "Orgrimmar"
   },
   "3345|335c06e7": {
-   "build": "69913",
+   "build": "69977",
+   "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789995843,
+   "found": true,
    "mapID": 1454,
    "name": "Godan",
    "npc": "3345",
+   "pack": "Forever",
    "player": "Myrlin Fixpoint",
+   "race": "Orc",
    "subzone": "The Drag",
    "text": "You may have what it takes. Let's find out! ",
-   "time": 1789995843,
+   "time": 1790135742,
    "zone": "Orgrimmar"
   },
   "3363|05c29513": {
-   "build": "69913",
+   "build": "69977",
    "class": "Mage",
    "event": "gossip",
    "firstSeen": 1790128324,
@@ -2528,7 +2548,7 @@
    "race": "Orc",
    "subzone": "The Drag",
    "text": "About time you showed me some results! Now I'll show you results!",
-   "time": 1790128324,
+   "time": 1790135528,
    "zone": "Orgrimmar"
   },
   "3390|eb12150e": {
