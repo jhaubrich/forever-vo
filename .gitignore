@@ -5,6 +5,9 @@ tools/data/db2/
 tools/data/capture.json.bak
 tools/voices/*.wav
 tools/voices/raw/
+tools/voices/raw-wc3/
+tools/voices/raw-retail/
+tools/data/libcasc.so
 tools/samples/
 *.wav
 ForeverVO_Data/Sounds/**/*.mp3

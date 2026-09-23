@@ -357,6 +357,18 @@ The owner's machine picks those up on the next sync.
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
   just two greetings, so his clone is rougher.
+- Species voices (PR #21, 2026-09-23): a speaker with no player race resolves
+  through its model file (`tools/data/species_models.json`, keyed by
+  `CreatureModelData.FileDataID`, which is also what `GetModelFileID()`
+  returns) to `<species>-<gender>.wav` when the clip exists. The clips come
+  from Warcraft III: `extract_wc3_units.py` reads the local Reforged install
+  through CascLib (built from source, `tools/data/libcasc.so`, gitignored;
+  build steps at the top of the script) into `tools/voices/raw-wc3/units/`,
+  and `build_wc3_references.py` cuts the "what"/"yes" acknowledgements into
+  dryad, keeper of the grove, ogre, satyr, banshee, dreadlord, flesh golem,
+  dire troll and naga clips. The two child voices come from retail's
+  `kul_tiran_kid` via `build_retail_references.py`. Built 2026-09-23; the
+  voice-change check then regenerated ~514 lines.
 - `FALLBACK_VOICES` and `ZONE_RACE_HINTS` in `tools/config.py` cover races
   without a clip and speakers without display data (Zephras Isle -> skyborne).
 - `--assume-voice` on `generate.py` voices cache-only quests whose giver is

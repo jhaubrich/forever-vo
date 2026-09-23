@@ -10,11 +10,14 @@ sound kit is grunts and roars, so it ends up borrowing a human's voice - or the
 narrator's, which is worse. Warcraft III voiced those same units properly, and
 a player who owns it has the files locally.
 
-Extract sound/units from the CASC storage with a tool such as Ladik's CascView,
-then point this at the result:
+Extract the units folder from the CASC storage first: extract_wc3_units.py does
+it from a local Reforged install through CascLib (Ladik's CascView works too),
+and this script reads its output folder by default:
 
+    ./tools/run.sh tools/extract_wc3_units.py
+    ./tools/run.sh tools/build_wc3_references.py --dry-run
+    ./tools/run.sh tools/build_wc3_references.py --only dryad --only ogre
     python tools/build_wc3_references.py --src "C:/Users/you/Downloads/wc3-units"
-    python tools/build_wc3_references.py --src ... --only dryad --only ogre
 
 Writes tools/voices/<species>.wav, which voice_for_npc picks up by name the same
 way as a race voice.
@@ -79,7 +82,8 @@ def duration(path: Path) -> float:
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--src", type=Path, required=True, help="folder of extracted WC3 sound/units")
+    ap.add_argument("--src", type=Path, default=VOICES_DIR / "raw-wc3" / "units",
+                    help="folder of extracted WC3 units audio (default: what extract_wc3_units.py writes)")
     ap.add_argument("--only", action="append", help="build just these species (prefix match)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args(argv)
@@ -89,7 +93,7 @@ def main(argv: list[str]) -> int:
         return 1
 
     by_folder: dict[str, list[Path]] = {}
-    for f in args.src.rglob("*.ogg"):
+    for f in (p for p in args.src.rglob("*") if p.suffix.lower() in (".flac", ".ogg", ".wav", ".mp3")):
         by_folder.setdefault(f.parent.name.lower(), []).append(f)
     print(f"{len(by_folder)} unit folders under {args.src}\n")
 
@@ -99,7 +103,9 @@ def main(argv: list[str]) -> int:
             continue
         pool: list[Path] = []
         for folder, files in by_folder.items():
-            if any(fr in folder for fr in frags):
+            # Prefix, not substring: "satyr" must take satyr and satyrtrickster
+            # but not femalesatyr, whose lines are a woman's.
+            if any(folder.startswith(fr) for fr in frags):
                 pool += files
         usable = []
         for p in pool:
