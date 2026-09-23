@@ -2000,6 +2000,20 @@
    "time": 1790043941,
    "zone": "Zephras Isle"
   },
+  "256386|6a190ff9": {
+   "build": "69977",
+   "class": "Paladin",
+   "event": "gossip",
+   "mapID": 1413,
+   "name": "Dokimi",
+   "npc": "256386",
+   "player": "Fixpoint Fix",
+   "race": "Undead",
+   "subzone": "",
+   "text": "We've had trouble with shipments going missing across Azeroth. If you find any, I'd appreciate if you could return them to me.",
+   "time": 1790207033,
+   "zone": "The Barrens"
+  },
   "256388|13e9970d": {
    "build": "69913",
    "event": "gossip",
@@ -2938,16 +2952,20 @@
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
-   "build": "69913",
+   "build": "69977",
+   "class": "Paladin",
    "event": "gossip",
    "firstSeen": 1789932147,
+   "found": true,
    "mapID": 1454,
    "name": "Doras",
    "npc": "3310",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Fixpoint Fix",
+   "race": "Undead",
    "subzone": "Valley of Strength",
    "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
-   "time": 1789993916,
+   "time": 1790206711,
    "zone": "Orgrimmar"
   },
   "3318|2f8d506f": {
@@ -3041,16 +3059,20 @@
    "zone": "The Barrens"
   },
   "3429|4e7d06f7": {
-   "build": "69913",
+   "build": "69977",
+   "class": "Paladin",
    "event": "gossip",
    "firstSeen": 1789932275,
+   "found": true,
    "mapID": 1413,
    "name": "Thork",
    "npc": "3429",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Fixpoint Fix",
+   "race": "Undead",
    "subzone": "The Crossroads",
    "text": "Welcome to the Crossroads, $c. My name is Thork--I lead the defenses here in the name of the Warchief.\n\nPlease, feel free to make yourself at home. As long as you mind your business, no one should have any problem with you taking up some space.\n\nThere are many threats to our safety here. If you've already become familiar with the lay of the land, speak to the others here--perhaps they have tasks for you to do.",
-   "time": 1789932275,
+   "time": 1790206992,
    "zone": "The Barrens"
   },
   "3432|c1a3099b": {
@@ -3713,6 +3735,13 @@
    "level": 50,
    "modelFileID": 959310,
    "name": "Theodore Griffs",
+   "sex": 2
+  },
+  "11857": {
+   "creatureType": "Humanoid",
+   "level": 25,
+   "modelFileID": 968705,
+   "name": "Makaba Flathoof",
    "sex": 2
   },
   "11869": {
@@ -4446,6 +4475,13 @@
    "name": "Belathaan Brightwish",
    "sex": 2
   },
+  "256386": {
+   "creatureType": "Humanoid",
+   "level": 30,
+   "modelFileID": 949470,
+   "name": "Dokimi",
+   "sex": 3
+  },
   "256388": {
    "creatureType": "Humanoid",
    "level": 30,
@@ -4960,6 +4996,13 @@
    "name": "Zor Lonetree",
    "sex": 2
   },
+  "4049": {
+   "creatureType": "Humanoid",
+   "level": 26,
+   "modelFileID": 949470,
+   "name": "Seereth Stonebreak",
+   "sex": 3
+  },
   "4551": {
    "creatureType": "Humanoid",
    "level": 55,
@@ -5303,6 +5346,42 @@
    "time": 1789940640,
    "title": "The Spirits of Stonetalon",
    "zone": "Orgrimmar"
+  },
+  "1061-complete": {
+   "build": "69977",
+   "class": "Paladin",
+   "event": "complete",
+   "found": true,
+   "mapID": 1413,
+   "name": "Seereth Stonebreak",
+   "npc": "4049",
+   "pack": "Forever",
+   "player": "Fixpoint Fix",
+   "questID": 1061,
+   "race": "Undead",
+   "subzone": "",
+   "text": "Ah, a $c.  Very good.  We will need your skills to deal with these plunderers!",
+   "time": 1790207256,
+   "title": "The Spirits of Stonetalon",
+   "zone": "The Barrens"
+  },
+  "1062-accept": {
+   "build": "69977",
+   "class": "Paladin",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Seereth Stonebreak",
+   "npc": "4049",
+   "pack": "Forever",
+   "player": "Fixpoint Fix",
+   "questID": 1062,
+   "race": "Undead",
+   "subzone": "",
+   "text": "The goblin-run Venture Company moved into the Stonetalon Mountains, chopping down trees and burning huge stretches of forest.  The spirits of this place are nearly blind with pain and rage.  We must stop the Venture Company!\n\nHead northwest, beyond the Greatwood Vale and into the Windshear Crag.  You will find the goblins and their servants at work -- show them the Horde will not allow the exploitation of Stonetalon.  Show them in the language they best understand...\n\nViolence.",
+   "time": 1790207258,
+   "title": "Goblin Invaders",
+   "zone": "The Barrens"
   },
   "107-accept": {
    "addon": "0.1.2",
@@ -6012,7 +6091,8 @@
    "zone": "Silverpine Forest"
   },
   "3281-accept": {
-   "build": "69913",
+   "build": "69977",
+   "class": "Paladin",
    "event": "accept",
    "firstSeen": 1789992978,
    "found": true,
@@ -6020,11 +6100,12 @@
    "name": "Gazrog",
    "npc": "3464",
    "pack": "Forever",
-   "player": "Myrlin Fixpoint",
+   "player": "Fixpoint Fix",
    "questID": 3281,
+   "race": "Undead",
    "subzone": "The Crossroads",
    "text": "You may have killed the raptors, but the silver they stole must be recovered!  I have reports that the raptors have a large grouping of nests south of Ratchet, known as the Raptor Grounds.  It is likely that they brought our stolen silver there.\n\nGo to this raptor haven and search for the stolen silver.  When you find it, return it to me.",
-   "time": 1789992978,
+   "time": 1790206858,
    "title": "Stolen Silver",
    "zone": "The Barrens"
   },
@@ -7646,6 +7727,42 @@
    "title": "Thazz'ril's Pick",
    "zone": "Durotar"
   },
+  "6541-accept": {
+   "build": "69977",
+   "class": "Paladin",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Thork",
+   "npc": "3429",
+   "pack": "Forever",
+   "player": "Fixpoint Fix",
+   "questID": 6541,
+   "race": "Undead",
+   "subzone": "The Crossroads",
+   "text": "Have you ever been to Ashenvale, to the north? The horde has recently set up an outpost on the Zoram Strand there, and we can always use some new recruits to help defend our new fronts.\n\nIf you think you are up to it, see Kadrak in the northern Barrens, at the watch tower. He is heading up the Ashenvale campaign and can give you further orders.",
+   "time": 1790206990,
+   "title": "Report to Kadrak",
+   "zone": "The Barrens"
+  },
+  "6548-accept": {
+   "build": "69977",
+   "class": "Paladin",
+   "event": "accept",
+   "found": true,
+   "mapID": 1413,
+   "name": "Makaba Flathoof",
+   "npc": "11857",
+   "pack": "Forever",
+   "player": "Fixpoint Fix",
+   "questID": 6548,
+   "race": "Undead",
+   "subzone": "",
+   "text": "The Grimtotem Clan raided my village and killed most everyone. I killed all I could, but barely escaped with my life.\n\n$N, all I wish now is that more of them are dead. You will find them just to the west of here.\r\n\r\n",
+   "time": 1790207260,
+   "title": "Avenge My Village",
+   "zone": "The Barrens"
+  },
   "7-accept": {
    "addon": "0.1.1",
    "build": "69977",
@@ -8534,7 +8651,8 @@
    "zone": "The Barrens"
   },
   "869-complete": {
-   "build": "69913",
+   "build": "69977",
+   "class": "Paladin",
    "event": "complete",
    "firstSeen": 1789992977,
    "found": true,
@@ -8542,26 +8660,31 @@
    "name": "Gazrog",
    "npc": "3464",
    "pack": "Forever",
-   "player": "Myrlin Fixpoint",
+   "player": "Fixpoint Fix",
    "questID": 869,
+   "race": "Undead",
    "subzone": "The Crossroads",
    "text": "You got rid of the raptors!\n\nThank you, $N.  You are a $c of worth.",
-   "time": 1789992977,
+   "time": 1790206857,
    "title": "Raptor Thieves",
    "zone": "The Barrens"
   },
   "869-progress": {
-   "build": "69913",
+   "build": "69977",
+   "class": "Paladin",
    "event": "progress",
    "firstSeen": 1789992976,
+   "found": true,
    "mapID": 1413,
    "name": "Gazrog",
    "npc": "3464",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Fixpoint Fix",
    "questID": 869,
+   "race": "Undead",
    "subzone": "The Crossroads",
    "text": "Do you have those heads, $N?",
-   "time": 1789992976,
+   "time": 1790206856,
    "title": "Raptor Thieves",
    "zone": "The Barrens"
   },
