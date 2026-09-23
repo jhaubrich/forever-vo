@@ -95,6 +95,7 @@
    "build": "69977",
    "class": "Mage",
    "event": "gossip",
+   "firstSeen": 1790135741,
    "found": true,
    "mapID": 1454,
    "name": "Jhag",
@@ -2441,7 +2442,7 @@
    "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1790135653,
+   "time": 1790149959,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
@@ -2458,11 +2459,11 @@
    "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
-   "time": 1790133428,
+   "time": 1790149968,
    "zone": "Orgrimmar"
   },
   "3309|ae78a458": {
-   "build": "69913",
+   "build": "69977",
    "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789924497,
@@ -2475,7 +2476,7 @@
    "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790123526,
+   "time": 1790150216,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
