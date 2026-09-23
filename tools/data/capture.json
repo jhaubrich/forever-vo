@@ -2607,7 +2607,7 @@
    "race": "Troll",
    "subzone": "Razor Hill",
    "text": "Throm'ka, $c. There is little time for talk and much work to be done.",
-   "time": 1790197625,
+   "time": 1790198756,
    "zone": "Durotar"
   },
   "3143|e14f5e15": {
@@ -2642,6 +2642,22 @@
    "subzone": "The Den",
    "text": "You know enough to be dangerous, but you still look like you need training to me $N.",
    "time": 1790191624,
+   "zone": "Durotar"
+  },
+  "3172|031480cd": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1411,
+   "name": "Dhugru Gorelust",
+   "npc": "3172",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "race": "Troll",
+   "subzone": "Razor Hill",
+   "text": "You know enough to be dangerous, but you still look like you need training to me $N.",
+   "time": 1790197897,
    "zone": "Durotar"
   },
   "3184|c7dd471a": {
@@ -3274,6 +3290,22 @@
    "subzone": "Razor Hill",
    "text": "Which profession?",
    "time": 1790197643,
+   "zone": "Durotar"
+  },
+  "6027|721fd095": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1411,
+   "name": "Kitha",
+   "npc": "6027",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "race": "Troll",
+   "subzone": "Razor Hill",
+   "text": "Want to make your demons more powerful?  It'll cost you, but you've come to the right place.",
+   "time": 1790197886,
    "zone": "Durotar"
   },
   "6306|924a66d4": {
@@ -4542,6 +4574,13 @@
    "name": "Zureetha Fargaze",
    "sex": 3
   },
+  "3147": {
+   "creatureType": "Humanoid",
+   "level": 6,
+   "modelFileID": 917116,
+   "name": "Furl Scornbrow",
+   "sex": 2
+  },
   "3156": {
    "creatureType": "Humanoid",
    "level": 9,
@@ -4554,6 +4593,13 @@
    "level": 34,
    "modelFileID": 917116,
    "name": "Kzan Thornslash",
+   "sex": 2
+  },
+  "3172": {
+   "creatureType": "Humanoid",
+   "level": 37,
+   "modelFileID": 917116,
+   "name": "Dhugru Gorelust",
    "sex": 2
   },
   "3184": {
@@ -4857,6 +4903,13 @@
    "modelFileID": 917116,
    "name": "Razor Hill Grunt",
    "sex": 2
+  },
+  "6027": {
+   "creatureType": "Humanoid",
+   "level": 17,
+   "modelFileID": 949470,
+   "name": "Kitha",
+   "sex": 3
   },
   "6306": {
    "creatureType": "Humanoid",
@@ -7462,6 +7515,24 @@
    "title": "Vanquish the Betrayers",
    "zone": "Durotar"
   },
+  "784-complete": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "complete",
+   "found": true,
+   "mapID": 1411,
+   "name": "Gar'Thok",
+   "npc": "3139",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "questID": 784,
+   "race": "Troll",
+   "subzone": "Razor Hill",
+   "text": "Word of your bravery travels fast, $c. Tales of your victory at Tiragarde Keep will be heralded in Orgrimmar.",
+   "time": 1790198758,
+   "title": "Vanquish the Betrayers",
+   "zone": "Durotar"
+  },
   "786-accept": {
    "build": "69977",
    "class": "Warlock",
@@ -7627,6 +7698,24 @@
    "text": "Ahhh... my father always said I would never amount to much, and here, lying beneath a tree as life seeps away, I'm afraid it looks like he was right.\n\nAt least I wish to die knowing that my last enemy in life lays dead.",
    "time": 1790189750,
    "title": "Sarkoth",
+   "zone": "Durotar"
+  },
+  "791-accept": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "accept",
+   "found": true,
+   "mapID": 1411,
+   "name": "Furl Scornbrow",
+   "npc": "3147",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "questID": 791,
+   "race": "Troll",
+   "subzone": "",
+   "text": "Age has rendered me useless in battle. Now I make myself useful in other ways.\n\nFrom this vantage point I watch for invaders. As our strength here grows, I find myself blowing the signal horn less and less.\n\nTo pass the time I fashion goods to help younger, more able warriors defend our homeland.\n\nFor you, I can fashion you a bag for your belongings. If such an item would be of use to you, bring me some canvas, a material common to the humans and centaurs.",
+   "time": 1790198872,
+   "title": "Carry Your Weight",
    "zone": "Durotar"
   },
   "794-accept": {
@@ -7893,6 +7982,24 @@
    "title": "Report to Orgnil",
    "zone": "Durotar"
   },
+  "825-accept": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "accept",
+   "found": true,
+   "mapID": 1411,
+   "name": "Gar'Thok",
+   "npc": "3139",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "questID": 825,
+   "race": "Troll",
+   "subzone": "Razor Hill",
+   "text": "One of my most observant scouts brings back word that the wreckage of Proudmoore's fleet still remains off the coast of Durotar, just east of Tiragarde Keep.\n\nIt is no secret that the humans, in alliance with those foul little creatures known as gnomes, have an advanced knowledge of mechanics. We must have a complete understanding of all our potential enemies. And our people will benefit from this new knowledge as well.\n\nSwim through the wreckage, $N, and retrieve for me the tools of the Alliance.",
+   "time": 1790198758,
+   "title": "From The Wreckage....",
+   "zone": "Durotar"
+  },
   "826-accept": {
    "build": "69977",
    "class": "Warlock",
@@ -7910,6 +8017,76 @@
    "text": "The witchdoctor Zalazane dwells on the Echo Isles to the east.  They are the isles we once called home.\n\nFrom there he sends his trolls to the mainland, to hex our people and drag more of them under his sway.\n\nHe must be stopped.\n\nDefeat Zalazane and his minions -- former Darkspear trolls, now lost to us.  Bring me his head and I will know his reign of evil is over.",
    "time": 1790197069,
    "title": "Zalazane",
+   "zone": "Durotar"
+  },
+  "830-accept": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "accept",
+   "found": true,
+   "mapID": 1411,
+   "name": "Gar'Thok",
+   "npc": "3139",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "questID": 830,
+   "race": "Troll",
+   "subzone": "Tiragarde Keep",
+   "text": "You open the aged and weathered envelope and discover an official looking document. You recognize the seal of Admiral Proudmoore.\n\nThis looks important. Perhaps Gar'Thok, the commander of Razor Hill, would be interested in having this information.",
+   "time": 1790198403,
+   "title": "The Admiral's Orders",
+   "zone": "Durotar"
+  },
+  "830-complete": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "complete",
+   "found": true,
+   "mapID": 1411,
+   "name": "Gar'Thok",
+   "npc": "3139",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "questID": 830,
+   "race": "Troll",
+   "subzone": "Razor Hill",
+   "text": "This does not bode well at all. You were wise to bring this information to my attention.",
+   "time": 1790198754,
+   "title": "The Admiral's Orders",
+   "zone": "Durotar"
+  },
+  "830-progress": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "progress",
+   "mapID": 1411,
+   "name": "Gar'Thok",
+   "npc": "3139",
+   "player": "Morgause Fixpoint",
+   "questID": 830,
+   "race": "Troll",
+   "subzone": "Razor Hill",
+   "text": "There is a look of concern on your face, $c. What have you there?",
+   "time": 1790198753,
+   "title": "The Admiral's Orders",
+   "zone": "Durotar"
+  },
+  "831-accept": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "accept",
+   "found": true,
+   "mapID": 1411,
+   "name": "Gar'Thok",
+   "npc": "3139",
+   "pack": "Forever",
+   "player": "Morgause Fixpoint",
+   "questID": 831,
+   "race": "Troll",
+   "subzone": "Razor Hill",
+   "text": "Humans cannot be trusted. We fought alongside them with a weary heart, knowing they would betray us one day.\n\nAdmiral Proudmoore's death was not enough to stop his legacy of deceit. The human scum had his plans well laid out before he ever met his demise.\n\nHis reign won't even die with Benedict it seems. Who knows how long it will be before the next waves of Proudmoore's men land upon our shores.\n\nWe need to get these orders to Nazgrel in Orgrimmar immediately! He can be found in Thrall's chamber.",
+   "time": 1790198754,
+   "title": "The Admiral's Orders",
    "zone": "Durotar"
   },
   "837-accept": {
@@ -12545,6 +12722,38 @@
    "subzone": "Razor Hill Barracks",
    "text": "We lost many brave warriors of the Horde when we sacked Tiragarde Keep. Now that the humans have reinforced the ruins, we cannot collect their remains to properly honor their deaths.\r\n\r\nGo to the ruins surrounding the keep, and search for the weapons left by our fallen kin. We will display them in a place of honor.",
    "time": 1790197662,
+   "title": "For Honor",
+   "zone": "Durotar"
+  },
+  "96822-complete": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "complete",
+   "mapID": 1411,
+   "name": "Turroc",
+   "npc": "266940",
+   "player": "Morgause Fixpoint",
+   "questID": 96822,
+   "race": "Troll",
+   "subzone": "Razor Hill Barracks",
+   "text": "These warriors will always be remembered, $N. You have made sure of that.",
+   "time": 1790198793,
+   "title": "For Honor",
+   "zone": "Durotar"
+  },
+  "96822-progress": {
+   "build": "69977",
+   "class": "Warlock",
+   "event": "progress",
+   "mapID": 1411,
+   "name": "Turroc",
+   "npc": "266940",
+   "player": "Morgause Fixpoint",
+   "questID": 96822,
+   "race": "Troll",
+   "subzone": "Razor Hill Barracks",
+   "text": "Have you done what I asked?",
+   "time": 1790198792,
    "title": "For Honor",
    "zone": "Durotar"
   },
