@@ -714,7 +714,7 @@
    "mapID": 2521,
    "name": "Rathiril Sunlance",
    "npc": "251903",
-   "origin": "comment-5786207692",
+   "origin": "comment-5787097499",
    "questID": null,
    "source": "community",
    "text": "Hello there, young $c. I am Rathiril Sunlance and I am an elder Magister of the High Order here on Zephras Isle. It's always good to see bright-eyed young shen'dorei, ready to do their duty in service to their homeland.\r\n\r\nDon't let this dusty old mage hold you up however, no doubt you've got many adventures to see to. Feel free to stop by later if you'd like to speak more.",
@@ -882,7 +882,7 @@
    "mapID": 2521,
    "name": "Al'Aketh Stormcaller",
    "npc": "252068",
-   "origin": "comment-5786207692",
+   "origin": "comment-5787097499",
    "questID": null,
    "source": "community",
    "text": "Soon all Shen'dorei will see the truth... and those that refuse will be swept away in the coming storm!",
@@ -898,7 +898,7 @@
    "mapID": 2521,
    "name": "Al'Aketh Stormcaller",
    "npc": "252068",
-   "origin": "comment-5786207692",
+   "origin": "comment-5787097499",
    "questID": null,
    "source": "community",
    "text": "Does your heart beat in rhythm with the winds?",
@@ -914,7 +914,7 @@
    "mapID": 2521,
    "name": "Al'Aketh Stormcaller",
    "npc": "252068",
-   "origin": "comment-5786207692",
+   "origin": "comment-5787097499",
    "questID": null,
    "source": "community",
    "text": "Do not trouble me, recruit. Submit yourself to Commander Cyclas or Skypriest Aanders if your hands are idle.",
@@ -1774,6 +1774,36 @@
    "time": 1790006284,
    "zone": "Zephras Isle"
   },
+  "257003|ec1a6e0b": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Ishlee Breezewhisper",
+   "npc": "257003",
+   "origin": "comment-5787097499",
+   "questID": null,
+   "source": "community",
+   "text": "I don't get too many Skinners in here looking for training, but I guess I could teach you something if you're ready.",
+   "title": null,
+   "zone": "Zephras Isle"
+  },
+  "257006|8cd6b7fd": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Nyalah Brightfire",
+   "npc": "257006",
+   "origin": "comment-5787097499",
+   "questID": null,
+   "source": "community",
+   "text": "I don't get too many cooks in here looking for training, but I guess I could teach you something if you're ready.",
+   "title": null,
+   "zone": "Zephras Isle"
+  },
   "257006|8fa53a5b": {
    "build": "69913",
    "class": "Hunter",
@@ -2173,11 +2203,12 @@
    "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1790005796,
+   "time": 1790124270,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
    "build": "69913",
+   "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789924610,
    "found": true,
@@ -2186,9 +2217,10 @@
    "npc": "3309",
    "pack": "Forever",
    "player": "Myrlin Fixpoint",
+   "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
-   "time": 1789996065,
+   "time": 1790124183,
    "zone": "Orgrimmar"
   },
   "3309|ae78a458": {
@@ -2205,7 +2237,7 @@
    "race": "Orc",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790005918,
+   "time": 1790123526,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
@@ -2838,6 +2870,12 @@
    "name": "High Executor Hadrec",
    "sex": 2
   },
+  "196": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Eagan Peltskinner",
+   "sex": 2
+  },
   "1978": {
    "creatureType": "Humanoid",
    "level": 11,
@@ -3324,6 +3362,12 @@
    "modelFileID": 7478487,
    "name": "Captured Bandit",
    "sex": 2
+  },
+  "257003": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Ishlee Breezewhisper",
+   "sex": 3
   },
   "257006": {
    "creatureType": "Humanoid",
@@ -4327,6 +4371,21 @@
    "title": "Stolen Silver",
    "zone": "The Barrens"
   },
+  "33-accept": {
+   "addon": "0.1.2",
+   "build": "69913",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Eagan Peltskinner",
+   "npc": "196",
+   "origin": "comment-5786660865",
+   "questID": 33,
+   "source": "community",
+   "text": "I hate those nasty timber wolves!  But I sure like eating wolf steaks...  Bring me tough wolf meat and I will exchange it for something you'll find useful.\n\nTough wolf meat is gathered from hunting the timber wolves and young wolves wandering the Northshire countryside.",
+   "title": "Wolves Across the Border",
+   "zone": "Elwynn Forest"
+  },
   "3301-accept": {
    "build": "69913",
    "event": "accept",
@@ -5162,6 +5221,22 @@
    "time": 1789951542,
    "title": "Beren's Peril",
    "zone": "Silverpine Forest"
+  },
+  "5261-complete": {
+   "addon": "0.1.2",
+   "build": "69913",
+   "event": "complete",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Eagan Peltskinner",
+   "npc": "196",
+   "origin": "comment-5786660865",
+   "questID": 5261,
+   "source": "community",
+   "text": "That's true.  I'm looking for someone to hunt me some wolves!  Are you that person?",
+   "title": "Eagan Peltskinner",
+   "zone": "Elwynn Forest"
   },
   "530-accept": {
    "build": "69913",
@@ -7368,6 +7443,22 @@
    "title": "The Grand Skyseer",
    "zone": "Zephras Isle"
   },
+  "92701-accept": {
+   "addon": "0.1.1",
+   "build": "69913",
+   "event": "accept",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Constable Aonda",
+   "npc": "251523",
+   "origin": "comment-5787097499",
+   "questID": 92701,
+   "source": "community",
+   "text": "For now it seems the pylon and the village are safe, so I'd like you to deliver this report to the Valennia Stormfist in Valanaar, at the southeastern edge of the island. Valennia is the leader of the peacekeepers on the island and she needs to know what happened here.\r\n\r\nThe cult is expanding rapidly and the peacekeepers have avoided direct conflict until now, but those days are over. Valanaar will need to be ready for a fight.\r\n\r\nAt any rate, thank you. You'll always have friends in Shen'dar, $N.",
+   "title": "To Valanaar",
+   "zone": "Zephras Isle"
+  },
   "92703-accept": {
    "build": "69913",
    "class": "Hunter",
@@ -8554,7 +8645,7 @@
    "mapID": 2521,
    "name": "Rathiril Sunlance",
    "npc": "251903",
-   "origin": "comment-5786207692",
+   "origin": "comment-5787097499",
    "questID": 94413,
    "source": "community",
    "text": "Sometimes I find it hard to distinguish between the blind zealotry of the Al'Aketh cult, and the stubborn refusal of the Windshapers to change.\r\n\r\nIf they truly believed the winds would guide us, they should be sensing the direction the winds are blowing and flow with them rather than against them.",
