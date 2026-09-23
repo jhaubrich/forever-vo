@@ -2580,6 +2580,22 @@
    "time": 1790184055,
    "zone": "Orgrimmar"
   },
+  "3345|75a71456": {
+   "build": "69977",
+   "class": "Mage",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Godan",
+   "npc": "3345",
+   "pack": "Forever",
+   "player": "Myrlin Fixpoint",
+   "race": "Orc",
+   "subzone": "The Drag",
+   "text": "Your skills are out of my league, stranger.Talk to Hgarth at the Sun Rock Retreat in the Stonetalon Mountains. He will provide you with more knowledge than I can. ",
+   "time": 1790185061,
+   "zone": "Orgrimmar"
+  },
   "3363|05c29513": {
    "build": "69977",
    "class": "Mage",
