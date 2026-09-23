@@ -11,12 +11,14 @@ from __future__ import annotations
 
 import csv
 import functools
+import json
 from collections import Counter
 from pathlib import Path
 
 import requests
 
-from config import BETA_BUILD, DB2_DIR, GENDER_DICT, RACE_DICT, VOICES_DIR, WAGO_BASE, ZONE_RACE_HINTS
+from config import (BETA_BUILD, DATA_DIR, DB2_DIR, GENDER_DICT, RACE_DICT, VOICES_DIR,
+                    WAGO_BASE, ZONE_RACE_HINTS)
 
 
 def db2_path(table: str, build: str = BETA_BUILD) -> Path:
@@ -57,9 +59,14 @@ def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
 
 
 def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:
-    """Maps a CreatureDisplayInfo ID to (DisplayRaceID, DisplaySexID) via CreatureDisplayInfoExtra.
+    """Maps a CreatureDisplayInfo ID to (DisplayRaceID, DisplaySexID).
 
-    Creatures without an "extra" record (beasts, elementals, ...) return (None, None).
+    The "extra" record carries both, but only player-race models have one. A dryad,
+    an ogre or an orphan has none and came back (None, None); with no sex that
+    sends the speaker to the narrator, and narrator falls back to human-male.wav.
+    CreatureDisplayInfo has a Gender column of its own (0 male, 1 female, 2 none),
+    so a creature with no race still gets the right sex: Tarindrella the dryad is
+    Gender 1 and was reading in a man's voice.
     """
     if not display_id:
         return None, None
@@ -67,12 +74,53 @@ def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:
     if not cdi:
         return None, None
     extra_id = int(cdi.get("ExtendedDisplayInfoID") or 0)
-    if not extra_id:
-        return None, None
-    extra = load_db2("CreatureDisplayInfoExtra").get(extra_id)
-    if not extra:
-        return None, None
-    return int(extra["DisplayRaceID"]), int(extra["DisplaySexID"])
+    extra = load_db2("CreatureDisplayInfoExtra").get(extra_id) if extra_id else None
+    if extra:
+        return int(extra["DisplayRaceID"]), int(extra["DisplaySexID"])
+    gender = cdi.get("Gender")
+    if gender in ("0", "1"):
+        return None, int(gender)
+    return None, None
+
+
+@functools.lru_cache(maxsize=None)
+def _species_by_model_file() -> dict[int, str]:
+    """{CreatureModelData.FileDataID: species}, from tools/data/species_models.json."""
+    path = DATA_DIR / "species_models.json"
+    if not path.exists():
+        return {}
+    return {int(k): v for k, v in json.loads(path.read_text(encoding="utf-8")).items()}
+
+
+def species_voice(display_id: int | None, sex_id: int | None) -> str | None:
+    """A voice of the speaker's own kind, where the pack carries one.
+
+    Creatures outside the player races have no DisplayRaceID, so they fall through
+    to the zone hint or to human and sound like a person. The model file names the
+    species - CreatureModelData.FileDataID points at creature/<species>/<species>.m2 -
+    so a <species>-<gender>.wav beats any fallback. Build those with
+    build_wc3_references.py (Warcraft III voiced these units properly) or
+    build_retail_references.py (retail creature dialogue).
+    """
+    if display_id is None:
+        return None
+    cdi = load_db2("CreatureDisplayInfo").get(int(display_id))
+    if not cdi:
+        return None
+    model = load_db2("CreatureModelData").get(int(cdi.get("ModelID") or 0))
+    species = _species_by_model_file().get(int((model or {}).get("FileDataID") or 0))
+    if not species:
+        return None
+    # A construct is Gender 2 and so has no sex, but an abomination is not
+    # genderless the way a player-race speaker with no sex is: the species already
+    # says how it sounds. Prefer the recorded sex, then accept either.
+    order = [sex_id] if sex_id is not None else []
+    order += [s for s in (0, 1) if s != sex_id]
+    for s in order:
+        name = f"{species}-{GENDER_DICT[s]}"
+        if (VOICES_DIR / f"{name}.wav").exists():
+            return name
+    return None
 
 
 @functools.lru_cache(maxsize=None)
@@ -143,6 +191,12 @@ def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
     if sex_id is None:
         sex_id = unit_sex
     if race is None:
+        # Before the zone hint or human, see whether this kind of creature has a
+        # voice of its own. This also reaches genderless species, which the
+        # narrator would otherwise take.
+        own = species_voice(display_id, sex_id)
+        if own:
+            return own
         race = hint or "human"
     if sex_id is None:
         return "narrator"
