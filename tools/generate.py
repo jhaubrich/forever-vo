@@ -293,8 +293,21 @@ class Synth:
         silence = self.torch.zeros(1, int(self.sr * 0.35))
         for part in chunk(text):
             kwargs = {"audio_prompt_path": str(reference)} if reference else {}
-            wav = self.model.generate(part, exaggeration=0.45, cfg_weight=0.5, **kwargs)
-            pieces.append(wav.cpu())
+            # Chatterbox sometimes answers a short standalone sentence with a
+            # blip: "Galgar wipes his brow." came back as 0.36 s where the other
+            # narrator voices took 2 s, and 17 stage-direction parts of two to
+            # four words were like it (2026-09-23). The output is sampled, so a
+            # second try usually speaks; keep the longest of a few.
+            floor = max(0.5, 0.15 * len(part.split()))
+            best = None
+            for attempt in range(3):
+                wav = self.model.generate(part, exaggeration=0.45, cfg_weight=0.5, **kwargs).cpu()
+                if best is None or wav.shape[-1] > best.shape[-1]:
+                    best = wav
+                if best.shape[-1] / self.sr >= floor:
+                    break
+                print(f"    short output ({wav.shape[-1] / self.sr:.2f}s for {len(part.split())} words), retrying")
+            pieces.append(best)
             pieces.append(silence)
         audio = self.torch.cat(pieces[:-1], dim=-1)
         duration = audio.shape[-1] / self.sr
