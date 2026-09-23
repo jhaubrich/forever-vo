@@ -1,0 +1,30 @@
+{
+ "addon": "0.1.1",
+ "gossip": {},
+ "npcs": {
+  "823": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Deputy Willem",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5793688684",
+ "quests": {
+  "783-accept": {
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Willem",
+   "npc": "823",
+   "questID": 783,
+   "source": "community",
+   "text": "I hope you strapped your belt on tight, young $c, because there is work to do here in Northshire.\n\nAnd I don't mean farming.\n\nThe Stormwind guards are hard pressed to keep the peace here, with so many of us in distant lands and so many threats pressing close.  And so we're enlisting the aid of anyone willing to defend their home.  And their alliance.\n\nIf you're here to answer the call, then speak with my superior, Marshal McBride.  He's inside the abbey behind me.",
+   "title": "A Threat Within",
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
