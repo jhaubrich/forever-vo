@@ -575,8 +575,15 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
                 # events that actually branched; Packs.lua still accepts `true`.
                 letters = set(record.get("g") or "") | {QUEST_EVENTS[item.event]}
                 record["g"] = "".join(sorted(letters))
-            if speaker is not None and record.get("npc") is None:
-                record["npc"] = speaker
+            # npc is the giver, which the addon shows for an accept text the
+            # client leaves unattributed (an item-started or shared quest);
+            # ender the turn-in speaker, for a progress or complete text at a
+            # game object. One field for both meant 172 item-started quests
+            # wore their turn-in NPC's face while the narrator read.
+            if speaker is not None:
+                field = "npc" if item.event == "accept" else "ender"
+                if record.get(field) is None:
+                    record[field] = speaker
             for voice, seconds in alternates.items():
                 narrator.setdefault(quest_id, {}).setdefault(voice, {})[QUEST_EVENTS[item.event]] = seconds
         else:
@@ -600,6 +607,9 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
                          for voice in list(entry["n"] or {}) + list(entry["nP"] or {}))
     voices = [voice for voice in NARRATOR_VOICES[1:] if voice in spoken_voices]
 
+    for rec in quests.values():
+        if rec.get("ender") == rec.get("npc"):
+            rec.pop("ender", None)
     quest_lines = [f"\t[{qid}] = {lua_record(rec)}," for qid, rec in sorted(quests.items())]
     gossip_lines = []
     for speaker, entries in sorted(gossip.items()):

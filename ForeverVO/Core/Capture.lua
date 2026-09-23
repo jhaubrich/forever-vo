@@ -78,7 +78,12 @@ local function DescribeSpeaker(db, speaker)
     local npc = db.npcs[key] or {}
     npc.name = speaker.name or npc.name
     npc.isObject = speaker.isObject or nil
+    -- Only the unit that is this speaker: the "npc" unit lingers after its
+    -- dialog closes and would lend its sex and model to a game object
     local unit = Util.DialogUnit()
+    if unit and UnitGUID(unit) ~= speaker.guid then
+        unit = nil
+    end
     if unit then
         npc.sex = UnitSex(unit)
         npc.creatureType = UnitCreatureType(unit)

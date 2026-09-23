@@ -9,6 +9,15 @@
   direction, silent until now, are voiced too. Needs a voice pack built after
   this change; older packs play as before.
 - The "no voice pack found" messages name the CurseForge packs to install.
+- A quest read from an item, or turned in at a game object, is no longer
+  credited to the last NPC you spoke to. The client's "npc" unit outlives its
+  dialog, so Admiral Proudmoore's orders were captured and voiced as Gar'Thok
+  and the Corpse Laden Boat's turn-in text as High Executor Hadrec, face and
+  all. Quest events now trust the quest giver unit the way Blizzard's own frame
+  does, an item-started quest is named after its item, and the book shows for
+  it instead of the turn-in NPC. Packs built after this record the giver and
+  the turn-in speaker separately, so a turn-in at an object shows the object
+  even when the client does not say who is speaking.
 
 ## 0.1.2
 

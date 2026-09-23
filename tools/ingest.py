@@ -189,6 +189,8 @@ class SourceTexts:
     def __init__(self, bulk_dir: Path = DATA_DIR / "bulk"):
         self.quests: dict[str, str] = {}
         self.gossip: dict[str, list[str]] = {}
+        self.speakers: dict[str, dict] = {}            # quest key -> {npc, name, isObject} per Classic
+        self.quest_creatures: dict[str, set[str]] = {}  # quest ID -> creature keys at either end
         self.loaded: list[str] = []
         # capture > questcache > classic: first source to name a key wins
         for name in ("questcache", "classic"):
@@ -200,6 +202,11 @@ class SourceTexts:
             for key, entry in data.get("quests", {}).items():
                 if entry.get("text"):
                     self.quests.setdefault(str(key), entry["text"])
+                if name == "classic" and entry.get("event"):
+                    self.speakers[str(key)] = {f: entry.get(f) for f in ("npc", "name", "isObject")}
+                    npc = str(entry.get("npc") or "")
+                    if npc and not npc.startswith("-"):
+                        self.quest_creatures.setdefault(str(entry.get("questID")), set()).add(npc)
             for key, entry in data.get("gossip", {}).items():
                 if entry.get("text"):
                     self.gossip.setdefault(str(key).split("|", 1)[0], []).append(entry["text"])
@@ -234,15 +241,43 @@ def reconcile_entry(entry: dict, kind: str, key: str, sources: SourceTexts | Non
     return entry, restored
 
 
+def reattribute_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None) -> tuple[dict, bool]:
+    """A quest text the client left unattributed, pinned by the addon to the last
+    NPC the reader talked to.
+
+    Addons before 0.1.3 took the "npc" unit, which outlives its dialog: the Corpse
+    Laden Boat's turn-in text was captured as High Executor Hadrec, three minutes
+    after his frame closed, and Admiral Proudmoore's orders, read beside Gar'Thok,
+    as him. Where Classic says the text belongs to an object or an item and the
+    capture names a creature that stands at the quest's other end, the capture is
+    that artefact: the speaker goes back to Classic's, and the narrator reads it."""
+    if kind != "quests" or sources is None:
+        return entry, False
+    known = sources.speakers.get(key)
+    npc = str(entry.get("npc") or "")
+    if not known or not known.get("isObject") or not npc or npc.startswith("-"):
+        return entry, False
+    if npc not in sources.quest_creatures.get(str(entry.get("questID")), set()):
+        return entry, False
+    entry = dict(entry)
+    entry.pop("npc", None)
+    if known.get("npc"):
+        entry["npc"] = known["npc"]
+    entry["name"] = known.get("name") or entry.get("name")
+    entry["isObject"] = True
+    return entry, True
+
+
 class Repairs:
     dropped = 0
     reconciled = 0
     restored = 0
+    reattributed = 0
 
 
 def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, stats: Repairs) -> dict | None:
-    """tokenize -> unglue -> reconcile. Idempotent, so it runs over everything on
-    every ingest; None means the line is unusable and should be dropped."""
+    """tokenize -> unglue -> reconcile -> reattribute. Idempotent, so it runs over
+    everything on every ingest; None means the line is unusable and should be dropped."""
     entry = tokenize_entry(entry)
     entry = unglue_entry(entry)
     if entry is None:
@@ -252,6 +287,9 @@ def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, 
     if restored:
         stats.reconciled += 1
         stats.restored += restored
+    entry, reattributed = reattribute_entry(entry, kind, key, sources)
+    if reattributed:
+        stats.reattributed += 1
     return entry
 
 
@@ -343,7 +381,7 @@ def backfill(capture: dict, sources: SourceTexts | None, stats: Repairs) -> tupl
         if fixed is None:
             quests += 1
             continue
-        if fixed.get("text") != entry.get("text"):
+        if fixed != entry:
             quests += 1
         rebuilt_quests[key] = fixed
     capture["quests"] = rebuilt_quests
@@ -386,6 +424,8 @@ def main(argv: list[str]) -> int:
         print(f"reconciled {stats.restored} placeholder(s) in {stats.reconciled} texts against {', '.join(sources.loaded)}")
     if stats.dropped:
         print(f"dropped    {stats.dropped} texts with glued placeholders from an unknown reader (re-capture them)")
+    if stats.reattributed:
+        print(f"reattributed {stats.reattributed} quest texts from a lingering NPC to the object or item Classic names")
 
     CAPTURE_JSON.parent.mkdir(parents=True, exist_ok=True)
     seen_files = capture.pop("sources")

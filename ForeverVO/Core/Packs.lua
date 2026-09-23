@@ -15,7 +15,12 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- g: which of a/p/c exist as m-/f- variants, because $G branches per line
       --    ("a" = only the accept text branches). `true` means all of them, as
       --    packs built before this wrote it.
-      -- npc: quest giver speaker key (creature ID, negative for game objects)
+      -- npc: quest giver speaker key (creature ID, negative for game objects);
+      --    absent when an item starts the quest. ender: the turn-in speaker,
+      --    only when it differs from the giver. The addon uses them for a text
+      --    the client leaves unattributed (an item-started or shared quest, a
+      --    turn-in at a game object); packs built before ender existed carry
+      --    the first speaker of any event as npc.
       -- aP/pP/cP: the parts of a line that mixes the speaker and the narrator,
       --    in reading order, each with its duration; n marks the narrator's
       --    (a <stage direction>). Files are <questID>-p<i>-<event>.mp3.
@@ -256,12 +261,15 @@ function Packs:FindQuest(questID, event)
     end
 end
 
---- Quest giver speaker key recorded by any pack for the quest.
-function Packs:QuestGiver(questID)
+--- Speaker key recorded by any pack for the quest: the giver, or for a
+--- progress or complete text the turn-in speaker where the pack records one.
+function Packs:QuestGiver(questID, event)
+    local turnIn = event == "progress" or event == "complete"
     for _, pack in ipairs(self.list) do
         local entry = pack.quests[questID]
-        if entry and entry.npc then
-            return entry.npc
+        local key = entry and ((turnIn and entry.ender) or entry.npc)
+        if key then
+            return key
         end
     end
 end
