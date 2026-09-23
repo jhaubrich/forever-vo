@@ -137,7 +137,8 @@ def species_voice_names(species: str, sex_id: int | None) -> list[str]:
         stem = trimmed
 
 
-def species_voice(display_id: int | None, sex_id: int | None) -> str | None:
+def species_voice(display_id: int | None, sex_id: int | None,
+                  model_file_id: int | None = None) -> str | None:
     """A voice of the speaker's own kind, where the pack carries one.
 
     Creatures outside the player races have no DisplayRaceID, so they fall through
@@ -146,14 +147,19 @@ def species_voice(display_id: int | None, sex_id: int | None) -> str | None:
     so a clip of that species beats any fallback. Build those with
     build_wc3_references.py (Warcraft III voiced these units properly) or
     build_retail_references.py (retail creature dialogue).
+
+    The display ID leads to that FileDataID through CreatureDisplayInfo and
+    CreatureModelData; the captured GetModelFileID() *is* that FileDataID. The
+    Forever client never fills the display ID (issue #2), so a speaker the Classic
+    export does not know is reached only through the model file (issue #22).
     """
-    if display_id is None:
-        return None
-    cdi = load_db2("CreatureDisplayInfo").get(int(display_id))
-    if not cdi:
-        return None
-    model = load_db2("CreatureModelData").get(int(cdi.get("ModelID") or 0))
-    species = _species_by_model_file().get(int((model or {}).get("FileDataID") or 0))
+    species = None
+    if display_id:
+        cdi = load_db2("CreatureDisplayInfo").get(int(display_id))
+        model = load_db2("CreatureModelData").get(int((cdi or {}).get("ModelID") or 0))
+        species = _species_by_model_file().get(int((model or {}).get("FileDataID") or 0))
+    if not species and model_file_id:
+        species = _species_by_model_file().get(int(model_file_id))
     if not species:
         return None
     for name in species_voice_names(species, sex_id):
@@ -239,7 +245,7 @@ def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
         # Before the zone hint or human, see whether this kind of creature has a
         # voice of its own. This also reaches genderless species, which the
         # narrator would otherwise take.
-        own = species_voice(display_id, sex_id)
+        own = species_voice(display_id, sex_id, npc.get("modelFileID"))
         if own:
             return own
         race = hint or "human"
