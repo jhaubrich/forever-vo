@@ -22,7 +22,7 @@ local function QuestItem(questID)
     local logIndex = C_QuestLog.GetLogIndexForQuestID(questID)
     local text = logIndex and GetQuestLogQuestText(logIndex) or nil
     local giver = Packs:QuestGiver(questID)
-    local path, duration, pack = Packs:FindQuest(questID, "accept")
+    local path, duration, pack, parts = Packs:FindQuest(questID, "accept")
     return {
         kind = "quest", event = "accept", questID = questID,
         title = C_QuestLog.GetTitleForQuestID(questID) or "",
@@ -30,7 +30,7 @@ local function QuestItem(questID)
         name = Packs:SpeakerName(giver) or "Unknown",
         speakerKey = giver,
         isObject = giver ~= nil and not Util.IsCreatureKey(giver),
-        path = path, duration = duration, pack = pack,
+        path = path, duration = duration, pack = pack, parts = parts,
     }
 end
 

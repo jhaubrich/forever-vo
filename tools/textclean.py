@@ -60,6 +60,8 @@ def _respell(match: re.Match) -> str:
 
 _GENDER = re.compile(r"\$[Gg]\s*([^:;]+?)\s*:\s*([^:;]+?)\s*;")
 _STAGE_DIRECTION = re.compile(r"<[^<>]*>\s?")
+_STAGE_DIRECTION_TEXT = re.compile(r"<([^<>]*)>")
+_STAGE_SPLIT = re.compile(r"(<[^<>]*>)")
 _WHITESPACE = re.compile(r"\s+")
 
 
@@ -72,14 +74,50 @@ def split_gender(text: str) -> tuple[str, str]:
     return _GENDER.sub(r"\1", text), _GENDER.sub(r"\2", text)
 
 
-def clean(text: str) -> str:
+def _substitute(text: str) -> str:
     for key, value in REPLACE.items():
         text = text.replace(key, value)
-    text = _STAGE_DIRECTION.sub("", text)
+    return text
+
+
+def _finish(text: str) -> str:
     text = _PRONUNCIATION.sub(_respell, text)
     text = text.replace("\r", " ").replace("\n", " ")
     text = _WHITESPACE.sub(" ", text).strip()
     return text
+
+
+def clean(text: str, keep_stage_directions: bool = False) -> str:
+    """The whole line as one reader says it. Stage directions (<the guard spits>)
+    are the narrator's, not the speaker's, so they are dropped -- unless the
+    narrator reads the whole line anyway, when their text is kept as prose."""
+    text = _substitute(text)
+    if keep_stage_directions:
+        text = _STAGE_DIRECTION_TEXT.sub(r"\1", text)
+    else:
+        text = _STAGE_DIRECTION.sub("", text)
+    return _finish(text)
+
+
+def segments(text: str) -> list[tuple[str, str]]:
+    """The line in reading order as ("npc", words) and ("narrator", words) pieces,
+    each cleaned like clean(): the speaker's own words and, between them, every
+    <stage direction> for the narrator. Adjacent pieces of one role are merged.
+    A line with no stage direction is a single npc piece."""
+    out: list[tuple[str, str]] = []
+    for piece in _STAGE_SPLIT.split(_substitute(text)):
+        if piece.startswith("<") and piece.endswith(">"):
+            role, piece = "narrator", piece[1:-1]
+        else:
+            role = "npc"
+        piece = _finish(piece)
+        if not piece:
+            continue
+        if out and out[-1][0] == role:
+            out[-1] = (role, f"{out[-1][1]} {piece}")
+        else:
+            out.append((role, piece))
+    return out
 
 
 def is_speakable(text: str) -> bool:

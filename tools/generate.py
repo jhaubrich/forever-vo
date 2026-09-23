@@ -31,6 +31,15 @@ run still spends its time on lines that have no audio at all:
 
     ./tools/run.sh tools/generate.py --narrator-voices none   # skip them
     ./tools/run.sh tools/generate.py --narrator-only          # a dedicated pass
+
+A line that mixes the speaker and the narrator -- "Hmm... <Jorgen looks up at
+you.> All right, I'll help ya." -- keeps its whole-line file with the stage
+direction left out (older addons play that) and also gets one file per part in
+reading order, 1241-p1-complete, 1241-p2-complete, ...: the speaker's words in
+their voice and each stage direction in the narrator's, the latter again in
+every alternate narrator voice. The addon plays the parts back to back and
+swaps in the player's narrator. A line that is only a stage direction has
+parts and no whole-line file.
 """
 from __future__ import annotations
 
@@ -48,7 +57,7 @@ from typing import NamedTuple
 from config import (CAPTURE_JSON, DATA_DIR, FALLBACK_VOICES, NARRATOR_VOICE, NARRATOR_VOICES,
                     PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR, VOICES_DIR)
 from luatable import lua_string
-from textclean import chunk, clean, has_gender_branch, is_speakable, split_gender
+from textclean import chunk, clean, has_gender_branch, is_speakable, segments, split_gender
 from textkey import text_key
 from wowdata import voice_for_npc
 
@@ -87,22 +96,50 @@ class Item:
         return f"{speaker}-{self.hash}"
 
     @property
-    def gendered(self) -> bool:
-        return has_gender_branch(clean(self.raw_text))
-
-    @property
     def is_narrator(self) -> bool:
         """Lines read by the narrator (objects, items, speakers with no gender)
         get one file per alternate narrator voice."""
         return self.voice == NARRATOR_VOICE
 
-    def variants(self) -> list[tuple[str, str]]:
-        """(file base name, text to speak); two when the text branches on player gender."""
-        text = clean(self.raw_text)
-        if has_gender_branch(text):
-            male, female = split_gender(text)
-            return [(f"m-{self.base_name}", male), (f"f-{self.base_name}", female)]
-        return [(self.base_name, text)]
+    @property
+    def gendered(self) -> bool:
+        return has_gender_branch(clean(self.raw_text, keep_stage_directions=self.is_narrator))
+
+    def variants(self) -> list[Variant]:
+        """One Variant per file base name; two when the text branches on player gender."""
+        raw = self.raw_text
+        branches = [("", raw)]
+        if self.gendered:
+            male, female = split_gender(raw)
+            branches = [("m-", male), ("f-", female)]
+        out = []
+        for prefix, text in branches:
+            # The narrator reads a stage direction as prose. A speaker leaves it
+            # out of the whole-line file and the line also gets parts, so the
+            # narrator can say it between the speaker's words.
+            parts = [] if self.is_narrator else segments(text)
+            if len(parts) == 1 and parts[0][0] == "npc":
+                parts = []
+            out.append(Variant(f"{prefix}{self.base_name}", clean(text, keep_stage_directions=self.is_narrator), parts))
+        return out
+
+
+class Variant(NamedTuple):
+    """One file base name of a line and what is spoken under it."""
+    base: str
+    text: str                         # the whole line as its speaker reads it
+    parts: list[tuple[str, str]]      # ("npc"|"narrator", words) in reading order when the
+                                      # line mixes the speaker and the narrator, else empty
+
+
+def part_name(base: str, index: int) -> str:
+    """File base name of a line's part: 1241-p2-complete, 2492-p1-aa6f2374,
+    m-170-p1-accept. The part number sits before the last segment so that the
+    name still ends in the quest event or text hash: sound_folder() and every
+    older tool that tells quests from gossip by the last segment keep working
+    (an older generator still running probes any file it sees under Sounds/)."""
+    head, _, last = base.rpartition("-")
+    return f"{head}-p{index}-{last}"
 
 
 # ----------------------------------------------------------------------------
@@ -300,6 +337,8 @@ def lua_value(value) -> str:
         return lua_string(value)
     if isinstance(value, dict):   # keyed sub-table, e.g. a duration per narrator voice
         return "{ " + ", ".join(f"[{lua_value(k)}]={lua_value(v)}" for k, v in sorted(value.items())) + " }"
+    if isinstance(value, list):   # array, e.g. the parts of a line; dict elements are records
+        return "{ " + ", ".join(lua_record(v) if isinstance(v, dict) else lua_value(v) for v in value) + " }"
     raise TypeError(type(value))
 
 
@@ -446,12 +485,19 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
 
     for item in items:
         variants = item.variants()
-        available = [base for base, _ in variants if base in present]
-        if not available:
+        available = [v.base for v in variants if v.base in present]
+        # A line that mixes the speaker and the narrator also has parts, recorded
+        # only when every variant has every part; a line that is only a stage
+        # direction has parts and no whole-line file.
+        part_count = len(variants[0].parts)
+        parts_complete = part_count > 0 and all(
+            len(v.parts) == part_count and all(part_name(v.base, i) in present for i in range(1, part_count + 1))
+            for v in variants)
+        if not available and not parts_complete:
             continue
         used.update(available)
         gendered = len(variants) == 2
-        duration = max(duration_of(base) for base in available)
+        duration = round(max(duration_of(base) for base in available), 3) if available else None
         speaker = speaker_int(item.speaker_key)
         name = item.entry.get("name") or (item.npc or {}).get("name")
         if speaker is not None and name:
@@ -461,16 +507,44 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
         # duration: voices differ in pace, and the text is paged against it.
         alternates: dict[str, float] = {}
         for voice, names in narrator_present.items():
-            spoken = [base for base, _ in variants if base in names]
+            spoken = [v.base for v in variants if v.base in names]
             if not spoken:
                 continue
             narrator_used.update(f"{item.subfolder}/Narrator/{voice}/{base}" for base in spoken)
             alternates[voice] = round(max(duration_of(index_key(base, voice)) for base in spoken), 3)
 
+        # Parts: {d, n} per part in reading order (n marks the narrator's), and
+        # for the narrator's parts the alternate voices' own durations by index.
+        parts_record: list[dict] | None = None
+        part_alternates: dict[str, dict[int, float]] = {}
+        if parts_complete:
+            parts_record = []
+            for index in range(1, part_count + 1):
+                names = [part_name(v.base, index) for v in variants]
+                used.update(names)
+                role = variants[0].parts[index - 1][0]
+                parts_record.append({"d": round(max(duration_of(n) for n in names), 3),
+                                     "n": True if role == "narrator" else None})
+                if role != "narrator":
+                    continue
+                for voice, voice_names in narrator_present.items():
+                    spoken = [n for n in names if n in voice_names]
+                    if not spoken:
+                        continue
+                    narrator_used.update(f"{item.subfolder}/Narrator/{voice}/{n}" for n in spoken)
+                    part_alternates.setdefault(voice, {})[index] = round(
+                        max(duration_of(index_key(n, voice)) for n in spoken), 3)
+
         if item.kind == "quests":
             quest_id = int(item.entry["questID"])
+            letter = QUEST_EVENTS[item.event]
             record = quests.setdefault(quest_id, {})
-            record[QUEST_EVENTS[item.event]] = round(duration, 3)
+            if duration is not None:
+                record[letter] = duration
+            if parts_record:
+                record[letter + "P"] = parts_record
+            for voice, durations in part_alternates.items():
+                narrator.setdefault(quest_id, {}).setdefault(voice, {})[letter + "P"] = durations
             if gendered:
                 # $G branches per line, not per quest: quest 170's accept text
                 # branches and its complete text does not. One flag for the quest
@@ -490,15 +564,18 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
                 "f": item.base_name,
                 "h": item.hash,
                 "t": item.raw_text.replace("\r", " ").replace("\n", " "),
-                "d": round(duration, 3),
+                "d": duration,
                 "g": gendered or None,
                 "n": alternates or None,   # voice -> duration, turned into indices below
+                "P": parts_record,
+                "nP": part_alternates or None,   # voice -> {part index -> duration}, likewise
             })
 
     # Only the voices this pack actually carries go in the menu, and the records
     # index into that list, so a voice added to config.py later cannot shift them.
     spoken_voices = {voice for alternates in narrator.values() for voice in alternates}
-    spoken_voices.update(voice for entries in gossip.values() for entry in entries for voice in (entry["n"] or {}))
+    spoken_voices.update(voice for entries in gossip.values() for entry in entries
+                         for voice in list(entry["n"] or {}) + list(entry["nP"] or {}))
     voices = [voice for voice in NARRATOR_VOICES[1:] if voice in spoken_voices]
 
     quest_lines = [f"\t[{qid}] = {lua_record(rec)}," for qid, rec in sorted(quests.items())]
@@ -508,6 +585,8 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
         for entry in sorted(entries, key=lambda e: e["f"]):
             if entry["n"]:
                 entry["n"] = {voices.index(voice) + 1: seconds for voice, seconds in entry["n"].items()}
+            if entry["nP"]:
+                entry["nP"] = {voices.index(voice) + 1: durations for voice, durations in entry["nP"].items()}
             gossip_lines.append(f"\t\t{lua_record(entry)},")
         gossip_lines.append("\t},")
     npc_lines = [f"\t[{key}] = {lua_string(name)}," for key, name in sorted(npcs.items())]
@@ -625,13 +704,31 @@ def main(argv: list[str]) -> int:
                 skipped["speaker unknown (play it to capture)"] = skipped.get("speaker unknown (play it to capture)", 0) + 1
                 continue
             item.voice = args.assume_voice
-        for base, text in item.variants():
+        for variant in item.variants():
+            base, text = variant.base, variant.text
+            candidates: list[Target] = []
             if not is_speakable(text):
                 skipped["unresolved markup"] = skipped.get("unresolved markup", 0) + 1
-                continue
-            candidates = [] if args.narrator_only else [Target(item, base, text, item.voice)]
-            if item.is_narrator:
-                candidates += [Target(item, base, text, voice, True) for voice in alternate_voices]
+            else:
+                if not args.narrator_only:
+                    candidates.append(Target(item, base, text, item.voice))
+                if item.is_narrator:
+                    candidates += [Target(item, base, text, voice, True) for voice in alternate_voices]
+            # A line that mixes the speaker and the narrator: the speaker's parts
+            # in their voice, each <stage direction> in the narrator's, and the
+            # narrator's parts again in every alternate narrator voice.
+            for index, (role, words) in enumerate(variant.parts, 1):
+                if not is_speakable(words):
+                    skipped["unresolved markup"] = skipped.get("unresolved markup", 0) + 1
+                    continue
+                part = part_name(base, index)
+                if role == "npc":
+                    if not args.narrator_only:
+                        candidates.append(Target(item, part, words, item.voice))
+                    continue
+                if not args.narrator_only:
+                    candidates.append(Target(item, part, words, NARRATOR_VOICE))
+                candidates += [Target(item, part, words, voice, True) for voice in alternate_voices]
             if args.reindex:
                 for target in candidates:
                     recorded = sound_index.get(target.key)
