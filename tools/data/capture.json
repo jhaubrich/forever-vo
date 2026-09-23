@@ -2435,6 +2435,7 @@
    "build": "69913",
    "class": "Mage",
    "event": "gossip",
+   "firstSeen": 1790128324,
    "found": true,
    "mapID": 1454,
    "name": "Magar",
