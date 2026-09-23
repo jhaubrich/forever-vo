@@ -309,6 +309,36 @@
    "time": 1789949800,
    "zone": "Silverpine Forest"
   },
+  "197|877c25a9": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Marshal McBride",
+   "npc": "197",
+   "origin": "comment-5793727509",
+   "questID": null,
+   "source": "community",
+   "text": "Hey, citizen!  You look like a stout one.  We guards are spread a little thin out here, and I could use your help...",
+   "title": null,
+   "zone": "Elwynn Forest"
+  },
+  "1992|05f55f8a": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Tarindrella",
+   "npc": "1992",
+   "origin": "comment-5792628455",
+   "questID": null,
+   "source": "community",
+   "text": "Only in Nature do we find purity.",
+   "title": null,
+   "zone": "Teldrassil"
+  },
   "2055|288436fb": {
    "build": "69913",
    "event": "greeting",
@@ -1773,6 +1803,21 @@
    "time": 1790131665,
    "zone": "Zephras Isle"
   },
+  "255853|b64f61e0": {
+   "addon": "0.1.2",
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Urs'endris",
+   "npc": "255853",
+   "origin": "comment-5795880061",
+   "questID": null,
+   "source": "community",
+   "text": "The spirit of strength does not always allude to physical strength. To face adversity both from within and without is what it means to take my shape.",
+   "title": null,
+   "zone": "Zephras Isle"
+  },
   "255940|9cc50b7d": {
    "build": "69977",
    "class": "Hunter",
@@ -2532,7 +2577,7 @@
    "race": "Orc",
    "subzone": "The Drag",
    "text": "You may have what it takes. Let's find out! ",
-   "time": 1790135742,
+   "time": 1790180693,
    "zone": "Orgrimmar"
   },
   "3363|05c29513": {
@@ -2708,6 +2753,21 @@
    "time": 1789956865,
    "zone": "Undercity"
   },
+  "459|c7629bdf": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Drusilla La Salle",
+   "npc": "459",
+   "origin": "comment-5793727509",
+   "questID": null,
+   "source": "community",
+   "text": "The arcane only corrupts those who are weak. Even if you do not follow the path of the warlock, you would do well to remember that.",
+   "title": null,
+   "zone": "Elwynn Forest"
+  },
   "4612|5acaa152": {
    "build": "69913",
    "event": "gossip",
@@ -2850,6 +2910,21 @@
    "text": "I can train you in First Aid techniques.",
    "time": 1789925033,
    "zone": "Durotar"
+  },
+  "6373|721fd095": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Dane Winslow",
+   "npc": "6373",
+   "origin": "comment-5793727509",
+   "questID": null,
+   "source": "community",
+   "text": "Want to make your demons more powerful?  It'll cost you, but you've come to the right place.",
+   "title": null,
+   "zone": "Elwynn Forest"
   },
   "6491|22357dc5": {
    "build": "69913",
@@ -3136,12 +3211,24 @@
    "name": "Eagan Peltskinner",
    "sex": 2
   },
+  "197": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Marshal McBride",
+   "sex": 2
+  },
   "1978": {
    "creatureType": "Humanoid",
    "level": 11,
    "modelFileID": 959310,
    "name": "Deathstalker Erland",
    "sex": 2
+  },
+  "1992": {
+   "creatureType": "Humanoid",
+   "modelFileID": 123698,
+   "name": "Tarindrella",
+   "sex": 3
   },
   "2050": {
    "creatureType": "Humanoid",
@@ -3607,6 +3694,12 @@
    "name": "Quel'dora Quickgale",
    "sex": 3
   },
+  "255853": {
+   "creatureType": "Beast",
+   "modelFileID": 4687804,
+   "name": "Urs'endris",
+   "sex": 1
+  },
   "255940": {
    "creatureType": "Humanoid",
    "level": 10,
@@ -4019,6 +4112,12 @@
    "name": "Josef Gregorian",
    "sex": 2
   },
+  "459": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Drusilla La Salle",
+   "sex": 3
+  },
   "4612": {
    "creatureType": "Undead",
    "level": 30,
@@ -4104,6 +4203,12 @@
    "name": "Rawrk",
    "sex": 2
   },
+  "6373": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Dane Winslow",
+   "sex": 2
+  },
   "6491": {
    "creatureType": "Humanoid",
    "level": 60,
@@ -4138,6 +4243,12 @@
    "level": 35,
    "modelFileID": 959310,
    "name": "Alessandro Luca",
+   "sex": 2
+  },
+  "823": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Deputy Willem",
    "sex": 2
   },
   "8385": {
@@ -4433,6 +4544,21 @@
    "time": 1789995061,
    "title": "Smart Drinks",
    "zone": "The Barrens"
+  },
+  "1598-accept": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Drusilla La Salle",
+   "npc": "459",
+   "origin": "comment-5793727509",
+   "questID": 1598,
+   "source": "community",
+   "text": "You there! $N, right?\n\nI hope you're sure about becoming a warlock, because if you can't hold your own, you're likely to get pulled under.\n\nI'm to teach you, but I need to make sure you're strong enough first.\n\nThere was a novice studying at the Abbey who ran off to join the Defias Brotherhood. Why do I care? Well, he stole some important books.\n\nOne of those happens to be a book I've wanted for myself, the Powers of the Void. Steal it for me, they have it hidden at their tent in the Vineyards.",
+   "title": "The Stolen Tome",
+   "zone": "Elwynn Forest"
   },
   "179-accept": {
    "build": "69913",
@@ -5547,6 +5673,21 @@
    "title": "Beren's Peril",
    "zone": "Silverpine Forest"
   },
+  "5261-accept": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Willem",
+   "npc": "823",
+   "origin": "comment-5793727509",
+   "questID": 5261,
+   "source": "community",
+   "text": "Eagan Peltskinner is looking for someone to hunt wolves for him.  That's good news, because we're seeing a lot more wolves in Northshire Valley lately.\n\nIf you're interested then speak with Eagan.  He's around the side of the abbey, to the left.",
+   "title": "Eagan Peltskinner",
+   "zone": "Elwynn Forest"
+  },
   "5261-complete": {
    "addon": "0.1.2",
    "build": "69913",
@@ -5833,6 +5974,21 @@
    "title": "Return to the Crossroads",
    "zone": "The Barrens"
   },
+  "7-accept": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Marshal McBride",
+   "npc": "197",
+   "origin": "comment-5793727509",
+   "questID": 7,
+   "source": "community",
+   "text": "Your first task is one of cleansing, $N.  A clan of kobolds have infested the woods to the north.  Go there and fight the kobold vermin you find.  Reduce their numbers so that we may one day drive them from Northshire.",
+   "title": "Kobold Camp Cleanup",
+   "zone": "Elwynn Forest"
+  },
   "768-accept": {
    "build": "69913",
    "class": "Hunter",
@@ -5870,6 +6026,37 @@
    "time": 1790113519,
    "title": "Kodo Hide Bag",
    "zone": "Thunder Bluff"
+  },
+  "783-accept": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "accept",
+   "firstSeen": null,
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Willem",
+   "npc": "823",
+   "origin": "comment-5793727509",
+   "questID": 783,
+   "source": "community",
+   "text": "I hope you strapped your belt on tight, young $c, because there is work to do here in Northshire.\n\nAnd I don't mean farming.\n\nThe Stormwind guards are hard pressed to keep the peace here, with so many of us in distant lands and so many threats pressing close.  And so we're enlisting the aid of anyone willing to defend their home.  And their alliance.\n\nIf you're here to answer the call, then speak with my superior, Marshal McBride.  He's inside the abbey behind me.",
+   "title": "A Threat Within",
+   "zone": "Elwynn Forest"
+  },
+  "783-complete": {
+   "addon": "0.1.1",
+   "build": "69977",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Marshal McBride",
+   "npc": "197",
+   "origin": "comment-5793727509",
+   "questID": 783,
+   "source": "community",
+   "text": "Ah, good.  Another volunteer.  We're getting a lot of you these days.\n\nI hope it's enough.\n\nThe human lands are threatened from without, and so many of our forces have been marshaled abroad.  This, in turn, leaves room for corrupt and lawless groups to thrive within our borders.\n\nIt is a many-fronted battle we wage, $N.  Gird yourself for a long campaign.",
+   "title": "A Threat Within",
+   "zone": "Elwynn Forest"
   },
   "865-accept": {
    "build": "69913",
@@ -9679,6 +9866,21 @@
    "text": "We could try and send peacekeepers to directly engage the cult forces, but we would not fare well against them in open battle.\r\n\r\nWe are going to need a different approach.",
    "time": 1790115728,
    "title": "The Cult's True Plans",
+   "zone": "Zephras Isle"
+  },
+  "94638-complete": {
+   "addon": "0.1.2",
+   "build": "69977",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Urs'endris",
+   "npc": "255853",
+   "origin": "comment-5795880061",
+   "questID": 94638,
+   "source": "community",
+   "text": "The agony I feel over her loss is immeasurable, but it is what is necessary for the balance. You have demonstrated a resolve to persevere, even when a terrible price is asked.\r\n\r\nYou have done well, $c. I shall grant you the blessing to take on the shape of my kin. Be a beacon for those that lack the strength to persevere and a defender of those in need.\r\n\r\nGo now, and embrace the way of the claw, child.",
+   "title": "Strength and Mercy",
    "zone": "Zephras Isle"
   },
   "94896-accept": {
