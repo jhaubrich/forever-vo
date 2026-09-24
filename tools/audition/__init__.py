@@ -317,13 +317,16 @@ def _under(root: Path, relative: str) -> Path:
     return path
 
 
-def create_app(studio: Studio) -> FastAPI:
+def create_app(studio: Studio, dev: bool = False) -> FastAPI:
+    """`dev` re-reads index.html on every request, so page edits show on a browser
+    refresh; Python edits still need a restart (main's --reload does that)."""
     app = FastAPI(title="Forever Voiceover audition")
-    page = (resources.files(__package__) / "index.html").read_text(encoding="utf-8")
+    page_file = resources.files(__package__) / "index.html"
+    page = page_file.read_text(encoding="utf-8")
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
-        return page
+        return page_file.read_text(encoding="utf-8") if dev else page
 
     @app.get("/api/state")
     def state() -> dict[str, Any]:
@@ -354,6 +357,26 @@ def create_app(studio: Studio) -> FastAPI:
     @app.get("/api/audio/{session}/{name}")
     def take_audio(session: str, name: str) -> FileResponse:
         return FileResponse(_under(AUDITION_DIR, f"{_safe(session)}/{_safe(name)}"), media_type="audio/mpeg")
+
+    @app.get("/api/sessions")
+    def sessions(limit: int = Query(default=12, ge=1, le=100)) -> list[dict[str, Any]]:
+        """Past generate runs, newest first, so a page reload or a server restart
+        does not lose the takes: they are still on disk under tools/data/audition/."""
+        out = []
+        if not AUDITION_DIR.exists():
+            return out
+        for folder in sorted((p for p in AUDITION_DIR.iterdir() if p.is_dir()), reverse=True)[:limit]:
+            takes = []
+            for path in sorted(folder.glob("*.mp3")):
+                recipe = re.match(r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)-take(?P<take>\d+)\.mp3$", path.name)
+                takes.append({"name": path.name, "url": f"/api/audio/{folder.name}/{path.name}",
+                              "voice": recipe["voice"] if recipe else None,
+                              "exaggeration": float(recipe["e"]) if recipe else None,
+                              "cfg_weight": float(recipe["c"]) if recipe else None,
+                              "take": int(recipe["take"]) if recipe else None})
+            if takes:
+                out.append({"session": folder.name, "takes": takes})
+        return out
 
     @app.post("/api/generate")
     def generate_takes(request: GenerateRequest) -> StreamingResponse:
@@ -445,6 +468,16 @@ def create_app(studio: Studio) -> FastAPI:
     return app
 
 
+def app_from_env() -> FastAPI:
+    """uvicorn's --reload re-imports the module in a fresh process, so main() hands
+    its options over through the environment and this factory builds the app."""
+    import os
+
+    studio = Studio(config_path=Path(os.environ.get("AUDITION_CONFIG", str(CONFIG_TOML))),
+                    allow_cpu=os.environ.get("AUDITION_CPU") == "1")
+    return create_app(studio, dev=os.environ.get("AUDITION_DEV") == "1")
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -453,16 +486,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, default=CONFIG_TOML, help="the TOML to read and write (default: the repo's)")
     parser.add_argument("--cpu", action="store_true", help="allow generating on the CPU when there is no GPU (very slow)")
     parser.add_argument("--open", action="store_true", help="open the page in the browser")
+    parser.add_argument("--reload", action="store_true",
+                        help="for working on the page: index.html is re-read on every request, and a change to a "
+                             ".py file under tools/ restarts the server (which reloads the model, ~30 s, and "
+                             "drops a generate in flight)")
     args = parser.parse_args(argv)
+
+    import os
 
     import uvicorn
 
-    studio = Studio(config_path=args.config, allow_cpu=args.cpu)
+    os.environ["AUDITION_CONFIG"] = str(args.config)
+    os.environ["AUDITION_CPU"] = "1" if args.cpu else "0"
+    os.environ["AUDITION_DEV"] = "1" if args.reload else "0"
     url = f"http://{args.host}:{args.port}"
-    print(f"audition: {url}  (config {args.config})")
+    print(f"audition: {url}  (config {args.config}{', reloading on edits' if args.reload else ''})")
     if args.open:
         threading.Timer(1.0, webbrowser.open, [url]).start()
-    uvicorn.run(create_app(studio), host=args.host, port=args.port, log_level="warning")
+    uvicorn.run("tools.audition:app_from_env", factory=True, host=args.host, port=args.port, log_level="warning",
+                reload=args.reload, reload_dirs=[str(Path(__file__).resolve().parent.parent)] if args.reload else None)
     return 0
 
 

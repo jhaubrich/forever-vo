@@ -69,6 +69,10 @@
     </div>
     <p class="note">Whole words, any case. Saved under <code>[pronunciations]</code>; an empty spoken form removes the entry. Current: <span id="p-list"></span></p>
 
+    <h2>Recent takes</h2>
+    <select id="sessions"><option value="">pick a past run…</option></select>
+    <p class="note">Every generate run stays on disk; pick one to bring its takes back after a reload or a server restart.</p>
+
     <h2>Pack</h2>
     <button id="rebuild">Rebuild pack tables</button>
     <p class="note">After writing files into the pack, so the durations in the tables match. The nightly run does this too.</p>
@@ -216,7 +220,7 @@ $("go").addEventListener("click", async () => {
       let nl; while ((nl = buffer.indexOf("\n")) >= 0) { const line = buffer.slice(0, nl); buffer = buffer.slice(nl + 1); if (line.trim()) onEvent(JSON.parse(line)); }
     }
   } catch (e) { toast(e.message, "warn"); }
-  $("go").disabled = false; refresh();
+  $("go").disabled = false; refresh(); loadSessions();
 });
 
 function onEvent(ev) {
@@ -226,7 +230,8 @@ function onEvent(ev) {
   const tr = document.createElement("tr");
   const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}`;
   tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
-    `<td class="n">${ev.seconds}s in ${ev.elapsed}s</td><td></td>`;
+    `<td class="n">${ev.seconds === "" ? "" : `${ev.seconds}s in ${ev.elapsed}s`}</td><td></td>`;
+  tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
   const cell = tr.lastElementChild;
   const keep = document.createElement("button"); keep.textContent = "Keep these settings";
   keep.title = `Write [tts.voices.${$("voice").value}] with these settings${ev.reference ? " and this clip" : ""} into forever-vo.toml`;
@@ -272,6 +277,25 @@ $("p-keep").addEventListener("click", async () => {
   } catch (e) { toast(e.message, "warn"); }
 });
 
+let sessionsCache = [];
+async function loadSessions() {
+  try {
+    sessionsCache = await api("/api/sessions");
+    const keep = $("sessions").value;
+    $("sessions").innerHTML = '<option value="">pick a past run…</option>' +
+      sessionsCache.map(s => `<option value="${s.session}">${s.session.replace(/^(\d{4})(\d\d)(\d\d)-(\d\d)(\d\d)(\d\d)$/, "$1-$2-$3 $4:$5:$6")} · ${s.takes.length} take${s.takes.length === 1 ? "" : "s"} · ${s.takes[0].voice || "?"}</option>`).join("");
+    $("sessions").value = keep;
+  } catch (e) { /* the list is a convenience; the page works without it */ }
+}
+$("sessions").addEventListener("change", () => {
+  const s = sessionsCache.find(x => x.session === $("sessions").value);
+  if (!s) return;
+  $("takes-body").innerHTML = ""; $("progress").textContent = `takes from ${s.session}`;
+  if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); }
+  s.takes.forEach((t, i) => onEvent({ event: "take", n: i + 1, take: t.take, name: t.name, url: t.url, seconds: "", elapsed: "",
+    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, reference: null }));
+});
+
 $("rebuild").addEventListener("click", async () => {
   $("rebuild").disabled = true;
   try { const r = await api("/api/rebuild-tables", { method: "POST" }); toast(r.ok ? "Pack tables rebuilt." : "Rebuild reported a problem; see the server log.", r.ok ? "ok" : "warn"); }
@@ -280,6 +304,7 @@ $("rebuild").addEventListener("click", async () => {
 });
 
 refresh();
+loadSessions();
 setInterval(refresh, 15000);
 </script>
 </body>
