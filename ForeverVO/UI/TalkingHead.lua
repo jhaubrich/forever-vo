@@ -13,6 +13,7 @@ local FRAME_WIDTH, FRAME_HEIGHT = 570, 155
 local MODEL_SIZE = 115
 local TEXT_INSET = 28   -- left margin of the name and text when the portrait is hidden
 local TALK_ANIMATION = 60
+local MODEL_SETTLE = 0.5    -- seconds a model load gets before the book stands in
 local PAGE_CHARS = 330
 
 local TEXTURE_KIT_FORMATS = {
@@ -195,22 +196,82 @@ function TalkingHead:CreatePortrait()
         pcall(self.SetPortraitZoom, self, 1)
         pcall(self.SetCamDistanceScale, self, 1)
         pcall(self.SetFacing, self, 0)
+        self:Reveal()
         if self.talking then
             self:SetAnimation(TALK_ANIMATION)
         end
     end)
+
+    --- GetModelFileID is the one model query that answers on this client.
+    local function HasModel(self)
+        local ok, fileID = pcall(self.GetModelFileID, self)
+        return ok and fileID ~= nil and fileID ~= 0
+    end
+
+    local function Settle(self)
+        self.settle = nil
+        local hasModel = HasModel(self)
+        -- A hidden PlayerModel drops its model, so it is only hidden once the
+        -- load has had its chance, and shown again before the next load
+        self:SetShown(hasModel)
+        frame.Book:SetShown(not hasModel)
+    end
+
+    --- Shows the model once one is loaded, else the narrator's book: a speaker
+    --- the client has no model for gets the book, never a leftover face. A
+    --- load that has not answered yet is given a moment, since a failed one
+    --- never fires OnModelLoaded.
+    function model:Reveal()
+        self:CancelSettle()
+        if HasModel(self) then
+            Settle(self)
+        else
+            self.settle = C_Timer.NewTimer(MODEL_SETTLE, function()
+                Settle(self)
+            end)
+        end
+    end
+
+    function model:CancelSettle()
+        if self.settle then
+            self.settle:Cancel()
+            self.settle = nil
+        end
+    end
     model:SetScript("OnAnimFinished", function(self)
         self:SetAnimation(self.talking and TALK_ANIMATION or 0)
     end)
 
-    function model:ShowCreature(creatureID)
+    --- Loads the speaker's model. While the speaker is the unit on screen the
+    --- model comes from that unit, the way the capture reads it: the client is
+    --- drawing them, so it always has the model. SetCreature only knows what the
+    --- creature cache holds, and on this client it loaded nothing for
+    --- Varimathras and left the previous speaker (an orc) in the portrait. It
+    --- stays as the fallback for a line that plays after the dialog is gone,
+    --- cleared first so a failed load shows the book rather than the wrong
+    --- face. The model may arrive later, in OnModelLoaded, which reveals it.
+    function model:ShowCreature(creatureID, guid)
         self.talking = true
-        if self.creatureID ~= creatureID then
-            self.creatureID = creatureID
-            self:SetCreature(creatureID)
-        else
-            self:SetAnimation(TALK_ANIMATION)
+        local unit = guid and Util.DialogUnit()
+        if unit and UnitGUID(unit) ~= guid then
+            unit = nil
         end
+        local loaded = unit and guid or creatureID
+        if self.loaded == loaded then
+            self:SetAnimation(TALK_ANIMATION)
+            return
+        end
+        self.loaded = loaded
+        self:CancelSettle()
+        self:Show()
+        frame.Book:Hide()
+        if unit then
+            self:SetUnit(unit)
+        else
+            self:ClearModel()
+            self:SetCreature(creatureID)
+        end
+        self:Reveal()
     end
 
     function model:StopTalking()
@@ -462,15 +523,15 @@ function TalkingHead:SetPortrait(item)
     local shown = ns.db.showHead ~= false
     local creature = item.speakerKey and Util.IsCreatureKey(item.speakerKey)
     if shown and creature then
-        model:Show()
-        model:ShowCreature(item.speakerKey)
+        model:ShowCreature(item.speakerKey, item.guid)
     else
         model:StopTalking()
+        model:CancelSettle()
         model:ClearModel()
-        model.creatureID = nil
+        model.loaded = nil
         model:Hide()
+        frame.Book:SetShown(shown)
     end
-    frame.Book:SetShown(shown and not creature)
 end
 
 function TalkingHead:Present(item)
