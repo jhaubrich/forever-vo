@@ -83,7 +83,7 @@ CURSEFORGE_PROJECTS = {
     "addon": 1705010,   # Forever Voiceover
     "delta": 1705094,   # Forever Voiceover Data: Forever
     "base": 1705100,           # Forever Voiceover Data: Base (Classic quests to level 40, all gossip)
-    "base_endgame": None,      # Forever Voiceover Data: Base Endgame (Classic quests from 41); fill in once the project exists
+    "base_endgame": 1709884,   # Forever Voiceover Data: Base Endgame (Classic quests from 41)
 }
 
 # The client resolves $n, $c and $r against whoever is reading before any addon

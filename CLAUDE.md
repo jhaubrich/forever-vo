@@ -240,7 +240,8 @@ Three CurseForge projects, three release paths:
   hand and rarely. The complete Classic set with its five alternate narrators
   is 1.36 GB at 32 kbps, and **the CurseForge website caps a file at 1 GB**
   (learned 2026-09-24 when the 1,378 MB zip was refused; the API's cap is
-  lower still, `413 Payload Too Large` at 887 MB on 2026-09-22, while the 30
+  lower still, `413 Payload Too Large` at 887 MB on 2026-09-22 and at 574 MB
+  on 2026-09-24, while the 30
   to 70 MB delta goes through). So the set is split by quest level in
   `release_pack.py` (`BASE_SPLIT_LEVEL`): Base is quests to level 40 with all
   gossip (~800 MB), Base Endgame quests from 41 (~570 MB), each with its
