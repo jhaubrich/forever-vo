@@ -44,10 +44,21 @@ REPLACE = {
 # was bad, and "Nome-ruh-GAHN" came out partly as numbers (so do not mark stress
 # with capitals). Ahn'Qiraj is fine as written; "Ahn Kih-rahj" adds a rolled r.
 # Quel'Thalas came out wrong; "Quell Thalas" and "Kwel-thalas" were both fine.
+# Kharanos as written varies take to take, and so do "Karanos" and "Karra-noss"
+# (each had bad takes out of four); "Karranos" was fine all four times, sometimes
+# with a Scottish rolled r. Dun Morogh is fine as written; one bad take in game
+# ("Muro-h") was a bad sample, fixed by regenerating the file. Tirisfal as
+# written sometimes came out "Tirefal"; "Tirrisfal" and "Teerisfall" were right
+# four times of four. Hyphens can leave a pause mid-word ("Teer-iss-fall",
+# "Tirriss-fall"), so prefer respellings without them. Varimathras as written
+# was only ever ok or good; "Vairimathrus" was good four times of four.
 PRONUNCIATIONS = {
     "Ahn'Qiraj": "Ahn Kih-rahj",
     "Gnomeregan": "Nomer-gahn",
+    "Kharanos": "Karranos",
     "Quel'Thalas": "Quell Thalas",
+    "Tirisfal": "Tirrisfal",
+    "Varimathras": "Vairimathrus",
 }
 _PRONUNCIATION = re.compile(r"\b(" + "|".join(map(re.escape, PRONUNCIATIONS)) + r")\b", re.IGNORECASE)
 _PRONUNCIATION_KEYS = {word.lower(): spoken for word, spoken in PRONUNCIATIONS.items()}
