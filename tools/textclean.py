@@ -52,11 +52,14 @@ REPLACE = {
 # four times of four. Hyphens can leave a pause mid-word ("Teer-iss-fall",
 # "Tirriss-fall"), so prefer respellings without them. Varimathras as written
 # was only ever ok or good; "Vairimathrus" was good four times of four.
+# Sharptalon reads best as two words; "Sharp Talon" beat the plain spelling and
+# "Sharptallon", so a space does not leave the pause a hyphen can.
 PRONUNCIATIONS = {
     "Ahn'Qiraj": "Ahn Kih-rahj",
     "Gnomeregan": "Nomer-gahn",
     "Kharanos": "Karranos",
     "Quel'Thalas": "Quell Thalas",
+    "Sharptalon": "Sharp Talon",
     "Tirisfal": "Tirrisfal",
     "Varimathras": "Vairimathrus",
 }
