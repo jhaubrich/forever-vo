@@ -44,7 +44,11 @@ local commands = {
     clear  = { "Clear the queue", function() Queue:Clear() end },
     replay = { "Replay the current line", function() Queue:Replay() end },
     queue  = { "Toggle the queue panel", function() ns.UI.QueueList:Toggle() end },
-    head   = { "Toggle the talking head", function()
+    panel  = { "Toggle the panel (audio only when off)", function()
+        ns.db.showPanel = not ns.db.showPanel
+        ns.UI.TalkingHead:ApplySettings()
+    end },
+    head   = { "Toggle the speaker's portrait in the panel", function()
         ns.db.showHead = not ns.db.showHead
         ns.UI.TalkingHead:ApplySettings()
     end },
@@ -90,7 +94,11 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
             root:CreateButton(Queue:IsPaused() and "Resume" or "Pause", function() Queue:TogglePause() end)
             root:CreateButton("Skip current line", function() Queue:Skip() end)
             root:CreateButton("Clear queue", function() Queue:Clear() end)
-            root:CreateCheckbox("Show talking head", function() return ns.db.showHead end, function()
+            root:CreateCheckbox("Show the panel", function() return ns.db.showPanel end, function()
+                ns.db.showPanel = not ns.db.showPanel
+                ns.UI.TalkingHead:ApplySettings()
+            end)
+            root:CreateCheckbox("Show the talking head", function() return ns.db.showHead end, function()
                 ns.db.showHead = not ns.db.showHead
                 ns.UI.TalkingHead:ApplySettings()
             end)

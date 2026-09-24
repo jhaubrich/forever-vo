@@ -11,6 +11,7 @@ the audio. Right-click skips, the X clears the queue.
 
 local FRAME_WIDTH, FRAME_HEIGHT = 570, 155
 local MODEL_SIZE = 115
+local TEXT_INSET = 28   -- left margin of the name and text when the portrait is hidden
 local TALK_ANIMATION = 60
 local PAGE_CHARS = 330
 
@@ -380,12 +381,40 @@ function TalkingHead:ApplyTextureKit()
     frame.Title:SetShadowColor(colors.Shadow:GetRGBA())
 end
 
+--- Shows or hides the portrait (model, ring, glows, book) and moves the name,
+--- title and text to the frame's left edge while it is hidden. "Show the
+--- talking head" is this; "Show the panel" is the whole frame.
+function TalkingHead:LayoutPortrait()
+    local frame = self.frame
+    local shown = ns.db.showHead ~= false
+    for _, region in ipairs({ frame.Portrait, frame.GlowTop, frame.GlowLeft, frame.GlowRight }) do
+        region:SetShown(shown)
+    end
+    frame.Name:ClearAllPoints()
+    if shown then
+        frame.Name:SetPoint("TOPLEFT", frame.Portrait, "TOPRIGHT", 2, -19)
+    else
+        frame.Name:SetPoint("TOPLEFT", TEXT_INSET, -19)
+    end
+    frame.Name:SetPoint("RIGHT", -42, 0)
+    if self.displayed then
+        self:SetPortrait(self.displayed)
+        if shown and frame:IsShown() and not frame.isClosing then
+            -- the fade-in already ran while these were hidden
+            frame.Model:SetAlpha(1)
+            frame.Model.PortraitBg:SetAlpha(1)
+            frame.Portrait:SetAlpha(1)
+        end
+    end
+end
+
 function TalkingHead:ApplySettings()
     local frame = self.frame
     frame:SetScale(ns.db.headScale or 1)
     self:ApplyTextureKit()
     frame.Text:SetShown(ns.db.showText ~= false)
-    if not ns.db.showHead then
+    self:LayoutPortrait()
+    if not ns.db.showPanel then
         self:CloseFrame()
     end
     self:Update()
@@ -430,8 +459,9 @@ end
 function TalkingHead:SetPortrait(item)
     local frame = self.frame
     local model = frame.Model
-    frame.Book:Hide()
-    if item.speakerKey and Util.IsCreatureKey(item.speakerKey) then
+    local shown = ns.db.showHead ~= false
+    local creature = item.speakerKey and Util.IsCreatureKey(item.speakerKey)
+    if shown and creature then
         model:Show()
         model:ShowCreature(item.speakerKey)
     else
@@ -439,8 +469,8 @@ function TalkingHead:SetPortrait(item)
         model:ClearModel()
         model.creatureID = nil
         model:Hide()
-        frame.Book:Show()
     end
+    frame.Book:SetShown(shown and not creature)
 end
 
 function TalkingHead:Present(item)
@@ -491,7 +521,7 @@ function TalkingHead:Update()
     local frame = self.frame
     local current = Queue:Current()
 
-    if not current or not ns.db.showHead then
+    if not current or not ns.db.showPanel then
         self:CloseFrame()
     elseif current ~= self.displayed then
         self:Present(current)

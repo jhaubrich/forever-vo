@@ -136,7 +136,8 @@ ns.OnInit(function()
 
     -- Talking head
     local display = Settings.RegisterVerticalLayoutSubcategory(category, "Talking head")
-    Checkbox(display, "showHead", "Show the talking head", "Show the speaker, their name and the text while a line plays.", RefreshHead)
+    Checkbox(display, "showPanel", "Show the panel", "Show the frame with the speaker, their name and the text while a line plays. Clear it for audio only.", RefreshHead)
+    Checkbox(display, "showHead", "Show the talking head", "Show the speaker's portrait. Clear it to keep the parchment, the name and the text without the head.", RefreshHead)
     Checkbox(display, "showText", "Show the spoken text", "Display the words being spoken, paged in time with the audio.", RefreshHead)
     Checkbox(display, "lockHead", "Lock position", "Prevent the frame from being dragged.")
     Checkbox(display, "factionHead", "Faction parchment style", "Read quests on the light Alliance or Horde parchment. Clear it for Blizzard's dark talking head panel.", RefreshHead)

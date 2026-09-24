@@ -34,7 +34,8 @@ ns.defaults = {
     stopOnClose = false,
 
     -- Talking head
-    showHead = true,
+    showPanel = true,                    -- the whole frame; clear it for audio only
+    showHead = true,                     -- the speaker's portrait inside it
     lockHead = false,
     headScale = 1,
     showText = true,

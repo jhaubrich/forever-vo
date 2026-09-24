@@ -2,6 +2,10 @@
 
 ## 0.1.4
 
+- "Show the talking head" now hides just that: the speaker's portrait goes
+  and the parchment, name and text stay, moved over to the left edge. Hiding
+  the whole frame is the new "Show the panel" option (`/fvo panel`), for
+  audio only.
 - Quest lines that address you by gender ("lad" or "lass", "sir" or "madam")
   are no longer voiced with whichever word the first contributor happened to
   hear. The client resolves that choice before the addon sees the text, and
