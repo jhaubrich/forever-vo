@@ -1,0 +1,72 @@
+{
+ "addon": "0.1.3",
+ "gossip": {
+  "2409|c5ceacbe": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1431,
+   "name": "Felicia Maline",
+   "npc": "2409",
+   "questID": null,
+   "sex": null,
+   "source": "community",
+   "text": "Where would you like to fly to?",
+   "time": null,
+   "title": null,
+   "wanted": null,
+   "zone": "Duskwood"
+  },
+  "714|7dd450ba": {
+   "build": "70009",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Talin Keeneye",
+   "npc": "714",
+   "questID": null,
+   "sex": null,
+   "source": "community",
+   "text": "Greetings, $c! Fine day for hunting, wouldn't you say? I've been having more than a little luck with boars, myself. Perhaps you'd like a shot?",
+   "time": null,
+   "title": null,
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "npcs": {
+  "2409": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Felicia Maline",
+   "sex": 3
+  },
+  "714": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Talin Keeneye",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5823739619",
+ "quests": {
+  "233-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Talin Keeneye",
+   "npc": "714",
+   "questID": 233,
+   "sex": null,
+   "source": "community",
+   "text": "Yes? Do you have something for me?",
+   "time": null,
+   "title": "Coldridge Valley Mail Delivery",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
