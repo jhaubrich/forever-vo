@@ -196,7 +196,9 @@ function TalkingHead:CreatePortrait()
         pcall(self.SetPortraitZoom, self, 1)
         pcall(self.SetCamDistanceScale, self, 1)
         pcall(self.SetFacing, self, 0)
-        self:Reveal()
+        if not self.revealing then
+            self:Reveal()
+        end
         if self.talking then
             self:SetAnimation(TALK_ANIMATION)
         end
@@ -212,8 +214,14 @@ function TalkingHead:CreatePortrait()
         self.settle = nil
         local hasModel = HasModel(self)
         -- A hidden PlayerModel drops its model, so it is only hidden once the
-        -- load has had its chance, and shown again before the next load
-        self:SetShown(hasModel)
+        -- load has had its chance, and shown again before the next load.
+        -- Showing it fires OnModelLoaded again, even when it was already
+        -- shown, so only touch what changes and ignore that callback meanwhile
+        self.revealing = true
+        if self:IsShown() ~= hasModel then
+            self:SetShown(hasModel)
+        end
+        self.revealing = nil
         frame.Book:SetShown(not hasModel)
     end
 
