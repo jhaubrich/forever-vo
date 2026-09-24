@@ -197,6 +197,14 @@ def duration(path: Path) -> float:
 
 
 SPEECH_HEAD_CLIPS = 2        # splices inside the window cost delivery; keep the head to a few
+# An archetype is only worth minting if it can get a real head. Rated by ear over
+# twelve races, every voice with 4.8 s or more of speech at the head was preferred to
+# the shipped pooled one, and every voice with 4.0 s or less was worse - troll-male at
+# 3.4 s and troll-female at 3.2 s lost the Jamaican delivery the way dwarves lost the
+# Scottish one (#18), because too little connected speech lets the model fall back on
+# its own neutral prior. Below the bar the speaker falls back to the race voice, which
+# takes the longest slice and so always clears it.
+ARCHETYPE_MIN_HEAD = 4.5
 # s3gen reads 10 s. Spending it all on shared emote speech left every archetype
 # sounding like the race's emote actor and nothing else; half of it leaves room for
 # the speaker's own clips inside the window, which is what makes one archetype
@@ -308,8 +316,15 @@ def build_reference(voice: str, files: list[Path], head: list[Path] | None = Non
          "-ac", "1", "-ar", "24000", "-af", "loudnorm", str(out)],
         check=True,
     )
+    head_seconds = sum(duration(p) for p in chosen[:SPEECH_HEAD_CLIPS]) if head else 0.0
+    if re.fullmatch(r".+-s\d+", voice) and head_seconds < ARCHETYPE_MIN_HEAD:
+        # Not enough speech to hold a delivery; wowdata.archetype_voice falls back to
+        # the race voice when the clip is absent, and that one has the longest head
+        out.unlink(missing_ok=True)
+        print(f"{out.name}: head only {head_seconds:.1f}s, leaving these NPCs on the race voice")
+        return None
     print(f"{out.name}: {len(chosen)} clips, {total:.1f}s"
-          + (f", head {duration(chosen[0]):.1f}s" if head else " (no speech available)"))
+          + (f", head {head_seconds:.1f}s" if head else " (no speech available)"))
     return out
 
 
