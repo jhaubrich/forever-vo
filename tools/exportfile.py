@@ -1,10 +1,11 @@
 """Decodes "/fvo export" strings (FVO1:<base64 zlib json>) into capture-schema JSON.
 
 Standard library only, so it also runs inside the GitHub Action that turns
-capture issues into files under captures/.
+capture issues into files under captures/ (`uv run --no-project`, no sync of
+the project's dependencies).
 
-    python tools/exportfile.py --out captures/issue-12.json < body.txt
-    python tools/exportfile.py --out captures/mine.json "FVO1:eJy..."
+    ./tools/run.sh tools/exportfile.py --out captures/issue-12.json < body.txt
+    uv run --no-project tools/exportfile.py --out captures/mine.json "FVO1:eJy..."
 """
 from __future__ import annotations
 
@@ -73,7 +74,8 @@ def to_capture(data: dict, origin: str) -> dict:
     return out
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("export", nargs="?", help="export string, or a file containing one; stdin if omitted")
     parser.add_argument("--out", required=True, help="where to write the decoded JSON")
@@ -102,5 +104,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

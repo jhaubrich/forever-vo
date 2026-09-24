@@ -1,7 +1,7 @@
 """Cross-checks every global function the addon calls against the captured
 Forever API surface (docs/forever_api.json, from Thunderz96/forever-addon-kit).
 
-    uv run tools/apicheck.py
+    ./tools/run.sh tools/apicheck.py
 
 Prints names that are not client functions, not defined in the addon, and not
 known frames. Anything printed is either a comment word or a real bug: the

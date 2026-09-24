@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = []
-# ///
 """Builds cloning references from Warcraft III unit audio.
 
 Some speakers have no recorded voice anywhere in World of Warcraft. A dryad, a
@@ -36,9 +32,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-from config import VOICES_DIR
+from tools.config import VOICES_DIR
 
 TARGET_SECONDS = 20.0
 MIN_TOTAL = 2.5      # some units have only a handful of lines; report rather than refuse
@@ -80,7 +74,8 @@ def duration(path: Path) -> float:
         return 0.0
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--src", type=Path, default=VOICES_DIR / "raw-wc3" / "units",
                     help="folder of extracted WC3 units audio (default: what extract_wc3_units.py writes)")
@@ -141,4 +136,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

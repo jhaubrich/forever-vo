@@ -15,10 +15,10 @@ import re
 import sys
 from pathlib import Path
 
-from config import ADDON_NAME, BETA_DIR, CAPTURE_JSON, COMMUNITY_CHARACTERS, DATA_DIR, LEGACY_CHARACTERS, ROOT
-from luatable import parse_saved_variables
-from textclean import has_gender_branch, split_gender
-from textkey import text_key, tokenize
+from tools.config import ADDON_NAME, BETA_DIR, CAPTURE_JSON, COMMUNITY_CHARACTERS, DATA_DIR, LEGACY_CHARACTERS, ROOT
+from tools.luatable import parse_saved_variables
+from tools.textclean import has_gender_branch, split_gender
+from tools.textkey import text_key, tokenize
 
 CAPTURES_DIR = ROOT / "captures"   # community exports decoded by tools/exportfile.py
 SOURCES_JSON = CAPTURE_JSON.with_name("capture.sources.json")  # mtime bookkeeping, not versioned
@@ -573,7 +573,8 @@ def backfill(capture: dict, sources: SourceTexts | None, stats: Repairs) -> tupl
     return quests, gossip
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     files = [Path(a) for a in argv] or (find_saved_variable_files() + sorted(CAPTURES_DIR.glob("*.json")))
     if not files:
         print(f"no {SV_NAME} files found under {BETA_DIR / 'WTF' / 'Account'}")
@@ -620,4 +621,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

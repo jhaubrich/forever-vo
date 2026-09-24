@@ -25,9 +25,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v10   # Python only through uv; .python-version picks the interpreter
       - name: Decode the export string
         id: decode
         env:
@@ -36,7 +34,7 @@ jobs:
         run: |
           printf '%s' "$BODY" > /tmp/body.txt
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
-          if python tools/exportfile.py /tmp/body.txt --out "captures/$NAME.json" --origin "$NAME" | tee /tmp/result.txt; then
+          if uv run --no-project tools/exportfile.py /tmp/body.txt --out "captures/$NAME.json" --origin "$NAME" | tee /tmp/result.txt; then
             echo "ok=true" >> "$GITHUB_OUTPUT"
           else
             echo "ok=false" >> "$GITHUB_OUTPUT"

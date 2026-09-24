@@ -8,12 +8,9 @@ from __future__ import annotations
 
 import json
 import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-from config import DATA_DIR  # noqa: E402
-from ingest import Repairs, SourceTexts, merge_entry, needs_of, rebuild_gender, repair_entry, restore_gender  # noqa: E402
+from tools.config import DATA_DIR
+from tools.ingest import Repairs, SourceTexts, merge_entry, needs_of, rebuild_gender, repair_entry, restore_gender
 
 failures = 0
 

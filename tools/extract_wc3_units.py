@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = []
-# ///
 """Pulls Warcraft III's English unit voice lines out of a local Reforged install.
 
 build_wc3_references.py wants a folder of extracted `units/<race>/<unit>/*`
@@ -33,9 +29,7 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-from config import DATA_DIR, VOICES_DIR
+from tools.config import DATA_DIR, VOICES_DIR
 
 CASCLIB = Path(os.environ.get("FOREVER_VO_CASCLIB") or DATA_DIR / "libcasc.so")
 STORES = [
@@ -122,7 +116,8 @@ def read_file(lib: ctypes.CDLL, storage: ctypes.c_void_p, name: str, size: int) 
         lib.CascCloseFile(handle)
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--store", type=Path, help="Warcraft III install folder (the one with .build.info)")
     ap.add_argument("--casclib", type=Path, default=CASCLIB, help=f"shared library (default {CASCLIB})")
@@ -171,4 +166,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

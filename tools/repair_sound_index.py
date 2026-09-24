@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = ["requests"]
-# ///
 """Puts the voice back on sound_index.json entries that lost it.
 
 Before 2026-09-22 two bulk workers erased each other's index records: each
@@ -27,12 +23,9 @@ import argparse
 import re
 import subprocess
 import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-import generate  # noqa: E402
-from config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR  # noqa: E402
+from tools import generate
+from tools.config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR
 
 _LINE = re.compile(r"\[\d+/\d+\] (\S+)\.mp3\s+[\d.]+s audio in\s+[\d.]+s\s+\[([^\]]+)\]")
 UNITS = ("forever-vo-bulk", "forever-vo-daily")
@@ -60,7 +53,8 @@ def journal_voices(since: str) -> dict[str, str]:
     return voices
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--since", default="14 days ago", help="journalctl --since (default: 14 days ago)")
     parser.add_argument("--dry-run", action="store_true", help="report without writing")
@@ -99,4 +93,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

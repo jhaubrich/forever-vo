@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = ["requests"]
-# ///
 """Builds cloning references from retail World of Warcraft creature voice-over.
 
 Some speakers have no recorded voice in the Forever client and none in Warcraft
@@ -27,11 +23,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
 import requests
 
-from config import DATA_DIR, VOICES_DIR, WAGO_BASE
+from tools.config import DATA_DIR, VOICES_DIR, WAGO_BASE
 
 RETAIL_BUILD = "12.1.0.69875"
 LISTFILE = DATA_DIR / "verified-listfile.csv"
@@ -154,7 +148,8 @@ def build(label: str, clips: list[Path]) -> Path:
     return dest
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true", help="resolve FileDataIDs, download nothing")
     ap.add_argument("--only", action="append", help="build just these labels (prefix match)")
@@ -204,4 +199,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

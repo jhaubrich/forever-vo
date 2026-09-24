@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = ["requests"]
-# ///
 """Builds reference clips for voice cloning straight from the client's own audio.
 
 For every race/gender that has humanoid NPC models, this pulls the Blizzard
@@ -23,8 +19,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from config import GENDER_DICT, RACE_DICT, VOICES_DIR
-from wowdata import fetch_file, load_db2
+from tools.config import GENDER_DICT, RACE_DICT, VOICES_DIR
+from tools.wowdata import fetch_file, load_db2
 
 RAW_DIR = VOICES_DIR / "raw"
 TARGET_SECONDS = 20.0
@@ -137,7 +133,8 @@ def build_reference(voice: str, files: list[Path]) -> Path | None:
     return out
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     wanted = set(argv)
     named_only = "--named" in wanted
     wanted.discard("--named")
@@ -167,4 +164,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())
