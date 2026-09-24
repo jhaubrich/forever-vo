@@ -78,6 +78,24 @@
    "time": 1789956846,
    "zone": "Undercity"
   },
+  "11051|32f7eed3": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1456,
+   "name": "Vhan",
+   "npc": "11051",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "",
+   "text": "No part of the animals we hunt is wasted. ",
+   "time": 1790275151,
+   "zone": "Thunder Bluff"
+  },
   "11066|b615098a": {
    "build": "69913",
    "event": "gossip",
@@ -122,16 +140,22 @@
    "zone": "Undercity"
   },
   "11833|eb2e4319": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789936555,
+   "found": true,
    "mapID": 1456,
    "name": "Rahauro",
    "npc": "11833",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Elder Rise",
    "text": "Well met, $c. You may speak to me unless you have direct business with my mistress Magatha.\n\nI deal with most of her tasks for her so she can concentrate on more important matters. Perhaps there are some things we could discuss before you seek audience with her?",
-   "time": 1789942019,
+   "time": 1790275312,
    "zone": "Thunder Bluff"
   },
   "11835|0f923099": {
@@ -165,7 +189,8 @@
    "zone": "Stonetalon Mountains"
   },
   "11869|49ff395c": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
    "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1790113573,
@@ -176,9 +201,10 @@
    "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "",
    "text": "I would be honored to train you in the use of the weapons that I have mastered should you have the ability to learn within you.",
-   "time": 1790113573,
+   "time": 1790275431,
    "zone": "Thunder Bluff"
   },
   "11870|3a5c3d7e": {
@@ -364,6 +390,24 @@
    "text": "In these trying times, a simple donation of cloth can go a long way to help those less fortunate than ourselves.  Cloth goes a long way to making garments and bandages - both important for the war effort!\n\nIf you are interested in donating cloth pieces to the orcs of Orgrimmar, I will gladly accept them and make sure you receive the proper recognition for doing so.\n\nFor the Horde!",
    "time": 1789930736,
    "zone": "Orgrimmar"
+  },
+  "14728|9fb0176c": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1456,
+   "name": "Rumstag Proudstrider",
+   "npc": "14728",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "",
+   "text": "Hail sister... I'd like a moment of your time, if I may.\n\nWe tauren have endured much in our trials and tribulations in establishing our homeland.  We now find ourselves in a dire shortage of cloth.  If you have the materials to spare, I ask that you please donate them.  You certainly would earn the gratitude of tauren everywhere in helping us out!",
+   "time": 1790275159,
+   "zone": "Thunder Bluff"
   },
   "1499|9cb5b422": {
    "build": "69913",
@@ -1226,18 +1270,22 @@
    "zone": "Zephras Isle"
   },
   "251905|3541aa81": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
    "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1790005285,
+   "found": true,
    "mapID": 2521,
    "name": "Zerril Softbreeze",
    "npc": "251905",
+   "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Shen'dar Village",
    "text": "If you need training as a cook, I have a few tips and tricks I could pass on! Ho ho! Throw on an apron and let's get started!",
-   "time": 1790030035,
+   "time": 1790273046,
    "zone": "Zephras Isle"
   },
   "251906|e9380575": {
@@ -1625,6 +1673,7 @@
    "zone": "Zephras Isle"
   },
   "252389|2becf397": {
+   "addon": "0.1.4",
    "build": "69977",
    "class": "Hunter",
    "event": "gossip",
@@ -1636,9 +1685,10 @@
    "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Valanaar",
    "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
-   "time": 1790131669,
+   "time": 1790274846,
    "zone": "Zephras Isle"
   },
   "252392|720694b4": {
@@ -2069,6 +2119,22 @@
    "title": null,
    "zone": "Elwynn Forest"
   },
+  "254081|86bf8d52": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "gossip",
+   "mapID": 2521,
+   "name": "Naeluna Swiftmend",
+   "npc": "254081",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Shen'dar Village",
+   "text": "If you have the aptitude for the druidic arts, I can train you.",
+   "time": 1790274215,
+   "zone": "Zephras Isle"
+  },
   "254082|4d87d665": {
    "build": "69913",
    "event": "gossip",
@@ -2083,18 +2149,22 @@
    "zone": "Zephras Isle"
   },
   "254084|2becf397": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
    "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1790005438,
+   "found": true,
    "mapID": 2521,
    "name": "Elayaa Easewind",
    "npc": "254084",
+   "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Shen'dar Village",
    "text": "The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.\r\n\r\nIf you have the proper aptitude as a $c, I can give you the tools to survive the wilds.",
-   "time": 1790028311,
+   "time": 1790274215,
    "zone": "Zephras Isle"
   },
   "254089|9cc50b7d": {
@@ -2201,6 +2271,7 @@
    "zone": "Zephras Isle"
   },
   "254411|0e051c59": {
+   "addon": "0.1.4",
    "build": "69977",
    "class": "Hunter",
    "event": "gossip",
@@ -2212,9 +2283,10 @@
    "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Valanaar",
    "text": "You've come for training in order to pass it on to your pets?",
-   "time": 1790131665,
+   "time": 1790274850,
    "zone": "Zephras Isle"
   },
   "255853|b64f61e0": {
@@ -2233,6 +2305,7 @@
    "zone": "Zephras Isle"
   },
   "255940|9cc50b7d": {
+   "addon": "0.1.4",
    "build": "69977",
    "class": "Hunter",
    "event": "gossip",
@@ -2244,9 +2317,10 @@
    "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Valanaar",
    "text": "Welcome to the Calmbreeze Inn, traveler. Would you like some refreshment?",
-   "time": 1790260845,
+   "time": 1790274734,
    "zone": "Zephras Isle"
   },
   "256076|f046599c": {
@@ -2697,6 +2771,22 @@
    "time": 1790261662,
    "zone": "Zephras Isle"
   },
+  "259119|00001505": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "greeting",
+   "mapID": 1412,
+   "name": "Alaana Stormwalker",
+   "npc": "259119",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Camp Gev'rek",
+   "text": " ",
+   "time": 1790269898,
+   "zone": "Mulgore"
+  },
   "259620|334a03a9": {
    "build": "69977",
    "class": "Paladin",
@@ -2860,6 +2950,22 @@
    "time": 1790125295,
    "zone": "Zephras Isle"
   },
+  "264078|adb68b1b": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "gossip",
+   "mapID": 1412,
+   "name": "Sutara Plainstalker",
+   "npc": "264078",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Camp Gev'rek",
+   "text": "It is my honor to handle supply and provisioning for the Earthen Ring. \r\n\r\nMy stock is limited at present, but check back with me often and I may have new equipment and supplies available for purchase.",
+   "time": 1790269934,
+   "zone": "Mulgore"
+  },
   "265654|32c7384b": {
    "build": "69913",
    "class": "Hunter",
@@ -3018,16 +3124,22 @@
    "zone": "Elwynn Forest"
   },
   "2995|bfaf54b7": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789937445,
+   "found": true,
    "mapID": 1456,
    "name": "Tal",
    "npc": "2995",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "",
    "text": "When mounted on the back of a wind rider, one sees that its reputation for strength and speed is well earned.",
-   "time": 1789994367,
+   "time": 1790275543,
    "zone": "Thunder Bluff"
   },
   "3004|dfa12b04": {
@@ -3044,18 +3156,22 @@
    "zone": "Thunder Bluff"
   },
   "3050|57562eaa": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
    "class": "Hunter",
    "event": "greeting",
    "firstSeen": 1790113529,
+   "found": true,
    "mapID": 1456,
    "name": "Veren Tallstrider",
    "npc": "3050",
+   "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "",
    "text": "The tauren are sons and daughters of the Earthmother, and we show respect to all her children.  Even the beasts we slay are cherished, as their bodies give nourishment and their skins provide warmth.",
-   "time": 1790113529,
+   "time": 1790270137,
    "zone": "Thunder Bluff"
   },
   "3084|5d6f0b28": {
@@ -3263,16 +3379,22 @@
    "zone": "Durotar"
   },
   "3216|13f1d3f9": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789940898,
+   "found": true,
    "mapID": 1454,
    "name": "Neeru Fireblade",
    "npc": "3216",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Cleft of Shadow",
    "text": "Listen closely to what you are told and do not quickly trust, or distrust.  For even friends serve their own ends, $c.\n\nOur great Warchief knows this, and to prove that there are warlocks within the Horde who do not wish to destroy it from within or gain control over it, I have volunteered to aid our young leader in anyway I can.",
-   "time": 1789940898,
+   "time": 1790276007,
    "zone": "Orgrimmar"
   },
   "3304|645294fc": {
@@ -3550,16 +3672,22 @@
    "zone": "Tirisfal Glades"
   },
   "4047|550c4a52": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789940639,
+   "found": true,
    "mapID": 1454,
    "name": "Zor Lonetree",
    "npc": "4047",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Grommash Hold",
    "text": "Greetings, traveler.",
-   "time": 1789940639,
+   "time": 1790275904,
    "zone": "Orgrimmar"
   },
   "4312|c5ceacbe": {
@@ -3719,6 +3847,24 @@
    "time": 1789940989,
    "zone": "Orgrimmar"
   },
+  "4949|9a2b62b8": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Grommash Hold",
+   "text": "All members of the Horde are equal in my eyes, $N. We have all suffered many burdens, and if it were not for wisdom and honor, then we would be no better than the Scourge or my people while our blood was tainted by the demon Mannoroth.\n\nIt is your duty to aid the Horde and to defend our way of life. But it is also your duty to know when quarter and compassion should be given to friend and foe alike.\n\nUnderstand this well. This is the new Horde, not some demon-spawned army who lack freewill.",
+   "time": 1790275929,
+   "zone": "Orgrimmar"
+  },
   "514|aa4da6d8": {
    "addon": "0.1.2",
    "build": "69977",
@@ -3787,17 +3933,41 @@
    "zone": "Undercity"
   },
   "5769|c9ae2675": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789936570,
+   "found": true,
    "mapID": 1456,
    "name": "Arch Druid Hamuul Runetotem",
    "npc": "5769",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Elder Rise",
    "text": "The earth keeps many secrets, $c; it is our duty to ensure that those that must remain a secret for the good of all stays as such.",
-   "time": 1789936570,
+   "time": 1790275331,
    "zone": "Thunder Bluff"
+  },
+  "5811|aea93ec3": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Kamari",
+   "npc": "5811",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "The Drag",
+   "text": "Too bad we can't skin the humans and their allies. All that skin is just going to waste. Still, who'd want to wear the flimsy leather you could make out of it?",
+   "time": 1790275843,
+   "zone": "Orgrimmar"
   },
   "5885|f341dff7": {
    "build": "69913",
@@ -3945,21 +4115,23 @@
    "zone": "Elwynn Forest"
   },
   "6491|22357dc5": {
+   "addon": "0.1.4",
    "build": "69977",
    "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1790004124,
    "found": true,
-   "mapID": 2521,
+   "mapID": 1456,
    "name": "Spirit Healer",
    "npc": "6491",
    "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "race": "Windshaper Skyborne",
-   "subzone": "Gustberry Lowlands",
+   "sex": "f",
+   "subzone": "",
    "text": "It is not yet your time. I shall aid your journey back to the realm of the living... for a price.",
-   "time": 1790262450,
-   "zone": "Zephras Isle"
+   "time": 1790269980,
+   "zone": "Thunder Bluff"
   },
   "658|003beda2": {
    "build": "69913",
@@ -3991,6 +4163,24 @@
    "time": 1790205585,
    "zone": "Silverpine Forest"
   },
+  "6746|e013de07": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1456,
+   "name": "Innkeeper Pala",
+   "npc": "6746",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "",
+   "text": "As the wind on the plains, you are always welcome here.",
+   "time": 1790275194,
+   "zone": "Thunder Bluff"
+  },
   "6928|7161de72": {
    "build": "69977",
    "class": "Warlock",
@@ -4009,8 +4199,9 @@
    "zone": "Durotar"
   },
   "6929|7161de72": {
+   "addon": "0.1.4",
    "build": "69977",
-   "class": "Paladin",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789924785,
    "found": true,
@@ -4018,11 +4209,12 @@
    "name": "Innkeeper Gryshka",
    "npc": "6929",
    "pack": "Forever",
-   "player": "Fixpoint Fix",
-   "race": "Undead",
+   "player": "Pellinore Fixpoint",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Valley of Strength",
    "text": "If we are to make these new lands ours then we must have places to rest our battle weary bodies. Lay your axe by the fire and share the stories of your mighty battles.",
-   "time": 1790211272,
+   "time": 1790276163,
    "zone": "Orgrimmar"
   },
   "714|7dd450ba": {
@@ -4296,6 +4488,13 @@
    "name": "Rhiannon Davis",
    "sex": 3
   },
+  "11051": {
+   "creatureType": "Humanoid",
+   "level": 26,
+   "modelFileID": 968705,
+   "name": "Vhan",
+   "sex": 2
+  },
   "11066": {
    "creatureType": "Humanoid",
    "level": 26,
@@ -4480,6 +4679,13 @@
    "modelFileID": 949470,
    "name": "Rashona Straglash",
    "sex": 3
+  },
+  "14728": {
+   "creatureType": "Humanoid",
+   "level": 35,
+   "modelFileID": 968705,
+   "name": "Rumstag Proudstrider",
+   "sex": 2
   },
   "1495": {
    "creatureType": "Humanoid",
@@ -5129,6 +5335,7 @@
   },
   "254081": {
    "creatureType": "Humanoid",
+   "level": 10,
    "modelFileID": 7478494,
    "name": "Naeluna Swiftmend",
    "sex": 3
@@ -5437,6 +5644,13 @@
    "level": 10,
    "modelFileID": 7478494,
    "name": "Peacekeeper",
+   "sex": 3
+  },
+  "264078": {
+   "creatureType": "Humanoid",
+   "level": 30,
+   "modelFileID": 986648,
+   "name": "Sutara Plainstalker",
    "sex": 3
   },
   "265654": {
@@ -5941,6 +6155,13 @@
    "name": "Nara Wildmane",
    "sex": 3
   },
+  "5811": {
+   "creatureType": "Humanoid",
+   "level": 26,
+   "modelFileID": 949470,
+   "name": "Kamari",
+   "sex": 3
+  },
   "5885": {
    "creatureType": "Humanoid",
    "level": 40,
@@ -6002,6 +6223,13 @@
    "modelFileID": 959310,
    "name": "Innkeeper Bates",
    "sex": 2
+  },
+  "6746": {
+   "creatureType": "Humanoid",
+   "level": 30,
+   "modelFileID": 986648,
+   "name": "Innkeeper Pala",
+   "sex": 3
   },
   "6774": {
    "creatureType": "Humanoid",
@@ -6267,18 +6495,23 @@
    "zone": "Elwynn Forest"
   },
   "1061-accept": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "accept",
    "firstSeen": 1789940640,
+   "found": true,
    "mapID": 1454,
    "name": "Zor Lonetree",
-   "needs": "mf",
    "npc": "4047",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
    "questID": 1061,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Grommash Hold",
    "text": "The spirits of the Stonetalon Mountains are angered, for goblins and their servants are plundering and burning the land.  So the land has cried out, and those who listen for such things... have heard.\n\nSeereth Stonebreak, a promising shaman of the Horde, was sent to Stonetalon.  She reports massive deforestation at the hands of the goblins, and requests aid.\n\nMeet Seereth in Stonetalon.  To reach her, follow the road west of the Barrens' Crossroads.  She is camped near the Greatwood Vale.",
-   "time": 1789940640,
+   "time": 1790275905,
    "title": "The Spirits of Stonetalon",
    "zone": "Orgrimmar"
   },
@@ -9398,34 +9631,44 @@
    "zone": "Durotar"
   },
   "5722-accept": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "accept",
    "firstSeen": 1789936554,
+   "found": true,
    "mapID": 1456,
    "name": "Rahauro",
-   "needs": "mf",
    "npc": "11833",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
    "questID": 5722,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Elder Rise",
    "text": "The troggs are not the only thing that interested Magatha in Ragefire Chasm. She has heard word that one of her servants, a Maur Grimtotem, found something peculiar while in the Chasm, but he never made it out to show her what. She'd like Maur's body found--if it still exists--and any signs of what he found while attempting to speak to the troggs.\n\nReturn to Magatha any items of interest, and I'm sure she would be very generous in her reward.\n\nAgain, seek the Chasm in the darkest areas of Orgrimmar.",
-   "time": 1789936554,
+   "time": 1790275311,
    "title": "Searching for the Lost Satchel",
    "zone": "Thunder Bluff"
   },
   "5723-accept": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
    "event": "accept",
    "firstSeen": 1789936556,
+   "found": true,
    "mapID": 1456,
    "name": "Rahauro",
-   "needs": "mf",
    "npc": "11833",
-   "player": "Myrlin Fixpoint",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
    "questID": 5723,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Elder Rise",
    "text": "Beneath the city of Orgrimmar, stout creatures known as troggs started coming to the surface from deep below the lava filled tunnels. In her ever-benevolence, Magatha sought to make peace with the creatures, but they turned on her diplomats, killing them. She will not allow such treatment of the tauren people and now consider the creatures a threat to all of the Horde.\n\nShe asks that you put an end to this trogg threat before it overwhelms the Horde from below. Find Ragefire Chasm and destroy them all.",
-   "time": 1789936556,
+   "time": 1790275313,
    "title": "Testing an Enemy's Strength",
    "zone": "Thunder Bluff"
   },
@@ -9525,6 +9768,26 @@
    "title": "The Power to Destroy...",
    "zone": "Undercity"
   },
+  "5726-accept": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "accept",
+   "found": true,
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 5726,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Grommash Hold",
+   "text": "One thing I will not tolerate are traitors in our midst, $N. But I would be a fool to play my hand so early--it would not sufficiently cut the corruption out of our lands and only cause the infection to grow worse.\n\nBut you, a young adventurer, could go places my agents could not... could learn the truth... could find the true head of the beast.\n\nIf you are brave enough, then enter Skull Rock to the east of Orgrimmar, find a lieutenant's insignia off one of the Burning Blade there, and return to me.",
+   "time": 1790275927,
+   "title": "Hidden Enemies",
+   "zone": "Orgrimmar"
+  },
   "5728-complete": {
    "build": "69913",
    "event": "complete",
@@ -9603,6 +9866,26 @@
    "text": "Ashenvale? Hmm, I had not heard of any presence of the Council or the Burning Blade in Ashenvale. My spies will investigate, $N. You have done well.\n\nFor now, rest, and keep yourself occupied with other tasks. I will call upon you again soon.\n\nLok-Tar Ogar!",
    "time": 1789940991,
    "title": "Hidden Enemies",
+   "zone": "Orgrimmar"
+  },
+  "5761-accept": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "accept",
+   "found": true,
+   "mapID": 1454,
+   "name": "Neeru Fireblade",
+   "npc": "3216",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 5761,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Cleft of Shadow",
+   "text": "The primary task set upon me by our great Warchief is to root out the creatures responsible for infesting our lord's great city with demonic influence. The Burning Blade is one threat, but there are others; the Searing Blade for instance, who make their home in Ragefire Chasm, secretly attempting to subvert innocent members of the Horde.\n\nIf they are to be stopped, then their leader must be slain--a Felguard named Taragaman the Hungerer.\n\nKill him, and his heart will appease Thrall, of this I'm sure.",
+   "time": 1790276008,
+   "title": "Slaying the Beast",
    "zone": "Orgrimmar"
   },
   "5761-complete": {
@@ -10276,6 +10559,44 @@
    "title": "Gathering Leather",
    "zone": "Thunder Bluff"
   },
+  "768-complete": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "complete",
+   "found": true,
+   "mapID": 1456,
+   "name": "Veren Tallstrider",
+   "npc": "3050",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 768,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "",
+   "text": "Ah, these are very nice pieces.  They'll make fine leather goods.\n\nHere, $N.  Take this in trade...",
+   "time": 1790275143,
+   "title": "Gathering Leather",
+   "zone": "Thunder Bluff"
+  },
+  "768-progress": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "progress",
+   "mapID": 1456,
+   "name": "Veren Tallstrider",
+   "npc": "3050",
+   "player": "Pellinore Fixpoint",
+   "questID": 768,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "",
+   "text": "Hello again.  Have you been hunting?  Do you have skins for me?",
+   "time": 1790275142,
+   "title": "Gathering Leather",
+   "zone": "Thunder Bluff"
+  },
   "769-accept": {
    "build": "69913",
    "class": "Hunter",
@@ -10293,6 +10614,44 @@
    "subzone": "",
    "text": "The kodo beasts of Mulgore are strong and sturdy -- traits much respected among us.  If you are skilled in leatherworking and wish the knowledge to make a Kodo Hide Bag, then bring me supplies for my trade.\n\nDo this, and I will share my knowledge with you.",
    "time": 1790113519,
+   "title": "Kodo Hide Bag",
+   "zone": "Thunder Bluff"
+  },
+  "769-complete": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "complete",
+   "found": true,
+   "mapID": 1456,
+   "name": "Veren Tallstrider",
+   "npc": "3050",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 769,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "",
+   "text": "Ah, good.  Thank you, $N.  My heart swells with pride to see youths interested in the craft of leatherworking.",
+   "time": 1790270139,
+   "title": "Kodo Hide Bag",
+   "zone": "Thunder Bluff"
+  },
+  "769-progress": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "progress",
+   "mapID": 1456,
+   "name": "Veren Tallstrider",
+   "npc": "3050",
+   "player": "Pellinore Fixpoint",
+   "questID": 769,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "",
+   "text": "Do you have my supplies, $N?",
+   "time": 1790270138,
    "title": "Kodo Hide Bag",
    "zone": "Thunder Bluff"
   },
@@ -11363,6 +11722,26 @@
    "time": 1789934524,
    "title": "Altered Beings",
    "zone": "The Barrens"
+  },
+  "886-accept": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "accept",
+   "found": true,
+   "mapID": 1456,
+   "name": "Arch Druid Hamuul Runetotem",
+   "npc": "5769",
+   "pack": "Forever",
+   "player": "Pellinore Fixpoint",
+   "questID": 886,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Elder Rise",
+   "text": "The druids of Thunder Bluff sense a strange power leaking into the Barrens, east of Mulgore.\n\nTonga Runetotem was sent to discover the source of this power, but we fear he will need aid.\n\nTravel to the Barrens and speak with Tonga.  He will be at the Crossroads.  To reach there, take the road east out of Bloodhoof village.  Enter the Barrens, then turn north when the road forks.  Continue north and  you will find the Crossroads.\n\nAnd do not leave the road, $N, for the Barrens is a harsh land.",
+   "time": 1790275332,
+   "title": "The Barrens Oases",
+   "zone": "Thunder Bluff"
   },
   "90902-accept": {
    "build": "69913",
@@ -14949,6 +15328,24 @@
    "title": "The Broken Construct",
    "zone": "Zephras Isle"
   },
+  "93739-accept": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "accept",
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "player": "Pellinore Fixpoint",
+   "questID": 93739,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Grommash Hold",
+   "text": "Azeroth is a large world, and the territory of the Horde is vast. The Undercity, Orgrimmar, and Thunder Bluff all have very unique people and culture.\r\n\r\nIf you are to be a guest of the horde here on Azeroth, it would do you good to visit each of our capital cities in turn. Speak with my advisor Nazgrel for directions.",
+   "time": 1790275924,
+   "title": "Exploring the Horde",
+   "zone": "Orgrimmar"
+  },
   "93740-accept": {
    "build": "69913",
    "class": "Hunter",
@@ -15347,6 +15744,44 @@
    "text": "<Valennia looks gravely wounded.>",
    "time": 1790117427,
    "title": "The Inner Sanctum",
+   "zone": "Zephras Isle"
+  },
+  "94007-accept": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "accept",
+   "mapID": 2521,
+   "name": "Elayaa Easewind",
+   "needs": "m",
+   "npc": "254084",
+   "player": "Pellinore Fixpoint",
+   "questID": 94007,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Shen'dar Village",
+   "text": "Now that you've gained a level of comfort in the wilds of the highlands, I believe it is time for you to seek your very own animal companion.\r\n\r\nGo to the port of Valanaar to the southeast, and speak with Quel'ana Quickgale there. He will instruct you in the art of beast taming.",
+   "time": 1790273084,
+   "title": "Taming the Beast",
+   "zone": "Zephras Isle"
+  },
+  "94007-complete": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 2521,
+   "name": "Quel'ana Quickgale",
+   "needs": "m",
+   "npc": "252389",
+   "player": "Pellinore Fixpoint",
+   "questID": 94007,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Valanaar",
+   "text": "I am most glad that you came. Come, let us begin.",
+   "time": 1790274843,
+   "title": "Taming the Beast",
    "zone": "Zephras Isle"
   },
   "94013-accept": {
@@ -16578,23 +17013,66 @@
    "title": "The Earthen Ring",
    "zone": "Zephras Isle"
   },
+  "95349-complete": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 1412,
+   "name": "Alaana Stormwalker",
+   "needs": "m",
+   "npc": "259119",
+   "player": "Pellinore Fixpoint",
+   "questID": 95349,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Camp Gev'rek",
+   "text": "More adventurers from Zephras, I see. Wonderful. The winds surely favor us! It's going to take us some time to get ourselves established here, so you may want to take some time to explore this new land.\r\n\r\nAzeroth is an exciting new world, but it's also a dangerous world. You'd do well to prepare yourself for this new adventure by familiarizing yourself with the lands nearby.",
+   "time": 1790269900,
+   "title": "The Earthen Ring",
+   "zone": "Mulgore"
+  },
   "95350-accept": {
-   "build": "69913",
+   "addon": "0.1.4",
+   "build": "69977",
    "class": "Hunter",
    "event": "accept",
    "firstSeen": 1790114966,
+   "found": true,
    "mapID": 1412,
    "name": "Alaana Stormwalker",
-   "needs": "mf",
+   "needs": "m",
    "npc": "259119",
+   "pack": "Forever",
    "player": "Pellinore Fixpoint",
    "questID": 95350,
    "race": "Windshaper Skyborne",
+   "sex": "f",
    "subzone": "Camp Gev'rek",
    "text": "Its a big world down here, and our new allies are the key to our survival.\r\n\r\nThe Earthen Ring is a member of the \"Horde\", a proud collection of like-minded peoples. The nearby city of Thunder Bluff is a part of the horde, and further to the east lies the capital of Orgrimmar.\r\n\r\nSeek out the flight master in the center of Thunder Bluff. They will fly you to Orgrimmar where you will make contact with the horde warchief--Thrall, on behalf of the Windshapers. Winds guide you, $N.",
-   "time": 1790114966,
+   "time": 1790269906,
    "title": "Welcome to Azeroth",
+   "wanted": true,
    "zone": "Mulgore"
+  },
+  "95350-complete": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "complete",
+   "mapID": 1454,
+   "name": "Thrall",
+   "needs": "m",
+   "npc": "4949",
+   "player": "Pellinore Fixpoint",
+   "questID": 95350,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Grommash Hold",
+   "text": "Lok-tar, $c. I am Thrall, Warchief of the Horde.\r\n\r\nAn Earthen Ring messenger told me to expect an emissary from the Windshapers, and here you are. I'd not have expected to see a high elf standing before me here in Orgrimmar, but the horde will welcome you as our guest all the same.\r\n\r\nYou have my blessing to travel through horde lands. Go with honor, Windshaper.",
+   "time": 1790275923,
+   "title": "Welcome to Azeroth",
+   "zone": "Orgrimmar"
   },
   "95774-accept": {
    "build": "69913",
@@ -17112,6 +17590,24 @@
    "time": 1790197491,
    "title": "This Fruit Could Bite Back",
    "zone": "Durotar"
+  },
+  "96875-accept": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "accept",
+   "mapID": 1454,
+   "name": "Kamari",
+   "npc": "5811",
+   "player": "Pellinore Fixpoint",
+   "questID": 96875,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "The Drag",
+   "text": "Orgrimmar is always expanding, $c. And when the peons need hides to line the walls and roofs of our new buildings, they come to me!\r\n\r\nThe hides of the lizards in Thunder Ridge are typically too thick for armor, but they make excellent building material. Bring me some of their hides, along with a few lighter cured hides. Let's see your skill with leather!",
+   "time": 1790275844,
+   "title": "Beasts of Thunder Ridge",
+   "zone": "Orgrimmar"
   },
   "96895-accept": {
    "build": "69913",
@@ -17766,6 +18262,24 @@
    "time": 1790005269,
    "title": "Camping 101: Skinning",
    "zone": "Zephras Isle"
+  },
+  "98024-accept": {
+   "addon": "0.1.4",
+   "build": "69977",
+   "class": "Hunter",
+   "event": "accept",
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "player": "Pellinore Fixpoint",
+   "questID": 98024,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Grommash Hold",
+   "text": "After journeying here from the elemental plane, the problems our lands face may seem small. Rest assured, the dangers the horde faces are very real, and you will grow formidable should you survive your service.\r\n\r\nIf you'd like to get started doing some good in our world, travel southwest to the vast lands known as the Barrens. There is a settlement there known as the Crossroads. The proud citizens there are ever in need of aid.\r\n\r\nGo with honor, adventurer!",
+   "time": 1790275930,
+   "title": "Journey to the Crossroads",
+   "zone": "Orgrimmar"
   },
   "98512-accept": {
    "build": "69913",
