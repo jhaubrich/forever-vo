@@ -38,6 +38,7 @@ from __future__ import annotations
 import argparse
 import fcntl
 import json
+import re
 import os
 import subprocess
 import sys
@@ -113,6 +114,13 @@ class VoiceCatalog:
             return self._resolved[voice]
         race, _, gender = voice.partition("-")
         chain = [voice]
+        # "<race>-<gender>-s<set>" is one archetype of a voice. If that clip is gone -
+        # build_voice_references drops an archetype whose head is too thin to carry a
+        # delivery - the voice's own clip is a better fallback than another race's.
+        if re.fullmatch(r".+-s\d+", voice):
+            base = voice.rsplit("-s", 1)[0]
+            chain.append(base)
+            race, _, gender = base.partition("-")
         fallback = self.config.voices.fallbacks.get(race)
         if fallback:
             chain.append(f"{fallback}-{gender}" if gender else fallback)
