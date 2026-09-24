@@ -64,12 +64,19 @@ cfg_weight = 0.5
 # neutral accent unless pushed, and pushing only works on a reference of a few
 # long connected clips rather than the usual montage of barks: npc-3597 is a
 # named dwarf's four connected lines. It takes both changes together; either
-# alone comes out muddled. dwarf-female is untested and keeps the defaults until
-# it has a long-clip reference of its own. Tuning a voice restages exactly that
-# voice's files (the settings join the text fingerprint), including the voices
-# that borrow its clip.
+# alone comes out muddled. Tuning a voice restages exactly that voice's files
+# (the settings join the text fingerprint), including the voices that borrow
+# its clip.
 [tts.voices.dwarf-male]
 reference = "npc-3597"
+exaggeration = 0.75
+cfg_weight = 0.3
+
+# dwarf-female keeps its greeting montage: on #18's test line, two takes each of
+# the montage and of a 26 s clip built from her /joke and /flirt lines, at the
+# defaults and at 0.75 / 0.3, the owner picked both montage takes at 0.75 / 0.3
+# as the clear winners (2026-09-24). So for this voice the settings alone do it.
+[tts.voices.dwarf-female]
 exaggeration = 0.75
 cfg_weight = 0.3
 

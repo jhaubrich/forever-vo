@@ -480,9 +480,13 @@ owner's machine picks the files up on the next sync.
   untuned key so it can never mark such a file current. Rebuilding a clip's
   audio is not in the fingerprint on purpose: `--force --voice <voice>` is the
   targeted way to redo one voice and the voices cloned from its clip. dwarf-male
-  is the one tuned voice so far (0.75 / 0.3 on npc-3597's four connected lines,
-  set 2026-09-24, restaging ~3,100 files); dwarf-female is untested and stays
-  on the defaults until it has a long-clip reference of its own.
+  was tuned first (0.75 / 0.3 on npc-3597's four connected lines, set
+  2026-09-24, restaging ~3,100 files). dwarf-female followed the same day at
+  0.75 / 0.3 on her existing greeting montage: an A/B against a clip built from
+  her /joke and /flirt lines (`EmotesTextSound`, emotes 328 FLIRT and 329 JOKE,
+  the only long connected player-voice recordings the client has) lost to the
+  montage at the same settings, so for that voice the settings alone did it.
+  jhaubrich is working on the joke/flirt clips more generally.
 - `--assume-voice` on `generate.py` voices cache-only quests whose giver is
   unknown (used once for Zephras Isle with `skyborne-male`); the voice-change
   check fixes them once a capture names the giver.
