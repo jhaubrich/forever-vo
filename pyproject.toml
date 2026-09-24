@@ -15,6 +15,7 @@ license = "MIT"
 authors = [{ name = "Quinn Dougherty", email = "quinn@for-all.dev" }]
 requires-python = ">=3.12,<3.13"   # what .python-version and uv.lock pin; 3.13+ would resolve a different torch
 dependencies = [
+    "pydantic>=2.13.5",
     "requests",
     "requests-toolbelt",   # streams the pack upload to CurseForge from disk
 ]
@@ -24,6 +25,12 @@ dependencies = [
 # `uv run --no-group tts tools/ingest.py`. It is on by default because the
 # owner's machine, where every script runs, generates audio nightly.
 [dependency-groups]
+dev = [
+    "hypothesis>=6.168.1",
+    "pytest>=9.1.1",
+    "ruff>=0.16.8",
+    "ty>=0.0.84",
+]
 tts = [
     "chatterbox-tts==0.1.7",   # every voice so far was generated on this release; bump on purpose
     "setuptools<81",           # perth (chatterbox's watermarker) still imports pkg_resources
