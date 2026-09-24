@@ -25,7 +25,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10   # Python only through uv; .python-version picks the interpreter
+      - uses: astral-sh/setup-uv@v10.2.0   # exact tag: there is no moving v10; Python only through uv, .python-version picks the interpreter
       - name: Decode the export string
         id: decode
         env:
