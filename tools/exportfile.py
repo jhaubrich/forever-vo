@@ -54,6 +54,8 @@ def to_capture(data: dict, origin: str) -> dict:
             "isObject": line.get("o") or None,
             "zone": line.get("z"),
             "mapID": line.get("m"),
+            "sex": line.get("g"),            # "m"/"f", from addon 0.1.4 on
+            "wanted": line.get("w") or None,  # a voiced line the pack asked to hear again
             "build": data.get("build"),
             "source": "community",
         }

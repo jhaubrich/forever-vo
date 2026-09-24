@@ -106,6 +106,30 @@ game's own recordings).
   placeholders are reconciled; the capture's text otherwise wins. Two readers
   of different class or race who capture the same quest also settle it in
   `merge_entry` (gossip keys differ by hash, so that only helps quests).
+- **The client resolves `$g lad:lass;` too, and one reader cannot reverse it**:
+  the other branch is gone. Since addon 0.1.4 (capture version 4, export field
+  `g`) the capture records the reader's sex, and ingest puts the branch back
+  two ways, both idempotent: `restore_gender` hands the raw source text back
+  when a capture is that text read as one sex (jhaubrich's #28), and
+  `merge_gender` rebuilds `$g his:hers;` from a male and a female reading that
+  differ only in short aligned runs (`rebuild_gender`: at most three branches
+  of four words, alignment 0.6, no inserts). Identical readings settle the
+  line with `sex: "mf"`; a later reading that no longer matches (Forever
+  reworded the quest) outvotes a settled entry, so it is asked for again.
+  `needs_of` records on each quest entry which readers are still wanted
+  (`needs`: `f` after a male reading, `mf` when the reader is unknown, none
+  when the text matches raw source text without a branch), `rebuild_tables`
+  writes it as `wa`/`wp`/`wc` on the quest record, and the addon
+  (`Packs:QuestWanted`, `Capture.Contributes`) captures and exports such a
+  line even though it is voiced, with `wanted` set. That is the general hook
+  for any later change in what a capture must carry: make `needs_of` ask and
+  players re-supply the line; no hand-built exports, no sharing of
+  `questcache.wdb` (the owner declined both on #29). Gossip stays resolved:
+  it is keyed by a hash of the live text. Note that `release_pack.py
+  --if-changed` fingerprints sound files only, so new `w*` markers reach
+  players with the next delta that carries a new file. `./tools/run.sh
+  tools/gender_check.py` runs fixed cases and Classic's quest 233 through all
+  of it; run it after touching any of those functions.
 - `luac -p` every changed Lua file (`nix shell nixpkgs#lua5_1 -c luac -p`).
   There is no in-game test harness; the owner tests by `/reload`.
 
@@ -285,7 +309,8 @@ storefront logo.
 ## Crowdsourcing
 
 `/fvo export` packs a session's unvoiced lines (character name replaced by
-`$n`) via `C_EncodingUtil` into an `FVO1:` string. Players paste it as a
+`$n`), plus voiced lines the pack asked to hear again from a reader of the
+player's sex (`wanted`), via `C_EncodingUtil` into an `FVO1:` string. Players paste it as a
 comment on issue #1; `.github/workflows/ingest-captures.yml` decodes it with
 `tools/exportfile.py` (stdlib only) into `captures/` and reacts with a rocket.
 The owner's machine picks those up on the next sync.

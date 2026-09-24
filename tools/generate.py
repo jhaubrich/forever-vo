@@ -575,6 +575,12 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
                 # events that actually branched; Packs.lua still accepts `true`.
                 letters = set(record.get("g") or "") | {QUEST_EVENTS[item.event]}
                 record["g"] = "".join(sorted(letters))
+            # wa/wp/wc: the readers ingest.py still wants this event captured by
+            # (needs_of: "f" after a male reading of a line the client resolved
+            # a $G branch out of, "mf" when the reader is unknown). The addon
+            # exports the line again for such a reader although it is voiced.
+            if item.entry.get("needs"):
+                record["w" + letter] = item.entry["needs"]
             # npc is the giver, which the addon shows for an accept text the
             # client leaves unattributed (an item-started or shared quest);
             # ender the turn-in speaker, for a progress or complete text at a
