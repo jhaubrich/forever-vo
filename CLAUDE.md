@@ -113,6 +113,10 @@ game's own recordings).
   when the capture is exactly that source resolved to one gender, paragraph
   breaks aside. Gossip is left resolved: it is keyed by a hash of the live text,
   which the client has already resolved, so a stored `$g` would never match.
+  This cannot be crowdsourced: exports carry only resolved text, and the raw
+  `$g` is only in Classic or a client's own `questcache.wdb` (offers only), so
+  a Forever-only quest is fixed only after a dev who has seen it runs
+  `wdbcache.py` on their cache.
 - `luac -p` every changed Lua file (`nix shell nixpkgs#lua5_1 -c luac -p`).
   There is no in-game test harness; the owner tests by `/reload`.
 

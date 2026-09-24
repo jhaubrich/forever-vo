@@ -208,6 +208,13 @@ def restore_gender(text: str, source: str) -> tuple[str, int]:
     Quests only: gossip is keyed by a hash of its text, and the addon hashes the
     live text, which the client has already resolved. A stored "$g" would never
     match (see Util.NormalizeText, which drops $n/$c/$r but cannot restore $g).
+
+    Nothing here guesses from the capture: a "lad" is only a branch where the raw
+    source text has one. Community exports cannot supply that, since the raw $g
+    lives only in a client's own questcache.wdb (offers only) or in Classic, so a
+    Forever-only quest is restored only once a dev who has seen it decodes their
+    cache into bulk/questcache.json; reworded, complete and progress lines of
+    Forever-only quests stay as captured.
     """
     if not source or not has_gender_branch(source) or has_gender_branch(text):
         return text, 0
