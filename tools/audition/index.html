@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forever Voiceover audition</title>
+<style>
+  :root { color-scheme: dark; --bg: #16130f; --panel: #221d17; --ink: #e8dcc6; --dim: #9a8b74; --line: #3a3128; --gold: #d9b45b; --ok: #7fbf7f; --warn: #e0a050; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, sans-serif; }
+  header { display: flex; gap: 16px; align-items: baseline; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; margin: 0; color: var(--gold); font-weight: 600; }
+  header .status { color: var(--dim); font-size: 12px; }
+  header .status b { color: var(--ink); font-weight: 500; }
+  main { display: grid; grid-template-columns: 340px 1fr; gap: 0; min-height: calc(100vh - 45px); }
+  aside { border-right: 1px solid var(--line); padding: 14px; overflow: auto; }
+  section { padding: 14px 20px; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 18px 0 8px; }
+  h2:first-child { margin-top: 0; }
+  input, select, textarea, button { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+  input:focus, select:focus, textarea:focus { outline: 1px solid var(--gold); }
+  textarea { width: 100%; min-height: 96px; resize: vertical; }
+  button { cursor: pointer; }
+  button.primary { background: var(--gold); color: #1a1408; border-color: var(--gold); font-weight: 600; }
+  button:disabled { opacity: .45; cursor: default; }
+  label { display: block; color: var(--dim); font-size: 12px; margin: 8px 0 3px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .row > * { flex: 1; }
+  .row > button { flex: 0 0 auto; }
+  #results { list-style: none; margin: 0; padding: 0; max-height: 40vh; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
+  #results li { padding: 6px 8px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  #results li:hover, #results li.active { background: var(--panel); }
+  #results .t { font-weight: 500; }
+  #results .m { color: var(--dim); font-size: 12px; }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 10px; color: var(--dim); margin-left: 4px; }
+  .badge.tuned { border-color: var(--gold); color: var(--gold); }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  th { color: var(--dim); font-weight: 500; font-size: 12px; }
+  td.n { color: var(--dim); }
+  audio { height: 32px; width: 260px; }
+  .recipe { font-family: ui-monospace, monospace; font-size: 12px; }
+  .note { color: var(--dim); font-size: 12px; }
+  .warn { color: var(--warn); }
+  .ok { color: var(--ok); }
+  #toast { position: fixed; right: 20px; bottom: 20px; background: var(--panel); border: 1px solid var(--gold); padding: 10px 14px; border-radius: 4px; display: none; max-width: 480px; }
+  #current { padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
+  #current .m { color: var(--dim); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Forever Voiceover audition</h1>
+  <span class="status">model <b id="s-model">…</b> · corpus <b id="s-corpus">…</b> · bulk worker <b id="s-bulk">…</b> · <span id="s-config"></span></span>
+</header>
+<main>
+  <aside>
+    <h2>Find a line</h2>
+    <input id="q" placeholder="quest title, NPC, words, or a base name like 415-accept" autocomplete="off">
+    <ul id="results"></ul>
+    <p class="note">Every word must match. Pick a line to load its spoken text and voice; free text below works too.</p>
+
+    <h2>Pronunciation</h2>
+    <div class="row">
+      <input id="p-word" placeholder="Gnomeregan">
+      <input id="p-spoken" placeholder="Nomer-gahn">
+      <button id="p-keep">Keep</button>
+    </div>
+    <p class="note">Whole words, any case. Saved under <code>[pronunciations]</code>; an empty spoken form removes the entry. Current: <span id="p-list"></span></p>
+
+    <h2>Pack</h2>
+    <button id="rebuild">Rebuild pack tables</button>
+    <p class="note">After writing files into the pack, so the durations in the tables match. The nightly run does this too.</p>
+  </aside>
+
+  <section>
+    <h2>Line</h2>
+    <div id="current"><span class="m">No line picked: free text.</span></div>
+    <label for="text">Text (cleaned and respelled before it reaches the model)</label>
+    <textarea id="text">Aye, a stack o' letters came through the pass today, and I dinnae have the time to send them along.</textarea>
+
+    <div class="row">
+      <div><label for="voice">Voice</label><select id="voice"></select></div>
+      <div><label for="reference">Clone from</label><select id="reference"></select></div>
+      <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
+    </div>
+    <div class="row">
+      <div><label for="exag">Exaggeration values</label><input id="exag" value="0.45, 0.75"></div>
+      <div><label for="cfg">cfg_weight values</label><input id="cfg" value="0.5, 0.3"></div>
+      <button id="go" class="primary">Generate</button>
+    </div>
+    <p class="note" id="resolved"></p>
+
+    <h2>Takes</h2>
+    <table>
+      <thead><tr><th>#</th><th>Recipe</th><th>Take</th><th>Length</th><th></th></tr></thead>
+      <tbody id="takes-body"></tbody>
+    </table>
+    <p class="note" id="progress"></p>
+  </section>
+</main>
+<div id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let state = null;
+let current = null;   // the picked LineRow, or null for free text
+
+function toast(message, cls) {
+  const t = $("toast"); t.textContent = message; t.className = cls || ""; t.style.display = "block";
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.style.display = "none", 6000);
+}
+
+async function api(path, options) {
+  const response = await fetch(path, options);
+  if (!response.ok) { let detail = response.statusText; try { detail = (await response.json()).detail || detail; } catch (e) {} throw new Error(detail); }
+  return response.json();
+}
+
+function applyState(s) {
+  const first = !state;
+  state = s;
+  $("s-model").textContent = s.model; $("s-corpus").textContent = s.corpus;
+  $("s-bulk").textContent = s.bulk_service; $("s-bulk").className = s.bulk_service === "active" ? "warn" : "";
+  $("s-config").textContent = s.config_path;
+  $("p-list").textContent = Object.entries(s.pronunciations).map(([w, sp]) => `${w} → ${sp}`).join(", ") || "none";
+  const voice = $("voice"), ref = $("reference");
+  const keepVoice = voice.value, keepRef = ref.value;
+  voice.innerHTML = s.voices.map(v => `<option value="${v}">${v}${s.resolved[v].tuned ? " ★" : ""}</option>`).join("");
+  ref.innerHTML = `<option value="">the voice's own (${"as configured"})</option>` + s.voices.map(v => `<option value="${v}">${v}.wav</option>`).join("");
+  if (first) { voice.value = s.voices.includes("dwarf-female") ? "dwarf-female" : s.voices[0]; }
+  else { voice.value = keepVoice; ref.value = keepRef; }
+  if (first) { $("exag").value = `${s.defaults.exaggeration}, 0.75`; $("cfg").value = `${s.defaults.cfg_weight}, 0.3`; }
+  showResolved();
+}
+
+function showResolved() {
+  if (!state) return;
+  const r = state.resolved[$("voice").value];
+  if (!r) { $("resolved").textContent = ""; return; }
+  const ref = $("reference").value;
+  $("resolved").innerHTML = `Saved resolution for <b>${$("voice").value}</b>: clip <b>${r.clip || "none (built-in voice)"}</b>` +
+    (r.source !== $("voice").value ? ` borrowed from <b>${r.source}</b>` : "") +
+    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>` +
+    (ref ? ` · this run clones from <b>${ref}.wav</b> instead` : "");
+}
+
+async function refresh() { try { applyState(await api("/api/state")); } catch (e) { toast(e.message, "warn"); } }
+
+let searchTimer;
+$("q").addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(async () => {
+    const q = $("q").value.trim();
+    if (!q) { $("results").innerHTML = ""; return; }
+    try {
+      const rows = await api(`/api/lines?q=${encodeURIComponent(q)}`);
+      $("results").innerHTML = rows.map((r, i) =>
+        `<li data-i="${i}"><div class="t">${esc(r.title)} <span class="badge">${r.base}</span>${r.exists ? "" : '<span class="badge warn">no file</span>'}</div>` +
+        `<div class="m">${esc(r.speaker || "")} · ${r.voice} · ${esc(r.raw.slice(0, 90))}${r.raw.length > 90 ? "…" : ""}</div></li>`).join("");
+      $("results").querySelectorAll("li").forEach(li => li.addEventListener("click", () => pick(rows[+li.dataset.i], li)));
+    } catch (e) { toast(e.message, "warn"); }
+  }, 250);
+});
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function pick(row, li) {
+  current = row;
+  $("results").querySelectorAll("li").forEach(x => x.classList.remove("active")); li.classList.add("active");
+  $("text").value = row.spoken;
+  if (state.voices.includes(row.voice)) $("voice").value = row.voice;
+  $("current").innerHTML = `<b>${esc(row.title)}</b> <span class="badge">${row.base}</span> <span class="badge">${row.subfolder}</span> <span class="badge">${row.source}</span>` +
+    `<div class="m">${esc(row.speaker || "")} · voice ${row.voice}` +
+    (row.pack_url ? ` · in the pack now: <audio controls preload="none" src="${row.pack_url}"></audio>` : ` · <span class="warn">no file in the pack yet</span>`) +
+    `</div><div class="m">Raw: ${esc(row.raw)}</div>`;
+  showResolved();
+}
+
+$("voice").addEventListener("change", showResolved);
+$("reference").addEventListener("change", showResolved);
+
+function numbers(value) {
+  const out = value.split(/[,\s]+/).filter(Boolean).map(Number);
+  if (!out.length || out.some(isNaN)) throw new Error("give numbers separated by commas");
+  return out;
+}
+
+$("go").addEventListener("click", async () => {
+  let body;
+  try {
+    body = { text: $("text").value, voice: $("voice").value, reference: $("reference").value || null,
+             exaggeration: numbers($("exag").value), cfg_weight: numbers($("cfg").value), takes: +$("takes").value };
+  } catch (e) { toast(e.message, "warn"); return; }
+  $("go").disabled = true; $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
+  try {
+    const response = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
+    const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = "";
+    while (true) {
+      const { value, done } = await reader.read(); if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      let nl; while ((nl = buffer.indexOf("\n")) >= 0) { const line = buffer.slice(0, nl); buffer = buffer.slice(nl + 1); if (line.trim()) onEvent(JSON.parse(line)); }
+    }
+  } catch (e) { toast(e.message, "warn"); }
+  $("go").disabled = false; refresh();
+});
+
+function onEvent(ev) {
+  if (ev.event === "start") { $("progress").textContent = `spoken as: “${ev.spoken}”`; return; }
+  if (ev.event === "error") { toast(ev.message, "warn"); $("progress").textContent = ev.message; return; }
+  if (ev.event === "done") { $("progress").textContent += ` · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
+  const tr = document.createElement("tr");
+  const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}`;
+  tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
+    `<td class="n">${ev.seconds}s in ${ev.elapsed}s</td><td></td>`;
+  const cell = tr.lastElementChild;
+  const keep = document.createElement("button"); keep.textContent = "Keep these settings";
+  keep.title = `Write [tts.voices.${$("voice").value}] with these settings${ev.reference ? " and this clip" : ""} into forever-vo.toml`;
+  keep.addEventListener("click", async () => {
+    try {
+      applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, reference: ev.reference }) }));
+      toast(`Kept for ${$("voice").value}. The next generate run restages that voice's files.`, "ok");
+      document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
+    } catch (e) { toast(e.message, "warn"); }
+  });
+  cell.appendChild(keep);
+  if (current) {
+    const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
+    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight]);
+    write.title = "Regenerate this line's pack file under the saved settings (keep first if these are not saved yet)";
+    write.disabled = !isSaved(write.dataset.recipe);
+    write.addEventListener("click", async () => {
+      write.disabled = true;
+      try {
+        const r = await api("/api/write-pack", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ base: current.base }) });
+        toast(`Wrote ${r.base} (${r.seconds}s) into the pack and stamped its fingerprint.`, "ok");
+        current.pack_url = r.pack_url; pick(current, $("results").querySelector("li.active") || document.createElement("li"));
+      } catch (e) { toast(e.message, "warn"); }
+      write.disabled = false;
+    });
+    cell.appendChild(write);
+  }
+  $("takes-body").appendChild(tr);
+}
+
+function isSaved(recipe) {
+  if (!state) return false;
+  const [clip, e, c] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
+  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c;
+}
+
+$("p-keep").addEventListener("click", async () => {
+  try {
+    applyState(await api("/api/keep-pronunciation", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ word: $("p-word").value, spoken: $("p-spoken").value }) }));
+    toast("Pronunciation kept. Lines that use the word are stale for the next generate run.", "ok");
+  } catch (e) { toast(e.message, "warn"); }
+});
+
+$("rebuild").addEventListener("click", async () => {
+  $("rebuild").disabled = true;
+  try { const r = await api("/api/rebuild-tables", { method: "POST" }); toast(r.ok ? "Pack tables rebuilt." : "Rebuild reported a problem; see the server log.", r.ok ? "ok" : "warn"); }
+  catch (e) { toast(e.message, "warn"); }
+  $("rebuild").disabled = false;
+});
+
+refresh();
+setInterval(refresh, 15000);
+</script>
+</body>
+</html>

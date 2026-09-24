@@ -26,3 +26,4 @@ tools/data/sound_index.lock
 ForeverVO_Data/Sounds/**/*.part
 tools/data/verified-listfile.csv
 dist/
+tools/data/audition/

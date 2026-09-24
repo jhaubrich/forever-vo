@@ -18,6 +18,8 @@ dependencies = [
     "pydantic>=2.13.5",
     "requests",
     "requests-toolbelt",   # streams the pack upload to CurseForge from disk
+    "tomlkit>=0.13",       # the audition page edits forever-vo.toml without losing its comments
+    "typer>=0.27.2",
 ]
 
 # The GPU stack is a group rather than a plain dependency so a checkout that
@@ -34,9 +36,12 @@ dev = [
 tts = [
     "chatterbox-tts==0.1.7",   # every voice so far was generated on this release; bump on purpose
     "setuptools<81",           # perth (chatterbox's watermarker) still imports pkg_resources
+    "fastapi",                 # the audition page (uv run audition); both already come with chatterbox
+    "uvicorn",
 ]
 
 [project.scripts]
+audition = "tools.audition:main"       # uv run audition: the local page for trying voices and settings
 fvo-ingest = "tools.ingest:main"
 fvo-generate = "tools.generate:main"
 fvo-release-pack = "tools.release_pack:main"
