@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Capture inbox
+  - name: Capture inbox (the older way)
     url: https://github.com/quinn-dougherty/forever-vo/issues/1
-    about: Paste your /fvo export string as a comment on the pinned issue; a bot picks it up within minutes.
+    about: Pasting your /fvo export string as a comment there still works; the "Contribute captured lines" form above is quicker.
   - name: CurseForge pages
     url: https://www.curseforge.com/wow/addons/forever-voiceover
     about: The addon and the three voice packs (Base, Base Endgame, Forever), with release notes.

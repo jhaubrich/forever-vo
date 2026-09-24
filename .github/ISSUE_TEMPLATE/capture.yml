@@ -1,0 +1,22 @@
+name: Contribute captured lines
+description: Paste your /fvo export string. A bot decodes it, reacts with 🚀 and closes this issue.
+title: "Captured lines"
+labels: ["capture"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        In game, type `/fvo export`, press Ctrl+C in the window that opens, and paste the string below. It starts with `FVO1:` and holds only quest and gossip text, the speaking NPC and the zone; your character name is removed before export. Do this once before logging out of a session, not after every quest.
+  - type: textarea
+    id: export
+    attributes:
+      label: Export string
+      description: The whole string, from FVO1 to the end. Line breaks from wrapping are fine.
+      placeholder: "FVO1:eJy..."
+    validations:
+      required: true
+  - type: input
+    id: notes
+    attributes:
+      label: Anything else
+      description: Optional. Where you played, or a line that came out wrong.

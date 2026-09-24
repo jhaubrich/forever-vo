@@ -70,11 +70,18 @@ jobs:
                 });
               }
             } else {
+              // One issue per contribution (the "Contribute captured lines" form): a receipt,
+              // the same rocket as on the inbox, and the issue is closed as done
               const body = ok
                 ? `Thanks! Stored as \`captures/${process.env.NAME}.json\` (${result}). These lines go into the next voice pack build.`
                 : `I could not find a valid \`FVO1:\` export string in this issue. Run \`/fvo export\` in game, copy the whole string, and edit the issue to include it.`;
               await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+              await github.rest.reactions.createForIssue({
+                ...context.repo, issue_number: context.issue.number, content: ok ? 'rocket' : 'confused',
+              });
               if (ok) {
-                await github.rest.issues.update({ ...context.repo, issue_number: context.issue.number, state: 'closed' });
+                await github.rest.issues.update({
+                  ...context.repo, issue_number: context.issue.number, state: 'closed', state_reason: 'completed',
+                });
               }
             }

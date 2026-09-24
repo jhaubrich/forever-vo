@@ -117,7 +117,7 @@ function Export:GetFrame()
     frame.Hint:SetJustifyH("LEFT")
     frame.Hint:SetPoint("TOPLEFT", 16, -32)
     frame.Hint:SetPoint("RIGHT", -16, 0)
-    frame.Hint:SetText("Press Ctrl+C to copy, then paste it as a comment on\n|cff6ec6ffgithub.com/quinn-dougherty/forever-vo/issues/1|r\nYour character name has been removed.")
+    frame.Hint:SetText("Press Ctrl+C to copy, then paste it into a new issue at\n|cff6ec6ffgithub.com/quinn-dougherty/forever-vo/issues/new?template=capture.yml|r\nYour character name has been removed.")
 
     local scroll = CreateFrame("ScrollFrame", nil, frame, "InputScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", 0, -12)

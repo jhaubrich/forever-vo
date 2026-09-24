@@ -119,7 +119,9 @@ shared for non-commercial use.
 
 Quest and gossip text only exists on the server, so the pack can only grow
 from what players see. With the addon on, play (the new zones matter most),
-then type `/fvo export`, press Ctrl+C, and paste the string as a comment on
-the pinned issue: https://github.com/quinn-dougherty/forever-vo/issues/1.
-A bot decodes it into `captures/` and the next pack build voices it. Your
-character name is removed before export.
+then type `/fvo export`, press Ctrl+C, and paste the string into a new
+"Contribute captured lines" issue:
+https://github.com/quinn-dougherty/forever-vo/issues/new?template=capture.yml.
+A bot decodes it into `captures/`, reacts with 🚀, closes the issue, and the
+next pack build voices it. Your character name is removed before export.
+(Pasting it as a comment on the older inbox, issue #1, still works too.)

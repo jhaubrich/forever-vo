@@ -347,10 +347,16 @@ storefront logo.
 
 `/fvo export` packs a session's unvoiced lines (character name replaced by
 `$n`), plus voiced lines the pack asked to hear again from a reader of the
-player's sex (`wanted`), via `C_EncodingUtil` into an `FVO1:` string. Players paste it as a
-comment on issue #1; `.github/workflows/ingest-captures.yml` decodes it with
-`tools/exportfile.py` (stdlib only) into `captures/` and reacts with a rocket.
-The owner's machine picks those up on the next sync.
+player's sex (`wanted`), via `C_EncodingUtil` into an `FVO1:` string. Players
+paste it into the "Contribute captured lines" issue form
+(`.github/ISSUE_TEMPLATE/capture.yml`, label `capture`, one issue per export,
+since 2026-09-24 when the inbox thread passed 50 comments) or, the older way,
+as a comment on the pinned inbox issue #1 (label `capture-inbox`; the owner
+keeps it open for anyone following a stale note).
+`.github/workflows/ingest-captures.yml` handles both: it decodes the text with
+`tools/exportfile.py` (stdlib only) into `captures/`, reacts with a rocket, and
+closes a form issue as completed (a comment on #1 just gets the reaction). The
+owner's machine picks the files up on the next sync.
 
 ## Gotchas already paid for
 

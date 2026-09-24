@@ -2,6 +2,10 @@
 
 ## 0.1.4
 
+- The export window now points to a "Contribute captured lines" issue form,
+  one issue per export, instead of the shared inbox thread, which had grown
+  past fifty comments. The bot decodes it, reacts with 🚀 and closes the
+  issue. Comments on the old inbox still work.
 - "Show the talking head" now hides just that: the speaker's portrait goes
   and the parchment, name and text stay, moved over to the left edge. Hiding
   the whole frame is the new "Show the panel" option (`/fvo panel`), for
