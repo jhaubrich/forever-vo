@@ -17,6 +17,7 @@ import sqlite3
 import sys
 import zipfile
 from pathlib import Path
+from typing import Any
 
 import requests
 
@@ -101,8 +102,8 @@ def main() -> int:
     complete_by_object = relations("gameobject_involvedrelation")
     accept_by_item = {row[3]: row[0] for row in items.values() if row[3]}
 
-    out = {"version": 2, "source": "classic", "quests": {}, "gossip": {}, "npcs": {}}
-    npcs = out["npcs"]
+    out: dict[str, Any] = {"version": 2, "source": "classic", "quests": {}, "gossip": {}, "npcs": {}}
+    npcs: dict[str, dict] = out["npcs"]
 
     def creature_speaker(entry: int) -> str | None:
         row = creatures.get(entry)

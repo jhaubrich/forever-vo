@@ -40,7 +40,7 @@ def journal_voices(since: str) -> dict[str, str]:
     for unit in UNITS:
         texts.append(subprocess.run(
             ["journalctl", "--user", "-u", unit, "--since", since, "--no-pager", "-o", "cat"],
-            capture_output=True, text=True,
+            capture_output=True, text=True, check=False,   # a unit with no journal yet just contributes nothing
         ).stdout)
     for out in texts:
         for match in _LINE.finditer(out):

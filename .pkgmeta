@@ -23,6 +23,8 @@ ignore:
   - flake.nix
   - flake.lock
   - .python-version
+  - forever-vo.toml
+  - tests
 
 enable-nolib-creation: no
 manual-changelog: CHANGELOG.md

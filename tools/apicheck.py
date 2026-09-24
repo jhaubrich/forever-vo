@@ -17,11 +17,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 API = ROOT / "docs" / "forever_api.json"
-LUA_BUILTINS = set(
-    "assert error ipairs pairs next pcall print rawget rawset rawequal select setmetatable getmetatable "
-    "tonumber tostring tostringall type unpack xpcall format strsplit strjoin strtrim wipe Mixin "
-    "CreateFromMixins hooksecurefunc CreateFrame PlaySound CreateColor CopyTable time date".split()
-)
+LUA_BUILTINS = {
+    "assert", "error", "ipairs", "pairs", "next", "pcall", "print", "rawget", "rawset", "rawequal", "select",
+    "setmetatable", "getmetatable", "tonumber", "tostring", "tostringall", "type", "unpack", "xpcall", "format",
+    "strsplit", "strjoin", "strtrim", "wipe", "Mixin", "CreateFromMixins", "hooksecurefunc", "CreateFrame",
+    "PlaySound", "CreateColor", "CopyTable", "time", "date",
+}
 
 
 def main() -> int:
@@ -31,7 +32,7 @@ def main() -> int:
     all_text = "".join(f.read_text() for f in files)
     defined = set(re.findall(r"function\s+(?:[\w.]+[:.])?([A-Za-z_]\w*)\s*\(", all_text))
     defined |= set(re.findall(r"local\s+(?:function\s+)?([A-Za-z_]\w*)", all_text))
-    defined |= set(re.findall(r"^([A-Za-z_]\w*)\s*=", all_text, re.M))
+    defined |= set(re.findall(r"^([A-Za-z_]\w*)\s*=", all_text, re.MULTILINE))
     problems = 0
     for path in files:
         text = path.read_text()

@@ -15,8 +15,15 @@ import re
 import sys
 from pathlib import Path
 
-from tools.config import (ADDON_NAME, BETA_DIR, CAPTURE_JSON, CAPTURE_TRUSTED_SINCE, COMMUNITY_CHARACTERS, DATA_DIR,
-                          LEGACY_CHARACTERS, ROOT)
+from tools.config import (
+    ADDON_NAME,
+    BETA_DIR,
+    CAPTURE_JSON,
+    DATA_DIR,
+    ROOT,
+    Readers,
+    load_config,
+)
 from tools.luatable import parse_saved_variables
 from tools.textclean import has_gender_branch, split_gender
 from tools.textkey import text_key, tokenize
@@ -27,38 +34,41 @@ SOURCES_JSON = CAPTURE_JSON.with_name("capture.sources.json")  # mtime bookkeepi
 SV_NAME = f"{ADDON_NAME}.lua"
 CAPTURE_VAR = "ForeverVOCaptureDB"
 
+# Every repair below takes `readers`, the [readers] section of forever-vo.toml:
+# how far a capture is believed (trusted_since) and what is known about the
+# readers of captures that predate the addon recording it.
 
 
-def reader_profile(entry: dict) -> dict:
+def reader_profile(entry: dict, readers: Readers) -> dict:
     """What we know about whoever captured the entry: the capture v3 fields, else
-    LEGACY_CHARACTERS (by player name), else COMMUNITY_CHARACTERS (by export origin)."""
+    [readers.legacy] (by player name), else [readers.community] (by export origin)."""
     player = entry.get("player") or None
-    known = LEGACY_CHARACTERS.get(player or "", {}) or COMMUNITY_CHARACTERS.get(entry.get("origin") or "", {})
+    known = readers.known(player, entry.get("origin"))
     return {
         "player": player,
-        "name": player or known.get("player"),
-        "class": entry.get("class") or known.get("class"),
-        "race": entry.get("race") or known.get("race"),
-        "restoreName": bool(known.get("restoreName")),
+        "name": player or (known.player if known else None),
+        "class": entry.get("class") or (known.class_ if known else None),
+        "race": entry.get("race") or (known.race if known else None),
+        "restoreName": bool(known and known.restore_name),
     }
 
 
-def character_traits(entry: dict) -> tuple[str | None, str | None, str | None]:
+def character_traits(entry: dict, readers: Readers) -> tuple[str | None, str | None, str | None]:
     """The reader's name, class and race as tokenize() wants them. The player
     name comes only from the capture itself: a community export has already
     replaced it with $n, and feeding a mapped name in here would tokenise the
     text a second time (a name like "It" would eat every "it")."""
-    profile = reader_profile(entry)
+    profile = reader_profile(entry, readers)
     return profile["player"], profile["class"], profile["race"]
 
 
-def tokenize_entry(entry: dict) -> dict:
+def tokenize_entry(entry: dict, readers: Readers) -> dict:
     """Puts $n/$c/$r back where the client expanded them. Without this a line
     first seen on a rogue is voiced as "rogue" for every class that hears it."""
     text = entry.get("text")
     if not text:
         return entry
-    fixed = tokenize(text, *character_traits(entry))
+    fixed = tokenize(text, *character_traits(entry, readers))
     if fixed == text:
         return entry
     entry = dict(entry)
@@ -104,11 +114,11 @@ def name_case_sensitive(entry: dict) -> bool:
 # an older addon whatever their order in time (a player on an old release can
 # post a line long after the fix shipped), an unknown addon counts as the oldest
 # (owner captures before 0.1.4 carry none), and among equals the later reading
-# wins. Until a line has a capture from CAPTURE_TRUSTED_SINCE or later,
+# wins. Until a line has a capture from [readers] trusted_since or later,
 # needs_of() keeps asking any reader for it, so players re-supply it.
 
-def trusted(entry: dict) -> bool:
-    return addon_version(entry) >= CAPTURE_TRUSTED_SINCE
+def trusted(entry: dict, readers: Readers) -> bool:
+    return addon_version(entry) >= readers.trusted_since
 
 
 def capture_rank(entry: dict) -> tuple[tuple[int, ...], float]:
@@ -119,13 +129,13 @@ def _literal(word: str, code: str) -> str:
     return word[:1].upper() + word[1:] if code.isupper() else word.lower()
 
 
-def unglue_entry(entry: dict) -> dict | None:
+def unglue_entry(entry: dict, readers: Readers) -> dict | None:
     """Restores the literal word behind a glued placeholder, or returns None when
     the reader is unknown so the caller drops the line and it gets re-captured."""
     text = entry.get("text")
     if not text:
         return entry
-    profile = reader_profile(entry)
+    profile = reader_profile(entry, readers)
     first_name = (profile["name"] or "").split()
     words = {"n": first_name[0] if first_name else None, "c": profile["class"], "r": profile["race"]}
     missing = False
@@ -142,13 +152,14 @@ def unglue_entry(entry: dict) -> dict | None:
     fixed = _GLUED.sub(put_back, text)
     if missing:
         return None
-    if profile["restoreName"] and words["n"]:
+    name = words["n"]
+    if profile["restoreName"] and name:
         # The export tokenised its reader's name client side, and that name is an
         # ordinary English word, so every $n it holds is that word, not the name.
         # An addon that matches the name case-sensitively can only have written
         # $N, so its lowercase $n are genuine and stay.
         token = _NAME_TOKEN_UPPER if name_case_sensitive(entry) else _NAME_TOKEN
-        fixed = token.sub(lambda m: _literal(words["n"], m.group(1)), fixed)
+        fixed = token.sub(lambda m: _literal(name, m.group(1)), fixed)
     if fixed == text:
         return entry
     entry = dict(entry)
@@ -304,9 +315,9 @@ def rebuild_gender(male: str, female: str) -> str | None:
     return "".join(out)
 
 
-def needs_of(entry: dict, kind: str, source: str | None) -> str | None:
+def needs_of(entry: dict, kind: str, source: str | None, readers: Readers) -> str | None:
     """Which readers the pipeline still wants this line from: "mf" (anyone) while
-    the capture comes from an addon before CAPTURE_TRUSTED_SINCE, whatever it
+    the capture comes from an addon before readers.trusted_since, whatever it
     says; otherwise None when the text carries its branches or both sexes have
     read it, "f" after a male reading, "m" after a female one, "mf" when the
     reader's sex is unknown. A trusted capture that matches raw text with no
@@ -314,7 +325,7 @@ def needs_of(entry: dict, kind: str, source: str | None) -> str | None:
     text = entry.get("text") or ""
     if kind != "quests" or not text:
         return None
-    if not trusted(entry):
+    if not trusted(entry, readers):
         return "mf"
     if has_gender_branch(text):
         return None
@@ -459,16 +470,16 @@ class Repairs:
     superseded = 0
 
 
-def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, stats: Repairs) -> dict | None:
+def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, stats: Repairs,
+                 readers: Readers) -> dict | None:
     """tokenize -> unglue -> reconcile -> regender -> reattribute -> needs. Idempotent,
     so it runs over everything on every ingest; None means the line is unusable and
     should be dropped."""
-    entry = tokenize_entry(entry)
-    entry = unglue_entry(entry)
-    if entry is None:
+    unglued = unglue_entry(tokenize_entry(entry, readers), readers)
+    if unglued is None:
         stats.dropped += 1
         return None
-    entry, restored = reconcile_entry(entry, kind, key, sources)
+    entry, restored = reconcile_entry(unglued, kind, key, sources)
     if restored:
         stats.reconciled += 1
         stats.restored += restored
@@ -483,7 +494,7 @@ def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, 
     entry, reattributed = reattribute_entry(entry, kind, key, sources)
     if reattributed:
         stats.reattributed += 1
-    needs = needs_of(entry, kind, source)
+    needs = needs_of(entry, kind, source, readers)
     if needs != entry.get("needs"):
         entry = dict(entry)
         entry.pop("needs", None)
@@ -492,11 +503,11 @@ def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, 
     return entry
 
 
-def gossip_key(key: str, entry: dict) -> str:
+def gossip_key(key: str, entry: dict, readers: Readers) -> str:
     """<speaker>|<text hash>, recomputed so a re-tokenised line keys the same way
     the addon will look it up (ForeverVO/Core/Util.lua Util.TextKey)."""
     speaker = str(key).split("|", 1)[0]
-    return f"{speaker}|{text_key(entry.get('text'), *character_traits(entry))}"
+    return f"{speaker}|{text_key(entry.get('text'), *character_traits(entry, readers))}"
 
 def find_saved_variable_files() -> list[Path]:
     files: list[Path] = []
@@ -542,7 +553,8 @@ def merge_entry(store: dict, key: str, entry: dict) -> bool:
     return changed
 
 
-def ingest_file(capture: dict, path: Path, sources: SourceTexts | None, stats: Repairs) -> tuple[int, int, int]:
+def ingest_file(capture: dict, path: Path, sources: SourceTexts | None, stats: Repairs,
+                readers: Readers) -> tuple[int, int, int]:
     if path.suffix == ".json":
         db = json.loads(path.read_text(encoding="utf-8"))
     else:
@@ -555,13 +567,13 @@ def ingest_file(capture: dict, path: Path, sources: SourceTexts | None, stats: R
     stamp = {field: db[field] for field in ("origin", "addon") if db.get(field)}
     quests = gossip = npcs = 0
     for key, entry in (db.get("quests") or {}).items():
-        entry = repair_entry({**entry, **stamp} if stamp else entry, "quests", str(key), sources, stats)
+        entry = repair_entry({**entry, **stamp} if stamp else entry, "quests", str(key), sources, stats, readers)
         if entry is not None:
             quests += merge_entry(capture["quests"], str(key), entry)
     for key, entry in (db.get("gossip") or {}).items():
-        entry = repair_entry({**entry, **stamp} if stamp else entry, "gossip", str(key), sources, stats)
+        entry = repair_entry({**entry, **stamp} if stamp else entry, "gossip", str(key), sources, stats, readers)
         if entry is not None:
-            gossip += merge_entry(capture["gossip"], gossip_key(key, entry), entry)
+            gossip += merge_entry(capture["gossip"], gossip_key(key, entry, readers), entry)
     for key, npc in (db.get("npcs") or {}).items():
         old = capture["npcs"].get(str(key), {})
         merged = {**old, **{k: v for k, v in npc.items() if v is not None}}
@@ -573,14 +585,14 @@ def ingest_file(capture: dict, path: Path, sources: SourceTexts | None, stats: R
     return quests, gossip, npcs
 
 
-def backfill(capture: dict, sources: SourceTexts | None, stats: Repairs) -> tuple[int, int]:
+def backfill(capture: dict, sources: SourceTexts | None, stats: Repairs, readers: Readers) -> tuple[int, int]:
     """Re-runs the repairs over text already in capture.json and re-keys any gossip
     line whose hash moves as a result. Idempotent, so it just runs on every ingest:
     it is what repairs everything captured before the addon recorded class and
     race, and everything captured by a client that glued placeholders."""
     quests, rebuilt_quests = 0, {}
     for key, entry in capture["quests"].items():
-        fixed = repair_entry(entry, "quests", key, sources, stats)
+        fixed = repair_entry(entry, "quests", key, sources, stats, readers)
         if fixed is None:
             quests += 1
             continue
@@ -590,15 +602,15 @@ def backfill(capture: dict, sources: SourceTexts | None, stats: Repairs) -> tupl
     capture["quests"] = rebuilt_quests
     gossip, rebuilt = 0, {}
     for key, entry in capture["gossip"].items():
-        fixed = repair_entry(entry, "gossip", key, sources, stats)
+        fixed = repair_entry(entry, "gossip", key, sources, stats, readers)
         if fixed is None:
             gossip += 1
             continue
-        new_key = gossip_key(key, fixed)
+        new_key = gossip_key(key, fixed, readers)
         if fixed.get("text") != entry.get("text") or new_key != key:
             gossip += 1
         rebuilt[new_key] = fixed
-    superseded = superseded_gossip(rebuilt)
+    superseded = superseded_gossip(rebuilt, readers)
     for key in superseded:
         del rebuilt[key]
     stats.superseded += len(superseded)
@@ -607,7 +619,7 @@ def backfill(capture: dict, sources: SourceTexts | None, stats: Repairs) -> tupl
     return quests, gossip
 
 
-def superseded_gossip(gossip: dict) -> set[str]:
+def superseded_gossip(gossip: dict, readers: Readers) -> set[str]:
     """Keys of gossip lines from an untrusted addon that a trusted capture of the
     same speaker has since re-read. Gossip is keyed by a hash of its text, so a
     flawed reading and its correction sit side by side under different keys,
@@ -620,11 +632,11 @@ def superseded_gossip(gossip: dict) -> set[str]:
         by_speaker.setdefault(key.split("|", 1)[0], []).append((key, entry, _pieces(entry.get("text") or "")[1]))
     stale: set[str] = set()
     for entries in by_speaker.values():
-        trusted_keys = [(k, keys) for k, e, keys in entries if trusted(e)]
+        trusted_keys = [(k, keys) for k, e, keys in entries if trusted(e, readers)]
         if not trusted_keys:
             continue
         for key, entry, keys in entries:
-            if trusted(entry):
+            if trusted(entry, readers):
                 continue
             for _, other_keys in trusted_keys:
                 if difflib.SequenceMatcher(None, keys, other_keys, autojunk=False).ratio() >= RECONCILE_RATIO:
@@ -639,6 +651,7 @@ def main(argv: list[str] | None = None) -> int:
     if not files:
         print(f"no {SV_NAME} files found under {BETA_DIR / 'WTF' / 'Account'}")
         return 1
+    readers = load_config().readers
     capture = load_capture()
     sources = SourceTexts()
     stats = Repairs()
@@ -648,10 +661,10 @@ def main(argv: list[str] | None = None) -> int:
         if seen and seen["mtime"] == stat.st_mtime and seen["size"] == stat.st_size:
             print(f"unchanged  {path}")
             continue
-        quests, gossip, npcs = ingest_file(capture, path, sources, stats)
+        quests, gossip, npcs = ingest_file(capture, path, sources, stats, readers)
         print(f"ingested   {path}: {quests} quest, {gossip} gossip, {npcs} npc changes")
 
-    repaired = backfill(capture, sources, stats)
+    repaired = backfill(capture, sources, stats, readers)
     if any(repaired):
         print(f"repaired   {repaired[0]} quest, {repaired[1]} gossip texts ($n/$c/$r put back, glued placeholders "
               f"and literal words restored)")
@@ -665,11 +678,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"regendered {stats.branches} $g branch(es) in {stats.gendered} quest texts from the raw source text")
     if stats.superseded:
         print(f"superseded {stats.superseded} gossip texts from an old addon re-read by a trusted one (dropped)")
-    untrusted = sum(1 for e in capture["quests"].values() if not trusted(e))
+    untrusted = sum(1 for e in capture["quests"].values() if not trusted(e, readers))
     needing = sum(1 for e in capture["quests"].values() if e.get("needs"))
     settled = sum(1 for e in capture["quests"].values() if e.get("sex") == "mf")
     if untrusted or needing or settled:
-        print(f"wanted     {untrusted} quest texts captured before addon {'.'.join(map(str, CAPTURE_TRUSTED_SINCE))} "
+        print(f"wanted     {untrusted} quest texts captured before addon {readers.trusted_since_text} "
               f"want any reader; {needing} want a reader in all (that or the other sex); "
               f"{settled} settled by readings of both sexes")
 

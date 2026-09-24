@@ -153,7 +153,7 @@ def lua_string(value: str | None) -> str:
         elif char == "\r":
             chars.append("\\r")
         elif ord(char) < 32 or ord(char) > 126:
-            chars.extend("\\%d" % byte for byte in char.encode("utf-8"))
+            chars.extend(f"\\{byte}" for byte in char.encode("utf-8"))
         else:
             chars.append(char)
     return '"' + "".join(chars) + '"'
@@ -172,8 +172,8 @@ def main() -> int:
         (tmp / "corpus.lua").write_text(
             "return {\n"
             + "".join(
-                "  {text=%s, player=%s, class=%s, race=%s},\n"
-                % (lua_string(r["text"]), lua_string(r["player"]), lua_string(r["class"]), lua_string(r["race"]))
+                f"  {{text={lua_string(r['text'])}, player={lua_string(r['player'])}, "
+                f"class={lua_string(r['class'])}, race={lua_string(r['race'])}}},\n"
                 for r in corpus
             )
             + "}\n",
@@ -182,7 +182,7 @@ def main() -> int:
         (tmp / "parity.lua").write_text(HARNESS, encoding="utf-8")
         result = subprocess.run(
             [lua, str(tmp / "parity.lua"), str(UTIL_LUA), str(tmp / "corpus.lua")],
-            capture_output=True, text=True,
+            capture_output=True, text=True, check=False,   # the return code is reported just below
         )
     if result.returncode != 0:
         print(result.stderr.strip(), file=sys.stderr)

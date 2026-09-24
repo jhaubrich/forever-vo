@@ -45,7 +45,7 @@ MIN_CLIP, MAX_CLIP = 2.0, 12.0   # a spoken line, not a grunt or a whole cinemat
 # that yields nothing after this filter must be replaced, not re-filtered.
 COMBAT = re.compile(
     r"_(attack|attackcrit|battleshout|death|aggro|wound|pissed|flee|taunt|jump|"
-    r"fall|gasp|grunt|pain|spell|cast)\w*_?\d*\.ogg$", re.I)
+    r"fall|gasp|grunt|pain|spell|cast)\w*_?\d*\.ogg$", re.IGNORECASE)
 
 # voice name -> creature directory under sound/creature/, or (directory, pattern)
 # when one folder holds more than one voice.
@@ -65,7 +65,7 @@ SOURCES: dict[str, str | tuple[str, str]] = {
     # Children. One folder holds both sexes, marked by an _m / _f suffix on the
     # file, so each voice takes only its own - a shared reference makes every boy
     # sound like a girl. species_voice reaches these from the humanmalekid and
-    # humanfemalekid models, and the orc children through SPECIES_VOICE_ALIASES.
+    # humanfemalekid models, and the orc children through [voices.species_aliases].
     "humanmalekid-male": ("kul_tiran_kid", r"_m\.ogg$"),
     "humanfemalekid-female": ("kul_tiran_kid", r"_f\.ogg$"),
 }
@@ -128,7 +128,7 @@ def fetch(fdid: int, dest: Path) -> Path | None:
 def duration(path: Path) -> float:
     out = subprocess.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-        capture_output=True, text=True,
+        capture_output=True, text=True, check=False,   # an unreadable file reads as 0.0 below
     ).stdout.strip()
     try:
         return float(out)

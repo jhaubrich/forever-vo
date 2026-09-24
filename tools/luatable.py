@@ -64,7 +64,7 @@ class _Parser:
         return tok
 
     def expect(self, value: str):
-        kind, tok = self.next()
+        _kind, tok = self.next()
         if tok != value:
             raise SyntaxError(f"expected {value!r}, got {tok!r} at token {self.pos}")
 

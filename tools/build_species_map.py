@@ -34,7 +34,7 @@ def main() -> int:
 
     # FileDataID -> species, for every model under creature/<species>/
     species_by_file: dict[int, str] = {}
-    pattern = re.compile(r"^(\d+);creature/([^/]+)/[^/]+\.m2$", re.I)
+    pattern = re.compile(r"^(\d+);creature/([^/]+)/[^/]+\.m2$", re.IGNORECASE)
     with LISTFILE.open(encoding="utf-8", errors="replace") as f:
         for line in f:
             m = pattern.match(line.strip())

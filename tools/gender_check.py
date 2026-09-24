@@ -10,9 +10,18 @@ from __future__ import annotations
 import json
 import sys
 
-from tools.config import DATA_DIR
-from tools.ingest import (Repairs, SourceTexts, backfill, merge_entry, needs_of, rebuild_gender, repair_entry,
-                          restore_gender, superseded_gossip)
+from tools.config import DATA_DIR, Readers
+from tools.ingest import (
+    Repairs,
+    SourceTexts,
+    backfill,
+    merge_entry,
+    needs_of,
+    rebuild_gender,
+    repair_entry,
+    restore_gender,
+    superseded_gossip,
+)
 
 failures = 0
 
@@ -26,6 +35,9 @@ def check(name: str, got, want) -> None:
         print(f"FAIL {name}\n   got:  {got!r}\n   want: {want!r}")
 
 
+# The rules are checked against a fixed trust line, not the repository's, so the
+# cases below stay meaningful when [readers] trusted_since moves on.
+READERS = Readers(trusted_since=(0, 1, 4))
 TRUSTED = {"addon": "0.1.4"}   # a capture the pipeline takes at face value
 
 
@@ -64,22 +76,24 @@ def main() -> int:
         check("restore reworded", restore_gender(reworded, classic), (reworded, 0))
         check("restore no-op", restore_gender(classic, classic), (classic, 0))
         sources = SourceTexts()
-        entry = repair_entry(community(male, "m"), "quests", "233-accept", sources, Repairs())
+        entry = repair_entry(community(male, "m"), "quests", "233-accept", sources, Repairs(), READERS)
+        assert entry is not None
         check("repair restores 233", (entry["text"] == classic, entry.get("needs")), (True, None))
-        entry = repair_entry(community("Some Forever-only text, lad.", "m"), "quests", "999999-accept", sources, Repairs())
+        entry = repair_entry(community("Some Forever-only text, lad.", "m"), "quests", "999999-accept", sources, Repairs(), READERS)
+        assert entry is not None
         check("repair marks needs", entry.get("needs"), "f")
     else:
         print(f"skip classic cases: {classic_path} missing (run classicdb.py)")
 
     # needs_of: who is still wanted
-    check("needs unknown", needs_of({"text": "Hi lad.", **TRUSTED}, "quests", None), "mf")
-    check("needs m", needs_of({"text": "Hi lad.", "sex": "m", **TRUSTED}, "quests", None), "f")
-    check("needs f", needs_of({"text": "Hi lass.", "sex": "f", **TRUSTED}, "quests", None), "m")
-    check("needs settled", needs_of({"text": "Hi lad.", "sex": "mf", **TRUSTED}, "quests", None), None)
-    check("needs tagged", needs_of({"text": "Hi $g lad:lass;.", **TRUSTED}, "quests", None), None)
-    check("needs equals plain source", needs_of({"text": "Hi $n.\n\nBye.", **TRUSTED}, "quests", "Hi $N.$B$BBye."), None)
-    check("needs differs from source", needs_of({"text": "Hi $n. Bye now.", **TRUSTED}, "quests", "Hi $N.$B$BBye."), "mf")
-    check("needs gossip", needs_of({"text": "Hi lad."}, "gossip", None), None)
+    check("needs unknown", needs_of({"text": "Hi lad.", **TRUSTED}, "quests", None, READERS), "mf")
+    check("needs m", needs_of({"text": "Hi lad.", "sex": "m", **TRUSTED}, "quests", None, READERS), "f")
+    check("needs f", needs_of({"text": "Hi lass.", "sex": "f", **TRUSTED}, "quests", None, READERS), "m")
+    check("needs settled", needs_of({"text": "Hi lad.", "sex": "mf", **TRUSTED}, "quests", None, READERS), None)
+    check("needs tagged", needs_of({"text": "Hi $g lad:lass;.", **TRUSTED}, "quests", None, READERS), None)
+    check("needs equals plain source", needs_of({"text": "Hi $n.\n\nBye.", **TRUSTED}, "quests", "Hi $N.$B$BBye.", READERS), None)
+    check("needs differs from source", needs_of({"text": "Hi $n. Bye now.", **TRUSTED}, "quests", "Hi $N.$B$BBye.", READERS), "mf")
+    check("needs gossip", needs_of({"text": "Hi lad."}, "gossip", None, READERS), None)
 
     # merge_entry: what a second reading teaches the first
     store: dict = {}
@@ -130,11 +144,11 @@ def main() -> int:
     check("same addon, later reading wins", store["5-accept"]["text"], "Hello $n, reworded.")
     merge_entry(store, "5-accept", {**fixed, "text": "Hello $n, newest.", "addon": "0.2.0"})
     check("newer addon beats timed", store["5-accept"]["text"], "Hello $n, newest.")
-    check("needs untrusted", needs_of({"text": "Hi $n.", "sex": "mf"}, "quests", "Hi $N."), "mf")
-    check("needs untrusted tagged", needs_of({"text": "Hi $g lad:lass;.", "addon": "0.1.3"}, "quests", None), "mf")
-    check("needs trusted m", needs_of({"text": "Hi lad.", "sex": "m", "addon": "0.1.4"}, "quests", None), "f")
-    check("needs trusted source", needs_of({"text": "Hi $n.", "addon": "0.1.4"}, "quests", "Hi $N."), None)
-    check("needs trusted gossip", needs_of({"text": "Hi lad.", "addon": "0.1.4"}, "gossip", None), None)
+    check("needs untrusted", needs_of({"text": "Hi $n.", "sex": "mf"}, "quests", "Hi $N.", READERS), "mf")
+    check("needs untrusted tagged", needs_of({"text": "Hi $g lad:lass;.", "addon": "0.1.3"}, "quests", None, READERS), "mf")
+    check("needs trusted m", needs_of({"text": "Hi lad.", "sex": "m", "addon": "0.1.4"}, "quests", None, READERS), "f")
+    check("needs trusted source", needs_of({"text": "Hi $n.", "addon": "0.1.4"}, "quests", "Hi $N.", READERS), None)
+    check("needs trusted gossip", needs_of({"text": "Hi lad.", "addon": "0.1.4"}, "gossip", None, READERS), None)
     # an untrusted female reading still combines with a trusted male one
     store = {"6-accept": {"text": "Hello, lass.", "sex": "f", "source": "community", "addon": "0.1.3"}}
     merge_entry(store, "6-accept", {"text": "Hello, lad.", "sex": "m", "source": "community", "addon": "0.1.4"})
@@ -149,10 +163,10 @@ def main() -> int:
         "7|cccc": {"text": "Have you seen my sister? She went to the mill.", "addon": "0.1.2"},
         "8|dddd": {"text": "Greetings, rogue. What brings you to Goldshire on this fine day?", "addon": "0.1.2"},
     }
-    check("superseded gossip", superseded_gossip(gossip), {"7|aaaa"})
+    check("superseded gossip", superseded_gossip(gossip, READERS), {"7|aaaa"})
     store = {"version": 2, "quests": {}, "gossip": dict(gossip), "npcs": {}}
     stats = Repairs()
-    backfill(store, None, stats)
+    backfill(store, None, stats, READERS)
     check("backfill drops superseded", (sorted(e["addon"] for e in store["gossip"].values()), stats.superseded),
           (["0.1.2", "0.1.2", "0.1.4"], 1))
 

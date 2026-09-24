@@ -1,0 +1,156 @@
+# Forever Voiceover pipeline configuration. Read and validated by
+# tools/config.py (load_config); an unknown key is an error. Everything here is
+# something the owner edits by hand; constants nobody edits (paths, the client's
+# race IDs) stay in tools/config.py.
+
+[voices]
+# Quests handed out by objects and items have no speaker to clone, so they are
+# read by the narrator. That voice is a matter of taste, so every narrator line
+# is also generated in the alternates and the player picks one in the addon's
+# options. The narrator keeps the plain sound path (Sounds\Quests\<base>.mp3);
+# the alternates live in Sounds\Quests\Narrator\<voice>\. Adding a voice here
+# costs one more pass over every narrator line (~1,040 quest and ~336 gossip
+# lines in the full Classic set, plus parts).
+narrator = "narrator"
+narrator_alternates = ["human-female", "dwarf-male", "nightelf-female", "orc-male", "troll-female"]
+
+# Races without a reference clip borrow a related one; the narrator without a
+# tools/voices/narrator.wav borrows human-male. A borrowed clip brings its
+# owner's [tts.voices] tuning with it.
+[voices.fallbacks]
+narrator = "human-male"
+felorc = "orc"
+magharorc = "orc"
+foresttroll = "troll"
+icetroll = "troll"
+zandalari = "troll"
+skeleton = "scourge"
+northrendskeleton = "scourge"
+taunka = "tauren"
+highmountaintauren = "tauren"
+draenei = "human"
+broken = "human"
+vrykul = "human"
+kultiran = "human"
+thinhuman = "human"
+worgen = "human"
+naga = "nightelf"
+nightborne = "nightelf"
+voidelf = "bloodelf"
+tuskarr = "dwarf"
+darkirondwarf = "dwarf"
+mechagnome = "gnome"
+vulpera = "goblin"
+pandaren = "human"
+dracthyr = "bloodelf"
+
+# When the client tables give no race for a speaker, the zone is a strong hint.
+[voices.zone_hints]
+"Zephras Isle" = "skyborne"
+
+# A few model folders name a kind of creature the pack has no clip for, while a
+# clip it does have is far closer than the adult human they would fall back to.
+[voices.species_aliases]
+orcmalekid = "humanmalekid-male"
+orcfemalekid = "humanfemalekid-female"
+
+[tts]
+# Chatterbox conditioning for every voice that has no entry below.
+exaggeration = 0.45
+cfg_weight = 0.5
+
+# Dwarves came out of Chatterbox sounding American (#18). The reference clips
+# are short NPC greetings, so the model keeps the timbre but drifts to its own
+# neutral accent unless pushed, and pushing only works on a reference of a few
+# long connected clips rather than the usual montage of barks: npc-3597 is a
+# named dwarf's four connected lines. It takes both changes together; either
+# alone comes out muddled. dwarf-female is untested and keeps the defaults until
+# it has a long-clip reference of its own. Tuning a voice restages exactly that
+# voice's files (the settings join the text fingerprint), including the voices
+# that borrow its clip.
+[tts.voices.dwarf-male]
+reference = "npc-3597"
+exaggeration = 0.75
+cfg_weight = 0.3
+
+# Respellings for names Chatterbox gets wrong. The model takes plain text only
+# (no IPA or SSML), so the fix is spelling the word the way it should sound.
+# Try candidates by ear first: of five for Gnomeregan (/noʊmɹəˈgɑːn/),
+# "Nomer-gahn" was natural, "Gnome-ruh-gahn" was bad, and "Nome-ruh-GAHN" came
+# out partly as numbers (so do not mark stress with capitals). Ahn'Qiraj is
+# fine as written; "Ahn Kih-rahj" adds a rolled r. Quel'Thalas came out wrong;
+# "Quell Thalas" and "Kwel-thalas" were both fine. Kharanos as written varies
+# take to take, and so do "Karanos" and "Karra-noss" (each had bad takes out of
+# four); "Karranos" was fine all four times, sometimes with a Scottish rolled r.
+# Dun Morogh is fine as written. Tirisfal as written sometimes came out
+# "Tirefal"; "Tirrisfal" and "Teerisfall" were right four times of four.
+# Hyphens can leave a pause mid-word ("Teer-iss-fall"), so prefer respellings
+# without them. Varimathras as written was only ever ok or good; "Vairimathrus"
+# was good four times of four. Sharptalon reads best as two words: "Sharp
+# Talon" beat the plain spelling and "Sharptallon" in the tauren-female voice,
+# and a space does not leave the pause a hyphen can (#38).
+[pronunciations]
+"Ahn'Qiraj" = "Ahn Kih-rahj"
+Gnomeregan = "Nomer-gahn"
+Kharanos = "Karranos"
+"Quel'Thalas" = "Quell Thalas"
+Sharptalon = "Sharp Talon"
+Tirisfal = "Tirrisfal"
+Varimathras = "Vairimathrus"
+
+[readers]
+# The first addon release whose captures are taken at face value. Everything
+# recorded by an earlier one (glued placeholders, no class or race, a lingering
+# NPC unit, resolved $g branches) or by an unknown one loses the merge to a
+# capture from this release on, whatever their order in time, and ingest.py
+# keeps asking any reader for the line until such a capture arrives (needs_of).
+# Raise it when a later release fixes what its predecessor recorded.
+trusted_since = "0.1.4"
+
+# The client resolves $n, $c and $r against whoever is reading before any addon
+# can see the text, so a line first seen on a rogue is captured saying "rogue".
+# Capture version 3 records the reader's class and race so ingest.py can put the
+# placeholders back; these are the owner's characters whose captures predate it.
+# Derived by aligning the captured text against the raw $c still held in
+# tools/data/bulk/questcache.json (and confirmed by the owner for Agravain).
+[readers.legacy."Myrlin Fixpoint"]
+class = "Mage"
+[readers.legacy."Pellinore Fixpoint"]
+class = "Hunter"
+[readers.legacy."Agravain Fixpoint"]
+class = "Rogue"
+
+# Community exports ("/fvo export") replace the reader's name with $n and carry
+# no class or race, so a glued placeholder from a pre-whole-word client (issue
+# #5) cannot be undone without help. Keyed by the capture file's origin (the
+# issue comment id), holding what the poster told us. restore_name says the
+# name is an ordinary English word ("It"), so the old client turned every such
+# word into $n and ingest puts the word back wherever $n appears; otherwise
+# only glued placeholders are undone.
+[readers.community.comment-5768141361]
+player = "It"
+class = "Paladin"
+restore_name = true
+
+[release]
+# The CurseForge website takes files up to 1 GB (the API less, see CLAUDE.md),
+# and the Classic set with its alternate narrators is 1.36 GB, so it ships as
+# two projects, cut by quest level: 1 to base_split_level with all gossip on
+# one side (800 MB), the rest on the other (570 MB), each with about 200 MB of
+# headroom for another narrator voice. Cutting at 50 instead would put the
+# first side back over the cap.
+base_split_level = 40
+# Release mp3s are mono at 22.05 kHz; 48k until 2026-09-22, when the base pack
+# came to 1.3 GB with a third of the lines still to go. The working files under
+# ForeverVO_Data/Sounds keep the generator's full quality, so this can go back
+# up on any later build.
+bitrate = "32k"
+transcode_workers = 4
+
+# CurseForge project IDs. The player addon's ID also lives in its TOC. The API
+# key stays out of git (.env: CF_API_KEY, or CURSEFORGE_API_KEY).
+[release.curseforge_projects]
+addon = 1705010          # Forever Voiceover
+delta = 1705094          # Forever Voiceover Data: Forever
+base = 1705100           # Forever Voiceover Data: Base (Classic quests to level 40, all gossip)
+base_endgame = 1709884   # Forever Voiceover Data: Base Endgame (Classic quests from 41)

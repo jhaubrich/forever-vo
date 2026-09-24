@@ -34,7 +34,7 @@ jobs:
         run: |
           printf '%s' "$BODY" > /tmp/body.txt
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
-          if uv run --no-project tools/exportfile.py /tmp/body.txt --out "captures/$NAME.json" --origin "$NAME" | tee /tmp/result.txt; then
+          if uv run --no-project python -m tools.exportfile /tmp/body.txt --out "captures/$NAME.json" --origin "$NAME" | tee /tmp/result.txt; then
             echo "ok=true" >> "$GITHUB_OUTPUT"
           else
             echo "ok=false" >> "$GITHUB_OUTPUT"
