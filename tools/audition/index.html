@@ -92,6 +92,7 @@
     <div class="row">
       <div><label for="exag">Exaggeration values</label><input id="exag" value="0.45, 0.75"></div>
       <div><label for="cfg">cfg_weight values</label><input id="cfg" value="0.5, 0.3"></div>
+      <div><label for="tempo">Tempo values (1.0 as generated; a time stretch, pitch kept)</label><input id="tempo" value="1.0"></div>
       <button id="go" class="primary">Generate</button>
     </div>
     <p class="note" id="resolved"></p>
@@ -146,7 +147,7 @@ function showResolved() {
   const ref = $("reference").value;
   $("resolved").innerHTML = `Saved resolution for <b>${$("voice").value}</b>: clip <b>${r.clip || "none (built-in voice)"}</b>` +
     (r.source !== $("voice").value ? ` borrowed from <b>${r.source}</b>` : "") +
-    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>` +
+    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>, tempo <b>${r.tempo}</b>` +
     (ref ? ` · this run clones from <b>${ref}.wav</b> instead` : "");
 }
 
@@ -207,7 +208,8 @@ $("go").addEventListener("click", async () => {
   let body;
   try {
     body = { text: $("text").value, voice: $("voice").value, reference: $("reference").value || null,
-             exaggeration: numbers($("exag").value), cfg_weight: numbers($("cfg").value), takes: +$("takes").value };
+             exaggeration: numbers($("exag").value), cfg_weight: numbers($("cfg").value), tempo: numbers($("tempo").value),
+             takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
   $("go").disabled = true; $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
   try {
@@ -228,7 +230,8 @@ function onEvent(ev) {
   if (ev.event === "error") { toast(ev.message, "warn"); $("progress").textContent = ev.message; return; }
   if (ev.event === "done") { $("progress").textContent += ` · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   const tr = document.createElement("tr");
-  const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}`;
+  const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
+    (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "");
   tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
     `<td class="n">${ev.seconds === "" ? "" : `${ev.seconds}s in ${ev.elapsed}s`}</td><td></td>`;
   tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
@@ -238,7 +241,7 @@ function onEvent(ev) {
   keep.addEventListener("click", async () => {
     try {
       applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, reference: ev.reference }) }));
+        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, reference: ev.reference }) }));
       toast(`Kept for ${$("voice").value}. The next generate run restages that voice's files.`, "ok");
       document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
     } catch (e) { toast(e.message, "warn"); }
@@ -246,7 +249,7 @@ function onEvent(ev) {
   cell.appendChild(keep);
   if (current) {
     const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
-    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight]);
+    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1]);
     write.title = "Regenerate this line's pack file under the saved settings (keep first if these are not saved yet)";
     write.disabled = !isSaved(write.dataset.recipe);
     write.addEventListener("click", async () => {
@@ -265,8 +268,8 @@ function onEvent(ev) {
 
 function isSaved(recipe) {
   if (!state) return false;
-  const [clip, e, c] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
-  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c;
+  const [clip, e, c, t] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
+  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t;
 }
 
 $("p-keep").addEventListener("click", async () => {
@@ -293,7 +296,7 @@ $("sessions").addEventListener("change", () => {
   $("takes-body").innerHTML = ""; $("progress").textContent = `takes from ${s.session}`;
   if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); }
   s.takes.forEach((t, i) => onEvent({ event: "take", n: i + 1, take: t.take, name: t.name, url: t.url, seconds: "", elapsed: "",
-    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, reference: null }));
+    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, reference: null }));
 });
 
 $("rebuild").addEventListener("click", async () => {

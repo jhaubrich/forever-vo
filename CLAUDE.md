@@ -488,7 +488,13 @@ owner's machine picks the files up on the next sync.
   close one (orc children to the human child clips).
 - **Chatterbox conditioning is `[tts]` in `forever-vo.toml`**, with per-voice
   overrides under `[tts.voices.<voice>]` that may also name a different clip to
-  clone from (`reference`). `generate.VoiceCatalog` resolves a voice to the
+  clone from (`reference`). The knobs are `exaggeration`, `cfg_weight` and
+  `tempo`; the last is not a model parameter (Chatterbox's `generate()` has no
+  pace control) but a pitch-preserving `atempo` stretch applied by
+  `Synth.speak` at encode time, with the stretched length recorded as the
+  duration. Only knobs that differ from the `[tts]` defaults join the
+  fingerprint (`Tts.differences`), so adding a knob later never restages what
+  was already stamped. `generate.VoiceCatalog` resolves a voice to the
   clip it actually uses (its own, else its fallback race's, else the narrator's,
   else human-male) and takes the tuning of *that* voice, so Dark Iron dwarves
   and tuskarr, who borrow the dwarf clip, get the dwarf settings (#18). The

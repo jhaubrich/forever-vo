@@ -55,9 +55,13 @@ orcmalekid = "humanmalekid-male"
 orcfemalekid = "humanfemalekid-female"
 
 [tts]
-# Chatterbox conditioning for every voice that has no entry below.
+# Chatterbox conditioning for every voice that has no entry below. tempo is not
+# a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
+# encode time, 1.0 as generated, 1.1 ten percent faster. Chatterbox's own advice
+# for pace is a lower cfg_weight, so try that before stretching.
 exaggeration = 0.45
 cfg_weight = 0.5
+tempo = 1.0
 
 # Dwarves came out of Chatterbox sounding American (#18). The reference clips
 # are short NPC greetings, so the model keeps the timbre but drifts to its own

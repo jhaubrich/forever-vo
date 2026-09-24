@@ -94,12 +94,14 @@ class VoiceTuning(Strict):
     reference: str | None = None    # clip stem under tools/voices/ to clone from instead of <voice>.wav
     exaggeration: float | None = None
     cfg_weight: float | None = None
+    tempo: float | None = Field(default=None, ge=0.5, le=2.0)   # time stretch at encode time, pitch kept; 1.0 is as generated
 
 
 class TtsSettings(Strict):
     """Resolved Chatterbox conditioning for one voice."""
     exaggeration: float
     cfg_weight: float
+    tempo: float = 1.0
     reference: str | None = None
 
 
@@ -107,7 +109,12 @@ class Tts(Strict):
     """[tts]: Chatterbox conditioning, with per-voice overrides."""
     exaggeration: float = 0.45
     cfg_weight: float = 0.5
+    tempo: float = Field(default=1.0, ge=0.5, le=2.0)
     voices: dict[str, VoiceTuning] = {}
+
+    @property
+    def defaults(self) -> TtsSettings:
+        return TtsSettings(exaggeration=self.exaggeration, cfg_weight=self.cfg_weight, tempo=self.tempo)
 
     def settings_for(self, voice: str) -> TtsSettings:
         """The defaults with this voice's own overrides on top. Borrowed clips are
@@ -117,12 +124,20 @@ class Tts(Strict):
         return TtsSettings(
             exaggeration=self.exaggeration if tuning.exaggeration is None else tuning.exaggeration,
             cfg_weight=self.cfg_weight if tuning.cfg_weight is None else tuning.cfg_weight,
+            tempo=self.tempo if tuning.tempo is None else tuning.tempo,
             reference=tuning.reference,
         )
 
     def is_default(self, settings: TtsSettings) -> bool:
-        return (settings.exaggeration == self.exaggeration and settings.cfg_weight == self.cfg_weight
-                and settings.reference is None)
+        return settings == self.defaults
+
+    def differences(self, settings: TtsSettings) -> dict[str, object]:
+        """The fields of `settings` that differ from the defaults, for the fingerprint:
+        a knob left at its default (tempo 1.0 on every voice tuned before tempo
+        existed) must not change a fingerprint that is already stamped."""
+        defaults = self.defaults
+        return {name: value for name, value in settings.model_dump().items()
+                if value is not None and value != getattr(defaults, name)}
 
 
 class Pronunciations(RootModel[dict[str, str]]):

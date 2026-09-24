@@ -87,7 +87,8 @@ def _validated_write(path: Path, doc: tomlkit.TOMLDocument) -> Config:
     return load_config(path)
 
 
-def write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float, reference: str | None) -> Config:
+def write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float, reference: str | None,
+                 tempo: float = 1.0) -> Config:
     """Sets [tts.voices.<voice>]; a tuning equal to the defaults with no reference
     removes the entry instead, so the file only lists what differs."""
     doc = tomlkit.parse(path.read_text(encoding="utf-8"))
@@ -95,12 +96,12 @@ def write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float,
     if tts is None:
         tts = tomlkit.table()
         doc["tts"] = tts
-    defaults = (float(tts.get("exaggeration", 0.45)), float(tts.get("cfg_weight", 0.5)))
+    defaults = (float(tts.get("exaggeration", 0.45)), float(tts.get("cfg_weight", 0.5)), float(tts.get("tempo", 1.0)))
     voices = tts.get("voices")
     if voices is None:
         voices = tomlkit.table(is_super_table=True)
         tts["voices"] = voices
-    if (exaggeration, cfg_weight) == defaults and not reference:
+    if (exaggeration, cfg_weight, tempo) == defaults and not reference:
         if voice in voices:
             del voices[voice]
     else:
@@ -109,6 +110,8 @@ def write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float,
             entry["reference"] = reference
         entry["exaggeration"] = exaggeration
         entry["cfg_weight"] = cfg_weight
+        if tempo != defaults[2]:
+            entry["tempo"] = tempo
         voices[voice] = entry
     return _validated_write(path, doc)
 
@@ -252,12 +255,14 @@ class Studio:
             r = catalog.resolve(voice)
             resolved[voice] = {"clip": r.clip.name if r.clip else None, "source": r.source,
                                "exaggeration": r.settings.exaggeration, "cfg_weight": r.settings.cfg_weight,
-                               "reference": r.settings.reference, "tuned": catalog.tuned(voice)}
+                               "tempo": r.settings.tempo, "reference": r.settings.reference,
+                               "tuned": catalog.tuned(voice)}
         return {
             "config_path": str(self.config_path),
             "voices": self.voices(),
             "narrator": config.voices.narrator,
-            "defaults": {"exaggeration": config.tts.exaggeration, "cfg_weight": config.tts.cfg_weight},
+            "defaults": {"exaggeration": config.tts.exaggeration, "cfg_weight": config.tts.cfg_weight,
+                         "tempo": config.tts.tempo},
             "overrides": {v: t.model_dump(exclude_none=True) for v, t in config.tts.voices.items()},
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
@@ -285,6 +290,7 @@ class GenerateRequest(BaseModel):
     reference: str | None = None                 # a clip stem to clone from instead of the voice's own resolution
     exaggeration: list[float] = Field(min_length=1, max_length=6)
     cfg_weight: list[float] = Field(min_length=1, max_length=6)
+    tempo: list[float] = Field(default=[1.0], min_length=1, max_length=4)
     takes: int = Field(default=1, ge=1, le=5)
 
 
@@ -292,6 +298,7 @@ class KeepTuning(BaseModel):
     voice: str
     exaggeration: float
     cfg_weight: float
+    tempo: float = 1.0
     reference: str | None = None
 
 
@@ -368,11 +375,13 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         for folder in sorted((p for p in AUDITION_DIR.iterdir() if p.is_dir()), reverse=True)[:limit]:
             takes = []
             for path in sorted(folder.glob("*.mp3")):
-                recipe = re.match(r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)-take(?P<take>\d+)\.mp3$", path.name)
+                recipe = re.match(r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)(?:-t(?P<t>[0-9.]+))?-take(?P<take>\d+)\.mp3$",
+                                  path.name)
                 takes.append({"name": path.name, "url": f"/api/audio/{folder.name}/{path.name}",
                               "voice": recipe["voice"] if recipe else None,
                               "exaggeration": float(recipe["e"]) if recipe else None,
                               "cfg_weight": float(recipe["c"]) if recipe else None,
+                              "tempo": float(recipe["t"]) if recipe and recipe["t"] else 1.0,
                               "take": int(recipe["take"]) if recipe else None})
             if takes:
                 out.append({"session": folder.name, "takes": takes})
@@ -391,8 +400,9 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         out_dir = AUDITION_DIR / session
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        def variant_config(exaggeration: float, cfg_weight: float) -> Config:
-            tuning = VoiceTuning(reference=request.reference, exaggeration=exaggeration, cfg_weight=cfg_weight)
+        def variant_config(exaggeration: float, cfg_weight: float, tempo: float) -> Config:
+            tuning = VoiceTuning(reference=request.reference, exaggeration=exaggeration, cfg_weight=cfg_weight,
+                                 tempo=tempo)
             tts = config.tts.model_copy(update={"voices": {**config.tts.voices, request.voice: tuning}})
             return config.model_copy(update={"tts": tts})
 
@@ -404,12 +414,13 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
                 yield json.dumps({"event": "error", "message": str(e)}) + "\n"
                 return
             n = 0
-            for exaggeration, cfg_weight in itertools.product(request.exaggeration, request.cfg_weight):
-                catalog = VoiceCatalog(variant_config(exaggeration, cfg_weight))
+            for exaggeration, cfg_weight, tempo in itertools.product(request.exaggeration, request.cfg_weight,
+                                                                     request.tempo):
+                catalog = VoiceCatalog(variant_config(exaggeration, cfg_weight, tempo))
                 resolved = catalog.resolve(request.voice)
                 for take in range(1, request.takes + 1):
                     n += 1
-                    name = f"{request.voice}-e{exaggeration}-c{cfg_weight}-take{take}.mp3"
+                    name = f"{request.voice}-e{exaggeration}-c{cfg_weight}-t{tempo}-take{take}.mp3"
                     t0 = time.time()
                     with studio.model_lock:
                         synth.catalog = catalog
@@ -419,7 +430,7 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
                         "seconds": round(seconds, 1), "elapsed": round(time.time() - t0, 1),
                         "clip": resolved.clip.name if resolved.clip else None, "source": resolved.source,
                         "exaggeration": resolved.settings.exaggeration, "cfg_weight": resolved.settings.cfg_weight,
-                        "reference": request.reference,
+                        "tempo": resolved.settings.tempo, "reference": request.reference,
                     }) + "\n"
             yield json.dumps({"event": "done", "count": n}) + "\n"
 
@@ -430,7 +441,8 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         _safe(request.voice)
         if request.reference:
             _safe(request.reference)
-        write_tuning(studio.config_path, request.voice, request.exaggeration, request.cfg_weight, request.reference)
+        write_tuning(studio.config_path, request.voice, request.exaggeration, request.cfg_weight, request.reference,
+                     request.tempo)
         studio.forget_corpus()
         return studio.state()
 

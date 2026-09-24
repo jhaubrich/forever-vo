@@ -44,10 +44,15 @@ def test_write_tuning_adds_and_removes_a_voice_and_keeps_comments(toml_copy: Pat
     assert "# Dwarves came out of Chatterbox sounding American (#18)." in restored
 
 
-def test_write_tuning_with_a_reference(toml_copy: Path) -> None:
-    config = write_tuning(toml_copy, "troll-female", 0.7, 0.35, "npc-1234")
+def test_write_tuning_with_a_reference_and_a_tempo(toml_copy: Path) -> None:
+    config = write_tuning(toml_copy, "troll-female", 0.7, 0.35, "npc-1234", tempo=1.1)
     assert config.tts.voices["troll-female"].reference == "npc-1234"
-    assert "[tts.voices.troll-female]" in toml_copy.read_text(encoding="utf-8")
+    assert config.tts.voices["troll-female"].tempo == 1.1
+    text = toml_copy.read_text(encoding="utf-8")
+    assert "[tts.voices.troll-female]" in text and "tempo = 1.1" in text
+    # a tempo at the default is left out of the entry
+    config = write_tuning(toml_copy, "troll-female", 0.7, 0.35, "npc-1234", tempo=1.0)
+    assert config.tts.voices["troll-female"].tempo is None
 
 
 def test_write_pronunciation_round_trips_and_removes(toml_copy: Path) -> None:

@@ -135,10 +135,9 @@ class VoiceCatalog:
         voice on the default tuning hashes exactly as before, so tuning one voice
         does not restage every other file."""
         key = text_key(text)
-        settings = self.resolve(voice).settings
-        if self.config.tts.is_default(settings):
+        fields = self.config.tts.differences(self.resolve(voice).settings)
+        if not fields:
             return key
-        fields = {name: value for name, value in settings.model_dump().items() if value is not None}
         return key + "+" + ",".join(f"{name}={value}" for name, value in sorted(fields.items()))
 
     def tuned(self, voice: str) -> bool:
@@ -394,14 +393,19 @@ class Synth:
         # final name, which every later run skips as done. The partial file has no
         # .mp3 suffix so the table rebuild's glob cannot pick it up either.
         out_part = out_mp3.with_suffix(f".{os.getpid()}.part")
+        # Pace is not a model knob (Chatterbox generate() has none), so a voice's
+        # tempo is a pitch-preserving time stretch applied here, at encode time.
+        tempo_args = ["-af", f"atempo={settings.tempo}"] if settings.tempo != 1.0 else []
         try:
             torchaudio.save(str(tmp_path), audio, self.sr)
             out_mp3.parent.mkdir(parents=True, exist_ok=True)
             subprocess.run(
-                ["ffmpeg", "-y", "-v", "error", "-i", str(tmp_path), "-ac", "1", "-ar", "44100",
+                ["ffmpeg", "-y", "-v", "error", "-i", str(tmp_path), "-ac", "1", "-ar", "44100", *tempo_args,
                  "-codec:a", "libmp3lame", "-q:a", "4", "-f", "mp3", str(out_part)],
                 check=True,
             )
+            if tempo_args:
+                duration = probe_duration(out_part)   # the stretched length is what the addon pages text against
             os.replace(out_part, out_mp3)
         finally:
             tmp_path.unlink(missing_ok=True)
