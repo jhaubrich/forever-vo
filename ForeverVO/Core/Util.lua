@@ -198,14 +198,20 @@ end
 -- Misc
 -- ---------------------------------------------------------------------------
 
-function Util.PlayerGenderPrefix()
+--- "m" or "f" for the character, nil when the client does not say.
+function Util.PlayerSexLetter()
     local sex = UnitSex("player")
     if sex == 2 then
-        return "m-"
+        return "m"
     elseif sex == 3 then
-        return "f-"
+        return "f"
     end
-    return ""
+    return nil
+end
+
+function Util.PlayerGenderPrefix()
+    local letter = Util.PlayerSexLetter()
+    return letter and (letter .. "-") or ""
 end
 
 --- Splits spoken text into sentence-aligned pages no longer than maxChars.

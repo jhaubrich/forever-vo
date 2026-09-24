@@ -7,7 +7,11 @@ paste into a GitHub issue (see .github/ISSUE_TEMPLATE/capture.yml). The
 string is JSON, zlib-compressed and base64-encoded with the client's own
 C_EncodingUtil, prefixed with "FVO1:". The character's name, class and race are
 replaced by the $n/$c/$r placeholders (Util.Tokenize) at capture, so nothing
-identifying leaves the client and no line is voiced for one class only.
+identifying leaves the client and no line is voiced for one class only. The
+character's sex (one letter) does go along: the client resolves a "$g lad:lass;"
+branch before the addon sees a quest text, and the pipeline can only put the
+branch back by comparing a male and a female reading, so a voiced line whose
+pack still wants this sex's reading (Capture.Contributes) is packed too.
 tools/exportfile.py decodes it.
 ]]
 
@@ -19,12 +23,13 @@ ns.Export = Export
 local NUDGE_AFTER = 10
 local PREFIX = "FVO1:"
 
---- Builds the export table from ForeverVOCaptureDB: only lines without audio.
+--- Builds the export table from ForeverVOCaptureDB: lines without audio, and
+--- voiced lines the pack asked to hear again from a reader like this one.
 function Export:Collect()
     local db = ForeverVOCaptureDB or {}
     local lines, npcs, used = {}, {}, {}
     local function add(kind, entry)
-        if entry.found then
+        if not ns.Capture.Contributes(entry) then
             return
         end
         table.insert(lines, {
@@ -38,6 +43,8 @@ function Export:Collect()
             o = entry.isObject,
             z = entry.zone,
             m = entry.mapID,
+            g = entry.sex,
+            w = entry.wanted,
         })
         if entry.npc then
             used[entry.npc] = true
@@ -139,18 +146,19 @@ function Export:Show()
     frame:Show()
     frame.Scroll.EditBox:SetFocus()
     frame.Scroll.EditBox:HighlightText()
-    ns.Print(format("%d %s without audio packed into %d characters.", count, Util.Plural(count, "line"), #text))
+    ns.Print(format("%d %s packed into %d characters.", count, Util.Plural(count, "line"), #text))
 end
 
 --- Called by Capture after each recorded line; reminds the player once per session.
-function Export:OnLineCaptured(found)
-    if found or self.nudged then
+---@param contributes boolean whether an export would carry the line
+function Export:OnLineCaptured(contributes)
+    if not contributes or self.nudged then
         return
     end
     self.count = (self.count or 0) + 1
     if self.count >= NUDGE_AFTER then
         self.nudged = true
-        ns.Print(format("%d lines seen this session have no voice yet. |cffffd100/fvo export|r to contribute them.", self.count))
+        ns.Print(format("%d lines seen this session are worth contributing. |cffffd100/fvo export|r to pack them.", self.count))
     end
 end
 
@@ -165,7 +173,7 @@ ns.OnInit(function()
         local _, questsMissing, _, gossipMissing = ns.Capture:Summary()
         local missing = questsMissing + gossipMissing
         if missing > 0 then
-            ns.Print(format("%d unvoiced %s seen this session. |cffffd100/fvo export|r before you go, or they are forgotten.",
+            ns.Print(format("%d %s seen this session are worth contributing. |cffffd100/fvo export|r before you go, or they are forgotten.",
                 missing, Util.Plural(missing, "line")))
         end
     end)

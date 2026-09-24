@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.4
+
+- Quest lines that address you by gender ("lad" or "lass", "sir" or "madam")
+  are no longer voiced with whichever word the first contributor happened to
+  hear. The client resolves that choice before the addon sees the text, and
+  unlike your name, class and race the other word is simply gone, so the
+  pipeline now puts the branch back by comparing a male and a female reading
+  of the same line. To make that possible the capture and `/fvo export` record
+  your character's sex (one letter, nothing else new leaves the client), and a
+  voice pack can ask for a line to be heard again: when the pack says it still
+  lacks your sex's reading of a quest, that quest goes into your export even
+  though it played. The same hook lets a future pack ask for any line whose
+  capture has gone stale. Where the raw text is known (Classic, the beta quest
+  cache) a single reading that matches it is fixed at once; thanks to
+  jhaubrich for that part and for raising the problem (#28, #29).
+- The export and logout messages count lines worth contributing, not only
+  lines without audio.
+
 ## 0.1.3
 
 - Stage directions are read by the narrator. Lines like "Hmm... <Jorgen looks

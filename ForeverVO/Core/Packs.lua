@@ -15,6 +15,11 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- g: which of a/p/c exist as m-/f- variants, because $G branches per line
       --    ("a" = only the accept text branches). `true` means all of them, as
       --    packs built before this wrote it.
+      -- wa/wp/wc: the pipeline still wants this event captured again, by a
+      --    reader whose sex letter (m/f) is in the string: "f" when only a
+      --    male character has read a line the client resolved a $G branch
+      --    out of, "mf" when nobody knows who read it. The addon exports
+      --    such a line even though it is voiced (Capture.lua, Export.lua).
       -- npc: quest giver speaker key (creature ID, negative for game objects);
       --    absent when an item starts the quest. ender: the turn-in speaker,
       --    only when it differs from the giver. The addon uses them for a text
@@ -259,6 +264,19 @@ function Packs:FindQuest(questID, event)
             return SoundPath(pack, "Quests", base), entry[field], pack
         end
     end
+end
+
+--- True when the pack that voices the quest event asks for it to be captured
+--- again by a character of the player's sex (the wa/wp/wc fields): the
+--- pipeline has only one gender's reading of a line the client resolves a
+--- $G branch out of, or none it can trust, and this player can supply it.
+---@param pack table the pack FindQuest found the event in
+function Packs:QuestWanted(pack, questID, event)
+    local field = QUEST_FIELD[event]
+    local entry = pack and field and pack.quests[questID]
+    local wanted = entry and entry["w" .. field]
+    local letter = Util.PlayerSexLetter()
+    return type(wanted) == "string" and letter ~= nil and strfind(wanted, letter, 1, true) ~= nil
 end
 
 --- Speaker key recorded by any pack for the quest: the giver, or for a

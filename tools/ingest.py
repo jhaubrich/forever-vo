@@ -17,6 +17,7 @@ from pathlib import Path
 
 from config import ADDON_NAME, BETA_DIR, CAPTURE_JSON, COMMUNITY_CHARACTERS, DATA_DIR, LEGACY_CHARACTERS, ROOT
 from luatable import parse_saved_variables
+from textclean import has_gender_branch, split_gender
 from textkey import text_key, tokenize
 
 CAPTURES_DIR = ROOT / "captures"   # community exports decoded by tools/exportfile.py
@@ -183,6 +184,159 @@ def reconcile_text(text: str, source: str) -> tuple[str, int]:
     return "".join(tokens), restored
 
 
+# ----------------------------------------------------------------------------
+# Gender branches (issues #28 and #29)
+# ----------------------------------------------------------------------------
+# The client resolves "$g lad : lass;" before any addon sees a quest text, and
+# unlike $n/$c/$r the other branch is simply not there to reverse: a quest
+# accepted on a male dwarf is recorded saying "lad" and would say "lad" to
+# everyone. Two ways back, both crowdsourced and both idempotent:
+#
+# - restore_gender: the raw text is known (the beta quest cache, Classic) and
+#   the capture is exactly that text read as one sex, so the source comes back
+#   with its branches (jhaubrich's #28).
+# - rebuild_gender: a male and a female reading of the same line differ only
+#   in short aligned runs, so the runs become branches (merge_gender). Captures
+#   record the reader's sex from addon 0.1.4 on.
+#
+# Until a line is settled, needs_of() says which reader the pipeline still
+# wants ("f" after a male reading, "mf" when nobody knows who read it). The
+# pack tables carry that per event (generate.py, wa/wp/wc) and the addon
+# captures and exports such a line again even though it is voiced. That is
+# also the general hook for any later change in what a capture must carry:
+# make needs_of() ask, and players supply the line again. Gossip is left
+# resolved: it is keyed by a hash of the live text, which the client has
+# already resolved, so a stored $g would never match (Util.NormalizeText
+# drops $n/$c/$r but cannot restore $g).
+
+# Classic's 315 gendered texts branch at most three times, on one or two words
+# each with four outliers; anything past that is a rewording, not a form of
+# address. The alignment floor is lower than RECONCILE_RATIO because a turn-in
+# line can be four words long, and one of them the branch.
+GENDER_BRANCHES = 3
+GENDER_BRANCH_WORDS = 4   # "$g my good man:my lady;" is about the long end
+GENDER_RATIO = 0.6
+
+
+def _collapsed(keys: list[str]) -> list[str]:
+    """Comparison keys with runs of whitespace folded into one, so the client's
+    single newline and the source's "$B$B" compare the same."""
+    out: list[str] = []
+    for key in keys:
+        if key == " " and out and out[-1] == " ":
+            continue
+        out.append(key)
+    return out
+
+
+def _same_reading(text: str, other: str) -> bool:
+    return _collapsed(_pieces(text)[1]) == _collapsed(_pieces(other)[1])
+
+
+_GENDER_BRANCH = re.compile(r"\$[Gg]\s*[^:;]+?\s*:\s*[^:;]+?\s*;")
+
+
+def restore_gender(text: str, source: str) -> tuple[str, int]:
+    """Hands the source text back when the capture is that source read as one
+    sex, paragraph breaks aside. Nothing here guesses from the capture: a "lad" is
+    only a branch where the raw text has one, so an ordinary "the lad who runs
+    the mill" is never touched, and a line Forever reworded stays as captured."""
+    if not source or not has_gender_branch(source) or has_gender_branch(text):
+        return text, 0
+    for variant in split_gender(source):
+        if _same_reading(text, variant):
+            return source, len(_GENDER_BRANCH.findall(source))
+    return text, 0
+
+
+def rebuild_gender(male: str, female: str) -> str | None:
+    """The male reading with a "$g his:hers;" branch wherever the female reading
+    differs, or None when the two are not one line read two ways: they align
+    below GENDER_RATIO, a run is missing on one side rather than replaced, or
+    there are more or longer branches than a form of address takes.
+    Returns the male text itself when the readings only differ in whitespace."""
+    m_tokens, m_keys = _pieces(male)
+    f_tokens, f_keys = _pieces(female)
+    matcher = difflib.SequenceMatcher(None, m_keys, f_keys, autojunk=False)
+    if matcher.ratio() < GENDER_RATIO:
+        return None
+    out: list[str] = []
+    branches = 0
+    for op, i1, i2, j1, j2 in matcher.get_opcodes():
+        if op == "equal":
+            out.extend(m_tokens[i1:i2])
+            continue
+        if op != "replace":
+            return None
+        branches += 1
+        if branches > GENDER_BRANCHES:
+            return None
+        his_raw, hers_raw = "".join(m_tokens[i1:i2]), "".join(f_tokens[j1:j2])
+        his, hers = his_raw.strip(), hers_raw.strip()
+        if not his or not hers or any(c in his + hers for c in ":;$<>"):
+            return None
+        if max(len(his.split()), len(hers.split())) > GENDER_BRANCH_WORDS:
+            return None
+        lead = his_raw[:len(his_raw) - len(his_raw.lstrip())]
+        trail = his_raw[len(his_raw.rstrip()):]
+        out.append(f"{lead}$g {his}:{hers};{trail}")
+    return "".join(out)
+
+
+def needs_of(entry: dict, kind: str, source: str | None) -> str | None:
+    """Which readers the pipeline still wants this line from: None when the text
+    carries its branches or both sexes have read it, "f" after a male reading,
+    "m" after a female one, "mf" when the reader's sex is unknown. A capture that
+    matches raw text with no branch in it needs nobody."""
+    text = entry.get("text") or ""
+    if kind != "quests" or not text or has_gender_branch(text):
+        return None
+    sex = entry.get("sex")
+    if sex == "mf":
+        return None
+    if source and not has_gender_branch(source) and _same_reading(text, source):
+        return None
+    return {"m": "f", "f": "m"}.get(sex, "mf")
+
+
+def merge_gender(base: dict, other: dict) -> dict:
+    """What the losing entry of a merge teaches the winner about gender. A male
+    and a female reading are combined into branches; a reading that equals a
+    settled entry inherits its branches; and a settled entry that no longer
+    matches the winner (Forever reworded the quest) is simply outvoted, so the
+    line is asked for again."""
+    text, other_text = base.get("text"), other.get("text")
+    if not text or not other_text or has_gender_branch(text):
+        return base
+    mine, theirs = base.get("sex"), other.get("sex")
+    if mine in ("m", "f") and theirs in ("m", "f") and mine != theirs:
+        if not (fully_tokenised(base) and fully_tokenised(other)):
+            return base   # a class or race word would pass for a branch
+        male, female = (text, other_text) if mine == "m" else (other_text, text)
+        rebuilt = rebuild_gender(male, female)
+        if rebuilt is None:
+            return base
+        base = dict(base)
+        base["text"] = rebuilt if has_gender_branch(rebuilt) else text
+        base["sex"] = "mf"
+        return base
+    if theirs == "mf":
+        if has_gender_branch(other_text):
+            variants = split_gender(other_text)
+            readings = [variants[0 if mine == "m" else 1]] if mine in ("m", "f") else list(variants)
+            if any(_same_reading(text, v) for v in readings):
+                base = dict(base)
+                base["text"], base["sex"] = other_text, "mf"
+        elif _same_reading(text, other_text):
+            base = dict(base)
+            base["sex"] = "mf"
+        return base
+    if mine is None and theirs in ("m", "f") and _same_reading(text, other_text):
+        base = dict(base)
+        base["sex"] = theirs
+    return base
+
+
 class SourceTexts:
     """Raw quest and gossip text from tools/data/bulk/*.json, for reconciliation."""
 
@@ -273,11 +427,14 @@ class Repairs:
     reconciled = 0
     restored = 0
     reattributed = 0
+    gendered = 0
+    branches = 0
 
 
 def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, stats: Repairs) -> dict | None:
-    """tokenize -> unglue -> reconcile -> reattribute. Idempotent, so it runs over
-    everything on every ingest; None means the line is unusable and should be dropped."""
+    """tokenize -> unglue -> reconcile -> regender -> reattribute -> needs. Idempotent,
+    so it runs over everything on every ingest; None means the line is unusable and
+    should be dropped."""
     entry = tokenize_entry(entry)
     entry = unglue_entry(entry)
     if entry is None:
@@ -287,9 +444,23 @@ def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, 
     if restored:
         stats.reconciled += 1
         stats.restored += restored
+    source = sources.quest(key) if sources is not None and kind == "quests" else None
+    if source:
+        fixed, branches = restore_gender(entry.get("text") or "", source)
+        if branches:
+            entry = dict(entry)
+            entry["text"] = fixed
+            stats.gendered += 1
+            stats.branches += branches
     entry, reattributed = reattribute_entry(entry, kind, key, sources)
     if reattributed:
         stats.reattributed += 1
+    needs = needs_of(entry, kind, source)
+    if needs != entry.get("needs"):
+        entry = dict(entry)
+        entry.pop("needs", None)
+        if needs:
+            entry["needs"] = needs
     return entry
 
 
@@ -321,22 +492,25 @@ def fully_tokenised(entry: dict) -> bool:
 
 
 def merge_entry(store: dict, key: str, entry: dict) -> bool:
+    """The newer capture wins the line, but the other reading still teaches it
+    what a single reader cannot see: a class or race word, and a gender branch."""
     old = store.get(key)
     if old is None:
         store[key] = entry
         return True
-    if (entry.get("time") or 0) >= (old.get("time") or 0):
-        entry = dict(entry)
-        entry["firstSeen"] = old.get("firstSeen", old.get("time"))
-        if (entry.get("player") != old.get("player") and entry.get("text") and old.get("text")
-                and fully_tokenised(entry) and fully_tokenised(old)):
-            # Two readers of different class or race: a placeholder only one of
-            # them saw is that reader's own class or race used as a plain word
-            entry["text"], _ = reconcile_text(entry["text"], old["text"])
-        changed = entry != old
-        store[key] = entry
-        return changed
-    return False
+    newer = (entry.get("time") or 0) >= (old.get("time") or 0)
+    base, other = (dict(entry), old) if newer else (dict(old), entry)
+    if newer:
+        base["firstSeen"] = old.get("firstSeen", old.get("time"))
+    if (base.get("player") != other.get("player") and base.get("text") and other.get("text")
+            and fully_tokenised(base) and fully_tokenised(other)):
+        # Two readers of different class or race: a placeholder only one of
+        # them saw is that reader's own class or race used as a plain word
+        base["text"], _ = reconcile_text(base["text"], other["text"])
+    base = merge_gender(base, other)
+    changed = base != old
+    store[key] = base
+    return changed
 
 
 def ingest_file(capture: dict, path: Path, sources: SourceTexts | None, stats: Repairs) -> tuple[int, int, int]:
@@ -426,6 +600,13 @@ def main(argv: list[str]) -> int:
         print(f"dropped    {stats.dropped} texts with glued placeholders from an unknown reader (re-capture them)")
     if stats.reattributed:
         print(f"reattributed {stats.reattributed} quest texts from a lingering NPC to the object or item Classic names")
+    if stats.gendered:
+        print(f"regendered {stats.branches} $g branch(es) in {stats.gendered} quest texts from the raw source text")
+    needing = sum(1 for e in capture["quests"].values() if e.get("needs"))
+    settled = sum(1 for e in capture["quests"].values() if e.get("sex") == "mf")
+    if needing or settled:
+        print(f"gender     {needing} quest texts still want a reader of the other sex (or any reader); "
+              f"{settled} settled by readings of both")
 
     CAPTURE_JSON.parent.mkdir(parents=True, exist_ok=True)
     seen_files = capture.pop("sources")
