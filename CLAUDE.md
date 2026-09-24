@@ -106,6 +106,13 @@ game's own recordings).
   placeholders are reconciled; the capture's text otherwise wins. Two readers
   of different class or race who capture the same quest also settle it in
   `merge_entry` (gossip keys differ by hash, so that only helps quests).
+- **The client resolves `$g` too, and that one cannot be reversed from the
+  capture**: the other branch is simply absent, so a quest accepted on a male
+  character says "lad" to everyone and loses its m-/f- files. `restore_gender`
+  (in the same `repair_entry` pass, quests only) hands back the bulk source text
+  when the capture is exactly that source resolved to one gender, paragraph
+  breaks aside. Gossip is left resolved: it is keyed by a hash of the live text,
+  which the client has already resolved, so a stored `$g` would never match.
 - `luac -p` every changed Lua file (`nix shell nixpkgs#lua5_1 -c luac -p`).
   There is no in-game test harness; the owner tests by `/reload`.
 

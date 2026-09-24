@@ -17,6 +17,7 @@ from pathlib import Path
 
 from config import ADDON_NAME, BETA_DIR, CAPTURE_JSON, COMMUNITY_CHARACTERS, DATA_DIR, LEGACY_CHARACTERS, ROOT
 from luatable import parse_saved_variables
+from textclean import gender_branches, has_gender_branch, split_gender
 from textkey import text_key, tokenize
 
 CAPTURES_DIR = ROOT / "captures"   # community exports decoded by tools/exportfile.py
@@ -183,6 +184,40 @@ def reconcile_text(text: str, source: str) -> tuple[str, int]:
     return "".join(tokens), restored
 
 
+def _collapsed(keys: list[str]) -> list[str]:
+    """Comparison keys with runs of whitespace folded into one, so the client's
+    single newline and the source's "$b$b" compare the same."""
+    out: list[str] = []
+    for key in keys:
+        if key == " " and out and out[-1] == " ":
+            continue
+        out.append(key)
+    return out
+
+
+def restore_gender(text: str, source: str) -> tuple[str, int]:
+    """Puts a "$g lad : lass;" branch back into a captured quest line.
+
+    The client resolves $g before any addon sees the text, and unlike $n/$c/$r the
+    other branch is simply not there to reverse - a quest accepted on a male dwarf
+    is recorded saying "lad" and then says "lad" to everyone, while the m-/f- files
+    that used to cover it stop being generated. The bulk source still has the
+    branch, so when the capture is that source resolved to one gender - give or
+    take how the client writes paragraph breaks - hand the source text back.
+
+    Quests only: gossip is keyed by a hash of its text, and the addon hashes the
+    live text, which the client has already resolved. A stored "$g" would never
+    match (see Util.NormalizeText, which drops $n/$c/$r but cannot restore $g).
+    """
+    if not source or not has_gender_branch(source) or has_gender_branch(text):
+        return text, 0
+    keys = _collapsed(_pieces(text)[1])
+    for variant in split_gender(source):
+        if keys == _collapsed(_pieces(variant)[1]):
+            return source, gender_branches(source)
+    return text, 0
+
+
 class SourceTexts:
     """Raw quest and gossip text from tools/data/bulk/*.json, for reconciliation."""
 
@@ -273,10 +308,12 @@ class Repairs:
     reconciled = 0
     restored = 0
     reattributed = 0
+    gendered = 0
+    branches = 0
 
 
 def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, stats: Repairs) -> dict | None:
-    """tokenize -> unglue -> reconcile -> reattribute. Idempotent, so it runs over
+    """tokenize -> unglue -> reconcile -> regender -> reattribute. Idempotent, so it runs over
     everything on every ingest; None means the line is unusable and should be dropped."""
     entry = tokenize_entry(entry)
     entry = unglue_entry(entry)
@@ -287,6 +324,13 @@ def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, 
     if restored:
         stats.reconciled += 1
         stats.restored += restored
+    if kind == "quests" and sources is not None:
+        fixed, branches = restore_gender(entry.get("text") or "", sources.quest(key) or "")
+        if branches:
+            entry = dict(entry)
+            entry["text"] = fixed
+            stats.gendered += 1
+            stats.branches += branches
     entry, reattributed = reattribute_entry(entry, kind, key, sources)
     if reattributed:
         stats.reattributed += 1
@@ -422,6 +466,8 @@ def main(argv: list[str]) -> int:
               f"and literal words restored)")
     if stats.reconciled:
         print(f"reconciled {stats.restored} placeholder(s) in {stats.reconciled} texts against {', '.join(sources.loaded)}")
+    if stats.gendered:
+        print(f"regendered {stats.branches} $g branch(es) in {stats.gendered} quest texts the client had resolved")
     if stats.dropped:
         print(f"dropped    {stats.dropped} texts with glued placeholders from an unknown reader (re-capture them)")
     if stats.reattributed:

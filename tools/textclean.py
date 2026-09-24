@@ -80,6 +80,10 @@ def has_gender_branch(text: str) -> bool:
     return bool(_GENDER.search(text))
 
 
+def gender_branches(text: str) -> int:
+    return len(_GENDER.findall(text))
+
+
 def split_gender(text: str) -> tuple[str, str]:
     """Returns (male_text, female_text) for `$G he:she;` style branches."""
     return _GENDER.sub(r"\1", text), _GENDER.sub(r"\2", text)
