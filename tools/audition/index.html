@@ -57,8 +57,9 @@
   <aside>
     <h2>Find a line</h2>
     <input id="q" placeholder="quest title, NPC, words, or a base name like 415-accept" autocomplete="off">
+    <div class="row" style="margin-top:6px"><button id="random">Random line in this voice</button></div>
     <ul id="results"></ul>
-    <p class="note">Every word must match. Pick a line to load its spoken text and voice; free text below works too.</p>
+    <p class="note">Every word must match. Pick a line to load its spoken text and voice; free text below works too. The random button draws a quest line spoken in the selected voice.</p>
 
     <h2>Pronunciation</h2>
     <div class="row">
@@ -153,14 +154,26 @@ $("q").addEventListener("input", () => {
   searchTimer = setTimeout(async () => {
     const q = $("q").value.trim();
     if (!q) { $("results").innerHTML = ""; return; }
-    try {
-      const rows = await api(`/api/lines?q=${encodeURIComponent(q)}`);
-      $("results").innerHTML = rows.map((r, i) =>
-        `<li data-i="${i}"><div class="t">${esc(r.title)} <span class="badge">${r.base}</span>${r.exists ? "" : '<span class="badge warn">no file</span>'}</div>` +
-        `<div class="m">${esc(r.speaker || "")} · ${r.voice} · ${esc(r.raw.slice(0, 90))}${r.raw.length > 90 ? "…" : ""}</div></li>`).join("");
-      $("results").querySelectorAll("li").forEach(li => li.addEventListener("click", () => pick(rows[+li.dataset.i], li)));
-    } catch (e) { toast(e.message, "warn"); }
+    try { renderResults(await api(`/api/lines?q=${encodeURIComponent(q)}`)); }
+    catch (e) { toast(e.message, "warn"); }
   }, 250);
+});
+
+function renderResults(rows) {
+  $("results").innerHTML = rows.map((r, i) =>
+    `<li data-i="${i}"><div class="t">${esc(r.title)} <span class="badge">${r.base}</span>${r.exists ? "" : '<span class="badge warn">no file</span>'}</div>` +
+    `<div class="m">${esc(r.speaker || "")} · ${r.voice} · ${esc(r.raw.slice(0, 90))}${r.raw.length > 90 ? "…" : ""}</div></li>`).join("");
+  const items = $("results").querySelectorAll("li");
+  items.forEach(li => li.addEventListener("click", () => pick(rows[+li.dataset.i], li)));
+  return items;
+}
+
+$("random").addEventListener("click", async () => {
+  try {
+    const row = await api(`/api/random?voice=${encodeURIComponent($("voice").value)}`);
+    const items = renderResults([row]);
+    pick(row, items[0]);
+  } catch (e) { toast(e.message, "warn"); }
 });
 
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }

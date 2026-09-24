@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import random
 import re
 import subprocess
 import sys
@@ -156,6 +157,15 @@ def line_rows(items: list[Item]) -> list[LineRow]:
             rows.append(LineRow(variant.base, item.subfolder, title, speaker, item.voice, item.raw_text, variant.text,
                                 int(item.entry.get("level") or 0), item.entry.get("source") or "capture"))
     return rows
+
+
+def random_line(rows: list[LineRow], voice: str, rng: random.Random | None = None) -> LineRow | None:
+    """A random line spoken in `voice` (the resolved race-gender or npc voice):
+    a quest line when the voice has any, else a gossip line, else None."""
+    rng = rng or random.Random()
+    quests = [row for row in rows if row.voice == voice and row.subfolder == "Quests"]
+    pool = quests or [row for row in rows if row.voice == voice]
+    return rng.choice(pool) if pool else None
 
 
 def search(rows: list[LineRow], query: str, limit: int = 40) -> list[LineRow]:
@@ -319,14 +329,21 @@ def create_app(studio: Studio) -> FastAPI:
     def state() -> dict[str, Any]:
         return studio.state()
 
+    def payload(row: LineRow) -> dict[str, Any]:
+        exists = sound_path(row.subfolder, row.base).exists()
+        return {**row.__dict__, "exists": exists,
+                "pack_url": f"/api/pack/{row.subfolder}/{row.base}.mp3" if exists else None}
+
     @app.get("/api/lines")
     def lines(q: str = Query(min_length=1)) -> list[dict[str, Any]]:
-        out = []
-        for row in search(studio.rows(), q):
-            path = sound_path(row.subfolder, row.base)
-            out.append({**row.__dict__, "exists": path.exists(),
-                        "pack_url": f"/api/pack/{row.subfolder}/{row.base}.mp3" if path.exists() else None})
-        return out
+        return [payload(row) for row in search(studio.rows(), q)]
+
+    @app.get("/api/random")
+    def random_in_voice(voice: str = Query(min_length=1)) -> dict[str, Any]:
+        row = random_line(studio.rows(), _safe(voice))
+        if row is None:
+            raise HTTPException(404, f"no lines are spoken in {voice}")
+        return payload(row)
 
     @app.get("/api/pack/{subfolder}/{name}")
     def pack_audio(subfolder: str, name: str) -> FileResponse:

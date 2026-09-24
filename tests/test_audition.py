@@ -1,6 +1,7 @@
 """The audition page's edits to forever-vo.toml keep the comments and validate."""
 from __future__ import annotations
 
+import random
 import shutil
 from collections.abc import Iterator
 from pathlib import Path
@@ -8,7 +9,7 @@ from pathlib import Path
 import pytest
 import tomlkit
 
-from tools.audition import LineRow, search, write_pronunciation, write_tuning
+from tools.audition import LineRow, random_line, search, write_pronunciation, write_tuning
 from tools.config import CONFIG_TOML, load_config
 
 
@@ -61,3 +62,20 @@ def test_search_needs_every_word_and_ranks_exact_hits_first() -> None:
     assert [r.base for r in search(rows, "brew rejold")] == ["415-accept", "415-complete"]
     assert [r.base for r in search(rows, "415-complete")] == ["415-complete"]
     assert search(rows, "   ") == []
+
+
+def test_random_line_stays_in_the_voice_and_prefers_quests() -> None:
+    rows = [
+        LineRow("415-accept", "Quests", "Rejold's New Brew", "Marleth", "dwarf-male", "a", "a", 4, "classic"),
+        LineRow("99-1234abcd", "Gossip", "Marleth", "Marleth", "dwarf-male", "b", "b", 0, "classic"),
+        LineRow("77-aaaa0000", "Gossip", "Innkeeper", "Innkeeper", "gnome-female", "c", "c", 0, "classic"),
+    ]
+    rng = random.Random(1)
+
+    def base(voice: str) -> str | None:
+        row = random_line(rows, voice, rng)
+        return row.base if row else None
+
+    assert {base("dwarf-male") for _ in range(20)} == {"415-accept"}   # quests first, never the gossip line
+    assert base("gnome-female") == "77-aaaa0000"                        # gossip when that is all the voice has
+    assert base("orc-male") is None
