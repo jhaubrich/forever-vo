@@ -7,11 +7,14 @@
 # Each worker takes every Nth file of the same priority-ordered todo list, so
 # stopping early still leaves the low-level zones done.
 #
-# Started by forever-vo-bulk.service. Set FOREVER_VO_WORKERS=1 to go back to a
-# single stream (e.g. while playing, when the client wants the GPU too).
+# Started by forever-vo-bulk.service. The default is one stream: the Classic
+# backlog finished on 2026-09-23, so what remains is a trickle of captured and
+# regenerated lines, and a second worker would only take the GPU from the game
+# while the owner plays. Set FOREVER_VO_WORKERS=2 for a big run (a new
+# narrator voice, a bitrate change) when the client is closed.
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-WORKERS="${FOREVER_VO_WORKERS:-2}"
+WORKERS="${FOREVER_VO_WORKERS:-1}"
 cd "$ROOT"
 
 pids=()

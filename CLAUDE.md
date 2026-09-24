@@ -187,11 +187,14 @@ Installed by `tools/install-timer.sh`:
   of the nightly run and restarts it from an `EXIT` trap — it used to just
   bail out, which would have skipped the captured pass, the table rebuild and
   the delta upload for as long as bulk stayed up. It runs `tools/bulk.sh`,
-  which starts `FOREVER_VO_WORKERS` (default 2) `generate.py --shard i/N`
+  which starts `FOREVER_VO_WORKERS` (default 1 since 2026-09-24; 2 until the
+  Classic backlog finished on 2026-09-23) `generate.py --shard i/N`
   processes: one autoregressive stream leaves the GPU about 60% idle, and on
   the 3080 two together measured 2.59x realtime against 1.68x for one, while
-  three were no better than two and crowd the 16 GB. Set
-  `FOREVER_VO_WORKERS=1` to give the GPU back to the game.
+  three were no better than two and crowd the 16 GB. One worker is the
+  default now so a run that starts while the owner plays does not fight the
+  client for the GPU; set `FOREVER_VO_WORKERS=2` for a big run with the game
+  closed.
 
 Do not add a periodic pull timer; the owner declined it. Parallel *shards* are
 fine — `save_sound_index` merges only the keys a process wrote since its last
