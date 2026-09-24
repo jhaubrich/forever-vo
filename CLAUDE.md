@@ -232,23 +232,28 @@ Three CurseForge projects, three release paths:
   source is not `classic` (captures, community, beta cache), priority 200.
   `tools/release_pack.py delta --upload --if-changed` runs at the end of the
   nightly job and uploads a dated beta when the file set changed.
-- **Base pack** "Forever Voiceover Data: Base" (1705100, installs as
-  `ForeverVO_Data_Base`; the owner's working folder `ForeverVO_Data` is
-  never shipped): the Classic-sourced
-  lines, priority 100, huge (~0.9 GB at 32 kbps with the bulk run two thirds
-  done on 2026-09-22, ~1.3 GB when complete with the alternate narrators),
-  released by hand and rarely: `tools/release_pack.py base` builds the zip
-  under `tools/data/release/`, and it is then **uploaded through the
-  CurseForge website**, not the API: the upload API sits behind Cloudflare,
-  which answered `413 Payload Too Large` to the 887 MB zip on 2026-09-22
-  (the 30 MB delta goes through fine; the exact cap is unknown, a few
-  hundred MB at most), while the website takes files up to 2 GB (the
-  comparable AI VoiceOver vanilla pack is 1.1 GB there). Upload it as a
-  "release" file for game version 1.60.1 (the nightly delta stays "beta";
-  the CurseForge app hides beta files unless the user opts in), then record
-  it in `tools/data/release_state.json` the way the script would have. The
-  first one went up before the bulk run finished, to get through moderation
-  early; later uploads are just newer dated versions.
+- **Base packs** "Forever Voiceover Data: Base" (1705100, installs as
+  `ForeverVO_Data_Base`) and "Forever Voiceover Data: Base_Endgame" (project
+  created 2026-09-24, ID to fill in `CURSEFORGE_PROJECTS`, installs as
+  `ForeverVO_Data_Base_Endgame`; the owner's working folder `ForeverVO_Data`
+  is never shipped): the Classic-sourced lines, priority 100, released by
+  hand and rarely. The complete Classic set with its five alternate narrators
+  is 1.36 GB at 32 kbps, and **the CurseForge website caps a file at 1 GB**
+  (learned 2026-09-24 when the 1,378 MB zip was refused; the API's cap is
+  lower still, `413 Payload Too Large` at 887 MB on 2026-09-22, while the 30
+  to 70 MB delta goes through). So the set is split by quest level in
+  `release_pack.py` (`BASE_SPLIT_LEVEL`): Base is quests to level 40 with all
+  gossip (~800 MB), Base_Endgame quests from 41 (~570 MB), each with its
+  alternates, since the addon looks a quest's alternates up in the pack that
+  had the quest. Cutting at 50 would put Base back over the cap; a sixth
+  narrator voice costs ~65 MB per pack. Build both with `release_pack.py base`
+  then `release_pack.py base_endgame` (each re-encodes its whole set, ~45 min
+  together) and **upload through the website**, as "release" files for game
+  version 1.60.1 (the nightly delta stays "beta"; the CurseForge app hides
+  beta files unless the user opts in). The script records
+  `tools/data/release_state.json` itself even without `--upload`. The first
+  Base went up 2026-09-22 before the bulk run finished, to get through
+  moderation early; the split versions are dated 2026-09-24.
 
 `release_pack.py` builds from the single working folder `ForeverVO_Data`
 (which holds everything on the owner's machine and is what the client loads

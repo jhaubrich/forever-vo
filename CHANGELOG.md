@@ -18,6 +18,9 @@
   it instead of the turn-in NPC. Packs built after this record the giver and
   the turn-in speaker separately, so a turn-in at an object shows the object
   even when the client does not say who is speaking.
+- The Classic voice pack now comes as two downloads, Base (quests to level 40
+  and all gossip) and Base_Endgame (quests from 41), because CurseForge caps a
+  file at 1 GB. The "no voice pack found" message names both.
 
 ## 0.1.2
 

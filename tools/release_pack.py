@@ -4,21 +4,27 @@
 # ///
 """Builds and (optionally) uploads voice pack releases.
 
-Two packs are released from the one working folder (ForeverVO_Data holds
+Three packs are released from the one working folder (ForeverVO_Data holds
 everything on the maintainer's machine):
 
-  base   ForeverVO_Data_Base     Classic-era lines (source: classic). Huge,
-                                 rarely released. (The maintainer's working
-                                 folder stays ForeverVO_Data; the two coexist
-                                 because their pack names differ from it.)
-  delta  ForeverVO_Data_Forever  lines captured in game, from the beta cache
-                                 or from the community. Small, released often,
-                                 higher priority so it overrides the base.
+  base          ForeverVO_Data_Base          Classic-era lines (source: classic):
+  base_endgame  ForeverVO_Data_Base_Endgame  quests to level 40 with all gossip,
+                                             and quests from 41, split so each
+                                             fits CurseForge's 1 GB website cap.
+                                             Huge, rarely released, uploaded by
+                                             hand. (The maintainer's working
+                                             folder stays ForeverVO_Data; they
+                                             coexist because their pack names
+                                             differ from it.)
+  delta         ForeverVO_Data_Forever       lines captured in game, from the
+                                             beta cache or from the community.
+                                             Small, released often, higher
+                                             priority so it overrides the base.
 
     ./tools/run.sh tools/release_pack.py delta               # build zip only
     ./tools/run.sh tools/release_pack.py delta --upload      # and upload to CurseForge
     ./tools/run.sh tools/release_pack.py delta --upload --if-changed   # nightly use
-    ./tools/run.sh tools/release_pack.py base
+    ./tools/run.sh tools/release_pack.py base && ./tools/run.sh tools/release_pack.py base_endgame
 
 Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz, about 14 MB per
 hour of speech; it was 48 kbps until 2026-09-22, when the base pack came to
@@ -78,14 +84,38 @@ def is_forever_line(entry: dict, classic_ids: set[int]) -> bool:
     return False
 
 
+# The CurseForge website takes files up to 1 GB (the API less, see CLAUDE.md),
+# and the Classic set with its alternate narrators is 1.36 GB, so it ships as
+# two projects. A quest's alternates must sit in the same pack as the quest
+# (the addon looks them up in the pack that had the entry), so the cut is by
+# quest level: 1-40 with all gossip on one side (800 MB), 41+ ("endgame") on the other
+# (570 MB), each with about 200 MB of headroom for another narrator voice.
+# Cutting at 50 instead would put the first side back over the cap.
+BASE_SPLIT_LEVEL = 40
+
+
+def base_part(entry: dict) -> int:
+    if entry.get("questID") and int(entry.get("level") or 0) > BASE_SPLIT_LEVEL:
+        return 2
+    return 1
+
+
 PACKS = {
     "base": {
         "folder": "ForeverVO_Data_Base",
         "title": "Forever Voiceover Data: Base",
         "pack_name": "Classic",
         "priority": 100,
-        "notes": "Classic-era quests and gossip, voiced. Install with Forever Voiceover.",
-        "select": lambda entry, classic_ids: not is_forever_line(entry, classic_ids),
+        "notes": f"Classic-era quests to level {BASE_SPLIT_LEVEL} and all gossip, voiced. Install with Forever Voiceover and Base_Endgame.",
+        "select": lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 1,
+    },
+    "base_endgame": {
+        "folder": "ForeverVO_Data_Base_Endgame",
+        "title": "Forever Voiceover Data: Base_Endgame",
+        "pack_name": "Classic Endgame",
+        "priority": 100,
+        "notes": f"Classic-era quests from level {BASE_SPLIT_LEVEL + 1}, voiced. Install with Forever Voiceover and Base.",
+        "select": lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 2,
     },
     "delta": {
         "folder": "ForeverVO_Data_Forever",
