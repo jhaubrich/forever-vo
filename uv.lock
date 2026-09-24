@@ -337,6 +337,8 @@ dependencies = [
     { name = "pydantic" },
     { name = "requests" },
     { name = "requests-toolbelt" },
+    { name = "tomlkit" },
+    { name = "typer" },
 ]
 
 [package.dev-dependencies]
@@ -348,7 +350,9 @@ dev = [
 ]
 tts = [
     { name = "chatterbox-tts" },
+    { name = "fastapi" },
     { name = "setuptools" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -356,6 +360,8 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.13.5" },
     { name = "requests" },
     { name = "requests-toolbelt" },
+    { name = "tomlkit", specifier = ">=0.13" },
+    { name = "typer", specifier = ">=0.27.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -367,7 +373,9 @@ dev = [
 ]
 tts = [
     { name = "chatterbox-tts", specifier = "==0.1.7" },
+    { name = "fastapi" },
     { name = "setuptools", specifier = "<81" },
+    { name = "uvicorn" },
 ]
 
 [[package]]

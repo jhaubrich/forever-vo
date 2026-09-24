@@ -2,6 +2,12 @@
 
 ## 0.1.4
 
+- The talking head shows the speaker you are actually talking to. It used to
+  ask the client for the model by creature ID, which on this client comes back
+  empty for some NPCs (Varimathras, for one) and left the previous speaker's
+  face in the portrait. Now it takes the model from the NPC on screen, and a
+  speaker the client cannot draw gets the narrator's book instead of a
+  stranger.
 - The export window now points to a "Contribute captured lines" issue form,
   one issue per export, instead of the shared inbox thread, which had grown
   past fifty comments. The bot decodes it, reacts with 🚀 and closes the

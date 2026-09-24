@@ -76,7 +76,11 @@ def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
     assert human.clip == tmp_path / "human-male.wav"
     assert config.tts.is_default(human.settings)
 
-    # a voice on the defaults hashes exactly as before, a tuned one differently
+    # a voice on the defaults hashes exactly as before, a tuned one differently, and a
+    # knob at its default (tempo) never joins the suffix, so stamped fingerprints hold
     assert catalog.fingerprint("human-male", "Well met.") == text_key("Well met.")
     assert catalog.fingerprint("dwarf-male", "Well met.") == text_key("Well met.") + "+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597"
     assert catalog.fingerprint("darkirondwarf-male", "Well met.") == catalog.fingerprint("dwarf-male", "Well met.")
+
+    faster = config.model_copy(update={"tts": Tts(voices={"human-male": VoiceTuning(tempo=1.1)})})
+    assert VoiceCatalog(faster, voices_dir=tmp_path).fingerprint("human-male", "Well met.") == text_key("Well met.") + "+tempo=1.1"

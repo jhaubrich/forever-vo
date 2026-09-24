@@ -192,6 +192,24 @@ per-line table (`[lines."91741-accept"]`): the file would grow without bound.
 the tuning resolution; `ruff check` and `ty check` are both clean and should
 stay so.
 
+**`uv run audition`** (`tools/audition/`, a FastAPI app and one `index.html`,
+no front-end framework, on port 8765) is the page for ear tests: pick a line
+from the corpus or type one, a voice, optionally a clip to clone from, a grid
+of exaggeration and cfg_weight values and a number of takes, and get a player
+per take with the resolved recipe beside it. "Keep these settings" writes
+`[tts.voices.<voice>]` (or a `[pronunciations]` entry from the sidebar) into
+`forever-vo.toml` through tomlkit, so the comments survive, validated by the
+models before the file is replaced. "Write to pack" regenerates one line's
+pack file under the *saved* configuration only and records the fingerprint
+`generate.py` would compute, so the nightly run neither redoes nor misses it;
+it is disabled until the row's recipe is the saved one. Takes go to
+`tools/data/audition/<session>/` (gitignored). One model instance, loaded on
+the first take; `--config` points it at another TOML for experiments, `--cpu`
+allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
+we need are plain HTML, and the addon's own rule of no libraries and a native
+look carries over. Parts (`-p1-`) and alternate narrator files are not
+reachable from it yet.
+
 Data flow (all JSON is the source of truth; `ForeverVO_Data/Data/*.lua` is a
 build artifact, never hand-edited):
 
@@ -470,7 +488,13 @@ owner's machine picks the files up on the next sync.
   close one (orc children to the human child clips).
 - **Chatterbox conditioning is `[tts]` in `forever-vo.toml`**, with per-voice
   overrides under `[tts.voices.<voice>]` that may also name a different clip to
-  clone from (`reference`). `generate.VoiceCatalog` resolves a voice to the
+  clone from (`reference`). The knobs are `exaggeration`, `cfg_weight` and
+  `tempo`; the last is not a model parameter (Chatterbox's `generate()` has no
+  pace control) but a pitch-preserving `atempo` stretch applied by
+  `Synth.speak` at encode time, with the stretched length recorded as the
+  duration. Only knobs that differ from the `[tts]` defaults join the
+  fingerprint (`Tts.differences`), so adding a knob later never restages what
+  was already stamped. `generate.VoiceCatalog` resolves a voice to the
   clip it actually uses (its own, else its fallback race's, else the narrator's,
   else human-male) and takes the tuning of *that* voice, so Dark Iron dwarves
   and tuskarr, who borrow the dwarf clip, get the dwarf settings (#18). The
@@ -503,7 +527,11 @@ owner's machine picks the files up on the next sync.
 ## Things the owner wants next
 
 - Per-line configurability: let end users nudge text, voice, exaggeration or
-  pacing for a line and re-run Chatterbox for it themselves.
+  pacing for a line and re-run Chatterbox for it themselves. `uv run audition`
+  (2026-09-24) covers the owner's side of this: hear variants, keep a voice's
+  settings or a respelling in the TOML, write one file into the pack. Not yet:
+  end users without the repo, pacing, parts and narrator alternates, and there
+  is deliberately no per-line table in the TOML.
 - A Discord bot as an alternative inbox for `FVO1:` strings (same decoder).
 - A complete base pack release once the Classic bulk run finishes (the first,
   partial one went up 2026-09-22 with ~12,900 of ~18,000 files; the alternate

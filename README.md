@@ -69,6 +69,11 @@ priorities, so a pack of new or revised lines can sit on top of a base pack.
 
 `nix` is optional, `uv` is mandatory.
 
+`uv run audition` opens a local page (port 8765) for hearing a line in a voice
+under different reference clips and Chatterbox settings side by side, keeping
+the winner in `forever-vo.toml`, and writing a single regenerated file into the
+pack.
+
 The tools are a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml`,
 `uv.lock`, `.python-version`; uv fetches the interpreter itself) and
 `flake.nix` provides the rest: uv, ffmpeg, lua 5.1 and the shared libraries the
