@@ -1,0 +1,43 @@
+{
+ "addon": "0.1.2",
+ "gossip": {},
+ "npcs": {
+  "1266": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Tundra MacGrann",
+   "sex": 2
+  }
+ },
+ "origin": "comment-5805778066",
+ "quests": {
+  "312-complete": {
+   "build": "69977",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Tundra MacGrann",
+   "npc": "1266",
+   "questID": 312,
+   "source": "community",
+   "text": "What a kind soul you are, $N!  Thanks to your bravery I won't find myself starving when the cold season flurries blow in.",
+   "title": "Tundra MacGrann's Stolen Stash",
+   "zone": "Dun Morogh"
+  },
+  "312-progress": {
+   "build": "69977",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Tundra MacGrann",
+   "npc": "1266",
+   "questID": 312,
+   "source": "community",
+   "text": "Were you able to get into my meat locker, $N?",
+   "title": "Tundra MacGrann's Stolen Stash",
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
