@@ -1,8 +1,31 @@
-"""Paths and constants shared by the Forever Voiceover tools."""
+"""Paths, client constants and the typed configuration of the Forever Voiceover tools.
+
+Two kinds of things live here. Constants nobody edits: the repository paths,
+the two environment overrides (WOW_DIR, WOW_BETA_BUILD) and the client's own
+race and sex IDs. And the pydantic models for everything the owner does edit,
+which lives in forever-vo.toml at the repository root: voices and what they
+borrow from, Chatterbox conditioning per voice, respellings, what is known
+about the readers of old captures, and the release parameters. load_config()
+reads and validates the file once; a function that needs a section takes that
+model by type hint (`voices: Voices`, `readers: Readers`, ...).
+"""
 from __future__ import annotations
 
+import functools
 import os
+import re
+import tomllib
+from functools import cached_property
 from pathlib import Path
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    RootModel,
+    ValidationError,
+    field_validator,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = ROOT / "tools"
@@ -11,6 +34,7 @@ DB2_DIR = DATA_DIR / "db2"
 VOICES_DIR = TOOLS_DIR / "voices"
 CAPTURE_JSON = DATA_DIR / "capture.json"
 SOUND_INDEX = DATA_DIR / "sound_index.json"
+CONFIG_TOML = ROOT / "forever-vo.toml"
 
 ADDON_NAME = "ForeverVO"
 PACK_NAME = "ForeverVO_Data"
@@ -42,76 +66,149 @@ RACE_DICT = {
 }
 GENDER_DICT = {0: "male", 1: "female"}
 
-# Voices without a reference clip borrow a related one; "narrator" is used for
-# quests given by items or objects. Provide tools/voices/narrator.wav to override.
-FALLBACK_VOICES = {
-    "narrator": "human-male",
-    "felorc": "orc", "magharorc": "orc",
-    "foresttroll": "troll", "icetroll": "troll", "zandalari": "troll",
-    "skeleton": "scourge", "northrendskeleton": "scourge",
-    "taunka": "tauren", "highmountaintauren": "tauren",
-    "draenei": "human", "broken": "human", "vrykul": "human", "kultiran": "human", "thinhuman": "human", "worgen": "human",
-    "naga": "nightelf", "nightborne": "nightelf", "voidelf": "bloodelf",
-    "tuskarr": "dwarf", "darkirondwarf": "dwarf", "mechagnome": "gnome", "vulpera": "goblin",
-    "pandaren": "human", "dracthyr": "bloodelf",
-}
 
-# Quests handed out by objects and items have no speaker to clone, so they are
-# read by the narrator. That voice is a matter of taste, so every narrator line
-# is also generated in the alternates below and the player picks one in the
-# addon's options. NARRATOR_VOICE is the default and keeps the plain sound path
-# (Sounds\Quests\<base>.mp3); the alternates live in Sounds\Quests\Narrator\<voice>\.
-# Adding a voice here costs one more pass over every narrator line.
-NARRATOR_VOICE = "narrator"
-NARRATOR_VOICES = [
-    NARRATOR_VOICE,
-    "human-female",
-    "dwarf-male",
-    "nightelf-female",
-    "orc-male",
-    "troll-female",
-]
+# ----------------------------------------------------------------------------
+# forever-vo.toml
+# ----------------------------------------------------------------------------
 
-# When the client tables give no race for a speaker, the zone is a strong hint.
-ZONE_RACE_HINTS = {
-    "Zephras Isle": "skyborne",
-}
+class Strict(BaseModel):
+    """A typo in the TOML is an error, not a silently ignored key."""
+    model_config = ConfigDict(extra="forbid")
 
-# CurseForge project IDs. The player addon's ID also lives in its TOC. The
-# API key stays out of git (.env: CF_API_KEY, or CURSEFORGE_API_KEY).
-CURSEFORGE_PROJECTS = {
-    "addon": 1705010,   # Forever Voiceover
-    "delta": 1705094,   # Forever Voiceover Data: Forever
-    "base": 1705100,           # Forever Voiceover Data: Base (Classic quests to level 40, all gossip)
-    "base_endgame": 1709884,   # Forever Voiceover Data: Base Endgame (Classic quests from 41)
-}
 
-# The client resolves $n, $c and $r against whoever is reading before any addon
-# can see the text, so a line first seen on a rogue is captured saying "rogue".
-# Capture version 3 records the reader's class and race so ingest.py can put the
-# placeholders back; these are the characters whose captures predate it. Derived
-# by aligning the captured text against the raw $c still held in
-# tools/data/bulk/questcache.json (and confirmed by the owner for Agravain).
-LEGACY_CHARACTERS = {
-    "Myrlin Fixpoint": {"class": "Mage"},
-    "Pellinore Fixpoint": {"class": "Hunter"},
-    "Agravain Fixpoint": {"class": "Rogue"},
-}
+class Voices(Strict):
+    """[voices]: which clip a speaker is cloned from when it has none of its own."""
+    narrator: str = "narrator"                  # reads quests from objects and items; keeps the plain sound path
+    narrator_alternates: list[str] = []         # every narrator line is also generated in each of these
+    fallbacks: dict[str, str] = {}              # race without a clip -> race whose clip it borrows
+    zone_hints: dict[str, str] = {}             # zone name -> race, when the client tables give none
+    species_aliases: dict[str, str] = {}        # model folder -> voice name, where a close clip exists
 
-# Community exports ("/fvo export") replace the reader's name with $n and carry
-# no class or race, so a glued placeholder from a pre-whole-word client (issue #5)
-# cannot be undone without help. This maps the capture file's origin (the issue
-# comment id) to what the poster told us. "restoreName" says the name is an
-# ordinary English word ("It"), so the old client turned every such word into
-# $n and ingest puts the word back wherever $n appears; only un-gluing otherwise.
-# The first addon release whose captures are taken at face value. Everything
-# recorded by an earlier one (glued placeholders, no class or race, a lingering
-# NPC unit, resolved $g branches) or by an unknown one loses the merge to a
-# capture from this release on, whatever their order in time, and ingest.py
-# keeps asking any reader for the line until such a capture arrives (needs_of).
-# Raise it when a later release fixes what its predecessor recorded.
-CAPTURE_TRUSTED_SINCE = (0, 1, 4)
+    @property
+    def narrator_voices(self) -> list[str]:
+        return [self.narrator, *self.narrator_alternates]
 
-COMMUNITY_CHARACTERS = {
-    "comment-5768141361": {"player": "It", "class": "Paladin", "restoreName": True},
-}
+
+class VoiceTuning(Strict):
+    """[tts.voices.<voice>]: what one voice does differently from the [tts] defaults."""
+    reference: str | None = None    # clip stem under tools/voices/ to clone from instead of <voice>.wav
+    exaggeration: float | None = None
+    cfg_weight: float | None = None
+
+
+class TtsSettings(Strict):
+    """Resolved Chatterbox conditioning for one voice."""
+    exaggeration: float
+    cfg_weight: float
+    reference: str | None = None
+
+
+class Tts(Strict):
+    """[tts]: Chatterbox conditioning, with per-voice overrides."""
+    exaggeration: float = 0.45
+    cfg_weight: float = 0.5
+    voices: dict[str, VoiceTuning] = {}
+
+    def settings_for(self, voice: str) -> TtsSettings:
+        """The defaults with this voice's own overrides on top. Borrowed clips are
+        not considered here: generate.VoiceCatalog resolves a voice to the voice
+        whose clip it actually uses and asks for that one's settings."""
+        tuning = self.voices.get(voice) or VoiceTuning()
+        return TtsSettings(
+            exaggeration=self.exaggeration if tuning.exaggeration is None else tuning.exaggeration,
+            cfg_weight=self.cfg_weight if tuning.cfg_weight is None else tuning.cfg_weight,
+            reference=tuning.reference,
+        )
+
+    def is_default(self, settings: TtsSettings) -> bool:
+        return (settings.exaggeration == self.exaggeration and settings.cfg_weight == self.cfg_weight
+                and settings.reference is None)
+
+
+class Pronunciations(RootModel[dict[str, str]]):
+    """[pronunciations]: written word -> how Chatterbox should be told to say it.
+
+    Whole words, any case; a shouted all-caps word stays all caps. Only the
+    spoken text changes: the pack tables and lookup keys keep the real spelling.
+    Changing an entry changes the spoken-text fingerprint, so `generate.py
+    --stale-only` regenerates exactly the affected files."""
+
+    @cached_property
+    def compiled(self) -> tuple[re.Pattern[str] | None, dict[str, str]]:
+        if not self.root:
+            return None, {}
+        pattern = re.compile(r"\b(" + "|".join(map(re.escape, self.root)) + r")\b", re.IGNORECASE)
+        return pattern, {word.lower(): spoken for word, spoken in self.root.items()}
+
+    def respell(self, text: str) -> str:
+        pattern, by_lower = self.compiled
+        if pattern is None:
+            return text
+
+        def replace(match: re.Match[str]) -> str:
+            spoken = by_lower[match.group(1).lower()]
+            return spoken.upper() if match.group(1).isupper() else spoken
+
+        return pattern.sub(replace, text)
+
+
+class Reader(Strict):
+    """What a contributor told us about the character that captured their lines."""
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+    player: str | None = None
+    class_: str | None = Field(default=None, alias="class")
+    race: str | None = None
+    restore_name: bool = False      # the name is an ordinary word ("It"), so every $n the old client wrote is that word
+
+
+class Readers(Strict):
+    """[readers]: how far captures are believed, and who read the ones that
+    predate the addon recording it."""
+    trusted_since: tuple[int, ...] = (0, 1, 4)   # first addon release whose captures are taken at face value
+    legacy: dict[str, Reader] = {}               # by character name: owner captures before capture version 3
+    community: dict[str, Reader] = {}            # by export origin (the issue comment id)
+
+    @field_validator("trusted_since", mode="before")
+    @classmethod
+    def _parse_version(cls, value: object) -> object:
+        if isinstance(value, str):
+            return tuple(int(part) for part in value.split("."))
+        return value
+
+    @property
+    def trusted_since_text(self) -> str:
+        return ".".join(map(str, self.trusted_since))
+
+    def known(self, player: str | None, origin: str | None) -> Reader | None:
+        return self.legacy.get(player or "") or self.community.get(origin or "")
+
+
+class Release(Strict):
+    """[release]: what release_pack.py needs beyond the API key in .env."""
+    curseforge_projects: dict[str, int] = {}
+    base_split_level: int = 40          # Base is quests to this level with all gossip; Base Endgame the rest
+    bitrate: str = "32k"                # release mp3 bitrate (mono, 22.05 kHz); the working files keep full quality
+    transcode_workers: int = 4          # ffmpeg is CPU work; leave cores for the GPU workers' own decoding
+
+
+class Config(Strict):
+    voices: Voices = Voices()
+    tts: Tts = Tts()
+    pronunciations: Pronunciations = Pronunciations({})
+    readers: Readers = Readers()
+    release: Release = Release()
+
+
+class ConfigError(ValueError):
+    pass
+
+
+@functools.cache
+def load_config(path: Path = CONFIG_TOML) -> Config:
+    """The validated forever-vo.toml, read once per process."""
+    try:
+        with path.open("rb") as f:
+            data = tomllib.load(f)
+        return Config.model_validate(data)
+    except (OSError, tomllib.TOMLDecodeError, ValidationError) as e:
+        raise ConfigError(f"{path}: {e}") from e

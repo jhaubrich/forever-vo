@@ -61,6 +61,9 @@ build-backend = "uv_build"
 [tool.uv]
 default-groups = ["tts"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 [tool.uv.build-backend]
 module-root = ""
 module-name = "tools"

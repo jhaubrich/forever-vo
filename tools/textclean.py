@@ -2,11 +2,14 @@
 
 Mirrors the rules of the upstream tts_cli (dollar-code substitution, stage
 directions in angle brackets, $G gender branches) and adds sentence chunking for
-models that prefer short inputs.
+models that prefer short inputs. Respellings for names the model gets wrong are
+[pronunciations] in forever-vo.toml (config.Pronunciations).
 """
 from __future__ import annotations
 
 import re
+
+from tools.config import Pronunciations, load_config
 
 # Same substitutions as upstream tts_cli/tts_utils.py REPLACE_DICT.
 #
@@ -35,40 +38,6 @@ REPLACE = {
     "$r": "traveler", "$R": "Traveler",
 }
 
-# Respellings for names Chatterbox gets wrong. The model takes plain text only
-# (no IPA or SSML), so the fix is spelling the word the way it should sound.
-# Whole words, any case; a shouted all-caps word stays all caps. Changing an
-# entry changes the spoken-text fingerprint, so `generate.py --stale-only`
-# regenerates exactly the affected files. Try candidates by ear first: of five
-# for Gnomeregan (/noʊmɹəˈgɑːn/), "Nomer-gahn" was natural, "Gnome-ruh-gahn"
-# was bad, and "Nome-ruh-GAHN" came out partly as numbers (so do not mark stress
-# with capitals). Ahn'Qiraj is fine as written; "Ahn Kih-rahj" adds a rolled r.
-# Quel'Thalas came out wrong; "Quell Thalas" and "Kwel-thalas" were both fine.
-# Kharanos as written varies take to take, and so do "Karanos" and "Karra-noss"
-# (each had bad takes out of four); "Karranos" was fine all four times, sometimes
-# with a Scottish rolled r. Dun Morogh is fine as written; one bad take in game
-# ("Muro-h") was a bad sample, fixed by regenerating the file. Tirisfal as
-# written sometimes came out "Tirefal"; "Tirrisfal" and "Teerisfall" were right
-# four times of four. Hyphens can leave a pause mid-word ("Teer-iss-fall",
-# "Tirriss-fall"), so prefer respellings without them. Varimathras as written
-# was only ever ok or good; "Vairimathrus" was good four times of four.
-PRONUNCIATIONS = {
-    "Ahn'Qiraj": "Ahn Kih-rahj",
-    "Gnomeregan": "Nomer-gahn",
-    "Kharanos": "Karranos",
-    "Quel'Thalas": "Quell Thalas",
-    "Tirisfal": "Tirrisfal",
-    "Varimathras": "Vairimathrus",
-}
-_PRONUNCIATION = re.compile(r"\b(" + "|".join(map(re.escape, PRONUNCIATIONS)) + r")\b", re.IGNORECASE)
-_PRONUNCIATION_KEYS = {word.lower(): spoken for word, spoken in PRONUNCIATIONS.items()}
-
-
-def _respell(match: re.Match) -> str:
-    spoken = _PRONUNCIATION_KEYS[match.group(1).lower()]
-    return spoken.upper() if match.group(1).isupper() else spoken
-
-
 _GENDER = re.compile(r"\$[Gg]\s*([^:;]+?)\s*:\s*([^:;]+?)\s*;")
 _STAGE_DIRECTION = re.compile(r"<[^<>]*>\s?")
 _STAGE_DIRECTION_TEXT = re.compile(r"<([^<>]*)>")
@@ -91,37 +60,42 @@ def _substitute(text: str) -> str:
     return text
 
 
-def _finish(text: str) -> str:
-    text = _PRONUNCIATION.sub(_respell, text)
+def _finish(text: str, pronunciations: Pronunciations) -> str:
+    text = pronunciations.respell(text)
     text = text.replace("\r", " ").replace("\n", " ")
     text = _WHITESPACE.sub(" ", text).strip()
     return text
 
 
-def clean(text: str, keep_stage_directions: bool = False) -> str:
+def clean(text: str, keep_stage_directions: bool = False, pronunciations: Pronunciations | None = None) -> str:
     """The whole line as one reader says it. Stage directions (<the guard spits>)
     are the narrator's, not the speaker's, so they are dropped -- unless the
-    narrator reads the whole line anyway, when their text is kept as prose."""
+    narrator reads the whole line anyway, when their text is kept as prose.
+    `pronunciations` defaults to the repository's forever-vo.toml."""
+    if pronunciations is None:
+        pronunciations = load_config().pronunciations
     text = _substitute(text)
     if keep_stage_directions:
         text = _STAGE_DIRECTION_TEXT.sub(r"\1", text)
     else:
         text = _STAGE_DIRECTION.sub("", text)
-    return _finish(text)
+    return _finish(text, pronunciations)
 
 
-def segments(text: str) -> list[tuple[str, str]]:
+def segments(text: str, pronunciations: Pronunciations | None = None) -> list[tuple[str, str]]:
     """The line in reading order as ("npc", words) and ("narrator", words) pieces,
     each cleaned like clean(): the speaker's own words and, between them, every
     <stage direction> for the narrator. Adjacent pieces of one role are merged.
     A line with no stage direction is a single npc piece."""
+    if pronunciations is None:
+        pronunciations = load_config().pronunciations
     out: list[tuple[str, str]] = []
     for piece in _STAGE_SPLIT.split(_substitute(text)):
         if piece.startswith("<") and piece.endswith(">"):
             role, piece = "narrator", piece[1:-1]
         else:
             role = "npc"
-        piece = _finish(piece)
+        piece = _finish(piece, pronunciations)
         if not piece:
             continue
         if out and out[-1][0] == role:

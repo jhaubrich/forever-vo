@@ -22,7 +22,8 @@ from tools.config import (
     RACE_DICT,
     VOICES_DIR,
     WAGO_BASE,
-    ZONE_RACE_HINTS,
+    Voices,
+    load_config,
 )
 
 
@@ -97,15 +98,7 @@ def _species_by_model_file() -> dict[int, str]:
     return {int(k): v for k, v in json.loads(path.read_text(encoding="utf-8")).items()}
 
 
-# A few model folders name a kind of creature the pack has no clip for, while a
-# clip it does have is far closer than the adult human they fall back to.
-SPECIES_VOICE_ALIASES = {
-    "orcmalekid": "humanmalekid-male",
-    "orcfemalekid": "humanfemalekid-female",
-}
-
-
-def species_voice_names(species: str, sex_id: int | None) -> list[str]:
+def species_voice_names(species: str, sex_id: int | None, voices: Voices) -> list[str]:
     """Voice names to try for a species, most specific first.
 
     A model folder does not name voices the way the pack does, and three
@@ -114,8 +107,9 @@ def species_voice_names(species: str, sex_id: int | None) -> list[str]:
     never find naga-female.wav, which is why Meridith the Mermaiden spoke as a
     human. A numbered or ghostly variant - satyr2, ogre02, humanmalekid2_ghost -
     misses the clip built for the base model. And a child of another race has no
-    child clip of its own: the Orcish Orphan was given a grown man's voice while
-    the Human Orphan beside him in the same Children's Week chain was not.
+    child clip of its own ([voices.species_aliases]): the Orcish Orphan was given
+    a grown man's voice while the Human Orphan beside him in the same Children's
+    Week chain was not.
     """
     names: list[str] = []
 
@@ -123,7 +117,7 @@ def species_voice_names(species: str, sex_id: int | None) -> list[str]:
         if name and name not in names:
             names.append(name)
 
-    add(SPECIES_VOICE_ALIASES.get(species, ""))
+    add(voices.species_aliases.get(species, ""))
     # A construct is Gender 2 and so has no sex, but an abomination is not
     # genderless the way a player-race speaker with no sex is: the species already
     # says how it sounds. Prefer the recorded sex, then accept either.
@@ -142,7 +136,7 @@ def species_voice_names(species: str, sex_id: int | None) -> list[str]:
 
 
 def species_voice(display_id: int | None, sex_id: int | None,
-                  model_file_id: int | None = None) -> str | None:
+                  model_file_id: int | None = None, *, voices: Voices) -> str | None:
     """A voice of the speaker's own kind, where the pack carries one.
 
     Creatures outside the player races have no DisplayRaceID, so they fall through
@@ -166,7 +160,7 @@ def species_voice(display_id: int | None, sex_id: int | None,
         species = _species_by_model_file().get(int(model_file_id))
     if not species:
         return None
-    for name in species_voice_names(species, sex_id):
+    for name in species_voice_names(species, sex_id, voices):
         if (VOICES_DIR / f"{name}.wav").exists():
             return name
     return None
@@ -218,7 +212,7 @@ def model_race_sex(
     return race, sex
 
 
-def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
+def voice_for_npc(npc: dict | None, zone: str | None = None, *, voices: Voices | None = None) -> str:
     """Picks a `race-gender` voice name for a captured NPC record.
 
     In order: the NPC's own cloned clip (npc-<displayID>.wav), the race and sex of
@@ -226,14 +220,17 @@ def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
     model file but never the display ID; the Classic export supplies display IDs for
     unchanged NPCs), the zone hint, then human. Sex falls back to the in-game UnitSex
     (2 male, 3 female); game objects, items and genderless units go to the narrator.
+    `voices` ([voices] in forever-vo.toml) defaults to the repository's.
     """
+    if voices is None:
+        voices = load_config().voices
     if not npc or npc.get("isObject") or npc.get("isObjectOrItem"):
-        return "narrator"
+        return voices.narrator
     display_id = npc.get("displayID")
     if display_id and (VOICES_DIR / f"npc-{int(display_id)}.wav").exists():
         return f"npc-{int(display_id)}"  # cloned from this NPC's own recorded greetings
     unit_sex = {2: 0, 3: 1}.get(npc.get("sex"))
-    hint = ZONE_RACE_HINTS.get(zone or npc.get("zone") or "")
+    hint = voices.zone_hints.get(zone or npc.get("zone") or "")
     race_id, sex_id = display_race_sex(display_id)
     if race_id is None:
         hinted = {rid for rid, name in RACE_DICT.items() if name == hint} if hint else set()
@@ -251,12 +248,12 @@ def voice_for_npc(npc: dict | None, zone: str | None = None) -> str:
         # Before the zone hint or human, see whether this kind of creature has a
         # voice of its own. This also reaches genderless species, which the
         # narrator would otherwise take.
-        own = species_voice(display_id, sex_id, npc.get("modelFileID"))
+        own = species_voice(display_id, sex_id, npc.get("modelFileID"), voices=voices)
         if own:
             return own
         race = hint or "human"
     if sex_id is None:
-        return "narrator"
+        return voices.narrator
     return f"{race}-{GENDER_DICT[sex_id]}"
 
 

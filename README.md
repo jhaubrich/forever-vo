@@ -87,8 +87,9 @@ ln -s "$PWD/ForeverVO_Data" "$B/ForeverVO_Data"
 ```
 
 Provide `tools/voices/narrator.wav` (10 to 20 s of clean speech) for quests and
-gossip from items and objects. Those lines are generated again in each voice in
-`config.NARRATOR_VOICES`, under `Sounds/<Quests|Gossip>/Narrator/<voice>/`, so
+gossip from items and objects. Those lines are generated again in each voice
+listed as `narrator_alternates` in `forever-vo.toml`, under
+`Sounds/<Quests|Gossip>/Narrator/<voice>/`, so
 players can pick the narrator they prefer in the options. The extra passes sort after
 every line that has no audio at all; `--narrator-voices none` leaves them out
 of a run and `--narrator-only` makes a run of nothing else.

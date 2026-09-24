@@ -65,7 +65,7 @@ SOURCES: dict[str, str | tuple[str, str]] = {
     # Children. One folder holds both sexes, marked by an _m / _f suffix on the
     # file, so each voice takes only its own - a shared reference makes every boy
     # sound like a girl. species_voice reaches these from the humanmalekid and
-    # humanfemalekid models, and the orc children through SPECIES_VOICE_ALIASES.
+    # humanfemalekid models, and the orc children through [voices.species_aliases].
     "humanmalekid-male": ("kul_tiran_kid", r"_m\.ogg$"),
     "humanfemalekid-female": ("kul_tiran_kid", r"_f\.ogg$"),
 }

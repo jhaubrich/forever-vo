@@ -17,7 +17,7 @@ Classic-plus client, codename Camelot). Two addons plus a Python pipeline:
   Action from comments on the pinned issue #1.
 
 Owner: Quinn Dougherty (quinn@for-all.dev). CurseForge projects: addon 1705010,
-delta pack 1705094, base pack 1705100 (IDs in tools/config.py; API key only in the gitignored .env). Addon
+delta pack 1705094, base pack 1705100 (IDs under `[release]` in `forever-vo.toml`; API key only in the gitignored .env). Addon
 slug `forever-vo`, display name "Forever Voiceover". License MIT; voice packs
 are non-commercial fan content (Blizzard's text, voices cloned from the
 game's own recordings).
@@ -79,8 +79,8 @@ game's own recordings).
   rogues. `Util.Tokenize` puts the placeholders back at capture time (capture
   version 3 also records the reader's class and race), `FindGossip` tokenises
   the live text before hashing, and `NormalizeText` drops the placeholders on
-  both sides so one recording matches every class. `LEGACY_CHARACTERS` in
-  `tools/config.py` covers captures made before version 3; `ingest.py` re-runs
+  both sides so one recording matches every class. `[readers.legacy]` in
+  `forever-vo.toml` covers captures made before version 3; `ingest.py` re-runs
   the reversal on every ingest, which is idempotent. Since addon 0.1.2 the
   name is matched case-sensitively (the client always renders it capitalised,
   so a lowercase match is the word, not the name) while class and race still
@@ -92,9 +92,9 @@ game's own recordings).
   touching a letter or digit is treated as corruption: the literal word is put
   back when the reader is known, otherwise the entry is dropped so the line
   gets re-captured. Community exports carry no name, class or race, so
-  `COMMUNITY_CHARACTERS` in `tools/config.py` maps an export's `origin` (the
+  `[readers.community]` in `forever-vo.toml` maps an export's `origin` (the
   issue comment id, stamped on each entry at ingest) to what the poster said;
-  `restoreName` marks a name that is an ordinary word ("It"), whose every `$n`
+  `restore_name` marks a name that is an ordinary word ("It"), whose every `$n`
   is put back; for exports from addon 0.1.2 on (`addon` in the decoded file,
   stamped on each entry like `origin`) only `$N` is put back, since that addon
   can only have written the name capitalised. The glued check skips the `B`
@@ -137,7 +137,7 @@ game's own recordings).
   every capture carries the addon version (`addon`, on owner entries too) and
   exports carry per-line time (`d`), and `merge_entry` ranks readings by
   `capture_rank`: newer addon first, then later reading, unknown addon lowest.
-  `CAPTURE_TRUSTED_SINCE` in `tools/config.py` (0.1.4) names the first release
+  `trusted_since` under `[readers]` in `forever-vo.toml` (0.1.4) names the first release
   believed at face value: `needs_of` answers `mf` for any quest entry from
   before it, so the pack asks everyone for the line until a trusted capture
   wins it, and `superseded_gossip` in `backfill` drops an untrusted gossip
@@ -176,6 +176,22 @@ releases. The GitHub ingest workflow runs `exportfile.py` (stdlib only) with
 file when its text or voice changes, so a library bump changes no audio on its
 own.
 
+**Configuration is `forever-vo.toml` at the root**, validated by the pydantic
+models in `tools/config.py` (`Voices`, `Tts`, `Pronunciations`, `Readers`,
+`Release`, together `Config`; an unknown key is an error). The rule for what
+goes there: if someone edits it, it is TOML; if nobody does (paths, the
+client's race IDs), it stays a Python constant. `load_config()` reads the file
+once, and a function that needs a section takes that model by type hint:
+`generate.load_items(..., catalog)` and `rebuild_tables(..., config)`, every
+ingest repair takes `readers: Readers`, `release_pack` takes `Release`. The two
+leaf helpers called from everywhere, `textclean.clean()` and
+`wowdata.voice_for_npc()`, accept their model as a keyword and default to the
+repository's file, so one-liners keep working. There is deliberately no
+per-line table (`[lines."91741-accept"]`): the file would grow without bound.
+`./tools/run.sh pytest` runs `tests/`, which loads the real TOML and checks
+the tuning resolution; `ruff check` and `ty check` are both clean and should
+stay so.
+
 Data flow (all JSON is the source of truth; `ForeverVO_Data/Data/*.lua` is a
 build artifact, never hand-edited):
 
@@ -194,8 +210,9 @@ build artifact, never hand-edited):
    `<questID>-<event>` name, so nothing else would notice. Entries written
    before `t` existed have none and are left alone rather than all regenerated.
    Narrator lines (quests and gossip from objects, items and speakers with no
-   gender) are generated once per voice in `config.NARRATOR_VOICES`: the first
-   entry is the default and keeps the plain path and `sound_index` key, the
+   gender) are generated once per voice in `[voices]` of `forever-vo.toml`: the
+   `narrator` is the default and keeps the plain path and `sound_index` key, the
+   `narrator_alternates`
    rest go to `Sounds/<Quests|Gossip>/Narrator/<voice>/` with
    `Narrator/<voice>/<base>` as their index key. The addon needs each
    alternate's own duration, so quests get `Data/Narrator.lua`
@@ -298,7 +315,7 @@ Three CurseForge projects, three release paths:
   nightly job and uploads a dated beta when the file set changed.
 - **Base packs** "Forever Voiceover Data: Base" (1705100, installs as
   `ForeverVO_Data_Base`) and "Forever Voiceover Data: Base Endgame" (project
-  created 2026-09-24, ID to fill in `CURSEFORGE_PROJECTS`, installs as
+  created 2026-09-24, ID under `[release.curseforge_projects]`, installs as
   `ForeverVO_Data_Base_Endgame`; the owner's working folder `ForeverVO_Data`
   is never shipped): the Classic-sourced lines, priority 100, released by
   hand and rarely. The complete Classic set with its five alternate narrators
@@ -307,7 +324,7 @@ Three CurseForge projects, three release paths:
   lower still, `413 Payload Too Large` at 887 MB on 2026-09-22 and at 574 MB
   on 2026-09-24, while the 30
   to 70 MB delta goes through). So the set is split by quest level in
-  `release_pack.py` (`BASE_SPLIT_LEVEL`): Base is quests to level 40 with all
+  `release_pack.py` (`base_split_level` under `[release]`): Base is quests to level 40 with all
   gossip (~800 MB), Base Endgame quests from 41 (~570 MB), each with its
   alternates, since the addon looks a quest's alternates up in the pack that
   had the quest. Cutting at 50 would put Base back over the cap; a sixth
@@ -330,8 +347,8 @@ from disk (`requests-toolbelt`), writes
 a fresh manifest per pack (`<Folder>Pack` global, `Register.lua`), and
 uploads through the CurseForge upload API (`wow.curseforge.com/api`). Pack
 versions are date based (`2026.09.20`, `.2` on the same day) and tracked in
-`tools/data/release_state.json`. Project IDs are the `CURSEFORGE_PROJECTS`
-constant in `tools/config.py`; the API key is `CF_API_KEY` in the
+`tools/data/release_state.json`. Project IDs, the split level, the bitrate and
+the transcode parallelism are `[release]` in `forever-vo.toml`; the API key is `CF_API_KEY` in the
 gitignored `.env`, read by `load_dotenv()` in `release_pack.py`
 (`CURSEFORGE_API_KEY` is still accepted; it was renamed 2026-09-21 to match
 the packager's name). This is the local file, not the GitHub secret of the
@@ -447,12 +464,29 @@ owner's machine picks the files up on the next sync.
   dire troll and naga clips. The two child voices come from retail's
   `kul_tiran_kid` via `build_retail_references.py`. Built 2026-09-23; the
   voice-change check then regenerated ~514 lines.
-- `FALLBACK_VOICES` and `ZONE_RACE_HINTS` in `tools/config.py` cover races
-  without a clip and speakers without display data (Zephras Isle -> skyborne).
+- `[voices.fallbacks]` and `[voices.zone_hints]` in `forever-vo.toml` cover races
+  without a clip and speakers without display data (Zephras Isle -> skyborne);
+  `[voices.species_aliases]` sends a model folder with no clip of its own to a
+  close one (orc children to the human child clips).
+- **Chatterbox conditioning is `[tts]` in `forever-vo.toml`**, with per-voice
+  overrides under `[tts.voices.<voice>]` that may also name a different clip to
+  clone from (`reference`). `generate.VoiceCatalog` resolves a voice to the
+  clip it actually uses (its own, else its fallback race's, else the narrator's,
+  else human-male) and takes the tuning of *that* voice, so Dark Iron dwarves
+  and tuskarr, who borrow the dwarf clip, get the dwarf settings (#18). The
+  settings join the text fingerprint only when they differ from the defaults,
+  so tuning one voice restages exactly its files (and a file with no
+  fingerprint in a tuned voice, which predates tuning); `--reindex` seeds the
+  untuned key so it can never mark such a file current. Rebuilding a clip's
+  audio is not in the fingerprint on purpose: `--force --voice <voice>` is the
+  targeted way to redo one voice and the voices cloned from its clip. dwarf-male
+  is the one tuned voice so far (0.75 / 0.3 on npc-3597's four connected lines,
+  set 2026-09-24, restaging ~3,100 files); dwarf-female is untested and stays
+  on the defaults until it has a long-clip reference of its own.
 - `--assume-voice` on `generate.py` voices cache-only quests whose giver is
   unknown (used once for Zephras Isle with `skyborne-male`); the voice-change
   check fixes them once a capture names the giver.
-- `NARRATOR_VOICES` is the narrator menu: five alternates beside the default,
+- `narrator_alternates` under `[voices]` is the narrator menu: five alternates beside the default,
   over ~1,040 narrated quest and ~336 narrated gossip lines in the full Classic
   set (6,865 files, ~20 h of GPU). The player's pick lives in the
   `ForeverVO_narratorVoice` CVar, because saved variables do not survive a

@@ -33,7 +33,8 @@ opts in, so default installs never got it).
 
 The API key comes from the repo's .env (gitignored): CF_API_KEY=... (the name
 the BigWigs packager uses too; CURSEFORGE_API_KEY is still accepted).
-Project IDs are in config.CURSEFORGE_PROJECTS.
+Project IDs, the level the base set splits at, the bitrate and the transcode
+parallelism are [release] in forever-vo.toml.
 """
 from __future__ import annotations
 
@@ -53,8 +54,14 @@ from pathlib import Path
 import requests
 from requests_toolbelt import MultipartEncoder
 
-from tools.config import CURSEFORGE_PROJECTS, DATA_DIR, SOUND_INDEX, SOUNDS_DIR
-from tools.generate import load_items, load_sources, rebuild_tables, sound_folder
+from tools.config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR, Config, Release, load_config
+from tools.generate import (
+    VoiceCatalog,
+    load_items,
+    load_sources,
+    rebuild_tables,
+    sound_folder,
+)
 
 RELEASE_DIR = DATA_DIR / "release"
 STATE_FILE = DATA_DIR / "release_state.json"
@@ -83,18 +90,13 @@ def is_forever_line(entry: dict, classic_ids: set[int]) -> bool:
     return False
 
 
-# The CurseForge website takes files up to 1 GB (the API less, see CLAUDE.md),
-# and the Classic set with its alternate narrators is 1.36 GB, so it ships as
-# two projects. A quest's alternates must sit in the same pack as the quest
-# (the addon looks them up in the pack that had the entry), so the cut is by
-# quest level: 1-40 with all gossip on one side (800 MB), 41+ ("endgame") on the other
-# (570 MB), each with about 200 MB of headroom for another narrator voice.
-# Cutting at 50 instead would put the first side back over the cap.
-BASE_SPLIT_LEVEL = 40
-
-
-def base_part(entry: dict) -> int:
-    if entry.get("questID") and int(entry.get("level") or 0) > BASE_SPLIT_LEVEL:
+def base_part(entry: dict, split_level: int) -> int:
+    """1 for the Base pack, 2 for Base Endgame. The Classic set with its alternate
+    narrators does not fit CurseForge's 1 GB cap in one file, so it is cut by
+    quest level ([release] base_split_level); a quest's alternates must sit in the
+    same pack as the quest, since the addon looks them up in the pack that had
+    the entry, so the cut cannot be by anything finer."""
+    if entry.get("questID") and int(entry.get("level") or 0) > split_level:
         return 2
     return 1
 
@@ -109,32 +111,37 @@ class PackSpec:
     select: Callable[[dict, set[int]], bool]   # (entry, Classic quest IDs) -> belongs to this pack
 
 
-PACKS = {
-    "base": PackSpec(
-        folder="ForeverVO_Data_Base",
-        title="Forever Voiceover Data: Base",
-        pack_name="Classic",
-        priority=100,
-        notes=f"Classic-era quests to level {BASE_SPLIT_LEVEL} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
-        select=lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 1,
-    ),
-    "base_endgame": PackSpec(
-        folder="ForeverVO_Data_Base_Endgame",
-        title="Forever Voiceover Data: Base Endgame",
-        pack_name="Classic Endgame",
-        priority=100,
-        notes=f"Classic-era quests from level {BASE_SPLIT_LEVEL + 1}, voiced. Install with Forever Voiceover and Base.",
-        select=lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 2,
-    ),
-    "delta": PackSpec(
-        folder="ForeverVO_Data_Forever",
-        title="Forever Voiceover Data: Forever",
-        pack_name="Forever",
-        priority=200,
-        notes="New and revised Forever lines from player captures. Sits on top of Forever Voiceover Data.",
-        select=lambda entry, classic_ids: is_forever_line(entry, classic_ids),
-    ),
-}
+PACK_NAMES = ("base", "base_endgame", "delta")
+
+
+def pack_specs(release: Release) -> dict[str, PackSpec]:
+    split = release.base_split_level
+    return {
+        "base": PackSpec(
+            folder="ForeverVO_Data_Base",
+            title="Forever Voiceover Data: Base",
+            pack_name="Classic",
+            priority=100,
+            notes=f"Classic-era quests to level {split} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
+            select=lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry, split) == 1,
+        ),
+        "base_endgame": PackSpec(
+            folder="ForeverVO_Data_Base_Endgame",
+            title="Forever Voiceover Data: Base Endgame",
+            pack_name="Classic Endgame",
+            priority=100,
+            notes=f"Classic-era quests from level {split + 1}, voiced. Install with Forever Voiceover and Base.",
+            select=lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry, split) == 2,
+        ),
+        "delta": PackSpec(
+            folder="ForeverVO_Data_Forever",
+            title="Forever Voiceover Data: Forever",
+            pack_name="Forever",
+            priority=200,
+            notes="New and revised Forever lines from player captures. Sits on top of Forever Voiceover Data.",
+            select=lambda entry, classic_ids: is_forever_line(entry, classic_ids),
+        ),
+    }
 
 
 def today() -> date:
@@ -153,15 +160,11 @@ def next_version(pack: str) -> str:
     return today_str
 
 
-RELEASE_BITRATE = "32k"
-TRANSCODE_WORKERS = 4   # ffmpeg is CPU work; leave cores for the GPU workers' own decoding
-
-
-def transcode(src: Path, dst: Path) -> None:
+def transcode(src: Path, dst: Path, bitrate: str) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-ac", "1", "-ar", "22050",
-         "-codec:a", "libmp3lame", "-b:a", RELEASE_BITRATE, str(dst)],
+         "-codec:a", "libmp3lame", "-b:a", bitrate, str(dst)],
         check=True,
     )
 
@@ -190,32 +193,34 @@ def write_manifest(stage: Path, spec: PackSpec, version: str) -> None:
     )
 
 
-def stage_tables(pack: str, version: str) -> tuple[Path, dict]:
+def stage_tables(pack: str, version: str, config: Config) -> tuple[Path, dict]:
     """Writes the manifest and tables for the pack; returns (stage dir, stats with the file set)."""
-    spec = PACKS[pack]
+    spec = pack_specs(config.release)[pack]
     sources = load_sources()
     classic_ids = classic_quest_ids()
-    items = [item for item in load_items(sources, include_progress=True) if spec.select(item.entry, classic_ids)]
+    catalog = VoiceCatalog(config)
+    items = [item for item in load_items(sources, include_progress=True, catalog=catalog)
+             if spec.select(item.entry, classic_ids)]
     stage = RELEASE_DIR / spec.folder
     if stage.exists():
         shutil.rmtree(stage)
     write_manifest(stage, spec, version)
     sound_index = json.loads(SOUND_INDEX.read_text()) if SOUND_INDEX.exists() else {}
-    stats = rebuild_tables(items, sound_index, data_dir=stage / "Data", pack_global=f"{spec.folder}Pack",
+    stats = rebuild_tables(items, sound_index, config, data_dir=stage / "Data", pack_global=f"{spec.folder}Pack",
                            sounds_dir=SOUNDS_DIR, write_index=False)
     return stage, stats
 
 
-def package(pack: str, version: str, stage: Path, stats: dict) -> Path:
+def package(pack: str, version: str, stage: Path, stats: dict, release: Release) -> Path:
     """Re-encodes the referenced audio into the stage dir and zips it."""
-    spec = PACKS[pack]
+    spec = pack_specs(release)[pack]
     jobs = [(SOUNDS_DIR / sound_folder(base) / f"{base}.mp3", stage / "Sounds" / sound_folder(base) / f"{base}.mp3")
             for base in sorted(stats["files"])]
     # Alternate narrator voices carry their folder in the name (Quests/Narrator/<voice>/<base>)
     jobs += [(SOUNDS_DIR / f"{relative}.mp3", stage / "Sounds" / f"{relative}.mp3")
              for relative in sorted(stats.get("narratorFiles", ()))]
-    with ThreadPoolExecutor(max_workers=TRANSCODE_WORKERS) as pool:
-        for n, _ in enumerate(pool.map(lambda job: transcode(*job), jobs), 1):
+    with ThreadPoolExecutor(max_workers=release.transcode_workers) as pool:
+        for n, _ in enumerate(pool.map(lambda job: transcode(job[0], job[1], release.bitrate), jobs), 1):
             if n % 1000 == 0 or n == len(jobs):
                 print(f"  re-encoded {n}/{len(jobs)}")
 
@@ -246,11 +251,11 @@ def load_dotenv() -> None:
         os.environ.setdefault(key.strip(), value.strip().strip("'\""))
 
 
-def curseforge_config(pack: str) -> tuple[str | None, int | None]:
+def curseforge_config(pack: str, release: Release) -> tuple[str | None, int | None]:
     """(api token, project id) for the pack."""
     load_dotenv()
     key = os.environ.get("CF_API_KEY") or os.environ.get("CURSEFORGE_API_KEY")
-    return key, CURSEFORGE_PROJECTS.get(pack)
+    return key, release.curseforge_projects.get(pack)
 
 
 def game_version_id(key: str) -> int:
@@ -261,16 +266,17 @@ def game_version_id(key: str) -> int:
     raise SystemExit(f"CurseForge has no game version named {GAME_VERSION_NAME}")
 
 
-def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: str) -> None:
-    key, project = curseforge_config(pack)
+def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: str, release: Release) -> None:
+    key, project = curseforge_config(pack, release)
     if not key or not project:
-        raise SystemExit(f"upload needs CF_API_KEY in .env and a project id for {pack} in config.CURSEFORGE_PROJECTS")
+        raise SystemExit(f"upload needs CF_API_KEY in .env and a project id for {pack} under "
+                         f"[release.curseforge_projects] in forever-vo.toml")
     changelog = (f"{version}: {stats['quests']} quests, {stats['gossip']} gossip lines, {len(stats['files'])} sound files.\n\n"
                  f"Generated from lines captured by players; see https://github.com/quinn-dougherty/forever-vo")
     metadata = {
         "changelog": changelog,
         "changelogType": "markdown",
-        "displayName": f"{PACKS[pack].title} {version}",
+        "displayName": f"{pack_specs(release)[pack].title} {version}",
         "gameVersions": [game_version_id(key)],
         "releaseType": release_type,
     }
@@ -305,7 +311,7 @@ def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: s
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("pack", choices=sorted(PACKS))
+    parser.add_argument("pack", choices=PACK_NAMES)
     parser.add_argument("--upload", action="store_true", help="upload to CurseForge after building")
     parser.add_argument("--if-changed", action="store_true", help="skip when the set of files is unchanged since the last release")
     parser.add_argument("--min-new", type=int, default=0, help="with --if-changed: skip unless at least this many files are new since the last release...")
@@ -314,15 +320,18 @@ def main(argv: list[str] | None = None) -> int:
                         help="CurseForge file type (default: release)")
     args = parser.parse_args(argv)
     release_type = args.release_type or "release"
+    config = load_config()
+    release = config.release
 
     if args.upload:
-        key, project = curseforge_config(args.pack)
+        key, project = curseforge_config(args.pack, release)
         if not key or not project:
-            print(f"CurseForge upload not configured for {args.pack}: need CF_API_KEY in .env and a project id in config.CURSEFORGE_PROJECTS; skipping")
+            print(f"CurseForge upload not configured for {args.pack}: need CF_API_KEY in .env and a project id under "
+                  f"[release.curseforge_projects] in forever-vo.toml; skipping")
             return 0
 
     version = next_version(args.pack)
-    stage, stats = stage_tables(args.pack, version)
+    stage, stats = stage_tables(args.pack, version, config)
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
     fingerprint = sorted(stats["files"]) + sorted(stats.get("narratorFiles", ()))
@@ -338,10 +347,10 @@ def main(argv: list[str] | None = None) -> int:
                   f"(need {args.min_new} new or {args.max_age_days} days); nothing to do")
             return 0
 
-    zip_path = package(args.pack, version, stage, stats)
+    zip_path = package(args.pack, version, stage, stats, release)
 
     if args.upload:
-        upload(args.pack, zip_path, version, stats, release_type)
+        upload(args.pack, zip_path, version, stats, release_type, release)
     state[args.pack] = {"version": version, "date": today().isoformat(), "files": fingerprint, "zip": str(zip_path)}
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
     return 0
