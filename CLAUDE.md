@@ -250,7 +250,7 @@ Three CurseForge projects, three release paths:
   narrator voice costs ~65 MB per pack. Build both with `release_pack.py base`
   then `release_pack.py base_endgame` (each re-encodes its whole set, ~45 min
   together) and **upload through the website**, as "release" files for game
-  version 1.60.1 (the nightly delta stays "beta"; the CurseForge app hides
+  version 1.60.1 (the nightly delta is a "release" file too since 2026-09-24: the CurseForge app hides
   beta files unless the user opts in). The script records
   `tools/data/release_state.json` itself even without `--upload`. The first
   Base went up 2026-09-22 before the bulk run finished, to get through

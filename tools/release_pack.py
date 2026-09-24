@@ -31,8 +31,9 @@ hour of speech; it was 48 kbps until 2026-09-22, when the base pack came to
 1.3 GB with a third of the lines still to go) into tools/data/release/. The
 zip stores the files uncompressed, since mp3 does not deflate. Versions are
 date based (2026.09.21, then 2026.09.21.2 on the same day). The base pack
-uploads as a "release" file and the delta as "beta" unless --release-type
-says otherwise: the CurseForge app hides beta files unless the user opts in.
+upload as "release" files unless --release-type says otherwise (the delta was
+"beta" until 2026-09-24: the CurseForge app hides beta files unless the user
+opts in, so default installs never got it).
 
 The API key comes from the repo's .env (gitignored): CF_API_KEY=... (the name
 the BigWigs packager uses too; CURSEFORGE_API_KEY is still accepted).
@@ -296,9 +297,9 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--min-new", type=int, default=0, help="with --if-changed: skip unless at least this many files are new since the last release...")
     parser.add_argument("--max-age-days", type=int, default=0, help="...unless the last release is older than this many days and anything changed")
     parser.add_argument("--release-type", choices=["alpha", "beta", "release"],
-                        help="CurseForge file type (default: release for base, beta for delta)")
+                        help="CurseForge file type (default: release)")
     args = parser.parse_args(argv)
-    release_type = args.release_type or ("release" if args.pack == "base" else "beta")
+    release_type = args.release_type or "release"
 
     if args.upload:
         key, project = curseforge_config(args.pack)
