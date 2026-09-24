@@ -222,14 +222,25 @@ build artifact, never hand-edited):
    its GPU on unvoiced lines; `--narrator-only` / `--narrator-voices` control a
    dedicated pass.
 4. `build_voice_references.py` makes cloning clips under `tools/voices/`
-   from the client's own audio via wago.tools: race voices from shared NPC
-   greeting kits, Skyborne from `VocalUISounds`, and `--named` for NPCs whose
-   greeting kit is theirs alone (Varimathras, Thrall, Sylvanas, ...).
-   `wowdata.voice_for_npc` prefers `npc-<displayID>.wav`, then race+gender
+   from the client's own audio via wago.tools. **Only the first 6 s (t3) and
+   10 s (s3gen) of a reference reach the model**, which continues it, so a clip
+   is composed rather than pooled: a head of the race's spoken emote lines
+   (`EmotesTextSound`, JOKE and FLIRT - the rest are wordless), then that
+   speaker's own greetings starting inside the 10 s window. Each voice gets a
+   different slice of the shared emote pool, or archetypes of one race come out
+   byte-identical. Skyborne have no spoken emotes, so `VocalUISounds` is their
+   head. `--named` builds `npc-<displayID>.wav` for kits used by 3 or fewer
+   models (Varimathras, Thrall, Sylvanas, ...).
+   `wowdata.voice_for_npc` prefers `npc-<displayID>.wav`, then the archetype the
+   display is cast with (`CreatureDisplayInfo.NPCSoundID` ->
+   `<race>-<gender>-s<set>.wav`, at most 3 per race), then race+gender
    from `CreatureDisplayInfoExtra` via the display ID, then the same via the
    captured `modelFileID` (`CreatureModelData` -> the display rows using that
    model, majority vote narrowed by UnitSex and the zone hint), then zone
-   hints, then narrator.
+   hints, then narrator. The archetype step is skipped when its clip would be
+   identical to the race's, and when the set belongs to another race - 26 sets
+   span more than one, and trusting the name once had night elves read by a
+   blood elf recording.
 
 Voice quality notes: Chatterbox on an RTX 3080 does ~6 s of audio in ~5 s
 with the game closed, roughly 3x slower with it open. Perth (the watermarker)
@@ -446,9 +457,13 @@ owner's machine picks the files up on the next sync.
 
 ## Voices
 
-- Race voices: `tools/voices/<race>-<gender>.wav`, cloned from NPC greeting
-  kits shared by many models. Skyborne from `VocalUISounds`
-  (`NormalSoundID_0` male, `_1` female). Blood elf female has only ~7 s.
+- Race voices: `tools/voices/<race>-<gender>.wav` for the archetype most of a
+  race is cast with, and `<race>-<gender>-s<set>.wav` for the others. Sorting
+  candidate clips longest-first used to hand the head to whichever set had the
+  longest lines, which is one-off character sets: seven voices were cloned from
+  a set used by a single creature display, tauren-female from an elder with one
+  (Magatha Grimtotem). Five voices have no spoken emotes at all - both blood
+  elf, both goblin, vulpera-male - and stay bark-led.
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
   just two greetings, so his clone is rougher.

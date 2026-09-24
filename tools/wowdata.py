@@ -212,6 +212,69 @@ def model_race_sex(
     return race, sex
 
 
+def display_sound_set(display_id: int | None) -> int | None:
+    """The NPCSounds row a creature display is cast with, or None.
+
+    Blizzard assigns every display one of several voice sets per race and gender -
+    a young one, a warrior, an elder - and that assignment is the casting decision
+    for that NPC. Pooling them into one reference per race averages the cast away
+    and lets a rare archetype speak for everyone (see build_voice_references).
+    """
+    if not display_id:
+        return None
+    row = load_db2("CreatureDisplayInfo").get(int(display_id))
+    sound_id = int(row.get("NPCSoundID") or 0) if row else 0
+    return sound_id if sound_id and sound_id in load_db2("NPCSounds") else None
+
+
+@functools.cache
+def sound_set_displays() -> dict[str, Counter]:
+    """{voice name: Counter of NPCSounds set -> how many displays are cast with it}."""
+    counts: dict[str, Counter] = {}
+    npc_sounds = load_db2("NPCSounds")
+    extra = load_db2("CreatureDisplayInfoExtra")
+    for row in load_db2("CreatureDisplayInfo").values():
+        sound_id = int(row.get("NPCSoundID") or 0)
+        extra_id = int(row.get("ExtendedDisplayInfoID") or 0)
+        if not sound_id or sound_id not in npc_sounds or extra_id not in extra:
+            continue
+        race = RACE_DICT.get(int(extra[extra_id]["DisplayRaceID"]))
+        gender = GENDER_DICT.get(int(extra[extra_id]["DisplaySexID"]))
+        if race and gender:
+            counts.setdefault(f"{race}-{gender}", Counter())[sound_id] += 1
+    return counts
+
+
+def dominant_sound_set(voice: str) -> int | None:
+    """The archetype most of a voice's NPCs are cast with - what the plain
+    <race>-<gender> clip sounds like, and the fallback for a speaker whose own
+    display we cannot see."""
+    counts = sound_set_displays().get(voice)
+    return counts.most_common(1)[0][0] if counts else None
+
+
+def archetype_voice(voice: str, display_id: int | None) -> str | None:
+    """`<race>-<gender>-s<set>` when this display's archetype has a clip of its own.
+
+    None when the set belongs to another race (26 sets span more than one, and
+    trusting the name alone once had night elves read by a blood elf recording), and
+    when the archetype clip is byte-identical to the plain voice, which happens for a
+    race with one set and no spoken emotes - regenerating those under a new name
+    would cost GPU for the same audio.
+    """
+    sound_id = display_sound_set(display_id)
+    if not sound_id or sound_id not in sound_set_displays().get(voice, {}):
+        return None
+    name = f"{voice}-s{sound_id}"
+    clip, plain = VOICES_DIR / f"{name}.wav", VOICES_DIR / f"{voice}.wav"
+    if not clip.exists():
+        return None
+    if plain.exists() and clip.stat().st_size == plain.stat().st_size \
+            and clip.read_bytes() == plain.read_bytes():
+        return None
+    return name
+
+
 def voice_for_npc(npc: dict | None, zone: str | None = None, *, voices: Voices | None = None) -> str:
     """Picks a `race-gender` voice name for a captured NPC record.
 
@@ -254,7 +317,11 @@ def voice_for_npc(npc: dict | None, zone: str | None = None, *, voices: Voices |
         race = hint or "human"
     if sex_id is None:
         return voices.narrator
-    return f"{race}-{GENDER_DICT[sex_id]}"
+    voice = f"{race}-{GENDER_DICT[sex_id]}"
+    # Prefer the archetype this display is cast with; the plain race and gender clip
+    # stays the fallback for speakers reached through a model file, which names no
+    # display and so no archetype
+    return archetype_voice(voice, display_id) or voice
 
 
 def skyborne_voice_lines() -> list[tuple[int, int, int]]:

@@ -35,37 +35,63 @@ import statistics
 import sys
 from pathlib import Path
 
-from config import DATA_DIR, SOUND_INDEX, VOICES_DIR
+from config import DATA_DIR, NARRATOR_VOICES, SOUND_INDEX, VOICES_DIR
 from textclean import clean, has_gender_branch, split_gender
 
 CAPTURE_JSON = DATA_DIR / "capture.json"
 
 
 def load_texts() -> dict[str, str]:
-    """Sound file base name -> the words actually spoken in it."""
+    """Sound index key -> the words actually spoken in it.
+
+    Three shapes have to match `generate.index_key` and `Item.variants`, or whole
+    classes of line fall out of the sample: gendered variants carry an m-/f- prefix
+    (gossip branches too, not just quests), and an alternate narrator recording is
+    keyed `Narrator/<voice>/<base>`. Missing the last one dropped every alternate -
+    6,655 of 23,067 entries - and with them most of the text for the five voices in
+    NARRATOR_VOICES, which is exactly where "too slow" (#26) was being measured.
+
+    Narrator lines keep their stage directions because the narrator reads them aloud
+    (`generate.Item.variants` passes keep_stage_directions), so counting them without
+    is counting fewer words than the audio contains.
+    """
     sources: dict[str, str] = {}
+
+    def add(base: str, text: str) -> None:
+        sources[base] = text
+        for voice in NARRATOR_VOICES[1:]:
+            sources[f"Narrator/{voice}/{base}"] = text
+
     files = [DATA_DIR / "bulk" / "classic.json", DATA_DIR / "bulk" / "questcache.json", CAPTURE_JSON]
     for path in files:
         if not path.exists():
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
-        for key, entry in data.get("quests", {}).items():
+        for entry in data.get("quests", {}).values():
             text = entry.get("text")
             if not text:
                 continue
             base = f"{entry.get('questID')}-{entry.get('event')}"
-            cleaned = clean(text)
+            cleaned = clean(text, keep_stage_directions=True)
             if has_gender_branch(cleaned):
                 male, female = split_gender(cleaned)
-                sources[f"m-{base}"] = male
-                sources[f"f-{base}"] = female
+                add(f"m-{base}", male)
+                add(f"f-{base}", female)
             else:
-                sources[base] = cleaned
+                add(base, cleaned)
         for key, entry in data.get("gossip", {}).items():
             text = entry.get("text")
-            if text:
-                # capture keys are "<speaker>|<hash>"; files are "<speaker>-<hash>"
-                sources[str(key).replace("|", "-")] = clean(text)
+            if not text:
+                continue
+            # capture keys are "<speaker>|<hash>"; files are "<speaker>-<hash>"
+            base = str(key).replace("|", "-")
+            cleaned = clean(text, keep_stage_directions=True)
+            if has_gender_branch(cleaned):
+                male, female = split_gender(cleaned)
+                add(f"m-{base}", male)
+                add(f"f-{base}", female)
+            else:
+                add(base, cleaned)
     return sources
 
 
@@ -92,10 +118,14 @@ def cmd_rate(args) -> int:
         if count < 8 or duration < 1.0:      # too short to time reliably
             continue
         by_voice.setdefault(voice, []).append(count / duration * 60.0)
-    if args.voice:
-        by_voice = {v: r for v, r in by_voice.items() if v in args.voice}
-    rows = sorted(by_voice.items(), key=lambda kv: statistics.median(kv[1]))
+    # "% vs all voices" has to be computed before filtering, or --voice compares a
+    # voice against itself and the flag never fires
     overall = statistics.median([r for rates in by_voice.values() for r in rates]) if by_voice else 0
+    if args.voice:
+        # a voice's archetypes are the same voice for this purpose
+        by_voice = {v: r for v, r in by_voice.items()
+                    if v in args.voice or re.sub(r"-s\d+$", "", v) in args.voice}
+    rows = sorted(by_voice.items(), key=lambda kv: statistics.median(kv[1]))
     print(f"{'voice':<18} {'lines':>6} {'words/min':>10} {'spread (p10-p90)':>20}")
     for voice, rates in rows:
         rates.sort()
@@ -108,8 +138,10 @@ def cmd_rate(args) -> int:
                 flag = f"  {delta:+.0f}% vs all voices"
         print(f"{voice:<18} {len(rates):>6} {statistics.median(rates):>10.1f} {f'{p10:.0f} - {p90:.0f}':>20}{flag}")
     if overall:
-        print(f"\nmedian across every voiced line: {overall:.1f} words/min ({len(index)} index entries, "
-              f"{missing} with no text found)")
+        measured = sum(len(r) for r in by_voice.values())
+        print(f"\nmedian across every voiced line: {overall:.1f} words/min "
+              f"({measured} lines measured of {len(index)} index entries; {missing} had no text, "
+              f"the rest were too short to time)")
     return 0
 
 
