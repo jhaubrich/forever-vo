@@ -1845,8 +1845,8 @@
   "v": "human-male"
  },
  "1097-complete": {
-  "d": 4.44,
-  "t": "7bbe4cde",
+  "d": 3.64,
+  "t": "7bbe4cde+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1098-accept": {
@@ -4195,13 +4195,13 @@
   "v": "troll-male"
  },
  "1141-accept": {
-  "d": 33.55,
-  "t": "9739ed1e",
+  "d": 36.75,
+  "t": "9739ed1e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1141-complete": {
-  "d": 19.56,
-  "t": "71b0823e",
+  "d": 19.96,
+  "t": "71b0823e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1142-accept": {
@@ -4805,13 +4805,13 @@
   "v": "ogre-male"
  },
  "117-accept": {
-  "d": 11.84,
-  "t": "94c52a3b",
+  "d": 12.12,
+  "t": "94c52a3b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "117-complete": {
-  "d": 11.56,
-  "t": "36949f57",
+  "d": 11.64,
+  "t": "36949f57+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1170-accept": {
@@ -7605,13 +7605,13 @@
   "v": "human-male"
  },
  "1338-accept": {
-  "d": 37.87,
-  "t": "246f4223",
+  "d": 35.55,
+  "t": "246f4223+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1338-complete": {
-  "d": 15.12,
-  "t": "267cff2b",
+  "d": 16.08,
+  "t": "267cff2b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1339-877c4b1d": {
@@ -7620,13 +7620,13 @@
   "v": "human-female"
  },
  "1339-accept": {
-  "d": 15.12,
-  "t": "283fc8bb",
+  "d": 15.44,
+  "t": "283fc8bb+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1339-complete": {
-  "d": 9.68,
-  "t": "d3184398",
+  "d": 11.8,
+  "t": "d3184398+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "134-accept": {
@@ -14640,13 +14640,13 @@
   "v": "scourge-female"
  },
  "1578-accept": {
-  "d": 30.51,
-  "t": "6ce7447d",
+  "d": 32.91,
+  "t": "6ce7447d+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1578-complete": {
-  "d": 13.08,
-  "t": "fc8db13d",
+  "d": 12.76,
+  "t": "fc8db13d+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1579-accept": {
@@ -16706,23 +16706,23 @@
   "v": "gnome-male"
  },
  "1678-accept": {
-  "d": 27.79,
-  "t": "0a272d43",
+  "d": 22.47,
+  "t": "0a272d43+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1678-complete": {
-  "d": 19.52,
-  "t": "5f3c2efa",
+  "d": 22.44,
+  "t": "5f3c2efa+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1679-accept": {
-  "d": 17.0,
-  "t": "a8cfb0dc",
+  "d": 17.16,
+  "t": "a8cfb0dc+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1679-complete": {
-  "d": 9.48,
-  "t": "71202584",
+  "d": 8.88,
+  "t": "71202584+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "168-accept": {
@@ -16746,8 +16746,8 @@
   "v": "human-male"
  },
  "1680-accept": {
-  "d": 14.2,
-  "t": "1d931739",
+  "d": 13.56,
+  "t": "1d931739+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1680-c2467ddc": {
@@ -16756,18 +16756,18 @@
   "v": "human-male"
  },
  "1680-complete": {
-  "d": 19.04,
-  "t": "2506da1a",
+  "d": 19.48,
+  "t": "2506da1a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1681-accept": {
-  "d": 36.83,
-  "t": "d6869bea",
+  "d": 39.07,
+  "t": "d6869bea+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1681-complete": {
-  "d": 19.64,
-  "t": "6bdbc93a",
+  "d": 19.76,
+  "t": "6bdbc93a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "16817-a52ed1a8": {
@@ -16781,8 +16781,8 @@
   "v": "scourge-male"
  },
  "1682-complete": {
-  "d": 10.04,
-  "t": "b9a45f4c",
+  "d": 9.04,
+  "t": "b9a45f4c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1683-279d82d3": {
@@ -16981,8 +16981,8 @@
   "v": "dwarf-male"
  },
  "170-complete": {
-  "d": 16.92,
-  "t": "1268cc4f",
+  "d": 16.36,
+  "t": "1268cc4f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1700-279d82d3": {
@@ -18916,8 +18916,8 @@
   "v": "dwarf-female"
  },
  "1779-complete": {
-  "d": 30.23,
-  "t": "26ecf6eb",
+  "d": 26.83,
+  "t": "26ecf6eb+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "178-accept": {
@@ -18941,8 +18941,8 @@
   "v": "human-male"
  },
  "1781-complete": {
-  "d": 32.51,
-  "t": "78f5e61f",
+  "d": 29.55,
+  "t": "78f5e61f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1782-complete": {
@@ -18951,23 +18951,23 @@
   "v": "dwarf-male"
  },
  "1783-accept": {
-  "d": 32.03,
-  "t": "3d9432d8",
+  "d": 28.11,
+  "t": "3d9432d8+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1784-accept": {
-  "d": 36.1,
-  "t": "1a340fa7",
+  "d": 34.86,
+  "t": "1a340fa7+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1784-complete": {
-  "d": 15.16,
-  "t": "002f2156",
+  "d": 15.0,
+  "t": "002f2156+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1785-accept": {
-  "d": 20.16,
-  "t": "87445713",
+  "d": 19.52,
+  "t": "87445713+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1785-complete": {
@@ -18976,23 +18976,23 @@
   "v": "dwarf-female"
  },
  "1786-accept": {
-  "d": 34.47,
-  "t": "74009553",
+  "d": 34.95,
+  "t": "74009553+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1787-accept": {
-  "d": 34.99,
-  "t": "1dc8776f",
+  "d": 31.79,
+  "t": "1dc8776f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1787-complete": {
-  "d": 7.68,
-  "t": "290fe160",
+  "d": 7.6,
+  "t": "290fe160+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1788-accept": {
-  "d": 19.96,
-  "t": "b295d6f6",
+  "d": 20.36,
+  "t": "b295d6f6+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1788-complete": {
@@ -19005,8 +19005,16 @@
   "t": "d3d8bbd8",
   "v": "dwarf-female"
  },
- "179-accept": 32.51,
- "179-complete": 11.24,
+ "179-accept": {
+  "d": 33.67,
+  "t": "d0955933+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
+ },
+ "179-complete": {
+  "d": 13.2,
+  "t": "62fab7e0+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
+ },
  "1790-complete": {
   "d": 20.15,
   "t": "f7996d9a",
@@ -19188,8 +19196,8 @@
   "v": "scourge-male"
  },
  "1819-accept": {
-  "d": 32.87,
-  "t": "63cac296",
+  "d": 34.47,
+  "t": "714e0468",
   "v": "scourge-male"
  },
  "1819-complete": {
@@ -19198,18 +19206,18 @@
   "v": "scourge-male"
  },
  "182-accept": {
-  "d": 35.07,
-  "t": "23474722",
+  "d": 32.75,
+  "t": "23474722+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "182-complete": {
-  "d": 11.72,
-  "t": "21ff7a54",
+  "d": 10.8,
+  "t": "21ff7a54+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "182-p1-complete": {
-  "d": 4.4,
-  "t": "3fc72ae1",
+  "d": 3.76,
+  "t": "3fc72ae1+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "182-p2-complete": {
@@ -19218,8 +19226,8 @@
   "v": "narrator"
  },
  "182-p3-complete": {
-  "d": 6.8,
-  "t": "76f0fbf8",
+  "d": 7.84,
+  "t": "76f0fbf8+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1820-accept": {
@@ -19278,13 +19286,13 @@
   "v": "orc-male"
  },
  "183-accept": {
-  "d": 27.95,
-  "t": "b300b3cd",
+  "d": 28.47,
+  "t": "b300b3cd+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "183-complete": {
-  "d": 8.0,
-  "t": "e512c3f6",
+  "d": 7.76,
+  "t": "e512c3f6+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "1838-accept": {
@@ -19528,8 +19536,8 @@
   "v": "scourge-female"
  },
  "1882-accept": {
-  "d": 42.43,
-  "t": "37ee4650",
+  "d": 40.27,
+  "t": "00e9e574",
   "v": "scourge-female"
  },
  "1882-complete": {
@@ -19568,8 +19576,8 @@
   "v": "scourge-male"
  },
  "1886-accept": {
-  "d": 30.43,
-  "t": "3de9c36f",
+  "d": 33.75,
+  "t": "a43ff14c",
   "v": "scourge-male"
  },
  "1886-complete": {
@@ -19603,8 +19611,8 @@
   "v": "goblin-male"
  },
  "1898-accept": {
-  "d": 29.19,
-  "t": "285a38f7",
+  "d": 28.55,
+  "t": "5f687694",
   "v": "scourge-male"
  },
  "1898-complete": {
@@ -20408,8 +20416,8 @@
   "v": "human-male"
  },
  "1978-accept": {
-  "d": 22.39,
-  "t": "426a27e9",
+  "d": 23.59,
+  "t": "0529fc46",
   "v": "scourge-male"
  },
  "198-08830bac": {
@@ -20953,13 +20961,13 @@
   "v": "orc-male"
  },
  "2160-accept": {
-  "d": 26.39,
-  "t": "f96d58fb",
+  "d": 25.03,
+  "t": "c5498425",
   "v": "gnome-male"
  },
  "2160-complete": {
-  "d": 18.84,
-  "t": "75cf401a",
+  "d": 17.8,
+  "t": "75cf401a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2161-accept": {
@@ -20998,13 +21006,13 @@
   "v": "nightelf-female"
  },
  "218-accept": {
-  "d": 17.68,
-  "t": "5b10702a",
+  "d": 15.08,
+  "t": "5b10702a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "218-complete": {
-  "d": 22.44,
-  "t": "2bbaf541",
+  "d": 18.84,
+  "t": "2bbaf541+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "219-accept": {
@@ -21598,13 +21606,13 @@
   "v": "scourge-male"
  },
  "2218-accept": {
-  "d": 32.95,
-  "t": "88d4abb2",
+  "d": 30.43,
+  "t": "88d4abb2+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2218-complete": {
-  "d": 17.64,
-  "t": "585649b7",
+  "d": 18.36,
+  "t": "585649b7+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "222-accept": {
@@ -21658,13 +21666,13 @@
   "v": "orc-male"
  },
  "2238-accept": {
-  "d": 35.03,
-  "t": "4041046b",
+  "d": 34.43,
+  "t": "4041046b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2238-complete": {
   "d": 4.76,
-  "t": "755b4698",
+  "t": "755b4698+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2239-4513b5ec": {
@@ -21678,23 +21686,23 @@
   "v": "orc-male"
  },
  "2239-accept": {
-  "d": 33.94,
-  "t": "45ca9fc6",
+  "d": 36.26,
+  "t": "3924aa30+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2239-complete": {
-  "d": 21.0,
-  "t": "2eee38aa",
+  "d": 19.52,
+  "t": "2eee38aa+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "224-accept": {
-  "d": 36.47,
-  "t": "7c1113aa",
+  "d": 34.11,
+  "t": "7c1113aa+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "224-complete": {
-  "d": 31.59,
-  "t": "73eb6c5e",
+  "d": 28.47,
+  "t": "73eb6c5e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2240-accept": {
@@ -22083,8 +22091,8 @@
   "v": "human-female"
  },
  "233-complete": {
-  "d": 13.92,
-  "t": "afd6713d",
+  "d": 16.52,
+  "t": "afd6713d+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "233-f729d74e": {
@@ -22113,13 +22121,13 @@
   "v": "troll-male"
  },
  "234-accept": {
-  "d": 7.64,
-  "t": "ca56230c",
+  "d": 8.32,
+  "t": "ca56230c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "234-complete": {
-  "d": 5.92,
-  "t": "0b169afb",
+  "d": 16.84,
+  "t": "a3085af6+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2340-accept": {
@@ -22448,13 +22456,13 @@
   "v": "human-male"
  },
  "237-accept": {
-  "d": 33.19,
-  "t": "d94b654d",
+  "d": 32.51,
+  "t": "d94b654d+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "237-complete": {
-  "d": 35.07,
-  "t": "0c5614f6",
+  "d": 34.71,
+  "t": "0c5614f6+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2378-accept": {
@@ -24270,13 +24278,13 @@
   "v": "goblin-male"
  },
  "263-accept": {
-  "d": 29.19,
-  "t": "b6bce80b",
+  "d": 30.11,
+  "t": "b6bce80b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "263-complete": {
-  "d": 20.15,
-  "t": "19a77885",
+  "d": 21.63,
+  "t": "19a77885+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "263113-81449513": {
@@ -24380,13 +24388,13 @@
   "v": "troll-female"
  },
  "267-accept": {
-  "d": 36.39,
-  "t": "0941784e",
+  "d": 36.59,
+  "t": "0941784e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "267-complete": {
-  "d": 10.92,
-  "t": "e8e9e54a",
+  "d": 10.16,
+  "t": "e8e9e54a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2670-4b80d68c": {
@@ -24560,13 +24568,13 @@
   "v": "scourge-male"
  },
  "273-accept": {
-  "d": 22.75,
-  "t": "030c3fc5",
+  "d": 24.43,
+  "t": "030c3fc5+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "273-complete": {
-  "d": 17.08,
-  "t": "710193e3",
+  "d": 16.4,
+  "t": "710193e3+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "274-accept": {
@@ -25155,13 +25163,13 @@
   "v": "narrator"
  },
  "282-accept": {
-  "d": 32.79,
-  "t": "5e6e827b",
+  "d": 31.51,
+  "t": "ce9358a5+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "282-complete": {
-  "d": 12.4,
-  "t": "109504bf",
+  "d": 12.36,
+  "t": "109504bf+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2821-accept": {
@@ -25625,18 +25633,18 @@
   "v": "nightelf-male"
  },
  "287-accept": {
-  "d": 31.67,
-  "t": "8e242b1d",
+  "d": 34.11,
+  "t": "64c09e87+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "287-complete": {
-  "d": 24.64,
-  "t": "d31ed30f",
+  "d": 22.96,
+  "t": "d31ed30f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "287-p1-complete": {
-  "d": 9.96,
-  "t": "f0207ca2",
+  "d": 11.36,
+  "t": "f0207ca2+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "287-p2-complete": {
@@ -25645,8 +25653,8 @@
   "v": "narrator"
  },
  "287-p3-complete": {
-  "d": 10.24,
-  "t": "b660cf72",
+  "d": 10.92,
+  "t": "b660cf72+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2870-accept": {
@@ -25880,13 +25888,13 @@
   "v": "goblin-male"
  },
  "291-accept": {
-  "d": 35.15,
-  "t": "2e15d6fa",
+  "d": 35.51,
+  "t": "fdc2c624+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "291-complete": {
-  "d": 20.8,
-  "t": "96ea2c8c",
+  "d": 21.24,
+  "t": "96ea2c8c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "291-p1-complete": {
@@ -25895,8 +25903,8 @@
   "v": "narrator"
  },
  "291-p2-complete": {
-  "d": 19.4,
-  "t": "96ea2c8c",
+  "d": 19.64,
+  "t": "96ea2c8c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2916-427db4a9": {
@@ -26530,13 +26538,13 @@
   "v": "orc-female"
  },
  "298-accept": {
-  "d": 18.48,
-  "t": "6475abc8",
+  "d": 16.64,
+  "t": "6475abc8+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "298-complete": {
-  "d": 17.88,
-  "t": "764451e4",
+  "d": 18.36,
+  "t": "764451e4+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2980-accept": {
@@ -26720,8 +26728,8 @@
   "v": "human-male"
  },
  "2997-accept": {
-  "d": 29.99,
-  "t": "eca9b39e",
+  "d": 30.15,
+  "t": "eca9b39e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2997-complete": {
@@ -26735,8 +26743,8 @@
   "v": "human-male"
  },
  "2999-accept": {
-  "d": 21.95,
-  "t": "632a9894",
+  "d": 20.95,
+  "t": "632a9894+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "2999-complete": {
@@ -26860,13 +26868,13 @@
   "v": "tauren-female"
  },
  "301-accept": {
-  "d": 25.47,
-  "t": "0fd51f7c",
+  "d": 25.67,
+  "t": "0fd51f7c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "301-complete": {
-  "d": 10.52,
-  "t": "148e129b",
+  "d": 11.44,
+  "t": "148e129b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3011-257b9f8a": {
@@ -26890,13 +26898,13 @@
   "v": "tauren-male"
  },
  "302-accept": {
-  "d": 29.75,
-  "t": "eccc6251",
+  "d": 28.95,
+  "t": "eccc6251+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "302-complete": {
-  "d": 18.04,
-  "t": "c7ccef11",
+  "d": 19.0,
+  "t": "c7ccef11+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3022-accept": {
@@ -27467,18 +27475,18 @@
   "v": "tauren-male"
  },
  "307-accept": {
-  "d": 34.11,
-  "t": "355c9e95",
+  "d": 34.03,
+  "t": "355c9e95+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "307-complete": {
-  "d": 11.4,
-  "t": "f038a36e",
+  "d": 10.16,
+  "t": "f038a36e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "308-complete": {
-  "d": 3.44,
-  "t": "72519b21",
+  "d": 3.64,
+  "t": "72519b21+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3082-accept": 14.0,
@@ -27818,13 +27826,13 @@
  "3089-accept": 14.0,
  "3089-complete": 33.47,
  "309-accept": {
-  "d": 17.4,
-  "t": "393052fa",
+  "d": 15.72,
+  "t": "393052fa+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "309-complete": {
-  "d": 25.4,
-  "t": "a6a2569b",
+  "d": 21.32,
+  "t": "a6a2569b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3090-accept": 20.2,
@@ -27858,8 +27866,8 @@
   "v": "tauren-male"
  },
  "310-accept": {
-  "d": 29.15,
-  "t": "f02c1412",
+  "d": 29.23,
+  "t": "06c343bc",
   "v": "dwarf-female"
  },
  "310-complete": {
@@ -27903,48 +27911,48 @@
   "v": null
  },
  "3106-accept": {
-  "d": 17.36,
-  "t": "b58dc29a",
-  "v": null
+  "d": 15.12,
+  "t": "b58dc29a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3106-complete": {
-  "d": 30.39,
-  "t": "70227ab3",
-  "v": null
+  "d": 28.19,
+  "t": "70227ab3+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3107-accept": {
-  "d": 16.4,
-  "t": "b80b6aa2",
-  "v": null
+  "d": 14.32,
+  "t": "b80b6aa2+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3107-complete": {
-  "d": 31.47,
-  "t": "db9376bf",
-  "v": null
+  "d": 32.11,
+  "t": "db9376bf+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3108-accept": {
-  "d": 15.12,
-  "t": "6c9a9d05",
-  "v": null
+  "d": 16.12,
+  "t": "6c9a9d05+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3108-complete": {
-  "d": 26.07,
-  "t": "de0cf9a5",
-  "v": null
+  "d": 24.39,
+  "t": "de0cf9a5+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3109-accept": {
-  "d": 15.6,
-  "t": "e5a32474",
-  "v": null
+  "d": 14.36,
+  "t": "e5a32474+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3109-complete": {
-  "d": 29.59,
-  "t": "e55c2b28",
+  "d": 30.11,
+  "t": "e55c2b28+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "311-accept": {
-  "d": 8.24,
-  "t": "0c855b3b",
+  "d": 7.92,
+  "t": "01e9aa65",
   "v": "narrator"
  },
  "311-complete": {
@@ -27953,14 +27961,14 @@
   "v": "dwarf-female"
  },
  "3110-accept": {
-  "d": 17.0,
-  "t": "b04c0bf5",
-  "v": null
+  "d": 15.16,
+  "t": "b04c0bf5+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3110-complete": {
-  "d": 24.31,
-  "t": "ac185b1e",
-  "v": null
+  "d": 24.07,
+  "t": "ac185b1e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "3111-accept": {
   "d": 23.67,
@@ -27968,28 +27976,28 @@
   "v": "narrator"
  },
  "3112-accept": {
-  "d": 16.04,
-  "t": "a8b48ad5",
+  "d": 16.92,
+  "t": "a8b48ad5+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3112-complete": {
-  "d": 31.27,
-  "t": "193e2f9b",
+  "d": 26.15,
+  "t": "193e2f9b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3113-accept": {
-  "d": 15.48,
-  "t": "6d2d5e8f",
+  "d": 15.36,
+  "t": "6d2d5e8f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3113-complete": {
-  "d": 28.59,
-  "t": "6206a19b",
+  "d": 27.31,
+  "t": "6206a19b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3114-accept": {
-  "d": 16.72,
-  "t": "67d431c2",
+  "d": 17.8,
+  "t": "67d431c2+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3114-complete": {
@@ -27998,8 +28006,8 @@
   "v": "gnome-male"
  },
  "3115-accept": {
-  "d": 22.79,
-  "t": "9bbb4dc0",
+  "d": 22.87,
+  "t": "9bbb4dc0+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3115-complete": {
@@ -28049,12 +28057,12 @@
  },
  "312-accept": {
   "d": 30.95,
-  "t": "647e7bfb",
+  "t": "647e7bfb+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "312-complete": {
-  "d": 7.4,
-  "t": "1d6ea893",
+  "d": 8.36,
+  "t": "1d6ea893+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3120-accept": {
@@ -28158,13 +28166,13 @@
   "v": "troll-male"
  },
  "313-accept": {
-  "d": 26.47,
-  "t": "22e7ced3",
+  "d": 27.03,
+  "t": "74ec93fd+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "313-complete": {
-  "d": 8.32,
-  "t": "54bf2734",
+  "d": 8.12,
+  "t": "54bf2734+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3130-accept": {
@@ -28303,13 +28311,13 @@
   "v": "goblin-male"
  },
  "315-accept": {
-  "d": 33.39,
-  "t": "51d9b2be",
+  "d": 33.15,
+  "t": "51d9b2be+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "315-complete": {
-  "d": 7.72,
-  "t": "723d0f3a",
+  "d": 7.36,
+  "t": "723d0f3a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3150-a266136f": {
@@ -28413,13 +28421,13 @@
   "v": "orc-male"
  },
  "317-accept": {
-  "d": 26.75,
-  "t": "26ce24e7",
+  "d": 27.71,
+  "t": "26ce24e7+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "317-complete": {
-  "d": 6.76,
-  "t": "9a64ab7f",
+  "d": 6.4,
+  "t": "9a64ab7f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3170-0402cd55": {
@@ -28493,13 +28501,13 @@
   "v": "human-male"
  },
  "318-accept": {
-  "d": 32.51,
-  "t": "e4a57513",
+  "d": 30.67,
+  "t": "7a28387d+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "318-complete": {
-  "d": 5.56,
-  "t": "223c1326",
+  "d": 4.96,
+  "t": "223c1326+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3181-33af2c00": {
@@ -28553,13 +28561,13 @@
   "v": "troll-male"
  },
  "319-accept": {
-  "d": 22.47,
-  "t": "f574d277",
+  "d": 22.63,
+  "t": "f574d277+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "319-complete": {
-  "d": 7.8,
-  "t": "37717717",
+  "d": 7.64,
+  "t": "37717717+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3191-0c543544": {
@@ -28583,13 +28591,13 @@
   "v": "troll-male"
  },
  "320-accept": {
-  "d": 6.8,
-  "t": "13a3235a",
+  "d": 7.8,
+  "t": "13a3235a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "320-complete": {
-  "d": 7.080249,
-  "t": "86b66651",
+  "d": 6.04,
+  "t": "86b66651+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3201-accept": {
@@ -31642,13 +31650,13 @@
   "v": "narrator"
  },
  "3364-accept": {
-  "d": 35.15,
-  "t": "653ba470",
+  "d": 33.95,
+  "t": "653ba470+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3364-complete": {
-  "d": 9.28,
-  "t": "0ccd814f",
+  "d": 8.52,
+  "t": "0ccd814f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3365-0443423e": {
@@ -31667,8 +31675,8 @@
   "v": "orc-male"
  },
  "3365-accept": {
-  "d": 17.36,
-  "t": "58de1fae",
+  "d": 17.96,
+  "t": "58de1fae+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3365-b90e9588": {
@@ -31677,8 +31685,8 @@
   "v": "orc-male"
  },
  "3365-complete": {
-  "d": 19.0,
-  "t": "bfd04f87",
+  "d": 17.28,
+  "t": "bfd04f87+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3367-accept": {
@@ -32977,13 +32985,13 @@
   "v": "troll-male"
  },
  "353-accept": {
-  "d": 33.55,
-  "t": "08520130",
+  "d": 33.35,
+  "t": "08520130+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "353-complete": {
-  "d": 17.56,
-  "t": "41be8076",
+  "d": 14.64,
+  "t": "41be8076+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3539-8259246a": {
@@ -32992,8 +33000,8 @@
   "v": "orc-male"
  },
  "354-accept": {
-  "d": 32.35,
-  "t": "fd6faa48",
+  "d": 28.87,
+  "t": "98c4837a",
   "v": "scourge-male"
  },
  "354-complete": {
@@ -33097,8 +33105,8 @@
   "v": "scourge-female"
  },
  "356-accept": {
-  "d": 35.11,
-  "t": "91a6ab11",
+  "d": 34.19,
+  "t": "e871da43",
   "v": "scourge-female"
  },
  "356-complete": {
@@ -33457,8 +33465,8 @@
   "v": "nightelf-female"
  },
  "358-accept": {
-  "d": 35.3,
-  "t": "0e414d14",
+  "d": 31.86,
+  "t": "9eb2e286",
   "v": "scourge-male"
  },
  "358-complete": {
@@ -33467,8 +33475,8 @@
   "v": "scourge-male"
  },
  "359-accept": {
-  "d": 24.15,
-  "t": "aabba29a",
+  "d": 30.03,
+  "t": "67bf79ac",
   "v": "scourge-male"
  },
  "359-complete": {
@@ -34072,8 +34080,8 @@
   "v": "scourge-male"
  },
  "3681-accept": {
-  "d": 25.91,
-  "t": "5038449a",
+  "d": 23.11,
+  "t": "5038449a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "3681-complete": {
@@ -34102,8 +34110,8 @@
   "v": "tauren-male"
  },
  "369-accept": {
-  "d": 30.83,
-  "t": "c3895ce9",
+  "d": 29.55,
+  "t": "81c6635b",
   "v": "scourge-male"
  },
  "369-complete": {
@@ -34287,18 +34295,18 @@
   "v": "troll-male"
  },
  "371-accept": {
-  "d": 25.83,
-  "t": "cfead928",
+  "d": 22.55,
+  "t": "23a57bba",
   "v": "scourge-male"
  },
  "371-complete": {
-  "d": 10.48,
-  "t": "3b0fbbfd",
+  "d": 8.92,
+  "t": "c429ff8f",
   "v": "scourge-male"
  },
  "372-accept": {
-  "d": 24.15,
-  "t": "ab7c60de",
+  "d": 24.67,
+  "t": "479cfe90",
   "v": "scourge-male"
  },
  "372-complete": {
@@ -34337,13 +34345,13 @@
   "v": "human-male"
  },
  "374-accept": {
-  "d": 41.15,
-  "t": "13027e15",
+  "d": 35.47,
+  "t": "da397113",
   "v": "scourge-male"
  },
  "374-complete": {
-  "d": 5.2,
-  "t": "ad29dc88",
+  "d": 6.24,
+  "t": "4d291c45",
   "v": "scourge-male"
  },
  "3741-accept": {
@@ -34802,13 +34810,13 @@
   "v": "narrator"
  },
  "383-accept": {
-  "d": 34.9,
-  "t": "240dd231",
+  "d": 33.7,
+  "t": "1453b143",
   "v": "scourge-male"
  },
  "383-complete": {
-  "d": 17.24,
-  "t": "ae9a4dde",
+  "d": 15.96,
+  "t": "93487b70",
   "v": "scourge-male"
  },
  "3836-488d3a03": {
@@ -34847,13 +34855,13 @@
   "v": "nightelf-male"
  },
  "384-accept": {
-  "d": 31.39,
-  "t": "02f3ea6f",
+  "d": 31.83,
+  "t": "02f3ea6f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "384-complete": {
-  "d": 12.4,
-  "t": "6bc7917b",
+  "d": 12.84,
+  "t": "6bc7917b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "384-f8288f6c": {
@@ -34922,8 +34930,8 @@
   "v": "scourge-male"
  },
  "385-accept": {
-  "d": 32.27,
-  "t": "0e62f7ad",
+  "d": 33.55,
+  "t": "0e62f7ad+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "385-complete": {
@@ -35712,8 +35720,8 @@
   "v": "human-male"
  },
  "400-accept": {
-  "d": 32.11,
-  "t": "3c9b4350",
+  "d": 33.07,
+  "t": "661c2cfa+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4001-accept": {
@@ -35867,8 +35875,8 @@
   "v": "narrator"
  },
  "404-accept": {
-  "d": 16.68,
-  "t": "391b0653",
+  "d": 18.64,
+  "t": "83efd005",
   "v": "scourge-male"
  },
  "404-complete": {
@@ -36317,13 +36325,13 @@
   "v": "nightelf-male"
  },
  "413-accept": {
-  "d": 23.39,
-  "t": "2f176f5b",
+  "d": 20.19,
+  "t": "2f176f5b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "413-complete": {
-  "d": 8.96,
-  "t": "28ab3990",
+  "d": 7.32,
+  "t": "28ab3990+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "413-p1-complete": {
@@ -36332,8 +36340,8 @@
   "v": "narrator"
  },
  "413-p2-complete": {
-  "d": 7.96,
-  "t": "28ab3990",
+  "d": 7.8,
+  "t": "28ab3990+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4130-accept": {
@@ -36422,13 +36430,13 @@
   "v": "nightelf-female"
  },
  "414-accept": {
-  "d": 29.51,
-  "t": "8363b7ad",
+  "d": 30.15,
+  "t": "8363b7ad+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "414-complete": {
-  "d": 11.76,
-  "t": "79df2736",
+  "d": 10.0,
+  "t": "79df2736+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4141-accept": {
@@ -36518,12 +36526,12 @@
  },
  "415-accept": {
   "d": 19.2,
-  "t": "b3f4b383",
+  "t": "b3f4b383+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "415-complete": {
-  "d": 11.84,
-  "t": "abad7d14",
+  "d": 12.08,
+  "t": "abad7d14+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4156-279d82d3": {
@@ -36562,13 +36570,13 @@
   "v": "nightelf-female"
  },
  "416-accept": {
-  "d": 36.35,
-  "t": "7dfdad31",
+  "d": 24.31,
+  "t": "7dfdad31+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "416-complete": {
-  "d": 8.44,
-  "t": "45e85412",
+  "d": 8.4,
+  "t": "45e85412+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4160-126c2b9a": {
@@ -36637,8 +36645,8 @@
   "v": "narrator"
  },
  "417-complete": {
-  "d": 16.6,
-  "t": "a45558b4",
+  "d": 17.64,
+  "t": "a45558b4+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "418-accept": {
@@ -36752,8 +36760,8 @@
   "v": "narrator"
  },
  "419-accept": {
-  "d": 35.07,
-  "t": "97b15927",
+  "d": 35.71,
+  "t": "97b15927+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "419-complete": {
@@ -36777,13 +36785,13 @@
   "v": "nightelf-male"
  },
  "420-accept": {
-  "d": 28.03,
-  "t": "c6c956a6",
+  "d": 25.07,
+  "t": "0d6ceb3a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "420-complete": {
-  "d": 33.35,
-  "t": "4e835512",
+  "d": 30.07,
+  "t": "4e835512+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4200-c2e88775": {
@@ -36817,8 +36825,8 @@
   "v": "nightelf-male"
  },
  "421-accept": {
-  "d": 33.35,
-  "t": "1a6f57c2",
+  "d": 34.07,
+  "t": "7c33019f",
   "v": "scourge-male"
  },
  "421-complete": {
@@ -37147,13 +37155,13 @@
   "v": "dwarf-male"
  },
  "426-accept": {
-  "d": 34.51,
-  "t": "e79cfed6",
+  "d": 33.39,
+  "t": "50699d88",
   "v": "scourge-male"
  },
  "426-complete": {
-  "d": 10.920249,
-  "t": "17f029c8",
+  "d": 9.92,
+  "t": "2b98c2ba",
   "v": "scourge-male"
  },
  "4261-accept": {
@@ -37532,8 +37540,8 @@
   "v": "nightelf-female"
  },
  "427-accept": {
-  "d": 36.11,
-  "t": "6ed11622",
+  "d": 33.03,
+  "t": "a2e52114",
   "v": "scourge-male"
  },
  "427-complete": {
@@ -37907,13 +37915,13 @@
   "v": "nightelf-female"
  },
  "432-accept": {
-  "d": 33.35,
-  "t": "e586ff9a",
+  "d": 36.35,
+  "t": "e586ff9a+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "432-complete": {
-  "d": 6.64,
-  "t": "41ff3743",
+  "d": 7.32,
+  "t": "41ff3743+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4320-0e051c59": {
@@ -37962,13 +37970,13 @@
   "v": "goblin-female"
  },
  "433-accept": {
-  "d": 34.83,
-  "t": "d6ba73c5",
+  "d": 34.23,
+  "t": "d6ba73c5+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "433-complete": {
-  "d": 18.44,
-  "t": "3cb8ae78",
+  "d": 15.08,
+  "t": "3cb8ae78+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "434-accept": {
@@ -38472,8 +38480,8 @@
   "v": "scourge-male"
  },
  "445-complete": {
-  "d": 26.47,
-  "t": "58bf04f8",
+  "d": 28.67,
+  "t": "9799a80a",
   "v": "scourge-male"
  },
  "4450-accept": {
@@ -41072,8 +41080,8 @@
   "v": "scourge-male"
  },
  "492-complete": {
-  "d": 9.04,
-  "t": "e6c9fbaf",
+  "d": 9.08,
+  "t": "e6c9fbaf+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "4921-accept": {
@@ -45547,13 +45555,13 @@
   "v": "dwarf-male"
  },
  "5541-accept": {
-  "d": 32.47,
-  "t": "d72ec35b",
+  "d": 29.19,
+  "t": "d72ec35b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5541-complete": {
-  "d": 17.0,
-  "t": "e62dcfc4",
+  "d": 18.72,
+  "t": "e62dcfc4+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5542-accept": {
@@ -46409,18 +46417,18 @@
   "v": "npc-10699"
  },
  "5625-accept": {
-  "d": 25.31,
-  "t": "4a901592",
+  "d": 26.79,
+  "t": "e487e6fc+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5625-complete": {
-  "d": 30.03,
-  "t": "bf99b2be",
+  "d": 30.71,
+  "t": "bf99b2be+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5626-complete": {
-  "d": 18.04,
-  "t": "a62f5fcc",
+  "d": 20.72,
+  "t": "a62f5fcc+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5627-complete": {
@@ -46514,8 +46522,8 @@
   "v": "human-female"
  },
  "5637-accept": {
-  "d": 23.75,
-  "t": "f2e90d15",
+  "d": 25.63,
+  "t": "f2e90d15+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5637-complete": {
@@ -46534,8 +46542,8 @@
   "v": "human-female"
  },
  "5639-accept": {
-  "d": 23.83,
-  "t": "fbd79c44",
+  "d": 24.31,
+  "t": "fbd79c44+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5639-complete": {
@@ -47881,8 +47889,8 @@
   "v": "narrator"
  },
  "5841-complete": {
-  "d": 9.6,
-  "t": "d4e0b55c",
+  "d": 9.16,
+  "t": "d4e0b55c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "5842-accept": {
@@ -49247,8 +49255,8 @@
   "v": "nightelf-male"
  },
  "6064-complete": {
-  "d": 4.52,
-  "t": "904e7c10",
+  "d": 4.72,
+  "t": "904e7c10+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6065-accept": {
@@ -49352,33 +49360,33 @@
   "v": "nightelf-male"
  },
  "6074-accept": {
-  "d": 14.76,
-  "t": "736b23aa",
+  "d": 14.96,
+  "t": "480aa194+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6074-complete": {
-  "d": 4.64,
-  "t": "dd39f820",
+  "d": 4.52,
+  "t": "dd39f820+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6075-accept": {
-  "d": 12.32,
-  "t": "736b23aa",
+  "d": 11.92,
+  "t": "480aa194",
   "v": "dwarf-female"
  },
  "6075-complete": {
-  "d": 3.8,
-  "t": "dd39f820",
+  "d": 4.4,
+  "t": "dd39f820+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6076-accept": {
-  "d": 12.24,
-  "t": "736b23aa",
+  "d": 12.04,
+  "t": "480aa194",
   "v": "dwarf-female"
  },
  "6076-complete": {
-  "d": 4.96,
-  "t": "dd39f820",
+  "d": 5.28,
+  "t": "dd39f820+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "608-accept": {
@@ -49422,23 +49430,23 @@
   "v": "orc-male"
  },
  "6084-accept": {
-  "d": 31.39,
-  "t": "25e1fb11",
+  "d": 33.51,
+  "t": "25e1fb11+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6084-complete": {
-  "d": 7.08,
-  "t": "4fc4e335",
+  "d": 6.92,
+  "t": "4fc4e335+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6085-accept": {
-  "d": 33.95,
-  "t": "1a5c408a",
+  "d": 37.87,
+  "t": "814df0b4+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6085-complete": {
-  "d": 12.4,
-  "t": "e21179b3",
+  "d": 11.8,
+  "t": "e21179b3+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6086-complete": {
@@ -50932,23 +50940,23 @@
   "v": "orc-male"
  },
  "6387-accept": {
-  "d": 34.35,
-  "t": "9efc8485",
+  "d": 33.39,
+  "t": "9efc8485+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6387-complete": {
-  "d": 10.6,
-  "t": "24955c0e",
+  "d": 10.2,
+  "t": "24955c0e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6388-accept": {
-  "d": 15.52,
-  "t": "5f30219b",
+  "d": 15.44,
+  "t": "5f30219b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6388-complete": {
-  "d": 15.16,
-  "t": "40482cd5",
+  "d": 11.68,
+  "t": "40482cd5+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6389-accept": {
@@ -50982,23 +50990,23 @@
   "v": "scourge-female"
  },
  "6391-accept": {
-  "d": 23.11,
-  "t": "5e7bff50",
+  "d": 19.11,
+  "t": "5e7bff50+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6391-complete": {
-  "d": 10.88,
-  "t": "4802bf70",
+  "d": 10.64,
+  "t": "4802bf70+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6392-accept": {
-  "d": 30.67,
-  "t": "b92dc152",
+  "d": 32.23,
+  "t": "b92dc152+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6392-complete": {
-  "d": 17.08,
-  "t": "c8fbea27",
+  "d": 16.4,
+  "t": "c8fbea27+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6393-accept": {
@@ -52267,8 +52275,8 @@
   "v": "troll-male"
  },
  "6721-accept": {
-  "d": 13.12,
-  "t": "d86f2288",
+  "d": 12.84,
+  "t": "d86f2288+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6721-complete": {
@@ -52277,8 +52285,8 @@
   "v": "nightelf-male"
  },
  "6722-accept": {
-  "d": 13.4,
-  "t": "d86f2288",
+  "d": 14.6,
+  "t": "d86f2288+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "6722-complete": {
@@ -57914,8 +57922,8 @@
   "v": "dwarf-male"
  },
  "730-accept": {
-  "d": 41.18,
-  "t": "4b54acac",
+  "d": 40.82,
+  "t": "4b54acac+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "730-complete": {
@@ -59759,13 +59767,13 @@
   "v": "nightelf-female"
  },
  "7673-complete": {
-  "d": 15.36,
-  "t": "3643ae05",
+  "d": 14.04,
+  "t": "3643ae05+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "7674-complete": {
-  "d": 14.68,
-  "t": "3643ae05",
+  "d": 14.08,
+  "t": "3643ae05+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "7675-complete": {
@@ -67219,8 +67227,8 @@
   "v": "nightelf-female"
  },
  "8565-complete": {
-  "d": 22.92,
-  "t": "e224753e",
+  "d": 6.12,
+  "t": "e224753e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "8566-complete": {
@@ -67229,8 +67237,8 @@
   "v": "orc-male"
  },
  "8567-complete": {
-  "d": 6.8,
-  "t": "5373d0cc",
+  "d": 6.76,
+  "t": "5373d0cc+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "8568-complete": {
@@ -67239,8 +67247,8 @@
   "v": "orc-male"
  },
  "8569-complete": {
-  "d": 6.16,
-  "t": "5373d0cc",
+  "d": 7.52,
+  "t": "5373d0cc+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "857-1ce0b66b": {
@@ -69844,8 +69852,8 @@
   "v": "goblin-male"
  },
  "8827-complete": {
-  "d": 24.55,
-  "t": "bf33a843",
+  "d": 29.23,
+  "t": "bf33a843+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "8828-accept": {
@@ -73653,6 +73661,71 @@
   "t": "2c8905c2",
   "v": "human-male"
  },
+ "91741-accept": {
+  "d": 10.2,
+  "t": "a8b77546",
+  "v": "narrator"
+ },
+ "91741-complete": {
+  "d": 12.84,
+  "t": "a79db19b",
+  "v": "human-male"
+ },
+ "91743-accept": {
+  "d": 6.88,
+  "t": "9f2cff48",
+  "v": "human-male"
+ },
+ "91743-complete": {
+  "d": 11.4,
+  "t": "8d956511",
+  "v": "human-male"
+ },
+ "91745-accept": {
+  "d": 10.08,
+  "t": "d4259605",
+  "v": "human-male"
+ },
+ "91745-complete": {
+  "d": 9.96,
+  "t": "596a63c3",
+  "v": "human-female"
+ },
+ "91752-accept": {
+  "d": 21.59,
+  "t": "316ab7d2",
+  "v": "human-female"
+ },
+ "91752-complete": {
+  "d": 8.56,
+  "t": "f8743e20",
+  "v": "human-male"
+ },
+ "91758-accept": {
+  "d": 22.63,
+  "t": "56a5a2ca",
+  "v": "human-male"
+ },
+ "91758-complete": {
+  "d": 4.2,
+  "t": "5212c1ed",
+  "v": "human-male"
+ },
+ "91772-accept": {
+  "d": 15.72,
+  "t": "e3c9138f",
+  "v": "human-male"
+ },
+ "91772-complete": {
+  "d": 11.96,
+  "t": "a5d195d6",
+  "v": "human-male"
+ },
+ "91775-accept": {
+  "d": 23.83,
+  "t": "1c6b1100",
+  "v": "human-male"
+ },
  "91775-complete": {
   "d": 11.4,
   "t": "c12cb5ba",
@@ -74151,6 +74224,16 @@
  "9211-p2-complete": {
   "d": 6.28,
   "t": "8300d819",
+  "v": "human-male"
+ },
+ "92124-accept": {
+  "d": 20.03,
+  "t": "d12886a3",
+  "v": "human-male"
+ },
+ "92124-complete": {
+  "d": 21.91,
+  "t": "216455ea",
   "v": "human-male"
  },
  "9213-accept": {
@@ -75026,13 +75109,13 @@
   "v": "orc-female"
  },
  "9263-accept": {
-  "d": 33.75,
-  "t": "eea5f66f",
+  "d": 31.39,
+  "t": "eea5f66f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "9263-complete": {
-  "d": 21.32,
-  "t": "c9e472c3",
+  "d": 22.84,
+  "t": "c9e472c3+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "9264-accept": {
@@ -75775,6 +75858,11 @@
   "t": "e5e2273f",
   "v": "gnome-male"
  },
+ "93172-complete": {
+  "d": 2.16,
+  "t": "b90b0f3e",
+  "v": "gnome-male"
+ },
  "9318-complete": {
   "d": 3.68,
   "t": "13566f31",
@@ -76365,6 +76453,26 @@
   "t": "4cbe5461",
   "v": "skyborne-female"
  },
+ "93736-complete": {
+  "d": 13.04,
+  "t": "785163d1",
+  "v": "skyborne-female"
+ },
+ "93736-p1-complete": {
+  "d": 10.44,
+  "t": "c10842e7",
+  "v": "skyborne-female"
+ },
+ "93736-p2-complete": {
+  "d": 2.0,
+  "t": "e080e68b",
+  "v": "narrator"
+ },
+ "93736-p3-complete": {
+  "d": 2.72,
+  "t": "5749e02f",
+  "v": "skyborne-female"
+ },
  "93737-accept": {
   "d": 13.76,
   "t": "df4a250b",
@@ -76389,6 +76497,11 @@
   "d": 17.48,
   "t": "a2b16595",
   "v": "skyborne-female"
+ },
+ "93739-accept": {
+  "d": 20.75,
+  "t": "29b88d9d",
+  "v": "npc-4527"
  },
  "93740-accept": {
   "d": 23.03,
@@ -76605,6 +76718,16 @@
   "t": "4108e10f",
   "v": "npc-1542"
  },
+ "94007-accept": {
+  "d": 16.2,
+  "t": "940e24e7",
+  "v": "skyborne-female"
+ },
+ "94007-complete": {
+  "d": 4.32,
+  "t": "192e5c71",
+  "v": "skyborne-male"
+ },
  "94013-accept": {
   "d": 20.51,
   "t": "f9e99f74",
@@ -76698,6 +76821,11 @@
  "943-complete": {
   "d": 8.56,
   "t": "521fb122",
+  "v": "dwarf-male"
+ },
+ "94373-accept": {
+  "d": 31.71,
+  "t": "e3c4f2f1+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "944-08830bac": {
@@ -76885,6 +77013,31 @@
   "t": "0365b379",
   "v": "skyborne-female"
  },
+ "94489-complete": {
+  "d": 10.68,
+  "t": "115767fa",
+  "v": "skyborne-female"
+ },
+ "94489-p1-complete": {
+  "d": 5.52,
+  "t": "e4301f7b",
+  "v": "narrator"
+ },
+ "94489-p2-complete": {
+  "d": 3.2,
+  "t": "3b33e31d",
+  "v": "skyborne-female"
+ },
+ "94489-p3-complete": {
+  "d": 5.2,
+  "t": "f7697ebd",
+  "v": "narrator"
+ },
+ "94489-p4-complete": {
+  "d": 9.04,
+  "t": "35c10ce2",
+  "v": "skyborne-female"
+ },
  "94490-accept": {
   "d": 14.0,
   "t": "d41dd94c",
@@ -77000,6 +77153,11 @@
   "t": "7bf45d36",
   "v": "skyborne-female"
  },
+ "94896-complete": {
+  "d": 11.08,
+  "t": "b8375098",
+  "v": "skyborne-female"
+ },
  "94896-p1-accept": {
   "d": 9.28,
   "t": "749d1901",
@@ -77018,6 +77176,21 @@
  "94897-accept": {
   "d": 23.19,
   "t": "088234a8",
+  "v": "skyborne-female"
+ },
+ "94897-complete": {
+  "d": 17.0,
+  "t": "8b64d903",
+  "v": "skyborne-female"
+ },
+ "94897-p1-complete": {
+  "d": 2.92,
+  "t": "f75303a4",
+  "v": "narrator"
+ },
+ "94897-p2-complete": {
+  "d": 15.8,
+  "t": "8b64d903",
   "v": "skyborne-female"
  },
  "949-accept": {
@@ -77530,10 +77703,20 @@
   "t": "871102ea",
   "v": "skyborne-female"
  },
+ "95349-complete": {
+  "d": 23.91,
+  "t": "d2019a08",
+  "v": "skyborne-female"
+ },
  "95350-accept": {
   "d": 28.15,
   "t": "f67d849e",
   "v": "skyborne-female"
+ },
+ "95350-complete": {
+  "d": 25.95,
+  "t": "ca14d6ec",
+  "v": "npc-4527"
  },
  "954-accept": {
   "d": 28.63,
@@ -77775,6 +77958,16 @@
   "t": "2674922c",
   "v": "scourge-male"
  },
+ "95998-accept": {
+  "d": 24.27,
+  "t": "327a4321",
+  "v": "human-male"
+ },
+ "95998-complete": {
+  "d": 9.64,
+  "t": "c710acaf",
+  "v": "human-male"
+ },
  "96-accept": {
   "d": 10.44,
   "t": "13d7aa87",
@@ -77930,6 +78123,26 @@
   "t": "a3f9df71",
   "v": "orc-male"
  },
+ "96626-accept": {
+  "d": 14.76,
+  "t": "d369dccd",
+  "v": "human-male"
+ },
+ "96626-complete": {
+  "d": 21.15,
+  "t": "128e6f79",
+  "v": "human-male"
+ },
+ "96627-accept": {
+  "d": 11.88,
+  "t": "a3f5be5f",
+  "v": "human-male"
+ },
+ "96627-complete": {
+  "d": 9.04,
+  "t": "7aeadbaa",
+  "v": "human-male"
+ },
  "96638-accept": {
   "d": 20.39,
   "t": "e233ffeb",
@@ -78050,9 +78263,14 @@
   "t": "0b00f1e1",
   "v": "orc-male"
  },
+ "96875-accept": {
+  "d": 29.35,
+  "t": "6f001f1e",
+  "v": "orc-female"
+ },
  "96895-accept": {
-  "d": 26.87,
-  "t": "489c8dad",
+  "d": 31.15,
+  "t": "f510c97f",
   "v": "scourge-male"
  },
  "96895-complete": {
@@ -78061,8 +78279,8 @@
   "v": "scourge-male"
  },
  "96897-accept": {
-  "d": 15.0,
-  "t": "04f387ff",
+  "d": 15.08,
+  "t": "eff75191",
   "v": "scourge-male"
  },
  "96898-accept": {
@@ -78124,6 +78342,11 @@
   "d": 41.26,
   "t": "56b4e1cd",
   "v": "troll-male"
+ },
+ "97277-accept": {
+  "d": 37.91,
+  "t": "4c17c915+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "97279-accept": {
   "d": 34.67,
@@ -78321,6 +78544,11 @@
   "t": "22cb0a2c",
   "v": "orc-male"
  },
+ "97923-accept": {
+  "d": 19.55,
+  "t": "c8f366ae",
+  "v": "human-male"
+ },
  "97965-accept": {
   "d": 17.59,
   "t": "96135970",
@@ -78375,6 +78603,11 @@
   "d": 4.76,
   "t": "3b015939",
   "v": "dwarf-female"
+ },
+ "98024-accept": {
+  "d": 31.71,
+  "t": "f820b308",
+  "v": "npc-4527"
  },
  "981-accept": {
   "d": 12.84,
@@ -78485,6 +78718,16 @@
   "d": 25.95,
   "t": "a95a414f",
   "v": "orc-male"
+ },
+ "98581-accept": {
+  "d": 20.91,
+  "t": "0e475e2b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
+ },
+ "98581-complete": {
+  "d": 23.67,
+  "t": "9d8f3ed2+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
+  "v": "dwarf-male"
  },
  "986-08830bac": {
   "d": 23.87,
@@ -112269,8 +112512,8 @@
   "v": "dwarf-male"
  },
  "f-170-accept": {
-  "d": 32.11,
-  "t": "3f14e65f",
+  "d": 33.59,
+  "t": "3f14e65f+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-172-complete": {
@@ -112289,13 +112532,13 @@
   "v": "human-female"
  },
  "f-1783-complete": {
-  "d": 32.46,
-  "t": "9c0b0735",
+  "d": 31.86,
+  "t": "9c0b0735+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-1786-complete": {
-  "d": 33.19,
-  "t": "74f57b52",
+  "d": 36.67,
+  "t": "74f57b52+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-1901-b59b5053": {
@@ -112334,8 +112577,8 @@
   "v": "human-female"
  },
  "f-233-accept": {
-  "d": 20.67,
-  "t": "06769dd3",
+  "d": 19.31,
+  "t": "06769dd3+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-2381-complete": {
@@ -112484,8 +112727,8 @@
   "v": "nightelf-female"
  },
  "f-400-complete": {
-  "d": 20.44,
-  "t": "7941d429",
+  "d": 19.12,
+  "t": "7941d429+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-4155-a8682cd0": {
@@ -112534,8 +112777,8 @@
   "v": "nightelf-female"
  },
  "f-4295-complete": {
-  "d": 13.2,
-  "t": "443c3f7e",
+  "d": 13.52,
+  "t": "443c3f7e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-4297-complete": {
@@ -112809,13 +113052,13 @@
   "v": "human-female"
  },
  "f-5626-accept": {
-  "d": 25.87,
-  "t": "ca7fed4d",
+  "d": 24.15,
+  "t": "082d5277+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-5630-accept": {
-  "d": 29.31,
-  "t": "69d76847",
+  "d": 25.95,
+  "t": "69d76847+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-5633-accept": {
@@ -112854,13 +113097,13 @@
   "v": "human-male"
  },
  "f-6064-accept": {
-  "d": 34.71,
-  "t": "264888b8",
+  "d": 33.75,
+  "t": "264888b8+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-6086-accept": {
-  "d": 27.67,
-  "t": "68a3ef5b",
+  "d": 28.39,
+  "t": "68a3ef5b+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "f-6125-accept": {
@@ -113809,8 +114052,8 @@
   "v": "dwarf-male"
  },
  "m-170-accept": {
-  "d": 33.43,
-  "t": "d1f54ebd",
+  "d": 31.95,
+  "t": "d1f54ebd+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-172-complete": {
@@ -113829,13 +114072,13 @@
   "v": "human-female"
  },
  "m-1783-complete": {
-  "d": 33.02,
-  "t": "71866771",
+  "d": 31.46,
+  "t": "71866771+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-1786-complete": {
-  "d": 33.79,
-  "t": "5439366e",
+  "d": 32.87,
+  "t": "5439366e+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-1901-b59b5053": {
@@ -113874,8 +114117,8 @@
   "v": "human-female"
  },
  "m-233-accept": {
-  "d": 18.84,
-  "t": "897019f1",
+  "d": 20.32,
+  "t": "897019f1+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-2381-complete": {
@@ -114024,8 +114267,8 @@
   "v": "nightelf-female"
  },
  "m-400-complete": {
-  "d": 18.64,
-  "t": "2259df07",
+  "d": 19.08,
+  "t": "2259df07+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-4155-a8682cd0": {
@@ -114074,8 +114317,8 @@
   "v": "nightelf-female"
  },
  "m-4295-complete": {
-  "d": 10.24,
-  "t": "42135d5c",
+  "d": 11.92,
+  "t": "42135d5c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-4297-complete": {
@@ -114349,13 +114592,13 @@
   "v": "human-female"
  },
  "m-5626-accept": {
-  "d": 25.79,
-  "t": "e6f0d2c2",
+  "d": 24.75,
+  "t": "3ea2382c+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-5630-accept": {
-  "d": 27.71,
-  "t": "126dc789",
+  "d": 28.67,
+  "t": "126dc789+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-5633-accept": {
@@ -114394,13 +114637,13 @@
   "v": "human-male"
  },
  "m-6064-accept": {
-  "d": 36.67,
-  "t": "dcd34cb6",
+  "d": 34.47,
+  "t": "dcd34cb6+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-6086-accept": {
-  "d": 29.47,
-  "t": "fa2ea739",
+  "d": 28.87,
+  "t": "fa2ea739+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597",
   "v": "dwarf-male"
  },
  "m-6125-accept": {
