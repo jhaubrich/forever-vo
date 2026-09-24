@@ -3049,7 +3049,7 @@
    "race": "Undead",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1790211471,
+   "time": 1790215880,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
@@ -3066,12 +3066,12 @@
    "race": "Undead",
    "subzone": "Valley of Strength",
    "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
-   "time": 1790211226,
+   "time": 1790215828,
    "zone": "Orgrimmar"
   },
   "3309|ae78a458": {
    "build": "69977",
-   "class": "Mage",
+   "class": "Paladin",
    "event": "gossip",
    "firstSeen": 1789924497,
    "found": true,
@@ -3079,11 +3079,11 @@
    "name": "Karus",
    "npc": "3309",
    "pack": "Forever",
-   "player": "Myrlin Fixpoint",
-   "race": "Orc",
+   "player": "Fixpoint Fix",
+   "race": "Undead",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790196314,
+   "time": 1790215794,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
