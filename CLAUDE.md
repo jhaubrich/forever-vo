@@ -131,6 +131,23 @@ game's own recordings).
   players with the next delta that carries a new file. `./tools/run.sh
   tools/gender_check.py` runs fixed cases and Classic's quest 233 through all
   of it; run it after touching any of those functions.
+- **Self-repair is a development principle**: every addon release so far has
+  recorded something wrong that a later one fixes, and the fix must reach
+  lines already captured through ongoing play, never by hand. Since 0.1.4
+  every capture carries the addon version (`addon`, on owner entries too) and
+  exports carry per-line time (`d`), and `merge_entry` ranks readings by
+  `capture_rank`: newer addon first, then later reading, unknown addon lowest.
+  `CAPTURE_TRUSTED_SINCE` in `tools/config.py` (0.1.4) names the first release
+  believed at face value: `needs_of` answers `mf` for any quest entry from
+  before it, so the pack asks everyone for the line until a trusted capture
+  wins it, and `superseded_gossip` in `backfill` drops an untrusted gossip
+  line once a trusted one from the same speaker aligns at 0.9 (gossip keys by
+  hash, so the flawed reading would otherwise sit beside its correction for
+  good and the addon's fuzzy match could play it). Raise the constant when a
+  release fixes what its predecessor recorded, and when designing any capture
+  change ask how a line the previous version captured gets replaced. The
+  cost is regeneration, which only happens when the spoken text or voice
+  actually changes; the owner accepts it. Checked by `gender_check.py`.
 - `luac -p` every changed Lua file (`./tools/run.sh luac -p <file>`; the dev
   shell has lua 5.1).
   There is no in-game test harness; the owner tests by `/reload`.
