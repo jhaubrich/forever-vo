@@ -28,7 +28,7 @@ from __future__ import annotations
 import re
 import subprocess
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from tools.config import GENDER_DICT, RACE_DICT, VOICES_DIR
@@ -240,7 +240,7 @@ def speech_heads(sources: dict[str, list[int]]) -> dict[str, tuple[list[int], in
             continue        # no spoken emotes for this race; it stays bark-led
         counts = sound_set_displays().get(race_gender, {})
 
-        def displays(name: str) -> int:
+        def displays(name: str, race_gender: str = race_gender, counts: Counter[int] = counts) -> int:
             if name == race_gender:
                 # The plain voice picks first because it speaks for the most NPCs on
                 # this client: GetDisplayInfo never returns anything on Forever
