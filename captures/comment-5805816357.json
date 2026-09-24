@@ -1,0 +1,107 @@
+{
+ "addon": "0.1.2",
+ "gossip": {},
+ "npcs": {
+  "1266": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Tundra MacGrann",
+   "sex": 2
+  },
+  "1374": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Rejold Barleybrew",
+   "sex": 2
+  },
+  "1375": {
+   "creatureType": "Humanoid",
+   "modelFileID": 950080,
+   "name": "Marleth Barleybrew",
+   "sex": 3
+  }
+ },
+ "origin": "comment-5805816357",
+ "quests": {
+  "311-progress": {
+   "build": "69977",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Marleth Barleybrew",
+   "npc": "1375",
+   "questID": 311,
+   "source": "community",
+   "text": "Did you make the switch?",
+   "title": "Return to Marleth",
+   "zone": "Dun Morogh"
+  },
+  "312-complete": {
+   "build": "69977",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Tundra MacGrann",
+   "npc": "1266",
+   "questID": 312,
+   "source": "community",
+   "text": "What a kind soul you are, $N!  Thanks to your bravery I won't find myself starving when the cold season flurries blow in.",
+   "title": "Tundra MacGrann's Stolen Stash",
+   "zone": "Dun Morogh"
+  },
+  "312-progress": {
+   "build": "69977",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Tundra MacGrann",
+   "npc": "1266",
+   "questID": 312,
+   "source": "community",
+   "text": "Were you able to get into my meat locker, $N?",
+   "title": "Tundra MacGrann's Stolen Stash",
+   "zone": "Dun Morogh"
+  },
+  "315-complete": {
+   "build": "69977",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Rejold Barleybrew",
+   "npc": "1374",
+   "questID": 315,
+   "source": "community",
+   "text": "Great!  I can't wait to use these in some of my recipes.  There's one in particular I think it'll work great in...",
+   "title": "The Perfect Stout",
+   "zone": "Dun Morogh"
+  },
+  "315-progress": {
+   "build": "69977",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Rejold Barleybrew",
+   "npc": "1374",
+   "questID": 315,
+   "source": "community",
+   "text": "Do you have that shimmerweed?  I almost have a batch of stout ready to brew, and I want to try throwing the weed in with this mixture.",
+   "title": "The Perfect Stout",
+   "zone": "Dun Morogh"
+  },
+  "413-accept": {
+   "build": "69977",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Rejold Barleybrew",
+   "npc": "1374",
+   "questID": 413,
+   "source": "community",
+   "text": "I'd like my brother Wellart to try my new Shimmer Stout.  He's a Mountaineer stationed in the southern guard tower, one of two towers on the border to Loch Modan.\n\nHe may not be a brewer like the rest of us Barleybrews, but he loves his drinks and I know he'll like this one.\n\nCan you bring him this Barrel of Shimmer Stout for me?",
+   "title": "Shimmer Stout",
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
