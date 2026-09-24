@@ -1,11 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#   "chatterbox-tts",
-#   "setuptools<81",
-#   "requests",
-# ]
-# ///
 """Measures voices instead of guessing at them.
 
 Two questions keep coming up in the voice issues, and both were being answered by
@@ -13,9 +5,9 @@ ear from single samples (#18, #26). One generation is not evidence: the mel deco
 draws fresh noise per call (chatterbox s3gen/flow_matching.py sets rand_noise = None),
 so two takes of one line in one voice can differ more than two settings do.
 
-    ./tools/run.sh tools/voicecheck.py rate                    # how fast is each voice?
-    ./tools/run.sh tools/voicecheck.py rate --voice orc-female
-    ./tools/run.sh tools/voicecheck.py takes --voice orc-female --takes 5
+    ./tools/run.sh fvo-voicecheck rate                    # how fast is each voice?
+    ./tools/run.sh fvo-voicecheck rate --voice orc-female
+    ./tools/run.sh fvo-voicecheck takes --voice orc-female --takes 5
 
 "rate" needs no GPU and no generation: it reads the durations already in
 sound_index.json and the texts behind them, so it reports on every line that has
@@ -35,13 +27,13 @@ import statistics
 import sys
 from pathlib import Path
 
-from config import DATA_DIR, NARRATOR_VOICES, SOUND_INDEX, VOICES_DIR
-from textclean import clean, has_gender_branch, split_gender
+from tools.config import DATA_DIR, SOUND_INDEX, VOICES_DIR, load_config
+from tools.textclean import clean, has_gender_branch, split_gender
 
 CAPTURE_JSON = DATA_DIR / "capture.json"
 
 
-def load_texts() -> dict[str, str]:
+def load_texts(alternates: list[str]) -> dict[str, str]:
     """Sound index key -> the words actually spoken in it.
 
     Three shapes have to match `generate.index_key` and `Item.variants`, or whole
@@ -49,7 +41,7 @@ def load_texts() -> dict[str, str]:
     (gossip branches too, not just quests), and an alternate narrator recording is
     keyed `Narrator/<voice>/<base>`. Missing the last one dropped every alternate -
     6,655 of 23,067 entries - and with them most of the text for the five voices in
-    NARRATOR_VOICES, which is exactly where "too slow" (#26) was being measured.
+    the narrator alternates, which is exactly where "too slow" (#26) was measured.
 
     Narrator lines keep their stage directions because the narrator reads them aloud
     (`generate.Item.variants` passes keep_stage_directions), so counting them without
@@ -59,7 +51,7 @@ def load_texts() -> dict[str, str]:
 
     def add(base: str, text: str) -> None:
         sources[base] = text
-        for voice in NARRATOR_VOICES[1:]:
+        for voice in alternates:
             sources[f"Narrator/{voice}/{base}"] = text
 
     files = [DATA_DIR / "bulk" / "classic.json", DATA_DIR / "bulk" / "questcache.json", CAPTURE_JSON]
@@ -101,7 +93,7 @@ def words(text: str) -> int:
 
 def cmd_rate(args) -> int:
     index = json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
-    texts = load_texts()
+    texts = load_texts(load_config().voices.narrator_alternates)
     by_voice: dict[str, list[float]] = {}
     missing = 0
     for name, entry in index.items():
@@ -118,9 +110,10 @@ def cmd_rate(args) -> int:
         if count < 8 or duration < 1.0:      # too short to time reliably
             continue
         by_voice.setdefault(voice, []).append(count / duration * 60.0)
-    # "% vs all voices" has to be computed before filtering, or --voice compares a
-    # voice against itself and the flag never fires
-    overall = statistics.median([r for rates in by_voice.values() for r in rates]) if by_voice else 0
+    # "% vs all voices" and the line count have to be taken before filtering, or
+    # --voice compares a voice against itself and reports its own sample as the total
+    every = [r for rates in by_voice.values() for r in rates]
+    overall = statistics.median(every) if every else 0
     if args.voice:
         # a voice's archetypes are the same voice for this purpose
         by_voice = {v: r for v, r in by_voice.items()
@@ -138,9 +131,8 @@ def cmd_rate(args) -> int:
                 flag = f"  {delta:+.0f}% vs all voices"
         print(f"{voice:<18} {len(rates):>6} {statistics.median(rates):>10.1f} {f'{p10:.0f} - {p90:.0f}':>20}{flag}")
     if overall:
-        measured = sum(len(r) for r in by_voice.values())
         print(f"\nmedian across every voiced line: {overall:.1f} words/min "
-              f"({measured} lines measured of {len(index)} index entries; {missing} had no text, "
+              f"({len(every)} lines measured of {len(index)} index entries; {missing} had no text, "
               f"the rest were too short to time)")
     return 0
 
@@ -174,7 +166,7 @@ def cmd_takes(args) -> int:
     import perth
     import torchaudio
     if getattr(perth, "PerthImplicitWatermarker", None) is None:
-        perth.PerthImplicitWatermarker = perth.DummyWatermarker
+        perth.PerthImplicitWatermarker = perth.DummyWatermarker  # ty: ignore[invalid-assignment]
     from chatterbox.tts import ChatterboxTTS
 
     out_dir = Path(args.out)
@@ -205,7 +197,7 @@ def cmd_takes(args) -> int:
                         import subprocess
                         seconds = float(subprocess.run(
                             ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-                            capture_output=True, text=True).stdout.strip() or 0)
+                            capture_output=True, text=True, check=False).stdout.strip() or 0)
                     made.append(path)
                     rates.append(words(text) / seconds * 60.0)
             sims = speaker_similarity(model, made, reference)
@@ -217,16 +209,16 @@ def cmd_takes(args) -> int:
 
 # Neutral quest-giver prose, long enough to time and to let the voice settle.
 LINES = [
-    "The road south is not safe for travellers, and the guards will not go with you. "
-    "Take what supplies you can carry and keep to the high ground until morning.",
-    "I have seen what they do to those they capture. Do not let them take you alive, "
-    "and do not come back here without the proof I asked for.",
-    "My family has worked this land for three generations. I will not abandon it now, "
-    "whatever the elders decide at the next council.",
+    ("The road south is not safe for travellers, and the guards will not go with you. "
+     "Take what supplies you can carry and keep to the high ground until morning."),
+    ("I have seen what they do to those they capture. Do not let them take you alive, "
+     "and do not come back here without the proof I asked for."),
+    ("My family has worked this land for three generations. I will not abandon it now, "
+     "whatever the elders decide at the next council."),
 ]
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -244,7 +236,7 @@ def main(argv: list[str]) -> int:
     takes.add_argument("--out", default="tools/data/voicecheck", help="where to write the takes")
     takes.set_defaults(func=cmd_takes)
 
-    args = parser.parse_args(argv)
+    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
     return args.func(args)
 
 
