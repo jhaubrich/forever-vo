@@ -11,8 +11,17 @@ import json
 import sys
 
 from tools.config import DATA_DIR
-from tools.ingest import (Repairs, SourceTexts, backfill, merge_entry, needs_of, rebuild_gender, repair_entry,
-                          restore_gender, superseded_gossip)
+from tools.ingest import (
+    Repairs,
+    SourceTexts,
+    backfill,
+    merge_entry,
+    needs_of,
+    rebuild_gender,
+    repair_entry,
+    restore_gender,
+    superseded_gossip,
+)
 
 failures = 0
 
@@ -65,8 +74,10 @@ def main() -> int:
         check("restore no-op", restore_gender(classic, classic), (classic, 0))
         sources = SourceTexts()
         entry = repair_entry(community(male, "m"), "quests", "233-accept", sources, Repairs())
+        assert entry is not None
         check("repair restores 233", (entry["text"] == classic, entry.get("needs")), (True, None))
         entry = repair_entry(community("Some Forever-only text, lad.", "m"), "quests", "999999-accept", sources, Repairs())
+        assert entry is not None
         check("repair marks needs", entry.get("needs"), "f")
     else:
         print(f"skip classic cases: {classic_path} missing (run classicdb.py)")

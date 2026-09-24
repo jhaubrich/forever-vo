@@ -43,7 +43,7 @@ MIN_CLIP, MAX_CLIP = 0.4, 12.0
 # ones, so a naive "take the longest clips" picks nothing but jokes. warcry and
 # the death/pain calls are shouted. What is left - what, yes, ready, yesattack -
 # is the unit speaking normally, which is what a quest giver needs.
-EXCLUDE = re.compile(r"(pissed|warcry|death|die|pain|birth|burn)", re.I)
+EXCLUDE = re.compile(r"(pissed|warcry|death|die|pain|birth|burn)", re.IGNORECASE)
 
 # species voice name -> WC3 unit folder names (matched as substrings)
 SPECIES: dict[str, tuple[str, ...]] = {
@@ -67,7 +67,7 @@ SPECIES: dict[str, tuple[str, ...]] = {
 def duration(path: Path) -> float:
     out = subprocess.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-        capture_output=True, text=True).stdout.strip()
+        capture_output=True, text=True, check=False).stdout.strip()   # an unreadable file reads as 0.0 below
     try:
         return float(out)
     except ValueError:

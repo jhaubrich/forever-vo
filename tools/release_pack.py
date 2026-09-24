@@ -44,8 +44,10 @@ import shutil
 import subprocess
 import sys
 import zipfile
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date
+from dataclasses import dataclass
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import requests
@@ -97,43 +99,58 @@ def base_part(entry: dict) -> int:
     return 1
 
 
+@dataclass(frozen=True)
+class PackSpec:
+    folder: str                 # the addon folder the pack installs as; its global is <folder>Pack
+    title: str
+    pack_name: str              # what the addon shows as the pack's name
+    priority: int               # a higher pack's line wins over a lower one's
+    notes: str
+    select: Callable[[dict, set[int]], bool]   # (entry, Classic quest IDs) -> belongs to this pack
+
+
 PACKS = {
-    "base": {
-        "folder": "ForeverVO_Data_Base",
-        "title": "Forever Voiceover Data: Base",
-        "pack_name": "Classic",
-        "priority": 100,
-        "notes": f"Classic-era quests to level {BASE_SPLIT_LEVEL} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
-        "select": lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 1,
-    },
-    "base_endgame": {
-        "folder": "ForeverVO_Data_Base_Endgame",
-        "title": "Forever Voiceover Data: Base Endgame",
-        "pack_name": "Classic Endgame",
-        "priority": 100,
-        "notes": f"Classic-era quests from level {BASE_SPLIT_LEVEL + 1}, voiced. Install with Forever Voiceover and Base.",
-        "select": lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 2,
-    },
-    "delta": {
-        "folder": "ForeverVO_Data_Forever",
-        "title": "Forever Voiceover Data: Forever",
-        "pack_name": "Forever",
-        "priority": 200,
-        "notes": "New and revised Forever lines from player captures. Sits on top of Forever Voiceover Data.",
-        "select": lambda entry, classic_ids: is_forever_line(entry, classic_ids),
-    },
+    "base": PackSpec(
+        folder="ForeverVO_Data_Base",
+        title="Forever Voiceover Data: Base",
+        pack_name="Classic",
+        priority=100,
+        notes=f"Classic-era quests to level {BASE_SPLIT_LEVEL} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
+        select=lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 1,
+    ),
+    "base_endgame": PackSpec(
+        folder="ForeverVO_Data_Base_Endgame",
+        title="Forever Voiceover Data: Base Endgame",
+        pack_name="Classic Endgame",
+        priority=100,
+        notes=f"Classic-era quests from level {BASE_SPLIT_LEVEL + 1}, voiced. Install with Forever Voiceover and Base.",
+        select=lambda entry, classic_ids: not is_forever_line(entry, classic_ids) and base_part(entry) == 2,
+    ),
+    "delta": PackSpec(
+        folder="ForeverVO_Data_Forever",
+        title="Forever Voiceover Data: Forever",
+        pack_name="Forever",
+        priority=200,
+        notes="New and revised Forever lines from player captures. Sits on top of Forever Voiceover Data.",
+        select=lambda entry, classic_ids: is_forever_line(entry, classic_ids),
+    ),
 }
+
+
+def today() -> date:
+    """The local calendar date: pack versions are dated by the day the owner released them."""
+    return datetime.now(tz=UTC).astimezone().date()
 
 
 def next_version(pack: str) -> str:
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
-    today = date.today().strftime("%Y.%m.%d")
+    today_str = today().strftime("%Y.%m.%d")
     last = state.get(pack, {}).get("version", "")
-    if last.startswith(today):
+    if last.startswith(today_str):
         parts = last.split(".")
         n = int(parts[3]) + 1 if len(parts) == 4 else 2   # 2026.09.20 -> .2 -> .3 ...
-        return f"{today}.{n}"
-    return today
+        return f"{today_str}.{n}"
+    return today_str
 
 
 RELEASE_BITRATE = "32k"
@@ -149,12 +166,12 @@ def transcode(src: Path, dst: Path) -> None:
     )
 
 
-def write_manifest(stage: Path, spec: dict, version: str) -> None:
+def write_manifest(stage: Path, spec: PackSpec, version: str) -> None:
     stage.mkdir(parents=True, exist_ok=True)
-    folder = spec["folder"]
+    folder = spec.folder
     pack_global = f"{folder}Pack"
     (stage / f"{folder}.toc").write_text(
-        f"## Interface: 16001\n## Title: {spec['title']}\n## Notes: {spec['notes']}\n## Version: {version}\n"
+        f"## Interface: 16001\n## Title: {spec.title}\n## Notes: {spec.notes}\n## Version: {version}\n"
         f"## Author: Quinn Dougherty\n## Dependencies: ForeverVO\n## X-ForeverVO-Pack: 1\n## X-Category: Quests & Leveling\n\n"
         f"Data\\Pack.lua\nData\\Quests.lua\nData\\Gossip.lua\nData\\NPCs.lua\nData\\Narrator.lua\nData\\Register.lua\n",
         encoding="utf-8",
@@ -162,8 +179,8 @@ def write_manifest(stage: Path, spec: dict, version: str) -> None:
     data = stage / "Data"
     data.mkdir(parents=True, exist_ok=True)
     (data / "Pack.lua").write_text(
-        f"-- Generated by tools/release_pack.py\n{pack_global} = {{\n    name = \"{spec['pack_name']}\",\n"
-        f"    version = \"{version}\",\n    priority = {spec['priority']},\n    folder = \"{folder}\",\n"
+        f"-- Generated by tools/release_pack.py\n{pack_global} = {{\n    name = \"{spec.pack_name}\",\n"
+        f"    version = \"{version}\",\n    priority = {spec.priority},\n    folder = \"{folder}\",\n"
         f"    quests = {{}},\n    gossip = {{}},\n    npcs = {{}},\n    narrator = {{}},\n    narratorVoices = {{}},\n}}\n",
         encoding="utf-8",
     )
@@ -178,13 +195,13 @@ def stage_tables(pack: str, version: str) -> tuple[Path, dict]:
     spec = PACKS[pack]
     sources = load_sources()
     classic_ids = classic_quest_ids()
-    items = [item for item in load_items(sources, include_progress=True) if spec["select"](item.entry, classic_ids)]
-    stage = RELEASE_DIR / spec["folder"]
+    items = [item for item in load_items(sources, include_progress=True) if spec.select(item.entry, classic_ids)]
+    stage = RELEASE_DIR / spec.folder
     if stage.exists():
         shutil.rmtree(stage)
     write_manifest(stage, spec, version)
     sound_index = json.loads(SOUND_INDEX.read_text()) if SOUND_INDEX.exists() else {}
-    stats = rebuild_tables(items, sound_index, data_dir=stage / "Data", pack_global=f"{spec['folder']}Pack",
+    stats = rebuild_tables(items, sound_index, data_dir=stage / "Data", pack_global=f"{spec.folder}Pack",
                            sounds_dir=SOUNDS_DIR, write_index=False)
     return stage, stats
 
@@ -202,11 +219,11 @@ def package(pack: str, version: str, stage: Path, stats: dict) -> Path:
             if n % 1000 == 0 or n == len(jobs):
                 print(f"  re-encoded {n}/{len(jobs)}")
 
-    zip_path = RELEASE_DIR / f"{spec['folder']}-{version}.zip"
+    zip_path = RELEASE_DIR / f"{spec.folder}-{version}.zip"
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_STORED) as zf:   # mp3 does not deflate
         for path in sorted(stage.rglob("*")):
             if path.is_file():
-                zf.write(path, str(Path(spec["folder"]) / path.relative_to(stage)))
+                zf.write(path, str(Path(spec.folder) / path.relative_to(stage)))
     size_mb = zip_path.stat().st_size / 1e6
     narrator_files = len(stats.get("narratorFiles", ()))
     print(f"{zip_path.name}: {stats['quests']} quests, {stats['gossip']} gossip lines, "
@@ -253,7 +270,7 @@ def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: s
     metadata = {
         "changelog": changelog,
         "changelogType": "markdown",
-        "displayName": f"{PACKS[pack]['title']} {version}",
+        "displayName": f"{PACKS[pack].title} {version}",
         "gameVersions": [game_version_id(key)],
         "releaseType": release_type,
     }
@@ -314,7 +331,7 @@ def main(argv: list[str] | None = None) -> int:
         previous = set(last.get("files", []))
         new_files = len(set(fingerprint) - previous)
         changed = last.get("files") != fingerprint
-        age_days = (date.today() - date.fromisoformat(last["date"])).days if last.get("date") else 10**6
+        age_days = (today() - date.fromisoformat(last["date"])).days if last.get("date") else 10**6
         due = changed and (new_files >= args.min_new or (args.max_age_days and age_days >= args.max_age_days))
         if not due:
             print(f"not due: {new_files} new files since the last release {age_days} days ago "
@@ -325,7 +342,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.upload:
         upload(args.pack, zip_path, version, stats, release_type)
-    state[args.pack] = {"version": version, "date": date.today().isoformat(), "files": fingerprint, "zip": str(zip_path)}
+    state[args.pack] = {"version": version, "date": today().isoformat(), "files": fingerprint, "zip": str(zip_path)}
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
     return 0
 

@@ -44,12 +44,28 @@ import sys
 import tempfile
 import time
 from pathlib import Path
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
-from tools.config import (CAPTURE_JSON, DATA_DIR, FALLBACK_VOICES, NARRATOR_VOICE, NARRATOR_VOICES,
-                          PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR, VOICES_DIR)
+from tools.config import (
+    CAPTURE_JSON,
+    DATA_DIR,
+    FALLBACK_VOICES,
+    NARRATOR_VOICE,
+    NARRATOR_VOICES,
+    PACK_DATA_DIR,
+    SOUND_INDEX,
+    SOUNDS_DIR,
+    VOICES_DIR,
+)
 from tools.luatable import lua_string
-from tools.textclean import chunk, clean, has_gender_branch, is_speakable, segments, split_gender
+from tools.textclean import (
+    chunk,
+    clean,
+    has_gender_branch,
+    is_speakable,
+    segments,
+    split_gender,
+)
 from tools.textkey import text_key
 from tools.wowdata import voice_for_npc
 
@@ -249,7 +265,7 @@ class Synth:
         import perth
         import torch
         if getattr(perth, "PerthImplicitWatermarker", None) is None:
-            perth.PerthImplicitWatermarker = perth.DummyWatermarker
+            perth.PerthImplicitWatermarker = perth.DummyWatermarker  # ty: ignore[invalid-assignment]
         from chatterbox.tts import ChatterboxTTS
         self.torch = torch
         if device == "cuda" and not torch.cuda.is_available():
@@ -444,7 +460,7 @@ def speaker_int(key: str | None) -> int | None:
         return None
 
 
-def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: Path = PACK_DATA_DIR,
+def rebuild_tables(items: list[Item], sound_index: dict[str, Any], data_dir: Path = PACK_DATA_DIR,
                    pack_global: str = "ForeverVO_DataPack", sounds_dir: Path = SOUNDS_DIR, write_index: bool = True,
                    dirty: set[str] | None = None) -> dict:
     """Writes the pack tables for `items` whose audio exists under sounds_dir.
@@ -622,9 +638,9 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
     npc_lines = [f"\t[{key}] = {lua_string(name)}," for key, name in sorted(npcs.items())]
 
     narrator_lines = []
-    for quest_id, alternates in sorted(narrator.items()):
+    for quest_id, by_voice in sorted(narrator.items()):
         parts = [f"[{voices.index(voice) + 1}]={lua_record(record)}"
-                 for voice, record in sorted(alternates.items(), key=lambda pair: voices.index(pair[0]))]
+                 for voice, record in sorted(by_voice.items(), key=lambda pair: voices.index(pair[0]))]
         narrator_lines.append(f"\t[{quest_id}] = {{ " + ", ".join(parts) + " },")
     voice_list = ", ".join(lua_string(voice) for voice in voices)
 

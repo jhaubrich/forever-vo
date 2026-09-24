@@ -73,8 +73,7 @@ def normalize(
 ) -> str:
     if not text:
         return ""
-    text = tokenize(text, player_name, class_name, race_name)
-    text = text.lower()
+    text = (tokenize(text, player_name, class_name, race_name) or "").lower()
     text = _GENDER_CODE.sub("", text)   # $g male:female; branch
     text = _DOLLAR_CODE.sub("", text)   # $n, $c, $r, $b, ...
     # Lua strips per byte; encode to UTF-8 so multi-byte characters vanish the same way

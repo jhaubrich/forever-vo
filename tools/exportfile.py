@@ -1,11 +1,12 @@
 """Decodes "/fvo export" strings (FVO1:<base64 zlib json>) into capture-schema JSON.
 
-Standard library only, so it also runs inside the GitHub Action that turns
-capture issues into files under captures/ (`uv run --no-project`, no sync of
-the project's dependencies).
+Standard library only (tools.textkey is too), so it also runs inside the
+GitHub Action that turns capture issues into files under captures/, as
+`uv run --no-project python -m tools.exportfile`: no sync of the project's
+dependencies, and the -m form is what puts the repo root on the import path.
 
     ./tools/run.sh tools/exportfile.py --out captures/issue-12.json < body.txt
-    uv run --no-project tools/exportfile.py --out captures/mine.json "FVO1:eJy..."
+    uv run --no-project python -m tools.exportfile --out captures/mine.json "FVO1:eJy..."
 """
 from __future__ import annotations
 
@@ -16,6 +17,8 @@ import re
 import sys
 import zlib
 from pathlib import Path
+
+from tools.textkey import text_key
 
 PREFIX = "FVO1:"
 _TOKEN = re.compile(r"FVO1:[A-Za-z0-9+/=\s]+")
@@ -68,7 +71,6 @@ def to_capture(data: dict, origin: str) -> dict:
                 continue
             out["quests"][f"{entry['questID']}-{entry['event']}"] = entry
         else:
-            from textkey import text_key  # local import keeps the stdlib-only path for --raw
             out["gossip"][f"{entry['npc'] or entry['name'] or '?'}|{text_key(entry['text'])}"] = entry
     for key, npc in (data.get("npcs") or {}).items():
         out["npcs"][str(key)] = {k: v for k, v in npc.items() if v is not None}

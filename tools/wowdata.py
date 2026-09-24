@@ -14,8 +14,16 @@ from pathlib import Path
 
 import requests
 
-from tools.config import (BETA_BUILD, DATA_DIR, DB2_DIR, GENDER_DICT, RACE_DICT, VOICES_DIR,
-                          WAGO_BASE, ZONE_RACE_HINTS)
+from tools.config import (
+    BETA_BUILD,
+    DATA_DIR,
+    DB2_DIR,
+    GENDER_DICT,
+    RACE_DICT,
+    VOICES_DIR,
+    WAGO_BASE,
+    ZONE_RACE_HINTS,
+)
 
 
 def db2_path(table: str, build: str = BETA_BUILD) -> Path:
@@ -34,7 +42,7 @@ def fetch_db2(table: str, build: str = BETA_BUILD, force: bool = False) -> Path:
     return path
 
 
-@functools.lru_cache(maxsize=None)
+@functools.cache
 def load_db2(table: str, build: str = BETA_BUILD) -> dict[int, dict[str, str]]:
     """Returns {ID: row} for a table."""
     path = fetch_db2(table, build)
@@ -80,7 +88,7 @@ def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:
     return None, None
 
 
-@functools.lru_cache(maxsize=None)
+@functools.cache
 def _species_by_model_file() -> dict[int, str]:
     """{CreatureModelData.FileDataID: species}, from tools/data/species_models.json."""
     path = DATA_DIR / "species_models.json"
@@ -164,7 +172,7 @@ def species_voice(display_id: int | None, sex_id: int | None,
     return None
 
 
-@functools.lru_cache(maxsize=None)
+@functools.cache
 def _race_sex_by_model_file() -> dict[int, Counter]:
     """{CreatureModelData.FileDataID: Counter of (DisplayRaceID, DisplaySexID)} over every
     CreatureDisplayInfo row that uses the model and has an "extra" record.
@@ -178,7 +186,9 @@ def _race_sex_by_model_file() -> dict[int, Counter]:
     result: dict[int, Counter] = {}
     for cdi in load_db2("CreatureDisplayInfo").values():
         fdid = file_by_model.get(int(cdi.get("ModelID") or 0))
-        extra = extras.get(int(cdi.get("ExtendedDisplayInfoID") or 0)) if fdid else None
+        if not fdid:
+            continue
+        extra = extras.get(int(cdi.get("ExtendedDisplayInfoID") or 0))
         if extra:
             result.setdefault(fdid, Counter())[(int(extra["DisplayRaceID"]), int(extra["DisplaySexID"]))] += 1
     return result

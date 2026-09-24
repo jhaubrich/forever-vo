@@ -15,8 +15,16 @@ import re
 import sys
 from pathlib import Path
 
-from tools.config import (ADDON_NAME, BETA_DIR, CAPTURE_JSON, CAPTURE_TRUSTED_SINCE, COMMUNITY_CHARACTERS, DATA_DIR,
-                          LEGACY_CHARACTERS, ROOT)
+from tools.config import (
+    ADDON_NAME,
+    BETA_DIR,
+    CAPTURE_JSON,
+    CAPTURE_TRUSTED_SINCE,
+    COMMUNITY_CHARACTERS,
+    DATA_DIR,
+    LEGACY_CHARACTERS,
+    ROOT,
+)
 from tools.luatable import parse_saved_variables
 from tools.textclean import has_gender_branch, split_gender
 from tools.textkey import text_key, tokenize
@@ -142,13 +150,14 @@ def unglue_entry(entry: dict) -> dict | None:
     fixed = _GLUED.sub(put_back, text)
     if missing:
         return None
-    if profile["restoreName"] and words["n"]:
+    name = words["n"]
+    if profile["restoreName"] and name:
         # The export tokenised its reader's name client side, and that name is an
         # ordinary English word, so every $n it holds is that word, not the name.
         # An addon that matches the name case-sensitively can only have written
         # $N, so its lowercase $n are genuine and stay.
         token = _NAME_TOKEN_UPPER if name_case_sensitive(entry) else _NAME_TOKEN
-        fixed = token.sub(lambda m: _literal(words["n"], m.group(1)), fixed)
+        fixed = token.sub(lambda m: _literal(name, m.group(1)), fixed)
     if fixed == text:
         return entry
     entry = dict(entry)
@@ -463,12 +472,11 @@ def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, 
     """tokenize -> unglue -> reconcile -> regender -> reattribute -> needs. Idempotent,
     so it runs over everything on every ingest; None means the line is unusable and
     should be dropped."""
-    entry = tokenize_entry(entry)
-    entry = unglue_entry(entry)
-    if entry is None:
+    unglued = unglue_entry(tokenize_entry(entry))
+    if unglued is None:
         stats.dropped += 1
         return None
-    entry, restored = reconcile_entry(entry, kind, key, sources)
+    entry, restored = reconcile_entry(unglued, kind, key, sources)
     if restored:
         stats.reconciled += 1
         stats.restored += restored
