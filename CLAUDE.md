@@ -233,7 +233,7 @@ Three CurseForge projects, three release paths:
   `tools/release_pack.py delta --upload --if-changed` runs at the end of the
   nightly job and uploads a dated beta when the file set changed.
 - **Base packs** "Forever Voiceover Data: Base" (1705100, installs as
-  `ForeverVO_Data_Base`) and "Forever Voiceover Data: Base_Endgame" (project
+  `ForeverVO_Data_Base`) and "Forever Voiceover Data: Base Endgame" (project
   created 2026-09-24, ID to fill in `CURSEFORGE_PROJECTS`, installs as
   `ForeverVO_Data_Base_Endgame`; the owner's working folder `ForeverVO_Data`
   is never shipped): the Classic-sourced lines, priority 100, released by
@@ -243,7 +243,7 @@ Three CurseForge projects, three release paths:
   lower still, `413 Payload Too Large` at 887 MB on 2026-09-22, while the 30
   to 70 MB delta goes through). So the set is split by quest level in
   `release_pack.py` (`BASE_SPLIT_LEVEL`): Base is quests to level 40 with all
-  gossip (~800 MB), Base_Endgame quests from 41 (~570 MB), each with its
+  gossip (~800 MB), Base Endgame quests from 41 (~570 MB), each with its
   alternates, since the addon looks a quest's alternates up in the pack that
   had the quest. Cutting at 50 would put Base back over the cap; a sixth
   narrator voice costs ~65 MB per pack. Build both with `release_pack.py base`
