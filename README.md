@@ -65,7 +65,9 @@ ID and event; gossip by speaker ID plus a hash of the normalised text
 (`tools/textkey.py` mirrors `Util.HashText`), with a fuzzy fallback. Packs have
 priorities, so a pack of new or revised lines can sit on top of a base pack.
 
-## Setup
+## Development
+
+`nix` is optional, `uv` is mandatory.
 
 The tools are a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml`,
 `uv.lock`, `.python-version`; uv fetches the interpreter itself) and
