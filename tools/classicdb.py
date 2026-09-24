@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = ["requests"]
-# ///
 """Exports every Classic quest and gossip line from the VMaNGOS database snapshot
 into tools/data/bulk/classic.json (same schema as capture.json).
 
@@ -24,9 +20,9 @@ from pathlib import Path
 
 import requests
 
-from config import DATA_DIR
-from textkey import text_key
-from wowdata import display_race_sex
+from tools.config import DATA_DIR
+from tools.textkey import text_key
+from tools.wowdata import display_race_sex
 
 CLASSICDB_DIR = DATA_DIR / "classicdb"
 BULK_DIR = DATA_DIR / "bulk"

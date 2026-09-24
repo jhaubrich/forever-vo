@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = []
-# ///
 """Maps creature model files to a species name, so speakers with no player race
 can still be given a voice of their own kind.
 
@@ -23,12 +19,9 @@ from __future__ import annotations
 import json
 import re
 import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-from config import DATA_DIR
-from wowdata import load_db2
+from tools.config import DATA_DIR
+from tools.wowdata import load_db2
 
 LISTFILE = DATA_DIR / "verified-listfile.csv"
 OUT = DATA_DIR / "species_models.json"

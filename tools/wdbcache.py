@@ -17,7 +17,7 @@ import struct
 import sys
 from pathlib import Path
 
-from config import BETA_DIR, DATA_DIR
+from tools.config import BETA_DIR, DATA_DIR
 
 CACHE = BETA_DIR / "Cache" / "WDB" / "enUS" / "questcache.wdb"
 OUTPUT = DATA_DIR / "bulk" / "questcache.json"
@@ -112,7 +112,8 @@ def read_cache(path: Path) -> dict[int, dict[str, str]]:
     return quests
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     path = Path(argv[0]) if argv else CACHE
     quests = read_cache(path)
     out = {"version": 2, "source": "questcache", "quests": {}, "gossip": {}, "npcs": {}}
@@ -129,4 +130,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

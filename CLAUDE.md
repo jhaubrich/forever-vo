@@ -33,8 +33,8 @@ game's own recordings).
   at `~/Projects/wow-ui-source`. Check there before assuming an API or frame
   exists. Camelot-specific overrides live in `*/Camelot/` folders.
 - `docs/forever_api.json` is a captured list of the client's global
-  functions, frames and `C_*` namespaces. `uv run tools/apicheck.py` diffs
-  the addon against it. Run it after any Lua change.
+  functions, frames and `C_*` namespaces. `./tools/run.sh tools/apicheck.py`
+  diffs the addon against it. Run it after any Lua change.
 - Removed globals that bite: `MouseIsOver` (use `frame:IsMouseOver()`),
   `SetDesaturation` (use `texture:SetDesaturated()`),
   `InterfaceOptions_AddCategory` (use the Settings API),
@@ -70,8 +70,9 @@ game's own recordings).
 - **The text hash must stay identical in Lua and Python**:
   `Util.Tokenize`/`Util.NormalizeText`/`Util.HashText` in `Core/Util.lua` and
   `tools/textkey.py`. If you touch one, touch the other and re-test with
-  `nix shell nixpkgs#lua5_1 -c ./tools/run.sh tools/textkey_parity.py`, which
-  runs both over the real captures, the tokenised quest cache and edge cases.
+  `./tools/run.sh tools/textkey_parity.py` (the dev shell supplies lua 5.1),
+  which runs both over the real captures, the tokenised quest cache and edge
+  cases.
 - **The client expands `$n`, `$c` and `$r` before any addon sees the text.** A
   line first heard on a rogue would otherwise be recorded saying "rogue" and
   voiced that way for everyone, and its gossip hash would only match other
@@ -130,14 +131,33 @@ game's own recordings).
   players with the next delta that carries a new file. `./tools/run.sh
   tools/gender_check.py` runs fixed cases and Classic's quest 233 through all
   of it; run it after touching any of those functions.
-- `luac -p` every changed Lua file (`nix shell nixpkgs#lua5_1 -c luac -p`).
+- `luac -p` every changed Lua file (`./tools/run.sh luac -p <file>`; the dev
+  shell has lua 5.1).
   There is no in-game test harness; the owner tests by `/reload`.
 
 ## Pipeline (tools/)
 
-Scripts carry inline `# /// script` metadata and run with `uv run`.
-`tools/run.sh` wraps that and, on NixOS, supplies Python, uv, ffmpeg and the
-shared libraries CUDA wheels need. Use `./tools/run.sh tools/<x>.py`.
+`tools/` is the Python package of the root `pyproject.toml` (flat: no `src/`,
+`tools/__init__.py`, modules import each other as `from tools.config import
+...`). Since issue #31 (2026-09-24) the toolchain is pinned three ways:
+`.python-version` and `uv.lock` for the interpreter and every package,
+`flake.nix`/`flake.lock` for what is not Python (uv, ffmpeg, lua 5.1 and the
+shared libraries the CUDA wheels need, on the library path from the shell
+hook). **Python is only ever invoked through uv**: the dev shell sets
+`UV_PYTHON_PREFERENCE=only-managed`, uv fetches the interpreter itself (it
+runs on NixOS through nix-ld, which the host has), and there is no system
+Python fallback. `tools/run.sh` is `nix develop -c uv run "$@"` (plain
+`uv run` off NixOS), so `./tools/run.sh tools/<x>.py`, `./tools/run.sh
+fvo-<x>` (the console scripts in `pyproject.toml`), `./tools/run.sh python -c
+...` and `./tools/run.sh luac -p ...` all run against the same pins. The GPU
+stack (`chatterbox-tts`, pinned to the release every voice was generated on,
+and `setuptools<81` for perth) is the `tts` dependency group, on by default;
+`--no-group tts` skips the ~3 GB of torch for a checkout that only ingests or
+releases. The GitHub ingest workflow runs `exportfile.py` (stdlib only) with
+`uv run --no-project`. Bump a pin with `uv lock --upgrade-package <name>` or
+`nix flake update`, and commit the lock; the sound index only regenerates a
+file when its text or voice changes, so a library bump changes no audio on its
+own.
 
 Data flow (all JSON is the source of truth; `ForeverVO_Data/Data/*.lua` is a
 build artifact, never hand-edited):
@@ -376,8 +396,9 @@ The owner's machine picks those up on the next sync.
   probed placeholder, not a generator record: the voice-change and
   text-change checks are blind for it. `generate.py --reindex` restamps `t`;
   the voice is only in the journal (`[voice]` on each generated line).
-- `uv run --with requests python -c ...` is the way to poke at `wowdata`
-  from a one-liner; `run.sh python -c` gives a bare interpreter.
+- `./tools/run.sh python -c 'from tools.wowdata import voice_for_npc; ...'`
+  is the way to poke at the tools from a one-liner: the project is installed
+  in the environment, so `tools.*` imports work from anywhere in the repo.
 - CurseForge's public web API (`curseforge.com/api/v1/...`) returns HTML to
   scripts; the authenticated `wow.curseforge.com/api` is what works.
 - The Forever client picks `_Camelot.toc` when present and `.toc` otherwise;

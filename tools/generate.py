@@ -1,11 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#   "chatterbox-tts",
-#   "setuptools<81",   # perth (chatterbox's watermarker) still imports pkg_resources
-#   "requests",
-# ]
-# ///
 """Generates missing voice lines with a local TTS model and rebuilds the
 ForeverVO_Data voice pack tables.
 
@@ -54,12 +46,12 @@ import time
 from pathlib import Path
 from typing import NamedTuple
 
-from config import (CAPTURE_JSON, DATA_DIR, FALLBACK_VOICES, NARRATOR_VOICE, NARRATOR_VOICES,
-                    PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR, VOICES_DIR)
-from luatable import lua_string
-from textclean import chunk, clean, has_gender_branch, is_speakable, segments, split_gender
-from textkey import text_key
-from wowdata import voice_for_npc
+from tools.config import (CAPTURE_JSON, DATA_DIR, FALLBACK_VOICES, NARRATOR_VOICE, NARRATOR_VOICES,
+                          PACK_DATA_DIR, SOUND_INDEX, SOUNDS_DIR, VOICES_DIR)
+from tools.luatable import lua_string
+from tools.textclean import chunk, clean, has_gender_branch, is_speakable, segments, split_gender
+from tools.textkey import text_key
+from tools.wowdata import voice_for_npc
 
 QUEST_EVENTS = {"accept": "a", "progress": "p", "complete": "c"}
 
@@ -657,7 +649,8 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, float], data_dir: P
 # Main
 # ----------------------------------------------------------------------------
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dry-run", action="store_true", help="list what would be generated")
     parser.add_argument("--limit", type=int, default=0, help="generate at most N files")
@@ -848,4 +841,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

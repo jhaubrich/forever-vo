@@ -25,3 +25,4 @@ tools/data/release_state.json
 tools/data/sound_index.lock
 ForeverVO_Data/Sounds/**/*.part
 tools/data/verified-listfile.csv
+dist/

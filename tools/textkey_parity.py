@@ -8,7 +8,7 @@ requires re-running this after touching either side.
 
 The corpus is the real captured text, the tokenised beta quest cache, and a set
 of edge cases (multi-byte characters, $G branches, capitalisation, empty text).
-Needs lua 5.1 on PATH; on NixOS: nix shell nixpkgs#lua5_1 -c ./tools/run.sh tools/textkey_parity.py
+Needs lua 5.1 on PATH; the dev shell from flake.nix (what run.sh uses) has it.
 """
 from __future__ import annotations
 
@@ -19,8 +19,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from textkey import hash_text, text_key, tokenize  # noqa: E402
+from tools.textkey import hash_text, text_key, tokenize
 
 ROOT = Path(__file__).resolve().parent.parent
 CAPTURE = ROOT / "tools" / "data" / "capture.json"
@@ -163,7 +162,7 @@ def lua_string(value: str | None) -> str:
 def main() -> int:
     lua = shutil.which("lua5.1") or shutil.which("lua")
     if not lua:
-        print("lua 5.1 is not on PATH (nix shell nixpkgs#lua5_1 -c ...)", file=sys.stderr)
+        print("lua 5.1 is not on PATH (run through ./tools/run.sh, whose dev shell has it)", file=sys.stderr)
         return 2
     if check_substrings():
         return 1

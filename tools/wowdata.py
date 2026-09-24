@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = ["requests"]
-# ///
 """Client data helpers backed by wago.tools (DB2 tables as CSV, files by FileDataID).
 
 No local CASC extraction is needed: wago.tools indexes the wow_classic_beta
@@ -18,8 +14,8 @@ from pathlib import Path
 
 import requests
 
-from config import (BETA_BUILD, DATA_DIR, DB2_DIR, GENDER_DICT, RACE_DICT, VOICES_DIR,
-                    WAGO_BASE, ZONE_RACE_HINTS)
+from tools.config import (BETA_BUILD, DATA_DIR, DB2_DIR, GENDER_DICT, RACE_DICT, VOICES_DIR,
+                          WAGO_BASE, ZONE_RACE_HINTS)
 
 
 def db2_path(table: str, build: str = BETA_BUILD) -> Path:

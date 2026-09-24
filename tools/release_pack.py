@@ -1,7 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = ["requests", "requests-toolbelt"]
-# ///
 """Builds and (optionally) uploads voice pack releases.
 
 Three packs are released from the one working folder (ForeverVO_Data holds
@@ -55,8 +51,8 @@ from pathlib import Path
 import requests
 from requests_toolbelt import MultipartEncoder
 
-from config import CURSEFORGE_PROJECTS, DATA_DIR, SOUND_INDEX, SOUNDS_DIR
-from generate import load_items, load_sources, rebuild_tables, sound_folder
+from tools.config import CURSEFORGE_PROJECTS, DATA_DIR, SOUND_INDEX, SOUNDS_DIR
+from tools.generate import load_items, load_sources, rebuild_tables, sound_folder
 
 RELEASE_DIR = DATA_DIR / "release"
 STATE_FILE = DATA_DIR / "release_state.json"
@@ -289,7 +285,8 @@ def upload(pack: str, zip_path: Path, version: str, stats: dict, release_type: s
     print(f"uploaded to CurseForge project {project} as file {response.json().get('id')}")
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("pack", choices=sorted(PACKS))
     parser.add_argument("--upload", action="store_true", help="upload to CurseForge after building")
@@ -334,4 +331,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

@@ -67,11 +67,15 @@ priorities, so a pack of new or revised lines can sit on top of a base pack.
 
 ## Setup
 
-Scripts declare their own dependencies in inline metadata and run with
-[`uv run`](https://docs.astral.sh/uv/guides/scripts/); `tools/run.sh` wraps
-that and, on NixOS, also supplies Python, ffmpeg and the shared libraries the
-CUDA wheels expect. Elsewhere, `uv run tools/<script>.py` works directly with
-`ffmpeg` on PATH.
+The tools are a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml`,
+`uv.lock`, `.python-version`; uv fetches the interpreter itself) and
+`flake.nix` provides the rest: uv, ffmpeg, lua 5.1 and the shared libraries the
+CUDA wheels expect. `tools/run.sh` is `uv run` inside that shell, so every
+script, console script (`fvo-ingest`, `fvo-generate`, ... see
+`pyproject.toml`) and one-liner runs against the same pins. Without nix,
+`uv run tools/<script>.py` works directly with `ffmpeg` on PATH. The GPU stack
+is the `tts` dependency group, on by default; `uv run --no-group tts ...`
+skips it for a checkout that only ingests or releases.
 
 ```bash
 ./tools/run.sh tools/tts_smoke.py            # CUDA check, writes tools/smoke.wav

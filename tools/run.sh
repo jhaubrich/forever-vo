@@ -1,38 +1,24 @@
 #!/usr/bin/env bash
-# Runs a tools/ script with `uv run`, which installs each script's dependencies
-# from its inline metadata (the "# /// script" block) into uv's cache.
+# Runs a command in the project's environment: `uv run` inside the dev shell
+# from flake.nix, which supplies uv, ffmpeg, lua 5.1 and the shared libraries
+# the CUDA wheels need. The systemd units, the docs and one-liners all go
+# through this, so everything runs against the same pins: flake.lock for the
+# tools, .python-version and uv.lock for Python and its packages. Python is
+# never invoked without uv.
 #
 #   ./tools/run.sh tools/generate.py --dry-run
-#   ./tools/run.sh tools/ingest.py
-#   ./tools/run.sh python -c 'print(1)'        # plain interpreter, no extra packages
+#   ./tools/run.sh fvo-ingest                        # console scripts, see pyproject.toml
+#   ./tools/run.sh python -c 'from tools.wowdata import voice_for_npc'
+#   ./tools/run.sh luac -p ForeverVO/Core/Util.lua
 #
-# On NixOS the manylinux wheels (numpy, torch, ...) also need libstdc++, zlib and
-# the system libcuda on the library path, and uv must use the nix-provided
-# Python rather than downloading one, so this wrapper sets that up.
+# Without nix (another machine, CI) it is plain `uv run` with ffmpeg from PATH.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-
-if command -v nix >/dev/null 2>&1; then
-    LIBS=""
-    for pkg in stdenv.cc.cc.lib zlib; do
-        out="$(nix build --no-link --print-out-paths "nixpkgs#$pkg")"
-        LIBS="${LIBS:+$LIBS:}$out/lib"
-    done
-    export LD_LIBRARY_PATH="$LIBS:/run/opengl-driver/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    export UV_PYTHON_PREFERENCE=only-system
-    export PYTHONUNBUFFERED=1
-    export TQDM_DISABLE=1
-    exec nix shell nixpkgs#python312 nixpkgs#uv nixpkgs#ffmpeg -c sh -c '
-        case "$1" in
-            *.py) exec uv run "$@" ;;
-            *)    exec uv run --no-project "$@" ;;
-        esac' sh "$@"
-fi
-
 export PYTHONUNBUFFERED=1
 export TQDM_DISABLE=1
-case "$1" in
-    *.py) exec uv run "$@" ;;
-    *)    exec uv run --no-project "$@" ;;
-esac
+
+if command -v nix >/dev/null 2>&1; then
+    exec nix develop "$ROOT" --no-warn-dirty -c uv run "$@"
+fi
+exec uv run "$@"
