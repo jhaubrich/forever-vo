@@ -9,7 +9,13 @@ from pathlib import Path
 import pytest
 import tomlkit
 
-from tools.audition import LineRow, random_line, search, write_pronunciation, write_tuning
+from tools.audition import (
+    LineRow,
+    random_line,
+    search,
+    write_pronunciation,
+    write_tuning,
+)
 from tools.config import CONFIG_TOML, load_config
 
 
