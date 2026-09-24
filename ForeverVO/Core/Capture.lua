@@ -133,6 +133,10 @@ function Capture:Record(line)
         zone = GetZoneText(),
         subzone = GetSubZoneText(),
         build = select(2, GetBuildInfo()),
+        -- The addon that wrote the line, so the pipeline can prefer a capture
+        -- from a fixed release over one from a flawed earlier one, whatever
+        -- their order in time, and ask for lines the old ones recorded again.
+        addon = ns.version,
         time = time(),
     }
     if line.kind == "quest" then

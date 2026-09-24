@@ -15,7 +15,8 @@ import re
 import sys
 from pathlib import Path
 
-from tools.config import ADDON_NAME, BETA_DIR, CAPTURE_JSON, COMMUNITY_CHARACTERS, DATA_DIR, LEGACY_CHARACTERS, ROOT
+from tools.config import (ADDON_NAME, BETA_DIR, CAPTURE_JSON, CAPTURE_TRUSTED_SINCE, COMMUNITY_CHARACTERS, DATA_DIR,
+                          LEGACY_CHARACTERS, ROOT)
 from tools.luatable import parse_saved_variables
 from tools.textclean import has_gender_branch, split_gender
 from tools.textkey import text_key, tokenize
@@ -92,6 +93,26 @@ def addon_version(entry: dict) -> tuple[int, ...]:
 def name_case_sensitive(entry: dict) -> bool:
     version = addon_version(entry)
     return bool(version) and version >= NAME_CASE_SENSITIVE_SINCE
+
+
+# ----------------------------------------------------------------------------
+# Self-repair: which of two captures of one line to believe
+# ----------------------------------------------------------------------------
+# Every addon release so far has recorded something wrong that only a later
+# release gets right, and the fix has to reach lines already captured without
+# anyone editing data by hand. So a capture from a newer addon outranks one from
+# an older addon whatever their order in time (a player on an old release can
+# post a line long after the fix shipped), an unknown addon counts as the oldest
+# (owner captures before 0.1.4 carry none), and among equals the later reading
+# wins. Until a line has a capture from CAPTURE_TRUSTED_SINCE or later,
+# needs_of() keeps asking any reader for it, so players re-supply it.
+
+def trusted(entry: dict) -> bool:
+    return addon_version(entry) >= CAPTURE_TRUSTED_SINCE
+
+
+def capture_rank(entry: dict) -> tuple[tuple[int, ...], float]:
+    return addon_version(entry), entry.get("time") or 0
 
 
 def _literal(word: str, code: str) -> str:
@@ -284,12 +305,18 @@ def rebuild_gender(male: str, female: str) -> str | None:
 
 
 def needs_of(entry: dict, kind: str, source: str | None) -> str | None:
-    """Which readers the pipeline still wants this line from: None when the text
-    carries its branches or both sexes have read it, "f" after a male reading,
-    "m" after a female one, "mf" when the reader's sex is unknown. A capture that
-    matches raw text with no branch in it needs nobody."""
+    """Which readers the pipeline still wants this line from: "mf" (anyone) while
+    the capture comes from an addon before CAPTURE_TRUSTED_SINCE, whatever it
+    says; otherwise None when the text carries its branches or both sexes have
+    read it, "f" after a male reading, "m" after a female one, "mf" when the
+    reader's sex is unknown. A trusted capture that matches raw text with no
+    branch in it needs nobody."""
     text = entry.get("text") or ""
-    if kind != "quests" or not text or has_gender_branch(text):
+    if kind != "quests" or not text:
+        return None
+    if not trusted(entry):
+        return "mf"
+    if has_gender_branch(text):
         return None
     sex = entry.get("sex")
     if sex == "mf":
@@ -429,6 +456,7 @@ class Repairs:
     reattributed = 0
     gendered = 0
     branches = 0
+    superseded = 0
 
 
 def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, stats: Repairs) -> dict | None:
@@ -492,13 +520,14 @@ def fully_tokenised(entry: dict) -> bool:
 
 
 def merge_entry(store: dict, key: str, entry: dict) -> bool:
-    """The newer capture wins the line, but the other reading still teaches it
-    what a single reader cannot see: a class or race word, and a gender branch."""
+    """The higher-ranked capture wins the line (capture_rank: newer addon first,
+    then later reading), but the other reading still teaches it what a single
+    reader cannot see: a class or race word, and a gender branch."""
     old = store.get(key)
     if old is None:
         store[key] = entry
         return True
-    newer = (entry.get("time") or 0) >= (old.get("time") or 0)
+    newer = capture_rank(entry) >= capture_rank(old)
     base, other = (dict(entry), old) if newer else (dict(old), entry)
     if newer:
         base["firstSeen"] = old.get("firstSeen", old.get("time"))
@@ -569,8 +598,39 @@ def backfill(capture: dict, sources: SourceTexts | None, stats: Repairs) -> tupl
         if fixed.get("text") != entry.get("text") or new_key != key:
             gossip += 1
         rebuilt[new_key] = fixed
+    superseded = superseded_gossip(rebuilt)
+    for key in superseded:
+        del rebuilt[key]
+    stats.superseded += len(superseded)
+    gossip += len(superseded)
     capture["gossip"] = rebuilt
     return quests, gossip
+
+
+def superseded_gossip(gossip: dict) -> set[str]:
+    """Keys of gossip lines from an untrusted addon that a trusted capture of the
+    same speaker has since re-read. Gossip is keyed by a hash of its text, so a
+    flawed reading and its correction sit side by side under different keys,
+    and the flawed one would stay voiced for good; the addon's fuzzy match can
+    even play it while the correction is still unvoiced. The flawed entry goes
+    once a trusted one aligns closely (RECONCILE_RATIO); a genuine old variant
+    dropped by mistake is unvoiced again and simply gets re-captured."""
+    by_speaker: dict[str, list[tuple[str, dict, list[str]]]] = {}
+    for key, entry in gossip.items():
+        by_speaker.setdefault(key.split("|", 1)[0], []).append((key, entry, _pieces(entry.get("text") or "")[1]))
+    stale: set[str] = set()
+    for entries in by_speaker.values():
+        trusted_keys = [(k, keys) for k, e, keys in entries if trusted(e)]
+        if not trusted_keys:
+            continue
+        for key, entry, keys in entries:
+            if trusted(entry):
+                continue
+            for _, other_keys in trusted_keys:
+                if difflib.SequenceMatcher(None, keys, other_keys, autojunk=False).ratio() >= RECONCILE_RATIO:
+                    stale.add(key)
+                    break
+    return stale
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -603,11 +663,15 @@ def main(argv: list[str] | None = None) -> int:
         print(f"reattributed {stats.reattributed} quest texts from a lingering NPC to the object or item Classic names")
     if stats.gendered:
         print(f"regendered {stats.branches} $g branch(es) in {stats.gendered} quest texts from the raw source text")
+    if stats.superseded:
+        print(f"superseded {stats.superseded} gossip texts from an old addon re-read by a trusted one (dropped)")
+    untrusted = sum(1 for e in capture["quests"].values() if not trusted(e))
     needing = sum(1 for e in capture["quests"].values() if e.get("needs"))
     settled = sum(1 for e in capture["quests"].values() if e.get("sex") == "mf")
-    if needing or settled:
-        print(f"gender     {needing} quest texts still want a reader of the other sex (or any reader); "
-              f"{settled} settled by readings of both")
+    if untrusted or needing or settled:
+        print(f"wanted     {untrusted} quest texts captured before addon {'.'.join(map(str, CAPTURE_TRUSTED_SINCE))} "
+              f"want any reader; {needing} want a reader in all (that or the other sex); "
+              f"{settled} settled by readings of both sexes")
 
     CAPTURE_JSON.parent.mkdir(parents=True, exist_ok=True)
     seen_files = capture.pop("sources")

@@ -17,6 +17,13 @@
   jhaubrich for that part and for raising the problem (#28, #29).
 - The export and logout messages count lines worth contributing, not only
   lines without audio.
+- Captures now say which addon version heard the line and when. Every release
+  so far has fixed something an earlier one recorded wrongly, and the pipeline
+  can now prefer a line heard by a fixed release over one heard by an older
+  one, whatever order they arrive in, instead of whichever was posted last.
+  Until a quest line has been heard by this release or later, the pack asks
+  everyone for it, so it goes into your export even though it played; the
+  flawed recordings get replaced as people simply keep playing.
 
 ## 0.1.3
 

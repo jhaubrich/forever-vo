@@ -104,6 +104,14 @@ LEGACY_CHARACTERS = {
 # comment id) to what the poster told us. "restoreName" says the name is an
 # ordinary English word ("It"), so the old client turned every such word into
 # $n and ingest puts the word back wherever $n appears; only un-gluing otherwise.
+# The first addon release whose captures are taken at face value. Everything
+# recorded by an earlier one (glued placeholders, no class or race, a lingering
+# NPC unit, resolved $g branches) or by an unknown one loses the merge to a
+# capture from this release on, whatever their order in time, and ingest.py
+# keeps asking any reader for the line until such a capture arrives (needs_of).
+# Raise it when a later release fixes what its predecessor recorded.
+CAPTURE_TRUSTED_SINCE = (0, 1, 4)
+
 COMMUNITY_CHARACTERS = {
     "comment-5768141361": {"player": "It", "class": "Paladin", "restoreName": True},
 }
