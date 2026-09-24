@@ -1,0 +1,35 @@
+name: The addon misbehaves
+description: Nothing plays, the talking head or queue does the wrong thing, a setting does not stick, or there is a Lua error.
+title: "Playback: <what happened>"
+labels: ["bug:playback"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what the addon did instead.
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Lua error, if any
+      description: Errors show in chat as "error in <event>". BugSack or /console scriptErrors 1 gives the full text.
+      render: text
+  - type: input
+    id: packs
+    attributes:
+      label: Packs installed
+      description: What /fvo status lists.
+      placeholder: e.g. Classic 2026.09.24.2, Classic Endgame 2026.09.24, Forever 2026.09.24
+  - type: input
+    id: version
+    attributes:
+      label: Addon version
+      placeholder: e.g. 0.1.3
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Two things worth knowing before you file: settings reset every login on this client (saved variables are written but never read back, and there is nothing the addon can do about it), and the CurseForge app only shows the latest pack files if it is set to show release files, which it is by default.

@@ -1,0 +1,41 @@
+name: A voice sounds wrong
+description: A line is read with the wrong voice, accent, pace or pronunciation, or the audio itself is broken.
+title: "Voice: <NPC or quest>"
+labels: ["bug:voices"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is for how a line *sounds*. If the wrong NPC is credited, the wrong text is read, or nothing plays, use the capture or playback forms instead.
+  - type: input
+    id: line
+    attributes:
+      label: Which line
+      description: The NPC and the quest or gossip it belongs to. The quest title is enough; the quest ID is better if you have it.
+      placeholder: e.g. Tarindrella, "The Woodland Protector" (quest 459), the accept text
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong with it
+      options:
+        - Wrong voice for the speaker (sex, race or kind of creature)
+        - Accent or delivery (too southern, too slow, too flat)
+        - A word is mispronounced (say which, and how it should sound)
+        - Cut short, a blip, or noise instead of speech
+        - Stage direction read by the wrong voice, or not read
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: Details
+      description: For a pronunciation, write the word and a spelling that sounds right. For an accent, say what it should sound like.
+  - type: input
+    id: versions
+    attributes:
+      label: Pack and addon versions
+      description: From the CurseForge app, or the version shown by /fvo status in game.
+      placeholder: e.g. Base 2026.09.24.2, Forever 2026.09.24, addon 0.1.3

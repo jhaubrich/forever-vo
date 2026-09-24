@@ -1,0 +1,29 @@
+name: Suggest an improvement
+description: A voice you would like tuned, a capture or tooling change, or something the addon should do.
+title: "<short description>"
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: The maintainer swaps the label for the matching one (enhancement:voices, enhancement:captures, enhancement:playback, or devops).
+      options:
+        - Voices (how lines sound, reference clips, pronunciations, narrator choices)
+        - Captures (recording lines, exports, the ingest pipeline)
+        - Playback (the addon in game, talking head, queue, settings)
+        - Tooling and automation (generation, releases, the repository)
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What should change, and what it would fix or make possible.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything you have already tried or found
+      description: Voice notes, takes you compared, where in the code you looked.

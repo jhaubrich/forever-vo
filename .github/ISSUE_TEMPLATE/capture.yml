@@ -12,7 +12,7 @@ body:
     id: export
     attributes:
       label: Export string
-      description: Starts with FVO1:
+      description: "Starts with FVO1:"
       render: text
     validations:
       required: true

@@ -1,0 +1,44 @@
+name: Captured text or speaker is wrong
+description: A line is credited to the wrong NPC, the text has odd $n or $c marks, a name or class word got mangled, or lines you saw were not captured.
+title: "Capture: <NPC or quest>"
+labels: ["bug:captures"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The addon records every quest and gossip line it sees, and the voice packs are generated from those records. This form is for when that record is wrong. To *contribute* lines, use "Contribute captured lines" instead.
+  - type: input
+    id: line
+    attributes:
+      label: Which line
+      placeholder: e.g. "The Admiral's Orders" (quest 830), accept text, read from the letter next to Gar'Thok
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong
+      options:
+        - Credited to the wrong NPC (wrong face, wrong voice, wrong name in the head)
+        - Text reads a word where a $n, $c or $r placeholder should be, or the other way round
+        - A sentence or the end of the text is missing
+        - A line I saw was never captured or exported
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: text
+    attributes:
+      label: What the addon has, and what it should be
+      description: Paste the text as the talking head showed it, or as it appears in your /fvo export, and say what the game actually showed.
+  - type: input
+    id: character
+    attributes:
+      label: Character name, class and race
+      description: Only if the text has placeholder trouble. The client writes your name, class and race into the text before the addon sees it, so this is what the fix needs.
+      placeholder: e.g. It Buurns, Paladin, Undead
+  - type: input
+    id: versions
+    attributes:
+      label: Addon version
+      placeholder: e.g. 0.1.3
