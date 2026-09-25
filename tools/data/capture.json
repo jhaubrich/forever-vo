@@ -3339,6 +3339,24 @@
    "time": 1790294717,
    "zone": "Thunder Bluff"
   },
+  "2913|5112b624": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Archaeologist Hollee",
+   "npc": "2913",
+   "origin": "issue-43",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Who would have guessed the excavation would have uncovered such findings!",
+   "time": 1790318232,
+   "title": null,
+   "wanted": null,
+   "zone": "Darkshore"
+  },
   "2934|2cd97b51": {
    "addon": "0.1.4",
    "build": "70009",
@@ -5078,6 +5096,10 @@
    "isObject": true,
    "name": "Dalaran Crate"
   },
+  "-17182": {
+   "isObject": true,
+   "name": "Buzzbox 827"
+  },
   "-177904": {
    "isObject": true,
    "name": "Wanted Poster: Besseleth"
@@ -5105,6 +5127,12 @@
    "level": -1,
    "modelFileID": 7478494,
    "name": "Lady Sylvanas Windrunner",
+   "sex": 3
+  },
+  "10219": {
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Gwennyth Bly'Leggonde",
    "sex": 3
   },
   "10378": {
@@ -6424,6 +6452,12 @@
    "name": "Pand Stonebinder",
    "sex": 2
   },
+  "2913": {
+   "creatureType": "Humanoid",
+   "modelFileID": 950080,
+   "name": "Archaeologist Hollee",
+   "sex": 3
+  },
   "2934": {
    "creatureType": "Humanoid",
    "level": 42,
@@ -6747,6 +6781,12 @@
    "modelFileID": 997378,
    "name": "Guillaume Sorouy",
    "sex": 3
+  },
+  "3650": {
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Asterion",
+   "sex": 2
   },
   "3665": {
    "creatureType": "Humanoid",
@@ -8839,6 +8879,24 @@
    "text": "Yes, murlocs have settled in and around the streams of eastern Elwynn.  We don't know why they are here, but they are aggressive and at least semi-intelligent.",
    "title": "Further Concerns",
    "zone": "Elwynn Forest"
+  },
+  "3524-progress": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Gwennyth Bly'Leggonde",
+   "npc": "10219",
+   "origin": "issue-43",
+   "questID": 3524,
+   "sex": "f",
+   "source": "community",
+   "text": "It is only recently that these creatures started landing on the coast of Darkshore in such alarming numbers.  I can't help but think that this is an ill omen of some sort.  Recovering a sample of that creature's bones to the south would help us in Darnassus assess this situation!",
+   "time": 1790318113,
+   "title": "Washed Ashore",
+   "wanted": null,
+   "zone": "Darkshore"
   },
   "356-accept": {
    "build": "69913",
@@ -18424,6 +18482,24 @@
    "title": "Welcome to Azeroth",
    "zone": "Orgrimmar"
   },
+  "955-progress": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Asterion",
+   "npc": "3650",
+   "origin": "issue-43",
+   "questID": 955,
+   "sex": "f",
+   "source": "community",
+   "text": "Once I have the earrings, I will cast the spell to search for the whereabouts of the seal that binds me. For centuries I have thought on the freedom destroying the seal would bring to me... Perhaps those centuries have taken a toll upon my mind that I might never recover...",
+   "time": 1790322028,
+   "title": "Bashal'Aran",
+   "wanted": null,
+   "zone": "Darkshore"
+  },
   "95774-accept": {
    "build": "69913",
    "event": "accept",
@@ -19813,6 +19889,24 @@
    "time": 1790275930,
    "title": "Journey to the Crossroads",
    "zone": "Orgrimmar"
+  },
+  "983-progress": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1439,
+   "name": "Buzzbox 827",
+   "npc": "-17182",
+   "origin": "issue-43",
+   "questID": 983,
+   "sex": "f",
+   "source": "community",
+   "text": "Buzzbox 827 sits with an eerie silence. A single flashing light indicates that it needs 6 Crawler Legs to be placed in its holding box.",
+   "time": 1790317714,
+   "title": "Buzzbox 827",
+   "wanted": null,
+   "zone": "Darkshore"
   },
   "98512-accept": {
    "build": "69913",
