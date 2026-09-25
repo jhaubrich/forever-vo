@@ -73,6 +73,10 @@ CASE_CASES = [
      "myrlin is not $N, and MYRLIN is neither."),
     ("A rogue, a Rogue and a ROGUE walk in; a human and a Human follow.", "Myrlin", "Rogue", "Human",
      "A $c, a $C and a $C walk in; a $r and a $R follow."),
+    # A multi-word race renders $r as its last word alone (Zamja: "help you, skyborne?")
+    ("Can Zamja help you, skyborne? The Windshaper Skyborne are welcome; windshapers too.",
+     "Pellinore", "Hunter", "Windshaper Skyborne",
+     "Can Zamja help you, $r? The $R are welcome; windshapers too."),
 ]
 
 

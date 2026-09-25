@@ -164,6 +164,17 @@ def main() -> int:
         "8|dddd": {"text": "Greetings, rogue. What brings you to Goldshire on this fine day?", "addon": "0.1.2"},
     }
     check("superseded gossip", superseded_gossip(gossip, READERS), {"7|aaaa"})
+    # a known flaw narrows trust to its blast radius: a Skyborne's pre-0.1.5 line
+    # that still says "skyborne" is asked for again and can be superseded, while
+    # the same reader's other lines stay trusted
+    skyborne = {"player": "Pellinore", "class": "Hunter", "race": "Windshaper Skyborne", "addon": "0.1.4"}
+    check("flaw untrusted", needs_of({"text": "Help you, skyborne?", "sex": "m", **skyborne}, "quests", None, READERS), "mf")
+    check("flaw outside radius", needs_of({"text": "Help you, friend?", "sex": "m", **skyborne}, "quests", None, READERS), "f")
+    check("flaw superseded", superseded_gossip({
+        "9|aaaa": {"text": "Help you, skyborne?", **skyborne},
+        "9|bbbb": {"text": "Help you, $r?", **skyborne, "addon": "0.1.5"},
+        "9|cccc": {"text": "Go away, skyborne, I am busy.", **skyborne},
+    }, READERS), {"9|aaaa"})
     store = {"version": 2, "quests": {}, "gossip": dict(gossip), "npcs": {}}
     stats = Repairs()
     backfill(store, None, stats, READERS)

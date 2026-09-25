@@ -13,6 +13,7 @@ import difflib
 import json
 import re
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 from tools.config import (
@@ -62,13 +63,28 @@ def character_traits(entry: dict, readers: Readers) -> tuple[str | None, str | N
     return profile["player"], profile["class"], profile["race"]
 
 
+# From this addon version Util.Tokenize also matches the last word of a
+# multi-word race, which is how the client renders $r for one ("Windshaper
+# Skyborne" reads "skyborne"). Ingest applies the same rule only to captures
+# from that version on: re-running it over an older capture would turn every
+# literal "skyborne" in Forever's own text into $r, and there is no telling the
+# two apart without the raw text. Older captures are repaired against the raw
+# text where it exists (reconcile_text) and asked for again where it does not
+# (KNOWN_FLAWS).
+SHORT_RACE_SINCE = (0, 1, 5)
+
+
+def short_race(entry: dict) -> bool:
+    return addon_version(entry) >= SHORT_RACE_SINCE
+
+
 def tokenize_entry(entry: dict, readers: Readers) -> dict:
     """Puts $n/$c/$r back where the client expanded them. Without this a line
     first seen on a rogue is voiced as "rogue" for every class that hears it."""
     text = entry.get("text")
     if not text:
         return entry
-    fixed = tokenize(text, *character_traits(entry, readers))
+    fixed = tokenize(text, *character_traits(entry, readers), short_race=short_race(entry))
     if fixed == text:
         return entry
     entry = dict(entry)
@@ -117,8 +133,39 @@ def name_case_sensitive(entry: dict) -> bool:
 # wins. Until a line has a capture from [readers] trusted_since or later,
 # needs_of() keeps asking any reader for it, so players re-supply it.
 
+def _short_race_flaw(entry: dict, readers: Readers) -> bool:
+    """Before 0.1.5 a multi-word race never had its $r put back, because the client
+    renders it as the last word alone. The blast radius is a capture by such a
+    reader whose text still holds that word; once reconcile_text has restored the
+    $r from the raw text the entry is out of it, and a literal use of the word in
+    Forever's own text stays in until a fixed addon re-reads the line."""
+    race = reader_profile(entry, readers)["race"] or ""
+    words = race.split()
+    if len(words) < 2:
+        return False
+    return re.search(r"(?<![0-9A-Za-z])" + re.escape(words[-1]) + r"(?![0-9A-Za-z])",
+                     entry.get("text") or "", re.IGNORECASE) is not None
+
+
+# Flaws a release fixed that the trust line alone is too blunt for: raising
+# trusted_since would ask for every earlier line again, where only the lines a
+# flaw could have touched need re-reading. Each is (first fixed release,
+# predicate); an entry from an earlier addon that the predicate matches is not
+# trusted, so needs_of asks for it and superseded_gossip lets a fixed capture
+# replace it. The predicate should test the repaired text, so a line the raw
+# source already fixed drops out of the radius on its own.
+KNOWN_FLAWS: list[tuple[tuple[int, ...], Callable[[dict, Readers], bool]]] = [
+    (SHORT_RACE_SINCE, _short_race_flaw),
+]
+
+
+def flawed(entry: dict, readers: Readers) -> bool:
+    version = addon_version(entry)
+    return any(version < fixed_in and predicate(entry, readers) for fixed_in, predicate in KNOWN_FLAWS)
+
+
 def trusted(entry: dict, readers: Readers) -> bool:
-    return addon_version(entry) >= readers.trusted_since
+    return addon_version(entry) >= readers.trusted_since and not flawed(entry, readers)
 
 
 def capture_rank(entry: dict) -> tuple[tuple[int, ...], float]:
@@ -196,10 +243,17 @@ def _pieces(text: str) -> tuple[list[str], list[str]]:
     return tokens, keys
 
 
-def reconcile_text(text: str, source: str) -> tuple[str, int]:
+def reconcile_text(text: str, source: str, raw: bool = False) -> tuple[str, int]:
     """Returns the capture text with placeholders that the source spells out as
     words restored to those words, and how many were restored. Leaves the text
-    alone unless the two align closely, so a line Forever rewrote is not touched."""
+    alone unless the two align closely, so a line Forever rewrote is not touched.
+
+    With `raw` the source is the server's own text and the other direction holds
+    too: a plain word in the capture that aligns to a $n/$c/$r there is that
+    placeholder expanded by the client, however it got past Tokenize (a reader
+    the legacy map knew only by class, a race whose $r renders as one of its
+    words). Never between two captures: there the placeholder is the suspect
+    (a Mage's "$c of Dalaran"), and the word is the reading to keep."""
     tokens, keys = _pieces(text)
     src_tokens, src_keys = _pieces(source)
     matcher = difflib.SequenceMatcher(None, keys, src_keys, autojunk=False)
@@ -210,7 +264,10 @@ def reconcile_text(text: str, source: str) -> tuple[str, int]:
         if op != "replace" or i2 - i1 != j2 - j1:
             continue
         for i, j in zip(range(i1, i2), range(j1, j2)):
-            if _PLACEHOLDER.match(tokens[i]) and src_keys[j] != " " and not _PLACEHOLDER.match(src_tokens[j]):
+            placeholder_for_word = (_PLACEHOLDER.match(tokens[i]) and src_keys[j] != " "
+                                    and not _PLACEHOLDER.match(src_tokens[j]))
+            word_for_placeholder = raw and _PLACEHOLDER.match(src_tokens[j]) and tokens[i].isalnum()
+            if placeholder_for_word or word_for_placeholder:
                 tokens[i] = src_tokens[j]
                 restored += 1
     return "".join(tokens), restored
@@ -388,7 +445,8 @@ class SourceTexts:
         for name in ("questcache", "classic"):
             path = bulk_dir / f"{name}.json"
             if not path.exists():
-                print(f"note: {path.relative_to(ROOT)} missing, placeholders not reconciled against {name}")
+                shown = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+                print(f"note: {shown} missing, placeholders not reconciled against {name}")
                 continue
             data = json.loads(path.read_text(encoding="utf-8"))
             for key, entry in data.get("quests", {}).items():
@@ -425,7 +483,7 @@ def reconcile_entry(entry: dict, kind: str, key: str, sources: SourceTexts | Non
     source = sources.quest(key) if kind == "quests" else sources.gossip_for(key, text)
     if source is None:
         return entry, 0
-    fixed, restored = reconcile_text(text, source)
+    fixed, restored = reconcile_text(text, source, raw=True)
     if not restored:
         return entry, 0
     entry = dict(entry)
@@ -507,7 +565,7 @@ def gossip_key(key: str, entry: dict, readers: Readers) -> str:
     """<speaker>|<text hash>, recomputed so a re-tokenised line keys the same way
     the addon will look it up (ForeverVO/Core/Util.lua Util.TextKey)."""
     speaker = str(key).split("|", 1)[0]
-    return f"{speaker}|{text_key(entry.get('text'), *character_traits(entry, readers))}"
+    return f"{speaker}|{text_key(entry.get('text'), *character_traits(entry, readers), short_race=short_race(entry))}"
 
 def find_saved_variable_files() -> list[Path]:
     files: list[Path] = []
@@ -638,8 +696,15 @@ def superseded_gossip(gossip: dict, readers: Readers) -> set[str]:
         for key, entry, keys in entries:
             if trusted(entry, readers):
                 continue
+            # A short line ("Help you, skyborne?") never reaches the alignment
+            # floor on one changed word, so the flawed reading is also compared
+            # as the fixed addon would have tokenised it: an exact match is the
+            # same line read twice, however short.
+            fixed = tokenize(entry.get("text"), *character_traits(entry, readers), short_race=True) or ""
+            fixed_keys = _collapsed(_pieces(fixed)[1])
             for _, other_keys in trusted_keys:
-                if difflib.SequenceMatcher(None, keys, other_keys, autojunk=False).ratio() >= RECONCILE_RATIO:
+                if (fixed_keys == _collapsed(other_keys)
+                        or difflib.SequenceMatcher(None, keys, other_keys, autojunk=False).ratio() >= RECONCILE_RATIO):
                     stale.add(key)
                     break
     return stale
@@ -679,11 +744,13 @@ def main(argv: list[str] | None = None) -> int:
     if stats.superseded:
         print(f"superseded {stats.superseded} gossip texts from an old addon re-read by a trusted one (dropped)")
     untrusted = sum(1 for e in capture["quests"].values() if not trusted(e, readers))
+    in_radius = sum(1 for k in ("quests", "gossip") for e in capture[k].values() if flawed(e, readers))
     needing = sum(1 for e in capture["quests"].values() if e.get("needs"))
     settled = sum(1 for e in capture["quests"].values() if e.get("sex") == "mf")
     if untrusted or needing or settled:
         print(f"wanted     {untrusted} quest texts captured before addon {readers.trusted_since_text} "
-              f"want any reader; {needing} want a reader in all (that or the other sex); "
+              f"or inside a known flaw want any reader ({in_radius} quest and gossip texts in a flaw's "
+              f"radius); {needing} want a reader in all (that or the other sex); "
               f"{settled} settled by readings of both sexes")
 
     CAPTURE_JSON.parent.mkdir(parents=True, exist_ok=True)

@@ -100,7 +100,7 @@
    "time": 1790289325,
    "zone": "Orgrimmar"
   },
-  "10668|19e45338": {
+  "10668|8ac74c94": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789993443,
@@ -113,7 +113,7 @@
    "time": 1789993443,
    "zone": "The Barrens"
   },
-  "10668|36aec325": {
+  "10668|aa4f9f41": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1789993444,
@@ -1027,7 +1027,7 @@
    "title": null,
    "zone": "Tirisfal Glades"
   },
-  "246152|7a71eb1d": {
+  "246152|8754b3a4": {
    "build": "69913",
    "event": "gossip",
    "firstSeen": 1790001973,
@@ -1036,7 +1036,7 @@
    "npc": "246152",
    "player": "Fixpoint Fix",
    "subzone": "Brill",
-   "text": "The light is a beacon that shines for all. What can I do for you, paladin?",
+   "text": "The light is a beacon that shines for all. What can I do for you, $c?",
    "time": 1790001973,
    "zone": "Tirisfal Glades"
   },
@@ -4340,7 +4340,7 @@
    "time": 1789992990,
    "zone": "The Barrens"
   },
-  "3399|11e5411d": {
+  "3399|da278450": {
    "addon": "0.1.4",
    "build": "70009",
    "class": "Hunter",
@@ -4355,7 +4355,7 @@
    "race": "Windshaper Skyborne",
    "sex": "f",
    "subzone": "The Drag",
-   "text": "Can Zamja help you, skyborne?",
+   "text": "Can Zamja help you, $r?",
    "time": 1790289202,
    "zone": "Orgrimmar"
   },
@@ -4446,7 +4446,7 @@
    "time": 1790337453,
    "zone": "The Barrens"
   },
-  "3446|fa56d5e5": {
+  "3446|36457281": {
    "build": "69913",
    "event": "greeting",
    "firstSeen": 1789992325,
@@ -4455,7 +4455,7 @@
    "npc": "3446",
    "player": "Myrlin Fixpoint",
    "subzone": "Ratchet",
-   "text": "Yes yes yes!  You're just the orc I'm looking for!\n\nSit!  We have much to discuss!!",
+   "text": "Yes yes yes!  You're just the $r I'm looking for!\n\nSit!  We have much to discuss!!",
    "time": 1789995063,
    "zone": "The Barrens"
   },

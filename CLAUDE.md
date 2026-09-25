@@ -110,11 +110,27 @@ game's own recordings).
   Tokenize also cannot tell a Mage's expanded `$c` from a literal
   "mage", so where the raw text is known (`bulk/questcache.json` by quest key,
   `bulk/classic.json` gossip by speaker, closest line) a capture placeholder
-  that aligns to a plain word there is restored to that word; the alignment
+  that aligns to a plain word there is restored to that word, and (since
+  2026-09-25) a plain word that aligns to a placeholder there becomes that
+  placeholder, whatever got it past Tokenize; the alignment
   must score 0.9 or better, so lines Forever rewrote are left alone. Only the
   placeholders are reconciled; the capture's text otherwise wins. Two readers
   of different class or race who capture the same quest also settle it in
-  `merge_entry` (gossip keys differ by hash, so that only helps quests).
+  `merge_entry` (gossip keys differ by hash, so that only helps quests), and
+  there only the placeholder side is corrected, since between two captures the
+  placeholder is the suspect (a Mage's "$c of Dalaran").
+- **A multi-word race renders `$r` as its last word alone**: UnitRace says
+  "Windshaper Skyborne" and Zamja's `$r` came out "skyborne", so until 0.1.5
+  no Skyborne capture ever had `$r` put back (2026-09-25; Mebok Mizzyrix's
+  "the orc I'm looking for" was the same shape on a legacy Orc reader whose
+  `[readers.legacy]` entry named only the class). Both tokenizers now also
+  match the race's last word, but ingest applies that rule only to captures
+  from 0.1.5 on (`SHORT_RACE_SINCE`, `short_race` on `tokenize`/`text_key`):
+  Forever's own text says "skyborne" literally all over Zephras Isle, and
+  re-tokenising an old capture would turn every one of those into `$r`. Older
+  captures are repaired from the raw text where it exists and re-asked where
+  it does not (see `KNOWN_FLAWS`, next item). Do not give a Skyborne legacy
+  reader a race in the TOML for the same reason.
 - **The client resolves `$g lad:lass;` too, and one reader cannot reverse it**:
   the other branch is gone. Since addon 0.1.4 (capture version 4, export field
   `g`) the capture records the reader's sex, and ingest puts the branch back
@@ -152,10 +168,23 @@ game's own recordings).
   line once a trusted one from the same speaker aligns at 0.9 (gossip keys by
   hash, so the flawed reading would otherwise sit beside its correction for
   good and the addon's fuzzy match could play it). Raise the constant when a
-  release fixes what its predecessor recorded, and when designing any capture
+  release fixes what its predecessor recorded *and the blast radius is
+  everything*; when it is narrower, add the flaw to `KNOWN_FLAWS` in
+  `ingest.py` instead (since 2026-09-25): a `(fixed_in, predicate)` pair, and
+  `trusted()` refuses an entry from an earlier addon that the predicate
+  matches, so `needs_of` re-asks exactly those lines and `superseded_gossip`
+  lets a fixed capture replace them, while the same reader's other lines stay
+  believed. The predicate tests the repaired text, so a line the raw source
+  already fixed drops out on its own; the first one is a pre-0.1.5 capture by
+  a multi-word-race reader whose text still holds that race's last word (7
+  lines on 2026-09-25, all Zephras Isle content with no raw text).
+  `superseded_gossip` also compares a flawed line as the fixed addon would
+  tokenise it, since a short line ("Help you, skyborne?") never reaches the
+  0.9 alignment on one changed word. When designing any capture
   change ask how a line the previous version captured gets replaced. The
   cost is regeneration, which only happens when the spoken text or voice
-  actually changes; the owner accepts it. Checked by `gender_check.py`.
+  actually changes; the owner accepts it. Checked by `gender_check.py` and
+  `tests/test_ingest.py`.
 - `luac -p` every changed Lua file (`./tools/run.sh luac -p <file>`; the dev
   shell has lua 5.1).
   There is no in-game test harness; the owner tests by `/reload`.
@@ -522,7 +551,16 @@ owner's machine picks the files up on the next sync.
 ## Voices
 
 - Race voices: `tools/voices/<race>-<gender>.wav` for the archetype most of a
-  race is cast with, and `<race>-<gender>-s<set>.wav` for the others. Sorting
+  race is cast with, and `<race>-<gender>-s<set>.wav` for the others. Built
+  on the owner's machine 2026-09-25 after #42: 49 archetype clips, 7 dropped
+  for a thin head, every plain race clip rebuilt, species and named clips
+  unchanged; the clips from before are kept in `tools/voices/before-42/`
+  (gitignored) for A/B listening. That build restaged 9,132 lines re-cast to
+  an archetype (the voice-change check, plus dwarves under "text changed"
+  because the archetype's fingerprint drops the `reference` knob) and
+  nothing on a plain voice, since clip audio is not in the fingerprint (#51).
+  The retail `SoundKitEntry` CSV is large and wago.tools timed out on it once;
+  a `curl` into `tools/data/db2/<build>/` with a long timeout is the workaround. Sorting
   candidate clips longest-first used to hand the head to whichever set had the
   longest lines, which is one-off character sets: seven voices were cloned from
   a set used by a single creature display, tauren-female from an elder with one

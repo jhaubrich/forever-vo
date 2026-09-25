@@ -150,6 +150,12 @@ function Util.Tokenize(text, playerName, className, raceName)
     end
     text = put(text, className, "$c", true)
     text = put(text, raceName, "$r", true)
+    -- A multi-word race renders $r as its last word alone: UnitRace says
+    -- "Windshaper Skyborne" and Zamja's "$r" came out "skyborne" (0.1.5).
+    local raceLast = raceName and raceName:match("%S+$")
+    if raceLast and raceLast ~= raceName then
+        text = put(text, raceLast, "$r", true)
+    end
     return text
 end
 

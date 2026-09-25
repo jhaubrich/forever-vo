@@ -29,6 +29,7 @@ def tokenize(
     player_name: str | None = None,
     class_name: str | None = None,
     race_name: str | None = None,
+    short_race: bool = True,
 ) -> str | None:
     """Mirror of Util.Tokenize: puts $n/$c/$r back where the client expanded them.
 
@@ -39,6 +40,12 @@ def tokenize(
     always renders a character name capitalised, so a lowercase match is never
     the name (for a character called "It", it is the word "it"), whereas $c and
     $C render as "rogue" and "Rogue".
+
+    A multi-word race renders $r as its last word alone: UnitRace says
+    "Windshaper Skyborne" and Zamja's "$r" came out "skyborne", so the last word
+    is matched too (addon 0.1.5). `short_race=False` is the old behaviour, which
+    ingest keeps for captures that older addons tokenised, so a literal
+    "skyborne" in Forever's own text is not turned into $r after the fact.
     """
     if not text:
         return text
@@ -62,6 +69,9 @@ def tokenize(
         text = put(text, first_name, "$n", False)   # $n is the bare first name
     text = put(text, class_name, "$c", True)
     text = put(text, race_name, "$r", True)
+    last_word = race_name.split()[-1] if race_name and race_name.split() else None
+    if short_race and last_word and last_word != race_name:
+        text = put(text, last_word, "$r", True)   # $r renders as the last word alone
     return text
 
 
@@ -70,10 +80,11 @@ def normalize(
     player_name: str | None = None,
     class_name: str | None = None,
     race_name: str | None = None,
+    short_race: bool = True,
 ) -> str:
     if not text:
         return ""
-    text = (tokenize(text, player_name, class_name, race_name) or "").lower()
+    text = (tokenize(text, player_name, class_name, race_name, short_race) or "").lower()
     text = _GENDER_CODE.sub("", text)   # $g male:female; branch
     text = _DOLLAR_CODE.sub("", text)   # $n, $c, $r, $b, ...
     # Lua strips per byte; encode to UTF-8 so multi-byte characters vanish the same way
@@ -94,8 +105,9 @@ def text_key(
     player_name: str | None = None,
     class_name: str | None = None,
     race_name: str | None = None,
+    short_race: bool = True,
 ) -> str:
-    return hash_text(normalize(text, player_name, class_name, race_name))
+    return hash_text(normalize(text, player_name, class_name, race_name, short_race))
 
 
 if __name__ == "__main__":

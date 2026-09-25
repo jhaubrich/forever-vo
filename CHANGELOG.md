@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Skyborne characters no longer leave "skyborne" in the lines they capture.
+  The client reports the race as "Windshaper Skyborne" but reads `$r` as
+  "skyborne" alone, so the word was never put back and Zamja's greeting was
+  voiced "Can Zamja help you, skyborne?" for everyone. The last word of a
+  multi-word race now counts. Lines captured by a Skyborne on an earlier
+  release are fixed from the original text where the pipeline has it, and
+  asked for again where it does not, so playing through them once on this
+  release settles them.
 - The first-login welcome no longer freezes the client when the Gamepad
   (Alpha) UI is on (#44). It was a standard Blizzard popup, and in gamepad mode
   the client hands every such popup to a path that addons are not allowed to

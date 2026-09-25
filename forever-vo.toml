@@ -131,10 +131,17 @@ trusted_since = "0.1.4"
 # tools/data/bulk/questcache.json (and confirmed by the owner for Agravain).
 [readers.legacy."Myrlin Fixpoint"]
 class = "Mage"
+race = "Orc"    # added 2026-09-25: Mebok Mizzyrix's gossip was voiced "the orc I'm looking for"
 [readers.legacy."Pellinore Fixpoint"]
 class = "Hunter"
+# No race on purpose: it is "Windshaper Skyborne", whose $r renders "skyborne",
+# a word Forever's own text uses literally all over Zephras Isle. Those lines
+# are repaired from the raw text where it exists and re-asked where it does not.
 [readers.legacy."Agravain Fixpoint"]
 class = "Rogue"
+[readers.legacy."Fixpoint Fix"]
+class = "Paladin"
+race = "Undead"
 
 # Community exports ("/fvo export") replace the reader's name with $n and carry
 # no class or race, so a glued placeholder from a pre-whole-word client (issue
