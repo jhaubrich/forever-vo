@@ -5,6 +5,7 @@
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
+   "firstSeen": 1790297209,
    "mapID": 1458,
    "name": "Lady Sylvanas Windrunner",
    "npc": "10181",
@@ -21,6 +22,7 @@
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
+   "firstSeen": 1790297207,
    "mapID": 1458,
    "name": "Lady Sylvanas Windrunner",
    "npc": "10181",
@@ -5381,9 +5383,9 @@
    "sex": 2
   },
   "2425": {
-   "creatureType": "Humanoid",
-   "level": 16,
-   "modelFileID": 1022938,
+   "creatureType": "Demon",
+   "level": -1,
+   "modelFileID": 123673,
    "name": "Varimathras",
    "sex": 2
   },
