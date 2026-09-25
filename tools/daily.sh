@@ -35,9 +35,15 @@ if systemctl --user is-active --quiet forever-vo-bulk.service; then
     echo "stopping forever-vo-bulk.service for the duration of this run"
     systemctl --user stop forever-vo-bulk.service || true
 fi
+# The bulk service exits 0 once its todo list is empty and only a login starts
+# it again, so work that appears later (a rebuilt reference clip, a voice
+# change, a merged pipeline branch) would otherwise get only this job's
+# BULK_HOURS a night. Restart it when it was running before, or when a backlog
+# is still there at the end of this run.
+BULK_PENDING=0
 restore_bulk() {
-    if [ "$BULK_WAS_ACTIVE" = 1 ]; then
-        echo "restarting forever-vo-bulk.service"
+    if [ "$BULK_WAS_ACTIVE" = 1 ] || [ "$BULK_PENDING" -gt 0 ]; then
+        echo "starting forever-vo-bulk.service ($BULK_PENDING files still to generate)"
         systemctl --user start forever-vo-bulk.service || true
     fi
 }
@@ -53,6 +59,11 @@ fi
 # Then continue the bulk backlog for a while (timeout returns 124 when it cuts the run short)
 timeout "${BULK_HOURS}h" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 ./tools/run.sh tools/generate.py --tables-only 2>&1 | tail -1 || true
+# What the timed run left behind, from the same todo list it walked (a dry run
+# takes a few seconds). The EXIT trap hands it to the bulk service.
+BULK_PENDING="$(./tools/run.sh tools/generate.py --dry-run 2>/dev/null | sed -n 's/^\([0-9]\+\) files to generate.*/\1/p' | head -1)"
+BULK_PENDING="${BULK_PENDING:-0}"
+echo "backlog after this run: $BULK_PENDING files"
 
 # Publish the Forever delta pack to CurseForge when it is worth an update: 20+ new files, or a week with any change
 ./tools/run.sh tools/release_pack.py delta --upload --if-changed --min-new 20 --max-age-days 7 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true

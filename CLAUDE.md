@@ -303,7 +303,12 @@ Installed by `tools/install-timer.sh`:
   Because it is then normally up at 04:00, `daily.sh` stops it for the duration
   of the nightly run and restarts it from an `EXIT` trap — it used to just
   bail out, which would have skipped the captured pass, the table rebuild and
-  the delta upload for as long as bulk stayed up. It runs `tools/bulk.sh`,
+  the delta upload for as long as bulk stayed up. The service exits 0 once its
+  list is empty and nothing but a login starts it again, so since 2026-09-25
+  the trap also starts it when a `--dry-run` at the end of the nightly run
+  still counts files to generate: work that appears later (a rebuilt clip, a
+  voice change, a merged branch) gets the whole GPU, not two hours a night.
+  It runs `tools/bulk.sh`,
   which starts `FOREVER_VO_WORKERS` (default 1 since 2026-09-24; 2 until the
   Classic backlog finished on 2026-09-23) `generate.py --shard i/N`
   processes: one autoregressive stream leaves the GPU about 60% idle, and on
@@ -357,8 +362,9 @@ Three CurseForge projects, three release paths:
   created 2026-09-24, ID under `[release.curseforge_projects]`, installs as
   `ForeverVO_Data_Base_Endgame`; the owner's working folder `ForeverVO_Data`
   is never shipped): the Classic-sourced lines, priority 100, released by
-  hand and rarely. The complete Classic set with its five alternate narrators
-  is 1.36 GB at 32 kbps, and **the CurseForge website caps a file at 1 GB**
+  hand and rarely. The complete Classic set with the five alternate narrators
+  it had until 2026-09-25 was 1.36 GB at 32 kbps (with orc-male alone about
+  1.08 GB, so the split stays for now), and **the CurseForge website caps a file at 1 GB**
   (learned 2026-09-24 when the 1,378 MB zip was refused; the API's cap is
   lower still, `413 Payload Too Large` at 887 MB on 2026-09-22 and at 574 MB
   on 2026-09-24, while the 30
@@ -554,9 +560,15 @@ owner's machine picks the files up on the next sync.
 - `--assume-voice` on `generate.py` voices cache-only quests whose giver is
   unknown (used once for Zephras Isle with `skyborne-male`); the voice-change
   check fixes them once a capture names the giver.
-- `narrator_alternates` under `[voices]` is the narrator menu: five alternates beside the default,
-  over ~1,040 narrated quest and ~336 narrated gossip lines in the full Classic
-  set (6,865 files, ~20 h of GPU). The player's pick lives in the
+- `narrator_alternates` under `[voices]` is the narrator menu: since 2026-09-25
+  just orc-male beside the default (human-male's clip), over ~1,040 narrated
+  quest and ~336 narrated gossip lines in the full Classic set (1,340 files per
+  voice, ~4 h of GPU each). It was five alternates before: each cost about 6.5%
+  of every pack, together a third, and the base split by level exists because
+  of them. The four dropped voices' files (human-female, dwarf-male,
+  nightelf-female, troll-female) are still under `Sounds/*/Narrator/` and in
+  `sound_index.json`; `rebuild_tables` and the release only look at the
+  configured voices, so they are dead weight until deleted. The player's pick lives in the
   `ForeverVO_narratorVoice` CVar, because saved variables do not survive a
   session on this beta.
 - The talking head defaults to the faction parchment; clearing `factionHead`
