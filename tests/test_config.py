@@ -55,7 +55,7 @@ def test_readers_parse_the_version_and_know_the_poster() -> None:
 
 
 def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
-    for name in ("npc-3597", "dwarf-male", "human-male"):
+    for name in ("npc-3597", "dwarf-male", "dwarf-male-s36", "human-male"):
         (tmp_path / f"{name}.wav").write_bytes(b"")
     config = Config(
         voices=Voices(fallbacks={"darkirondwarf": "dwarf", "narrator": "human-male"}),
@@ -71,6 +71,30 @@ def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
     assert dark_iron.source == "dwarf-male"
     assert dark_iron.clip == tmp_path / "npc-3597.wav"
     assert dark_iron.settings.exaggeration == 0.75
+
+    # an archetype keeps its own montage and borrows the race's knobs, not the
+    # race's reference clip; a missing montage falls through to that clip
+    archetype = catalog.resolve("dwarf-male-s36")
+    assert archetype.source == "dwarf-male-s36"
+    assert archetype.clip == tmp_path / "dwarf-male-s36.wav"
+    assert (archetype.settings.exaggeration, archetype.settings.cfg_weight) == (0.75, 0.3)
+    assert archetype.settings.reference is None
+    assert catalog.tuned("dwarf-male-s36")
+    assert catalog.fingerprint("dwarf-male-s36", "Well met.") == (
+        text_key("Well met.") + "+cfg_weight=0.3,exaggeration=0.75")
+    missing = catalog.resolve("dwarf-male-s99")
+    assert missing.source == "dwarf-male"
+    assert missing.clip == tmp_path / "npc-3597.wav"
+    assert missing.settings.reference == "npc-3597"
+    assert missing.settings.exaggeration == 0.75
+
+    own = config.model_copy(update={"tts": Tts(voices={
+        "dwarf-male": VoiceTuning(reference="npc-3597", exaggeration=0.75, cfg_weight=0.3),
+        "dwarf-male-s36": VoiceTuning(exaggeration=0.2, cfg_weight=0.9),
+    })})
+    kept = VoiceCatalog(own, voices_dir=tmp_path).resolve("dwarf-male-s36")
+    assert kept.clip == tmp_path / "dwarf-male-s36.wav"
+    assert (kept.settings.exaggeration, kept.settings.cfg_weight) == (0.2, 0.9)
 
     human = catalog.resolve("human-male")
     assert human.clip == tmp_path / "human-male.wav"

@@ -568,7 +568,11 @@ owner's machine picks the files up on the next sync.
   was already stamped. `generate.VoiceCatalog` resolves a voice to the
   clip it actually uses (its own, else its fallback race's, else the narrator's,
   else human-male) and takes the tuning of *that* voice, so Dark Iron dwarves
-  and tuskarr, who borrow the dwarf clip, get the dwarf settings (#18). The
+  and tuskarr, who borrow the dwarf clip, get the dwarf settings (#18). An
+  archetype (`<race>-<gender>-s<set>`) with no `[tts.voices]` row of its own
+  keeps its wav and takes the plain race voice's exaggeration, cfg weight and
+  tempo; the race's `reference` stays on the plain voice, and the knobs in the
+  fingerprint restage the archetype lines. The
   settings join the text fingerprint only when they differ from the defaults,
   so tuning one voice restages exactly its files (and a file with no
   fingerprint in a tuned voice, which predates tuning); `--reindex` seeds the
