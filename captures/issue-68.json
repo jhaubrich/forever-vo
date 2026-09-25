@@ -1,0 +1,33 @@
+{
+ "addon": "0.1.4",
+ "gossip": {
+  "248196|dd3ed090": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Apothecary Durelle",
+   "npc": "248196",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Please do not touch the vials unless you intend to purchase one.\r\n\r\nFingerprints ruin the value, you see.",
+   "time": 1790375625,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "npcs": {
+  "248196": {
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Apothecary Durelle",
+   "sex": 3
+  }
+ },
+ "origin": "issue-68",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
