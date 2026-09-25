@@ -1,0 +1,98 @@
+{
+ "addon": "0.1.4",
+ "gossip": {
+  "2913|5112b624": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Archaeologist Hollee",
+   "npc": "2913",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Who would have guessed the excavation would have uncovered such findings!",
+   "time": 1790318232,
+   "title": null,
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "npcs": {
+  "-17182": {
+   "isObject": true,
+   "name": "Buzzbox 827"
+  },
+  "10219": {
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Gwennyth Bly'Leggonde",
+   "sex": 3
+  },
+  "2913": {
+   "creatureType": "Humanoid",
+   "modelFileID": 950080,
+   "name": "Archaeologist Hollee",
+   "sex": 3
+  },
+  "3650": {
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Asterion",
+   "sex": 2
+  }
+ },
+ "origin": "issue-43",
+ "quests": {
+  "3524-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Gwennyth Bly'Leggonde",
+   "npc": "10219",
+   "questID": 3524,
+   "sex": "f",
+   "source": "community",
+   "text": "It is only recently that these creatures started landing on the coast of Darkshore in such alarming numbers.  I can't help but think that this is an ill omen of some sort.  Recovering a sample of that creature's bones to the south would help us in Darnassus assess this situation!",
+   "time": 1790318113,
+   "title": "Washed Ashore",
+   "wanted": null,
+   "zone": "Darkshore"
+  },
+  "955-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Asterion",
+   "npc": "3650",
+   "questID": 955,
+   "sex": "f",
+   "source": "community",
+   "text": "Once I have the earrings, I will cast the spell to search for the whereabouts of the seal that binds me. For centuries I have thought on the freedom destroying the seal would bring to me... Perhaps those centuries have taken a toll upon my mind that I might never recover...",
+   "time": 1790322028,
+   "title": "Bashal'Aran",
+   "wanted": null,
+   "zone": "Darkshore"
+  },
+  "983-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1439,
+   "name": "Buzzbox 827",
+   "npc": "-17182",
+   "questID": 983,
+   "sex": "f",
+   "source": "community",
+   "text": "Buzzbox 827 sits with an eerie silence. A single flashing light indicates that it needs 6 Crawler Legs to be placed in its holding box.",
+   "time": 1790317714,
+   "title": "Buzzbox 827",
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
