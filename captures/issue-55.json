@@ -1,0 +1,110 @@
+{
+ "addon": "0.1.4",
+ "gossip": {
+  "1287|ed056522": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Marda Weller",
+   "npc": "1287",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Best deals in all of Stormwind my friend, won't find any better. Now, what can I help you with?",
+   "time": 1790362095,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "5193|e9a7b43b": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Rebecca Laughlin",
+   "npc": "5193",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Welcome to the Stormwind Guild Registry offices. What can I help you with today?",
+   "time": 1790362843,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "963|f9eae059": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Rainer",
+   "npc": "963",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "I can't believe the officials in Stormwind, sending the bulk of our army abroad... when our home front is under so much pressure!\n\nWith thieves coming from Westfall and gnolls encroaching from from the east and west, it's a wonder Stormwind itself isn't besieged.",
+   "time": 1790363136,
+   "title": null,
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "npcs": {
+  "1287": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Marda Weller",
+   "sex": 3
+  },
+  "5193": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Rebecca Laughlin",
+   "sex": 3
+  },
+  "963": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Deputy Rainer",
+   "sex": 2
+  }
+ },
+ "origin": "issue-55",
+ "quests": {
+  "11-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Rainer",
+   "npc": "963",
+   "questID": 11,
+   "sex": "f",
+   "source": "community",
+   "text": "Gnolls, brutish creatures with no decent business in these lands, have been seen along the borders of Elwynn Forest.  A large pack of them, many more than we can handle alone, have infested the woods south of the guard tower yonder.  Another group has infested the areas near Stone Cairn Lake to the east.\n\nThe Stormwind Army will commend whomever helps kill them.  Bring me their painted gnoll armbands as proof of your deed.",
+   "time": 1790363140,
+   "title": "Riverpaw Gnoll Bounty",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "239-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Rainer",
+   "npc": "963",
+   "questID": 239,
+   "sex": "f",
+   "source": "community",
+   "text": "Marshall Dughan sent you, eh?  Well you're not from the army, but if Dughan sent you then that's good enough for me!\n\nOur situation is, to say the least, a stressed one.  I hope you can give us a hand.",
+   "time": 1790363138,
+   "title": "Westbrook Garrison Needs Help!",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
