@@ -58,6 +58,16 @@
   .pill.t3 { border-color: var(--ok); color: var(--ok); }
   .pill.s3 { border-color: var(--gold); color: var(--gold); }
   .pill.out { border-color: var(--line); color: var(--dim); }
+  button.help { flex: 0 0 auto; width: 22px; height: 22px; padding: 0; border-radius: 50%; line-height: 1; color: var(--gold); border-color: var(--gold); }
+  #clips-help { border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; padding: 10px 14px; margin: 8px 0; background: var(--panel); }
+  #clips-help h4 { margin: 0 0 6px; font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
+  #clips-help p, #clips-help li { color: var(--dim); font-size: 12px; margin: 4px 0; }
+  #clips-help ul { margin: 4px 0; padding-left: 18px; }
+  #clips-help b { color: var(--ink); font-weight: 500; }
+  #clips-help code { color: var(--ink); }
+  #clips-help table { margin: 6px 0; }
+  #clips-help td { padding: 3px 8px 3px 0; border: 0; font-size: 12px; color: var(--dim); }
+  #clips-help td:first-child { font-family: ui-monospace, monospace; color: var(--ink); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -123,6 +133,25 @@
         <button id="clips-reset">Clear picks</button>
         <button id="clips-build" class="primary">Build and keep</button>
         <audio id="clips-ref" controls preload="none" style="flex:0 0 auto"></audio>
+        <button id="clips-help-toggle" class="help" title="What the model actually reads">?</button>
+      </div>
+      <div id="clips-help" hidden>
+        <h4>What the model actually reads</h4>
+        <p>Chatterbox reads the reference twice, with different budgets, and the rest barely counts:</p>
+        <table>
+          <tr><td>first 6s</td><td><b>t3</b>, the text&rarr;token model &mdash; rhythm, stress, pace, accent. <b>How it is said.</b></td></tr>
+          <tr><td>first 10s</td><td><b>s3gen</b>, the decoder &mdash; timbre, grain, weight. <b>How it sounds.</b></td></tr>
+          <tr><td>whole clip</td><td>one averaged speaker vector. Weak &mdash; a 28s clip is not 28s of influence.</td></tr>
+        </table>
+        <ul>
+          <li><b>Best clip first.</b> The first six seconds do most of the work, and the first clip owns most of them.</li>
+          <li><b>Fill six seconds.</b> Under that, t3 gets a partial window and falls back on its own prior, which is how an accent goes missing.</li>
+          <li><b>Connected speech at the head.</b> A sentence carries rhythm; &ldquo;Hello there!&rdquo; carries none. Shouts and death cries at the head are what this panel exists to fix.</li>
+          <li><b>6&ndash;10s only shapes timbre.</b> The speaker's own greetings are fine there.</li>
+          <li><b>Past 10s is nearly free and nearly useless.</b> Do not mistake a long clip for a strong one &mdash; watch the pills, not the total.</li>
+          <li><b>One speaker across the first 10s.</b> Mixing two actors made goblin-male worse the more of the second went in.</li>
+          <li><b>Clip choice fixes colour, pace and stiffness &mdash; not accent.</b> Fifteen head clips, four settings and bark-free references all failed to carry the goblin accent. For accent, tune the voice above (#18).</li>
+        </ul>
       </div>
       <p class="note" id="clips-status"></p>
       <p class="note" id="clips-warn"></p>
@@ -437,6 +466,7 @@ $("clips-load").addEventListener("click", () => {
   loadClips(true);
 });
 $("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
+$("clips-help-toggle").addEventListener("click", () => { $("clips-help").hidden = !$("clips-help").hidden; });
 $("clips-build").addEventListener("click", async () => {
   if (!picks.length) { toast("pick at least one clip", "warn"); return; }
   $("clips-build").disabled = true;
