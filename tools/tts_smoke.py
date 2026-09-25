@@ -11,8 +11,12 @@ import time
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     import torch
+    import torch.version
 
+    hip = getattr(torch.version, "hip", None)
     print("torch", torch.__version__, "cuda available:", torch.cuda.is_available())
+    if hip:
+        print("hip:", hip)
     if torch.cuda.is_available():
         print("device:", torch.cuda.get_device_name(0))
 

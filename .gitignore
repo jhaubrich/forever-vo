@@ -1,5 +1,6 @@
 .env
 .venv
+.venv-rocm/
 __pycache__/
 tools/data/db2/
 tools/data/capture.json.bak
