@@ -516,8 +516,28 @@ owner's machine picks the files up on the next sync.
   candidate clips longest-first used to hand the head to whichever set had the
   longest lines, which is one-off character sets: seven voices were cloned from
   a set used by a single creature display, tauren-female from an elder with one
-  (Magatha Grimtotem). Five voices have no spoken emotes at all - both blood
-  elf, both goblin, vulpera-male - and stay bark-led.
+  (Magatha Grimtotem). Four voices have no spoken emotes in this client - both
+  blood elf and both goblin - because those races were playable only from
+  Burning Crusade and Cataclysm. Retail has the recordings, and
+  `speech_pool()` borrows them for exactly those voices (`RETAIL_BUILD` in
+  `config.py`, fetched by FileDataID like everything else, no local CASC
+  needed). It borrows for no one else: for every race this client covers,
+  retail holds the same 1.x files and fewer of them (troll-male 10 here
+  against 6 there), so there is nothing to gain and a re-record to risk.
+  `vulpera-male.wav` is built too and nothing uses it: one vulpera display
+  exists in the client (137545) and Blizzard casts it with set 49, a human
+  male set used by 249 other displays, so no speaker ever resolves to it.
+- **Three recipes, chosen per voice** (`recipe_for`): `speech-and-barks` is
+  the default and what every race with its own emotes gets. A borrowed-speech
+  race gets `pooled-barks` for its plain clip - every set's greetings, as the
+  base pack was built before this branch - and its archetypes take
+  `speech-and-barks` and `speech-only`, so the race keeps three personalities.
+  Narrowing the plain voice to the dominant set is what left goblin-male a
+  2.8 s reference that read as a gnome; rated by ear, goblin got worse the
+  more borrowed speech went in (pooled best, 5.4 s head next, 11.3 s
+  speech-only last), because the Classic bark actor and the Cataclysm emote
+  actor are different people. A `pooled-barks` clip holds no speech slice, or
+  it would keep the longest jokes for a clip that never reads them.
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
   just two greetings, so his clone is rougher.
