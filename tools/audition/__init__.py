@@ -151,6 +151,15 @@ def _write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float
     if voices is None:
         voices = tomlkit.table(is_super_table=True)
         tts["voices"] = voices
+    if reference is None:
+        # The page's "Clone from" is empty for "the voice's own (as configured)", which
+        # is not the same as "this voice clones from nothing". Keeping a take at the
+        # default settings used to delete the whole entry and take the reference with
+        # it: dwarf-male lost `reference = "npc-3597"` and its 0.75/0.3 that way, which
+        # would have restaged 3,114 files in a voice #18 had already corrected. An
+        # existing reference is carried over; clearing one is a TOML edit.
+        current = load_config(path).tts.voices.get(voice)
+        reference = current.reference if current else None
     if (exaggeration, cfg_weight, tempo) == defaults and not reference:
         if voice in voices:
             del voices[voice]
