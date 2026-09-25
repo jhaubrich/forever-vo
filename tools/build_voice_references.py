@@ -224,7 +224,14 @@ NAMED_MAX_DISPLAYS = 3   # a greeting kit shared by this few models belongs to a
 
 def named_npc_fdids() -> dict[str, list[int]]:
     """voice name npc-<displayID> -> greeting FileDataIDs for NPCs with their own recorded lines
-    (Varimathras, Thrall, Sylvanas, ...). Race voices come from kits shared by many models."""
+    (Varimathras, Thrall, Sylvanas, ...). Race voices come from kits shared by many models.
+
+    Hello and goodbye only. SoundID_2 is the "pissed" kit - what the NPC says when you
+    click it repeatedly - and it used to come in beside them: 41 files across 11 sets,
+    reaching 20 of the 91 named clips. An angry take is the wrong thing to clone a quest
+    giver from wherever it lands, and candidates are sorted longest first, which ranks a
+    3.5 s shout above most greetings (median 1.2 s).
+    """
     kits = files_by_kit()
     npc_sounds = load_db2("NPCSounds")
     displays_by_sound: dict[int, list[int]] = defaultdict(list)
@@ -237,7 +244,7 @@ def named_npc_fdids() -> dict[str, list[int]]:
         if len(displays) > NAMED_MAX_DISPLAYS:
             continue
         fdids: list[int] = []
-        for col in ("SoundID_0", "SoundID_1", "SoundID_2"):  # hello, goodbye, pissed
+        for col in ("SoundID_0", "SoundID_1"):  # hello, goodbye; _2 is "pissed", _3 ack
             for fdid in kits.get(int(npc_sounds[sound_id].get(col) or 0), []):
                 if fdid not in fdids:
                     fdids.append(fdid)
