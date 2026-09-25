@@ -4443,6 +4443,7 @@
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
+   "firstSeen": 1790373655,
    "found": true,
    "mapID": 1454,
    "name": "Koma",
