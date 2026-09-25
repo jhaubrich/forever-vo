@@ -1,0 +1,126 @@
+{
+ "addon": "0.1.4",
+ "gossip": {
+  "251371|645a98fa": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Falorne Fallwind",
+   "npc": "251371",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Zephras is in great danger. The elemental wind spirits that brought us here to Skywall so many thousands of years ago have abandoned us, leaving us vulnerable in this unstable realm. Our once-robust society spanned multiple island sanctuaries in our corner of Skywall, but now we are not even sure if any other shen'dorei remain outside of this small island.\r\n\r\nThings are dire, but the High Order is committed to rising to this challenge.",
+   "time": 1790343861,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "251371|7b3bdf9a": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Falorne Fallwind",
+   "npc": "251371",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Magic can accomplish almost anything, but stagnation and inaction have caused us to lose so much of ourselves in the thousands of years since we left Kalimdor. The High Order seeks to reclaim the Highborne heritage that we've left behind and become the masters of our own destiny once again.\r\n\r\nThe Windshapers think we are simply reckless and arrogant. Hypocrisy at its finest, if you ask me. The Windshapers will entertain no ideas but their own when it comes to this crisis. Who, I wonder, is truly arrogant?",
+   "time": 1790343864,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "251371|c4bcd3c9": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Falorne Fallwind",
+   "npc": "251371",
+   "questID": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Greetings to you, fellow High Order initiate.",
+   "time": 1790344028,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251363": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Dalia the Collector",
+   "sex": 3
+  },
+  "251368": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1100087,
+   "name": "Elatrell Featherlight",
+   "sex": 2
+  },
+  "251371": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Falorne Fallwind",
+   "sex": 2
+  }
+ },
+ "origin": "issue-46",
+ "quests": {
+  "92463-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Elatrell Featherlight",
+   "npc": "251368",
+   "questID": 92463,
+   "sex": "f",
+   "source": "community",
+   "text": "Cirrusflies aren't to be underestimated. They might not seem dangerous, but you have to watch out for the bigger ones. The bigger they are, the meaner!",
+   "time": 1790343953,
+   "title": "The Cirrusfly Queen",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "92597-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Falorne Fallwind",
+   "npc": "251371",
+   "questID": 92597,
+   "sex": "f",
+   "source": "community",
+   "text": "Realizing our true potential as sons and daughters of the highborne is our only path to salvation. The Windshapers are little better than the Al'Aketh, supplicating themselves to uncaring, otherworldly creatures.",
+   "time": 1790343147,
+   "title": "Reading the Ley Lines",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "93552-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Dalia the Collector",
+   "npc": "251363",
+   "questID": 93552,
+   "sex": "f",
+   "source": "community",
+   "text": "Hello there, $c.",
+   "time": 1790343060,
+   "title": "Harvesting Windstones",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
