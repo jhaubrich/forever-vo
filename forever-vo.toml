@@ -142,6 +142,8 @@ class = "Rogue"
 [readers.legacy."Fixpoint Fix"]
 class = "Paladin"
 race = "Undead"
+[readers.legacy."Spron Limbertorque"]
+race = "Gnome"    # a throwaway character: two lines from Sten Stoutarm, class unknown
 
 # Community exports ("/fvo export") replace the reader's name with $n and carry
 # no class or race, so a glued placeholder from a pre-whole-word client (issue
