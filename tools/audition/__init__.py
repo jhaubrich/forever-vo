@@ -4,6 +4,14 @@ reference clips and Chatterbox settings side by side, and keeping what wins.
     uv run audition                    # serves http://127.0.0.1:8765
     uv run audition --port 9000 --open # and opens the browser
 
+On an AMD GPU the same page uses the ROCm wheel, in its own environment so the
+default CUDA one (what the nightly run generates with) stays put:
+
+    UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition
+
+"Write to pack" is refused on that build. The sound index would treat the file
+as current, and the CUDA nightly would ship it.
+
 One model instance, loaded on the first take and kept. Nothing here goes around
 the pipeline's bookkeeping:
 
@@ -212,7 +220,7 @@ class Studio:
             if self._synth is None:
                 self.model_status = "loading"
                 try:
-                    self._synth = Synth(self.catalog(), allow_cpu=self.allow_cpu)
+                    self._synth = Synth(self.catalog(), allow_cpu=self.allow_cpu, allow_hip=True)
                 except BaseException as e:
                     self.model_status = f"failed: {e}"
                     raise
@@ -459,6 +467,11 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         item, variant = studio.line(_safe(request.base))
         catalog = studio.catalog()
         synth = studio.synth()
+        if synth.hip:
+            raise HTTPException(400, "This is the ROCm build. Write to pack stays on the CUDA wheel: "
+                                "a file made here would fingerprint as current and the nightly run would ship it. "
+                                "Keep the settings; they are numbers in forever-vo.toml, and the CUDA generator "
+                                "restages the voice from them.")
         path = sound_path(item.subfolder, variant.base)
         t0 = time.time()
         with studio.model_lock:

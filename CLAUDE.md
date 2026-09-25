@@ -178,11 +178,18 @@ fvo-<x>` (the console scripts in `pyproject.toml`), `./tools/run.sh python -c
 stack (`chatterbox-tts`, pinned to the release every voice was generated on,
 and `setuptools<81` for perth) is the `tts` dependency group, on by default;
 `--no-group tts` skips the ~3 GB of torch for a checkout that only ingests or
-releases. The GitHub ingest workflow runs `exportfile.py` (stdlib only) with
-`uv run --no-project`. Bump a pin with `uv lock --upgrade-package <name>` or
-`nix flake update`, and commit the lock; the sound index only regenerates a
-file when its text or voice changes, so a library bump changes no audio on its
-own.
+releases. `tts-rocm` is the same Chatterbox pin on the ROCm 6.2.4 wheel
+(`torch==2.6.0+rocm6.2.4`, the matching `torchaudio`, `pytorch-triton-rocm==3.2.0`),
+for audition on an AMD GPU. The groups conflict, so the lock holds both and the
+default stays `tts` — do not point the nightly at the ROCm index. Run it as
+`UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition`.
+`Synth` loads that build only when audition asks (`allow_hip`); `fvo-generate`
+refuses it, and audition's "Write to pack" returns 400, because the sound index
+records text and tuning, not which GPU rendered the file. The GitHub ingest
+workflow runs `exportfile.py` (stdlib only) with `uv run --no-project`. Bump a
+pin with `uv lock --upgrade-package <name>` or `nix flake update`, and commit
+the lock; the sound index only regenerates a file when its text or voice
+changes, so a library bump changes no audio on its own.
 
 **Configuration is `forever-vo.toml` at the root**, validated by the pydantic
 models in `tools/config.py` (`Voices`, `Tts`, `Pronunciations`, `Readers`,
@@ -210,7 +217,9 @@ per take with the resolved recipe beside it. "Keep these settings" writes
 models before the file is replaced. "Write to pack" regenerates one line's
 pack file under the *saved* configuration only and records the fingerprint
 `generate.py` would compute, so the nightly run neither redoes nor misses it;
-it is disabled until the row's recipe is the saved one. Takes go to
+it is disabled until the row's recipe is the saved one. On the ROCm build
+that button is refused; keeping a voice's settings in the TOML still works,
+and the CUDA generator restages the voice from them. Takes go to
 `tools/data/audition/<session>/` (gitignored). One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets

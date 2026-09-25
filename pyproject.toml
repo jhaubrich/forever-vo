@@ -39,6 +39,22 @@ tts = [
     "fastapi",                 # the audition page (uv run audition); both already come with chatterbox
     "uvicorn",
 ]
+# Same Chatterbox pin, on PyTorch's ROCm 6.2.4 wheel instead of the PyPI CUDA
+# wheel. The two groups conflict, so `uv lock` keeps both and the default stays
+# `tts` (what the nightly run generates with). Audition on an AMD GPU:
+#   UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition
+# torch, torchaudio and pytorch-triton-rocm have to be named here: a source
+# pinned to this group only applies to a direct member of it. Chatterbox's own
+# pin is still torch==2.6.0; the +rocm6.2.4 local version satisfies it.
+tts-rocm = [
+    "chatterbox-tts==0.1.7",
+    "setuptools<81",
+    "fastapi",
+    "uvicorn",
+    "torch==2.6.0",
+    "torchaudio==2.6.0",
+    "pytorch-triton-rocm==3.2.0",
+]
 
 [project.scripts]
 audition = "tools.audition:main"       # uv run audition: the local page for trying voices and settings
@@ -65,6 +81,22 @@ build-backend = "uv_build"
 
 [tool.uv]
 default-groups = ["tts"]
+conflicts = [
+    [
+        { group = "tts" },
+        { group = "tts-rocm" },
+    ],
+]
+
+[tool.uv.sources]
+torch = [ { index = "pytorch-rocm", group = "tts-rocm" } ]
+torchaudio = [ { index = "pytorch-rocm", group = "tts-rocm" } ]
+pytorch-triton-rocm = [ { index = "pytorch-rocm", group = "tts-rocm" } ]
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm6.2.4"
+explicit = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -74,6 +74,18 @@ under different reference clips and Chatterbox settings side by side, keeping
 the winner in `forever-vo.toml`, and writing a single regenerated file into the
 pack.
 
+On an AMD GPU the same page runs from the `tts-rocm` group: the same Chatterbox
+pin on PyTorch's ROCm 6.2.4 wheel. Torch still answers as CUDA, which is the
+API the model uses. The group lives in its own environment so the default
+`tts` group, the CUDA wheel the nightly run generates with, stays put:
+
+```bash
+UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition
+```
+
+"Write to pack" and `fvo-generate` stay on that CUDA wheel. A file made on
+ROCm would carry the same fingerprint, and the nightly run would ship it.
+
 The tools are a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml`,
 `uv.lock`, `.python-version`; uv fetches the interpreter itself) and
 `flake.nix` provides the rest: uv, ffmpeg, lua 5.1 and the shared libraries the

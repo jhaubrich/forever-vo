@@ -337,13 +337,22 @@ def load_items(capture: dict, include_progress: bool, catalog: VoiceCatalog) -> 
 # ----------------------------------------------------------------------------
 
 class Synth:
-    def __init__(self, catalog: VoiceCatalog, device: str = "cuda", allow_cpu: bool = False):
+    def __init__(self, catalog: VoiceCatalog, device: str = "cuda", allow_cpu: bool = False,
+                 allow_hip: bool = False):
         import perth
         import torch
         if getattr(perth, "PerthImplicitWatermarker", None) is None:
             perth.PerthImplicitWatermarker = perth.DummyWatermarker  # ty: ignore[invalid-assignment]
         from chatterbox.tts import ChatterboxTTS
         self.torch = torch
+        # ROCm PyTorch implements the CUDA API, so the device string stays "cuda"
+        # and torch.cuda.is_available() is true. Pack files are still made on the
+        # CUDA wheel: the sound index records text and tuning, not which GPU
+        # rendered the file, so a ROCm mp3 would look current and ship.
+        self.hip = getattr(torch.version, "hip", None)
+        if self.hip and not allow_hip:
+            raise SystemExit(f"This torch is the ROCm build ({self.hip}). Pack generation stays on the "
+                             "CUDA wheel (the tts group). Audition listens on ROCm; it does not write pack files.")
         if device == "cuda" and not torch.cuda.is_available():
             # The CPU runs about 0.08x real time against the GPU's 1.5x, so a silent
             # fallback looks like a working run while making ~1 line a minute. A GPU
@@ -351,9 +360,14 @@ class Synth:
             # `journalctl -k | grep Xid`), which can take a reboot to clear.
             if not allow_cpu:
                 raise SystemExit("CUDA is not available, refusing to generate on the CPU (~18x slower "
-                                 "than real time). Check nvidia-smi and the kernel log, or pass --cpu.")
+                                 "than real time). Check nvidia-smi and the kernel log, or pass --cpu. "
+                                 "An AMD GPU uses the tts-rocm group in its own environment: "
+                                 "UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts "
+                                 "--group tts-rocm audition")
             device = "cpu"
             print("CUDA is not available; generating on the CPU because --cpu was given")
+        elif self.hip:
+            print(f"ROCm {self.hip} ({torch.cuda.get_device_name(0)}); the device string stays cuda")
         self.model = ChatterboxTTS.from_pretrained(device=device)
         self.sr = self.model.sr
         self.catalog = catalog
