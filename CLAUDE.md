@@ -181,8 +181,12 @@ and `setuptools<81` for perth) is the `tts` dependency group, on by default;
 releases. `tts-rocm` is the same Chatterbox pin on the ROCm 6.2.4 wheel
 (`torch==2.6.0+rocm6.2.4`, the matching `torchaudio`, `pytorch-triton-rocm==3.2.0`),
 for audition on an AMD GPU. The groups conflict, so the lock holds both and the
-default stays `tts` — do not point the nightly at the ROCm index. Run it as
+default stays `tts` — do not point the nightly at the ROCm index. Setup is in
+the README: the wheel bundles the ROCm userspace (~17 GB unpacked, so
+`.venv-rocm` needs a real disk, not a tmpfs), the machine needs `/dev/kfd`,
+and the run is
 `UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition`.
+Checked on gfx1030, where hipBLASLt falls back to hipblas and the line still completes.
 `Synth` loads that build only when audition asks (`allow_hip`); `fvo-generate`
 refuses it, and audition's "Write to pack" returns 400, because the sound index
 records text and tuning, not which GPU rendered the file. The GitHub ingest
