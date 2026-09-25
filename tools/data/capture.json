@@ -126,6 +126,42 @@
    "time": 1789993444,
    "zone": "The Barrens"
   },
+  "10880|6c0228ac": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "class": "Mage",
+   "event": "gossip",
+   "firstSeen": 1790358024,
+   "mapID": 1454,
+   "name": "Warcaller Gorlach",
+   "npc": "10880",
+   "player": "Myrlin",
+   "race": "Orc",
+   "sex": "m",
+   "subzone": "Valley of Strength",
+   "text": "Your legacy precedes you, $c. If you wish, I can allow you to rewrite that legacy into something new.",
+   "time": 1790358024,
+   "zone": "Orgrimmar"
+  },
+  "10880|dc8290dc": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "class": "Mage",
+   "event": "gossip",
+   "firstSeen": 1790358023,
+   "found": true,
+   "mapID": 1454,
+   "name": "Warcaller Gorlach",
+   "npc": "10880",
+   "pack": "Forever",
+   "player": "Myrlin",
+   "race": "Orc",
+   "sex": "m",
+   "subzone": "Valley of Strength",
+   "text": "Greetings and salutations, hero!  I have the latest news from both continents and points beyond for your consideration.",
+   "time": 1790358023,
+   "zone": "Orgrimmar"
+  },
   "11044|0556ba58": {
    "addon": "0.1.4",
    "build": "70009",
@@ -5399,6 +5435,13 @@
    "name": "Beaten Corpse",
    "sex": 3
   },
+  "10880": {
+   "creatureType": "Humanoid",
+   "level": 3,
+   "modelFileID": 917116,
+   "name": "Warcaller Gorlach",
+   "sex": 2
+  },
   "11044": {
    "creatureType": "Humanoid",
    "level": 25,
@@ -8701,6 +8744,27 @@
    "text": "Is there something I can help you with?",
    "title": "Coldridge Valley Mail Delivery",
    "zone": "Dun Morogh"
+  },
+  "235-accept": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "class": "Mage",
+   "event": "accept",
+   "firstSeen": 1790358021,
+   "found": true,
+   "mapID": 1454,
+   "name": "Warcaller Gorlach",
+   "npc": "10880",
+   "pack": "Forever",
+   "player": "Myrlin",
+   "questID": 235,
+   "race": "Orc",
+   "sex": "m",
+   "subzone": "Valley of Strength",
+   "text": "Attention, young adventurers!  The wilds of Ashenvale await you!\n\nThe Horde has established a strong presence in the lands north of the Barrens.  Our two outposts - Splintertree Post and the Zoram Strand Outpost - strive to bring glory to the Horde!  Those who would prove themselves should seek out guidance there.  Of note: Senani Thunderheart in Splintertree Post, directly north of the Barrens, seeks adventurers willing to take part in a great hunt of Ashenvale!",
+   "time": 1790358021,
+   "title": "The Ashenvale Hunt",
+   "zone": "Orgrimmar"
   },
   "235-complete": {
    "build": "69977",
