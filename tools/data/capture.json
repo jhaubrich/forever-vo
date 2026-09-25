@@ -4384,7 +4384,7 @@
   "3309|ae78a458": {
    "addon": "0.1.5",
    "build": "70009",
-   "class": "Paladin",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789924497,
    "found": true,
@@ -4392,12 +4392,12 @@
    "name": "Karus",
    "npc": "3309",
    "pack": "Forever",
-   "player": "Fixpoint",
-   "race": "Undead",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
    "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790372801,
+   "time": 1790373887,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
@@ -4436,6 +4436,24 @@
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
    "time": 1790356366,
+   "zone": "Orgrimmar"
+  },
+  "3318|6b36598f": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Koma",
+   "npc": "3318",
+   "pack": "Forever",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Valley of Strength",
+   "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
+   "time": 1790373655,
    "zone": "Orgrimmar"
   },
   "3318|ae78a458": {
