@@ -294,6 +294,37 @@ def npc_labels() -> dict[int, str]:
     return labels
 
 
+SOURCE_PICKS = DATA_DIR / "source_picks.json"
+PICK_HISTORY = 20       # per voice; picking is iterative and the last few are what matter
+
+
+def pick_history(voice: str | None = None) -> dict[str, list[dict[str, Any]]]:
+    """Every set of clips a voice has been built from, newest first.
+
+    forever-vo.toml records one pick per voice, the one in force, so each build used to
+    erase the one before it - and picking is experimental by nature: the way to find out
+    whether a clip belongs at the head is to try it and try the other one. This is the
+    undo, and the record of what has already been heard.
+    """
+    if not SOURCE_PICKS.exists():
+        return {}
+    data = json.loads(SOURCE_PICKS.read_text(encoding="utf-8"))
+    return {voice: data.get(voice, [])} if voice else data
+
+
+def record_pick(voice: str, clips: list[int], build: str | None, seconds: float) -> None:
+    """Puts this pick at the head of the voice's history, if it is not already there."""
+    with _config_lock(SOURCE_PICKS):
+        history = pick_history()
+        rows = [row for row in history.get(voice, []) if row.get("clips") != clips]
+        rows.insert(0, {"clips": clips, "build": build, "seconds": round(seconds, 1),
+                        "at": time.strftime("%Y-%m-%d %H:%M")})
+        history[voice] = rows[:PICK_HISTORY]
+        tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
+        tmp.write_text(json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        os.replace(tmp, SOURCE_PICKS)
+
+
 def reference_seconds(path: Path) -> float:
     from tools.build_voice_references import duration
     try:
@@ -787,6 +818,7 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
             "build": picked.build if picked else None,
             "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
             "warnings": sources_warnings(config, voice),
+            "history": pick_history(voice).get(voice, []),
             "reference_url": (f"/api/clips/reference/{voice}.wav"
                               if (VOICES_DIR / f"{voice}.wav").exists() else None),
         }
@@ -809,7 +841,9 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         # A new clip changes what wowdata.archetype_voice casts, which the corpus caches
         studio.forget_corpus()
         seconds = reference_seconds(out)
+        record_pick(voice, request.clips, request.build, seconds)
         return {**studio.state(), "built": out.name, "seconds": seconds, "existed": existed,
+                "history": pick_history(voice).get(voice, []),
                 "reference_url": f"/api/clips/reference/{voice}.wav?t={int(time.time())}",
                 "restage": restage_note(voice, existed, request.keep)}
 

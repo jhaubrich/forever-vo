@@ -66,6 +66,9 @@
   #clips-help b { color: var(--ink); font-weight: 500; }
   #clips-help code { color: var(--ink); }
   #clips-help table { margin: 6px 0; }
+  #clips-history { margin: 6px 0; }
+  #clips-history button { font-size: 12px; padding: 2px 8px; margin: 0 6px 4px 0; }
+  #clips-history button.current { border-color: var(--gold); color: var(--gold); }
   #clips-help td { padding: 3px 8px 3px 0; border: 0; font-size: 12px; color: var(--dim); }
   #clips-help td:first-child { font-family: ui-monospace, monospace; color: var(--ink); white-space: nowrap; }
 </style>
@@ -157,6 +160,7 @@
       <p class="note" id="clips-status"></p>
       <p class="note" id="clips-warn"></p>
       <p class="note" id="clips-budget"></p>
+      <div id="clips-history"></div>
       <div id="clips-wrap">
         <table>
           <thead><tr><th>Order</th><th>Source</th><th>FileDataID</th><th>Length</th><th>Starts at</th><th>Listen</th></tr></thead>
@@ -441,6 +445,28 @@ function renderClips() {
     : "Nothing picked yet.";
 }
 
+// Every build is kept, so trying a clip at the head is reversible: click an older
+// pick to load it back into the table without building, then build if it was better.
+function renderHistory(history, picked) {
+  const box = $("clips-history");
+  if (!history || !history.length) { box.innerHTML = ""; return; }
+  const same = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+  box.innerHTML = `<span class="note">Earlier picks: </span>` + history.map((h, i) =>
+    `<button data-i="${i}" class="${same(h.clips, picks) ? "current" : ""}" ` +
+    `title="${h.clips.join(", ")}">${h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"} · ${h.seconds}s</button>`
+  ).join("");
+  box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const h = history[+b.dataset.i];
+    const missing = h.clips.filter(f => !clipsRows.some(c => c.fdid === f));
+    picks = h.clips.filter(f => clipsRows.some(c => c.fdid === f));
+    renderClips();
+    renderHistory(history, picks);
+    toast(missing.length
+      ? `Loaded ${picks.length} of ${h.clips.length}; ${missing.length} are not among the candidates.`
+      : `Loaded the pick from ${h.at}. Build to make it the reference again.`, missing.length ? "warn" : "ok");
+  }));
+}
+
 async function loadClips(refresh) {
   const voice = $("voice").value;
   clipsVoice = voice;
@@ -457,6 +483,7 @@ async function loadClips(refresh) {
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
       renderClips();
+      renderHistory(d.history, picks);
       if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
     } else if (d.status === "loading" && !clipsPoll) {
       clipsPoll = setInterval(() => loadClips(false), 3000);
@@ -479,6 +506,7 @@ $("clips-build").addEventListener("click", async () => {
     applyState(r);
     $("clips-ref").src = r.reference_url;
     $("clips-status").textContent = `built ${r.built}, ${r.seconds}s`;
+    renderHistory(r.history, picks);
     toast(r.restage, "ok");
   } catch (e) { toast(e.message, "warn"); }
   $("clips-build").disabled = false;
