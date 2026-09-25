@@ -30,6 +30,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import requests
+
 from tools.build_voice_references import (
     RAW_DIR,
     S3GEN_SECONDS,
@@ -59,12 +61,20 @@ class Candidate:
         self.seconds = 0.0
 
     def fetch(self, voice: str) -> bool:
+        """False when this clip cannot be had, rather than taking the voice down with it.
+
+        wago answers 504 often enough on a long run (gnome-male dies on one file out of
+        dozens), and a clip that will not download or will not probe is one candidate
+        missing from a list, not a reason to offer none of them.
+        """
         try:
             self.path = fetch_file(self.fdid, RAW_DIR / voice / f"{self.fdid}.ogg", build=self.build)
-        except FileNotFoundError:
+            self.seconds = duration(self.path)
+        except (FileNotFoundError, requests.RequestException, subprocess.CalledProcessError,
+                OSError) as e:
+            print(f"skip {self.fdid}: {e}", file=sys.stderr)
             return False
-        self.seconds = duration(self.path)
-        return True
+        return self.seconds > 0
 
 
 def emote_names(build: str) -> dict[int, str]:

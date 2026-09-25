@@ -448,6 +448,8 @@ class Studio:
                 return self._clips[voice]
             if self.clips_status.get(voice) == "loading":
                 return None
+            # a failed attempt must not look like one still running, or Load candidates
+            # can never try again and the voice reads "loading" until a restart
             self.clips_status[voice] = "loading"
         threading.Thread(target=self._load_clips, args=(voice,), daemon=True).start()
         return None
@@ -462,7 +464,7 @@ class Studio:
             ]
         except Exception as e:      # noqa: BLE001 - the status line is the error report
             with self.clips_lock:
-                self.clips_status[voice] = f"failed: {e}"
+                self.clips_status[voice] = f"failed: {e} (press Load candidates to retry)"
             return
         with self.clips_lock:
             self._clips[voice] = found
@@ -770,11 +772,11 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         return FileResponse(_under(VOICES_DIR, _safe(name)), media_type="audio/wav")
 
     @app.get("/api/clips/{voice}")
-    def clips(voice: str) -> dict[str, Any]:
+    def clips(voice: str, refresh: bool = False) -> dict[str, Any]:
         """Candidate clips for one voice. Returns status "loading" while the first
         fetch runs; the page polls."""
         _safe(voice)
-        found = studio.clips(voice, refresh=False)
+        found = studio.clips(voice, refresh=refresh)
         config = studio.config()
         picked = config.voices.sources.get(voice)
         return {

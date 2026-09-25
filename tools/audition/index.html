@@ -445,7 +445,7 @@ async function loadClips(refresh) {
   const voice = $("voice").value;
   clipsVoice = voice;
   try {
-    const d = await api(`/api/clips/${encodeURIComponent(voice)}`);
+    const d = await api(`/api/clips/${encodeURIComponent(voice)}${refresh === true ? "?refresh=1" : ""}`);
     if ($("voice").value !== voice) return;
     clipsWindows = d.windows;
     $("clips-status").textContent = `${voice}: ${d.status}`;
