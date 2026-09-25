@@ -809,9 +809,20 @@ def main(argv: list[str] | None = None) -> int:
             stale.add(target.key)
             return True
         previous_voice = recorded.get("v") if isinstance(recorded, dict) else None
-        if previous_voice is None or previous_voice == target.voice or target.voice == args.assume_voice:
+        if previous_voice == target.voice or target.voice == args.assume_voice:
             return False
+        if previous_voice is None:
+            # A placeholder probed by a table rebuild, or a record the merge
+            # stripped before 2026-09-22: nothing says which voice the file was
+            # made in, so it may well be a fallback from before the speaker was
+            # known (Tabitha Heartweaver's turn-in stayed human-female for days
+            # while her offer was remade as scourge-female). Remade once, it
+            # carries its voice and settles.
+            skipped["voice unknown, regenerating"] = skipped.get("voice unknown, regenerating", 0) + 1
+            stale.add(target.key)
+            return True
         skipped["voice changed, regenerating"] = skipped.get("voice changed, regenerating", 0) + 1
+        stale.add(target.key)
         return True
 
     def in_voice(target: Target) -> bool:
