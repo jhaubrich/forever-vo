@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.5
 
 - Skyborne characters no longer leave "skyborne" in the lines they capture.
   The client reports the race as "Windshaper Skyborne" but reads `$r` as
