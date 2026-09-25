@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import hashlib
 import json
 import os
 import re
@@ -157,9 +158,23 @@ class VoiceCatalog:
         retuned voice regenerates, the way a changed voice already does: a quest
         file keeps its <questID>-<event> name, so nothing else would notice. A
         voice on the default tuning hashes exactly as before, so tuning one voice
-        does not restage every other file."""
+        does not restage every other file.
+
+        Clips chosen by ear ([voices.sources]) join it too, keyed on the file actually
+        cloned from rather than on the voice asking - a line reading from npc-3597.wav
+        restages when that clip's picks change, whoever picked them. Rebuilding a clip
+        is still invisible on its own: the bytes are not hashed, only the decision. A
+        voice with no picks hashes exactly as before."""
+        resolved = self.resolve(voice)
         key = text_key(text)
-        fields = self.config.tts.differences(self.resolve(voice).settings)
+        fields = self.config.tts.differences(resolved.settings)
+        picked = self.config.voices.sources.get(resolved.clip.stem) if resolved.clip else None
+        if picked and picked.clips:
+            # a digest, not the list: sound_index carries this for every file, and a
+            # fifteen-clip pick would run longer than the text hash it qualifies
+            joined = ",".join(str(c) for c in picked.clips) + f"@{picked.build or ''}"
+            fields = dict(fields)
+            fields["clips"] = hashlib.blake2b(joined.encode(), digest_size=4).hexdigest()
         if not fields:
             return key
         return key + "+" + ",".join(f"{name}={value}" for name, value in sorted(fields.items()))

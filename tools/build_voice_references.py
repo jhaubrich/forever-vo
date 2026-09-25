@@ -33,7 +33,14 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from tools.config import BETA_BUILD, GENDER_DICT, RACE_DICT, RETAIL_BUILD, VOICES_DIR
+from tools.config import (
+    BETA_BUILD,
+    GENDER_DICT,
+    RACE_DICT,
+    RETAIL_BUILD,
+    VOICES_DIR,
+    load_config,
+)
 from tools.wowdata import dominant_sound_set, fetch_file, load_db2, sound_set_displays
 
 RAW_DIR = VOICES_DIR / "raw"
@@ -562,8 +569,18 @@ def main(argv: list[str] | None = None) -> int:
         sources.update(named_npc_fdids())
         wanted.discard("npc")
 
+    # Clips chosen by ear win over every recipe, in both modes: --named rebuilds each
+    # npc-<displayID> unconditionally, and one of those is a production reference
+    # ([tts.voices.dwarf-male] clones from npc-3597), so a pick has to survive it.
+    picked = {name: entry for name, entry in load_config().voices.sources.items() if entry.clips}
+    if named_only:
+        picked = {name: entry for name, entry in picked.items() if name.startswith("npc-")}
+
     if not wanted and not named_only:
-        keep = set(sources) | {p.stem for p in VOICES_DIR.glob("npc-*.wav")}
+        # A pick for a set no recipe mints is absent from `sources`, and
+        # wowdata.archetype_voice casts on the file being there, so sweeping it away
+        # would silently recast those NPCs onto the race voice.
+        keep = set(sources) | set(picked) | {p.stem for p in VOICES_DIR.glob("npc-*.wav")}
         for stale in sorted(VOICES_DIR.glob("*-s*.wav")):
             if stale.stem not in keep:
                 # wowdata.archetype_voice resolves on existence alone, so a clip left
@@ -571,9 +588,24 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"removing stale {stale.name}")
                 stale.unlink()
     ranks = archetype_ranks(sources)
-    for voice in sorted(sources):
+    for voice in sorted(set(sources) | set(picked)):
         race = voice.split("-")[0]
         if wanted and race not in wanted and voice not in wanted:
+            continue
+        entry = picked.get(voice)
+        if entry:
+            chosen = []
+            for fdid in entry.clips:
+                try:
+                    chosen.append(fetch_file(fdid, RAW_DIR / voice / f"{fdid}.ogg",
+                                             build=entry.build or BETA_BUILD))
+                except FileNotFoundError as e:
+                    print("skip:", e)
+            if len(chosen) != len(entry.clips):
+                # Refuse rather than quietly build a shorter clip than was chosen
+                print(f"{voice}: {len(entry.clips) - len(chosen)} picked clip(s) missing, not rebuilt")
+                continue
+            build_picked_reference(voice, chosen)
             continue
         folder = RAW_DIR / voice
         paths = []
