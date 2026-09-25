@@ -151,10 +151,11 @@ restore_name = true
 # headroom for another narrator voice. Cutting at 50 instead would put the
 # first side back over the cap.
 base_split_level = 40
-# Release mp3s are mono at 22.05 kHz; 48k until 2026-09-22, when the base pack
-# came to 1.3 GB with a third of the lines still to go. The working files under
-# ForeverVO_Data/Sounds keep the generator's full quality, so this can go back
-# up on any later build.
+# Release mp3s are mono at 22.05 kHz with no Xing/Info header frame (the
+# client misreads that frame and stops the line early; see release_pack.py);
+# 48k until 2026-09-22, when the base pack came to 1.3 GB with a third of the
+# lines still to go. The working files under ForeverVO_Data/Sounds keep the
+# generator's full quality, so this can go back up on any later build.
 bitrate = "32k"
 transcode_workers = 4
 

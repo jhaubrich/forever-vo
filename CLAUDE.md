@@ -357,8 +357,10 @@ Three CurseForge projects, three release paths:
 
 `release_pack.py` builds from the single working folder `ForeverVO_Data`
 (which holds everything on the owner's machine and is what the client loads
-locally), re-encodes to mono 32 kbps mp3 at 22.05 kHz under
-`tools/data/release/` (48 kbps until 2026-09-22; the originals in
+locally), re-encodes to mono 32 kbps mp3 at 22.05 kHz with no Xing/Info
+header frame under
+`tools/data/release/` (48 kbps until 2026-09-22; the header frame was there
+until 2026-09-25, see the gotcha below; the originals in
 `ForeverVO_Data/Sounds/` stay at the generator's full quality, so the
 release bitrate can be raised again on any later build), streams the upload
 from disk (`requests-toolbelt`), writes
@@ -415,6 +417,23 @@ owner's machine picks the files up on the next sync.
   `gsettings set org.gnome.settings-daemon.plugins.power
   sleep-inactive-ac-type 'nothing'` (set 2026-09-22; battery left at
   `suspend`). If a run dies at a round two-hour mark, check that setting first.
+- **Release mp3s carry no Xing/Info header frame** (`-write_xing 0` in
+  `release_pack.transcode`). LAME puts one in front of a CBR stream, sized for
+  the tag rather than the stream (56 kbps on a 32 kbps mono file), and the
+  client does not recognise the CBR `Info` variant: it takes that first frame's
+  bitrate as the file's and computes the length from the byte count, so until
+  2026-09-25 every released line stopped at 32/56 of its length (958-accept,
+  31 s, stopped at 16 s; reported on all three CurseForge packs). The owner
+  never heard it because the working folder's files are the generator's VBR
+  originals, whose `Xing` frame the client does read, and the client runs the
+  same Windows binary through Faugus, so it was never a Linux/Windows thing.
+  Found by timing the same line in game as CBR with and without the header at
+  22.05 and 44.1 kHz: the header was the whole story, the sample rate nothing
+  (a first guess at MPEG-2 framing was wrong). The fix costs no bytes, so the
+  1 GB cap is untouched; 64 kbps, as one commenter suggested, would have
+  doubled every pack. The release state records the encoding so
+  `--if-changed` re-releases on an encoding change. New files under `AddOns`
+  need a client restart, not a `/reload`, before `PlaySoundFile` finds them.
 - The wago.tools CSV export is complete for client tables, but the beta's
   `BroadcastText` really is 12 rows; gossip is server-pushed on this engine.
 - `questcache.wdb` records have a variable fixed part; `wdbcache.py` scans

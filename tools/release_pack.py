@@ -22,14 +22,19 @@ everything on the maintainer's machine):
     ./tools/run.sh tools/release_pack.py delta --upload --if-changed   # nightly use
     ./tools/run.sh tools/release_pack.py base && ./tools/run.sh tools/release_pack.py base_endgame
 
-Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz, about 14 MB per
-hour of speech; it was 48 kbps until 2026-09-22, when the base pack came to
-1.3 GB with a third of the lines still to go) into tools/data/release/. The
-zip stores the files uncompressed, since mp3 does not deflate. Versions are
-date based (2026.09.21, then 2026.09.21.2 on the same day). The base pack
-upload as "release" files unless --release-type says otherwise (the delta was
-"beta" until 2026-09-24: the CurseForge app hides beta files unless the user
-opts in, so default installs never got it).
+Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz with no
+Xing/Info header frame, about 14 MB per hour of speech; it was 48 kbps until
+2026-09-22, when the base pack came to 1.3 GB with a third of the lines still
+to go, and carried the header until 2026-09-25, when the client turned out to
+misread it and stop every line at 32/56 of its length, see the comment at
+SAMPLE_RATE) into tools/data/release/. The zip stores the files uncompressed,
+since mp3 does not deflate. Versions are date based (2026.09.21, then
+2026.09.21.2 on the same day). Packs upload as "release" files unless
+--release-type says otherwise (the delta was "beta" until 2026-09-24: the
+CurseForge app hides beta files unless the user opts in, so default installs
+never got it). --if-changed compares the file set and the encoding with the
+last release recorded in release_state.json, so a change to either releases
+every file again.
 
 The API key comes from the repo's .env (gitignored): CF_API_KEY=... (the name
 the BigWigs packager uses too; CURSEFORGE_API_KEY is still accepted).
@@ -67,6 +72,20 @@ RELEASE_DIR = DATA_DIR / "release"
 STATE_FILE = DATA_DIR / "release_state.json"
 CF_API = "https://wow.curseforge.com/api"
 GAME_VERSION_NAME = "1.60.1"
+
+# Release files carry no Xing/Info header frame (-write_xing 0). LAME puts one
+# in front of a CBR stream, sized for the tag rather than the stream (56 kbps
+# on a 32 kbps mono file), and the client's decoder does not recognise the
+# CBR "Info" variant: it takes that first frame's bitrate as the file's and
+# computes the length from the byte count, so until 2026-09-25 every line
+# stopped at 32/56 of its length (958-accept, 31 s, stopped at 16 s; reported
+# on all three CurseForge packs). Without the header the first frame is a
+# real 32 kbps frame and the estimate is exact. The generator's VBR originals
+# under ForeverVO_Data/Sounds carry the "Xing" variant, which the client does
+# read, so the owner never heard it in play. Tested in game with the same
+# line at 22.05 and 44.1 kHz, with and without the header. The sample rate
+# was never a factor; 22.05 kHz keeps the most bandwidth per bit.
+SAMPLE_RATE = 22050
 
 CLASSIC_JSON = DATA_DIR / "bulk" / "classic.json"
 
@@ -160,11 +179,16 @@ def next_version(pack: str) -> str:
     return today_str
 
 
+def encoding_tag(release: Release) -> str:
+    """Names the audio encoding a pack was built with; a change is a reason to release again."""
+    return f"mp3 mono {SAMPLE_RATE} Hz {release.bitrate} no-xing"
+
+
 def transcode(src: Path, dst: Path, bitrate: str) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-ac", "1", "-ar", "22050",
-         "-codec:a", "libmp3lame", "-b:a", bitrate, str(dst)],
+        ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-ac", "1", "-ar", str(SAMPLE_RATE),
+         "-codec:a", "libmp3lame", "-b:a", bitrate, "-write_xing", "0", str(dst)],
         check=True,
     )
 
@@ -340,8 +364,11 @@ def main(argv: list[str] | None = None) -> int:
         previous = set(last.get("files", []))
         new_files = len(set(fingerprint) - previous)
         changed = last.get("files") != fingerprint
+        # A new encoding re-releases every file, so it is due whatever --min-new says.
+        reencoded = last.get("encoding") != encoding_tag(release)
         age_days = (today() - date.fromisoformat(last["date"])).days if last.get("date") else 10**6
-        due = changed and (new_files >= args.min_new or (args.max_age_days and age_days >= args.max_age_days))
+        due = reencoded or (
+            changed and (new_files >= args.min_new or (args.max_age_days and age_days >= args.max_age_days)))
         if not due:
             print(f"not due: {new_files} new files since the last release {age_days} days ago "
                   f"(need {args.min_new} new or {args.max_age_days} days); nothing to do")
@@ -351,7 +378,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.upload:
         upload(args.pack, zip_path, version, stats, release_type, release)
-    state[args.pack] = {"version": version, "date": today().isoformat(), "files": fingerprint, "zip": str(zip_path)}
+    state[args.pack] = {"version": version, "date": today().isoformat(), "files": fingerprint, "zip": str(zip_path),
+                        "encoding": encoding_tag(release)}
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
     return 0
 
