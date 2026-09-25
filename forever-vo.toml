@@ -83,6 +83,73 @@ clips = [540084, 540030, 540025, 540045, 540051]
 [voices.sources.gnome-female]
 clips = [540406, 540424, 540423, 540426, 540443]
 
+[voices.sources.gnome-male]
+clips = [540464, 540467, 540495, 540468]
+
+[voices.sources.goblin-female]
+clips = [541867, 541825, 541770, 550655, 550662, 550680]
+
+[voices.sources.goblin-male]
+clips = [
+    550772,
+    550820,
+    550819,
+    550817,
+    550818,
+    550812,
+    550808,
+    550807,
+    550809,
+    550806,
+    550813,
+    550805,
+]
+
+[voices.sources.human-female]
+clips = [540633, 540639, 540622, 540643, 540617]
+
+[voices.sources.human-male]
+clips = [540710]
+
+[voices.sources.nightelf-female]
+clips = [556536, 541059, 541035, 541067]
+
+[voices.sources.nightelf-male]
+clips = [541134, 556577, 556574, 556587]
+
+[voices.sources.orc-male]
+clips = [
+    557806,
+    557800,
+    557807,
+    557803,
+    557809,
+    557799,
+    557802,
+    557805,
+    557814,
+    557804,
+    541433,
+]
+
+[voices.sources.scourge-male]
+clips = [542773, 542757, 563198, 563199]
+
+[voices.sources.troll-female]
+clips = [562839, 562843, 543245, 543257, 562835, 562837]
+
+[voices.sources.tauren-male]
+clips = [
+    543033,
+    561587,
+    561583,
+    561579,
+    561581,
+    561573,
+    561572,
+    543065,
+]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
@@ -126,6 +193,48 @@ cfg_weight = 0.3
 # was good four times of four. Sharptalon reads best as two words: "Sharp
 # Talon" beat the plain spelling and "Sharptallon" in the tauren-female voice,
 # and a space does not leave the pause a hyphen can (#38).
+
+[tts.voices.goblin-male]
+exaggeration = 0.9
+cfg_weight = 0.8
+
+[tts.voices.goblin-female]
+exaggeration = 0.7
+cfg_weight = 0.5
+
+[tts.voices.human-female]
+exaggeration = 0.7
+cfg_weight = 0.3
+tempo = 1.1
+
+[tts.voices.human-male]
+exaggeration = 0.5
+cfg_weight = 0.3
+tempo = 1.1
+
+[tts.voices.nightelf-female]
+exaggeration = 0.6
+cfg_weight = 0.3
+
+[tts.voices.orc-female]
+exaggeration = 0.7
+cfg_weight = 0.5
+
+[tts.voices.orc-male]
+exaggeration = 0.3
+cfg_weight = 0.6
+
+[tts.voices.scourge-female]
+exaggeration = 0.3
+cfg_weight = 0.6
+
+[tts.voices.scourge-male]
+exaggeration = 0.4
+cfg_weight = 0.4
+
+[tts.voices.troll-female]
+exaggeration = 0.6
+cfg_weight = 0.5
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
