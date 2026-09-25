@@ -477,13 +477,16 @@ async function loadClips(refresh) {
     $("clips-status").textContent = `${voice}: ${d.status}`;
     $("clips-warn").innerHTML = d.warnings.map(w => `<span class="warn">${esc(w)}</span>`).join("<br>");
     $("clips-ref").src = d.reference_url || "";
+    // before the candidates, not after: the history is the reason to open the panel
+    // when a voice has been built before, and the fetch behind the table takes minutes
+    renderHistory(d.history, picks);
     if (d.clips.length) {
       clipsRows = d.clips;
       if (refresh !== false || !picks.length) picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
       renderClips();
-      renderHistory(d.history, picks);
+      renderHistory(d.history, picks);   // again, now that picks are seeded
       if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
     } else if (d.status === "loading" && !clipsPoll) {
       clipsPoll = setInterval(() => loadClips(false), 3000);
