@@ -3922,7 +3922,7 @@
   "3310|cc0cf280": {
    "addon": "0.1.4",
    "build": "70009",
-   "class": "Hunter",
+   "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789932147,
    "found": true,
@@ -3930,12 +3930,12 @@
    "name": "Doras",
    "npc": "3310",
    "pack": "Forever",
-   "player": "Pellinore",
-   "race": "Windshaper Skyborne",
-   "sex": "f",
+   "player": "Myrlin",
+   "race": "Orc",
+   "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
-   "time": 1790294069,
+   "time": 1790329321,
    "zone": "Orgrimmar"
   },
   "3318|2f8d506f": {
