@@ -28,3 +28,4 @@ ForeverVO_Data/Sounds/**/*.part
 tools/data/verified-listfile.csv
 dist/
 tools/data/audition/
+tools/data/voicecheck/

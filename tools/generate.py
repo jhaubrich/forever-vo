@@ -39,6 +39,7 @@ import argparse
 import fcntl
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -91,7 +92,10 @@ class VoiceCatalog:
     accent drift that [tts.voices] corrects belongs to the clip, so a Dark Iron
     dwarf cloned from dwarf-male's clip needs dwarf-male's settings as much as a
     dwarf does (#18). A voice's own [tts.voices] entry may name a different clip
-    to clone from (`reference`), which is how dwarf-male reads from npc-3597."""
+    to clone from (`reference`), which is how dwarf-male reads from npc-3597.
+    An archetype with no row of its own is the exception: it keeps its wav and
+    borrows the plain race voice's knobs. The race's `reference` is a different
+    file and stays on the plain voice."""
 
     def __init__(self, config: Config, voices_dir: Path = VOICES_DIR):
         self.config = config
@@ -113,6 +117,26 @@ class VoiceCatalog:
             return self._resolved[voice]
         race, _, gender = voice.partition("-")
         chain = [voice]
+        # "<race>-<gender>-s<set>" is one archetype of a voice. If that clip is gone -
+        # build_voice_references drops an archetype whose head is too thin to carry a
+        # delivery - the voice's own clip is a better fallback than another race's.
+        archetype = re.fullmatch(r"(.+)-s\d+", voice)
+        if archetype:
+            base = archetype.group(1)
+            chain.append(base)
+            race, _, gender = base.partition("-")
+            own = self.voices_dir / f"{voice}.wav"
+            # The archetype montage is a different recording from the plain voice.
+            # With no [tts.voices] row it still needs the race's knobs (dwarf-male
+            # is 0.75 / 0.3; the defaults send it back to an American accent), and
+            # the race's `reference` must not replace this file.
+            if voice not in self.config.tts.voices and own.exists():
+                borrowed = self.config.tts.settings_for(base)
+                settings = TtsSettings(exaggeration=borrowed.exaggeration,
+                                       cfg_weight=borrowed.cfg_weight, tempo=borrowed.tempo)
+                resolved = ResolvedVoice(own, voice, settings)
+                self._resolved[voice] = resolved
+                return resolved
         fallback = self.config.voices.fallbacks.get(race)
         if fallback:
             chain.append(f"{fallback}-{gender}" if gender else fallback)

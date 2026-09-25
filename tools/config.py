@@ -48,6 +48,12 @@ WOW_DIR = Path(os.environ.get(
 ))
 BETA_DIR = WOW_DIR / "_classic_beta_"
 BETA_BUILD = os.environ.get("WOW_BETA_BUILD", "1.60.1.69913")
+# Blood elves and goblins were not playable in Classic 1.x, so this client carries
+# no /joke or /flirt for them and their references are barks only (#41). Retail has
+# those recordings; it is the only source used for them, and only for a race with
+# no spoken emotes here - for every Classic race retail holds the same 1.x files
+# and fewer of them, so there is nothing to gain and a re-record to risk.
+RETAIL_BUILD = os.environ.get("WOW_RETAIL_BUILD", "12.1.0.69933")
 WAGO_BASE = "https://wago.tools"
 
 # ChrRaces IDs -> voice family (forever-vo/tools/voices/<race>-<gender>.wav)
