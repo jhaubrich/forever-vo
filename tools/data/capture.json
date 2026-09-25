@@ -4384,7 +4384,7 @@
   "3309|ae78a458": {
    "addon": "0.1.5",
    "build": "70009",
-   "class": "Hunter",
+   "class": "Paladin",
    "event": "gossip",
    "firstSeen": 1789924497,
    "found": true,
@@ -4392,12 +4392,12 @@
    "name": "Karus",
    "npc": "3309",
    "pack": "Forever",
-   "player": "Pellinore",
-   "race": "Windshaper Skyborne",
-   "sex": "f",
+   "player": "Fixpoint",
+   "race": "Undead",
+   "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790370908,
+   "time": 1790372801,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
