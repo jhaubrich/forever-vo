@@ -78,6 +78,7 @@ from tools.generate import (
     sound_path,
 )
 from tools.textclean import clean
+from tools.wowdata import archetype_names, is_archetype, sound_set_displays
 
 AUDITION_DIR = DATA_DIR / "audition"
 SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -200,6 +201,9 @@ def write_voice_sources(path: Path, voice: str, clips: list[int], build: str | N
         if not clips:
             if voice in sources:
                 del sources[voice]
+            if not sources:
+                # leaving an empty [voices.sources] behind would not round-trip
+                del voices["sources"]
         else:
             entry = tomlkit.table()
             array = tomlkit.array()
@@ -437,6 +441,28 @@ class Studio:
     def voices(self) -> list[str]:
         return sorted(p.stem for p in VOICES_DIR.glob("*.wav"))
 
+    def pickable(self) -> list[dict[str, Any]]:
+        """Every voice clips can be chosen for, whether or not it has a clip yet.
+
+        The voice list is the wavs on disk, which leaves out the archetypes no recipe
+        mints - and those are the ones worth picking for: the game casts 182 archetypes
+        and 49 have a file, so 133 sets fall back to the plain race voice. human-male-s50
+        is 245 creature displays. wowdata.archetype_voice casts on the file being there,
+        so building one is what puts those NPCs on it.
+        """
+        on_disk = set(self.voices())
+        rows: list[dict[str, Any]] = [
+            {"voice": v, "clip": True, "displays": None, "archetype": is_archetype(v)}
+            for v in self.voices()]
+        for race_gender, counts in sound_set_displays().items():
+            names = archetype_names(race_gender)
+            for sound_id, displays in counts.items():
+                name = names[sound_id]
+                if name not in on_disk:
+                    rows.append({"voice": name, "clip": False, "displays": displays,
+                                 "archetype": True})
+        return sorted(rows, key=lambda r: r["voice"])
+
     def state(self) -> dict[str, Any]:
         config = self.config()
         catalog = self.catalog(config)
@@ -450,6 +476,7 @@ class Studio:
         return {
             "config_path": str(self.config_path),
             "voices": self.voices(),
+            "pickable": self.pickable(),
             "narrator": config.voices.narrator,
             "defaults": {"exaggeration": config.tts.exaggeration, "cfg_weight": config.tts.cfg_weight,
                          "tempo": config.tts.tempo},

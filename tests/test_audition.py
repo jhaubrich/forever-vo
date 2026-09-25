@@ -95,26 +95,31 @@ def test_random_line_stays_in_the_voice_and_prefers_quests() -> None:
 
 
 def test_write_voice_sources_adds_and_removes_and_keeps_the_reference_field(toml_copy: Path) -> None:
+    # a voice the real file has no picks for, so the round trip is about this write and
+    # not about whatever has been chosen by ear since
+    voice = next(v for v in ("tauren-male", "gnome-male", "orc-female")
+                 if v not in load_config(toml_copy).voices.sources)
+    load_config.cache_clear()
     before = toml_copy.read_text(encoding="utf-8")
-    config = write_voice_sources(toml_copy, "bloodelf-female", [539282, 539211, 556543])
-    assert config.voices.sources["bloodelf-female"].clips == [539282, 539211, 556543]
+    config = write_voice_sources(toml_copy, voice, [539282, 539211, 556543])
+    assert config.voices.sources[voice].clips == [539282, 539211, 556543]
     text = toml_copy.read_text(encoding="utf-8")
-    assert "[voices.sources.bloodelf-female]" in text
+    assert f"[voices.sources.{voice}]" in text
     assert "# Dwarves came out of Chatterbox sounding American (#18)." in text
     # [voices.sources.<v>] is what a clip is made of; [tts.voices.<v>].reference is a
     # different clip to clone from, and writing one must not disturb the other
     assert config.tts.voices["dwarf-male"].reference == "npc-3597"
 
-    config = write_voice_sources(toml_copy, "bloodelf-female", [])
-    assert "bloodelf-female" not in config.voices.sources
+    config = write_voice_sources(toml_copy, voice, [])
+    assert voice not in config.voices.sources
     assert tomlkit.parse(toml_copy.read_text(encoding="utf-8")).unwrap() == tomlkit.parse(before).unwrap()
 
 
 def test_write_voice_sources_keeps_the_build(toml_copy: Path) -> None:
-    config = write_voice_sources(toml_copy, "goblin-male", [541910], build="12.1.0.69933")
-    assert config.voices.sources["goblin-male"].build == "12.1.0.69933"
-    config = write_voice_sources(toml_copy, "goblin-male", [541910])
-    assert config.voices.sources["goblin-male"].build is None
+    config = write_voice_sources(toml_copy, "tauren-male", [541910], build="12.1.0.69933")
+    assert config.voices.sources["tauren-male"].build == "12.1.0.69933"
+    config = write_voice_sources(toml_copy, "tauren-male", [541910])
+    assert config.voices.sources["tauren-male"].build is None
 
 
 def test_sources_warnings_names_a_clip_the_voice_does_not_actually_read() -> None:

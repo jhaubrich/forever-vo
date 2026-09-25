@@ -27,7 +27,6 @@ from __future__ import annotations
 
 import functools
 import os
-import re
 import subprocess
 import sys
 from collections import Counter, defaultdict
@@ -41,7 +40,16 @@ from tools.config import (
     VOICES_DIR,
     load_config,
 )
-from tools.wowdata import dominant_sound_set, fetch_file, load_db2, sound_set_displays
+from tools.wowdata import (
+    archetype_names,
+    archetype_of,
+    base_voice,
+    dominant_sound_set,
+    fetch_file,
+    is_archetype,
+    load_db2,
+    sound_set_displays,
+)
 
 RAW_DIR = VOICES_DIR / "raw"
 TARGET_SECONDS = 20.0
@@ -222,7 +230,7 @@ def archetype_fdids() -> dict[str, list[int]]:
         for sound_id, _ in kept:
             fdids = set_fdids(sound_id)
             if fdids:
-                voices[f"{voice}-s{sound_id}"] = fdids
+                voices[archetype_names(voice)[sound_id]] = fdids
     return voices
 
 
@@ -348,7 +356,8 @@ def speech_heads(sources: dict[str, list[int]]) -> dict[str, tuple[list[tuple[in
                 # its sub-threshold sets put it last of four and left tauren-female
                 # heading with a 2.0 s clip.
                 return 1 << 30
-            return counts.get(int(name.rsplit("-s", 1)[1]), 0)
+            found = archetype_of(name)
+            return counts.get(found[1], 0) if found else 0
 
         if len(pool) < len(names) * SPEECH_HEAD_CLIPS:
             print(f"{race_gender}: {len(pool)} spoken lines for {len(names)} voices, "
@@ -373,19 +382,18 @@ def archetype_ranks(sources: dict[str, list[int]]) -> dict[str, int]:
     """Archetype clips numbered 0, 1, ... within their race, most displays first."""
     by_race: dict[str, list[str]] = defaultdict(list)
     for name in sources:
-        if re.fullmatch(r".+-s\d+", name):
+        if is_archetype(name):
             by_race[base_voice(name)].append(name)
     ranks: dict[str, int] = {}
     for race, names in by_race.items():
         counts = sound_set_displays().get(race) or Counter()
-        ordered = sorted(names, key=lambda n: -counts.get(int(n.rsplit("-s", 1)[1]), 0))
+        def displays_of(name: str, counts: Counter[int] = counts) -> int:
+            found = archetype_of(name)
+            return -counts.get(found[1], 0) if found else 0
+
+        ordered = sorted(names, key=displays_of)
         ranks.update({name: i for i, name in enumerate(ordered)})
     return ranks
-
-
-def base_voice(name: str) -> str:
-    """`tauren-female-s70` -> `tauren-female`; anything else unchanged."""
-    return name.rsplit("-s", 1)[0] if re.fullmatch(r".+-s\d+", name) else name
 
 
 def concat_line(path: Path) -> str:
@@ -535,7 +543,7 @@ def build_reference(voice: str, files: list[Path], head: list[Path] | None = Non
     # a voice whose budget fits only one speech clip would otherwise count the first
     # bark behind it as speech - goblin-male reported a 6.8 s head that was 5.4 s of
     # joke and 1.4 s of "Hey there!" - and a thin archetype could clear the gate on it.
-    if re.fullmatch(r".+-s\d+", voice) and head_seconds < ARCHETYPE_MIN_HEAD:
+    if is_archetype(voice) and head_seconds < ARCHETYPE_MIN_HEAD:
         # Not enough speech to hold a delivery; wowdata.archetype_voice falls back to
         # the race voice when the clip is absent, and that one has the longest head
         out.unlink(missing_ok=True)
@@ -581,8 +589,8 @@ def main(argv: list[str] | None = None) -> int:
         # wowdata.archetype_voice casts on the file being there, so sweeping it away
         # would silently recast those NPCs onto the race voice.
         keep = set(sources) | set(picked) | {p.stem for p in VOICES_DIR.glob("npc-*.wav")}
-        for stale in sorted(VOICES_DIR.glob("*-s*.wav")):
-            if stale.stem not in keep:
+        for stale in sorted(VOICES_DIR.glob("*.wav")):
+            if is_archetype(stale.stem) and stale.stem not in keep:
                 # wowdata.archetype_voice resolves on existence alone, so a clip left
                 # behind by an earlier set of constants still casts NPCs
                 print(f"removing stale {stale.name}")

@@ -265,6 +265,55 @@ def dominant_sound_set(voice: str) -> int | None:
     return counts.most_common(1)[0][0] if counts else None
 
 
+def base_voice(name: str) -> str:
+    """`dwarf-male-guard` -> `dwarf-male`; anything else unchanged.
+
+    A voice is `<race>-<gender>`, so a third segment is what makes it an archetype.
+    Splitting on the segment rather than matching `-s<digits>` is what lets an archetype
+    be called something a person can read.
+    """
+    parts = name.split("-")
+    return "-".join(parts[:2]) if len(parts) > 2 else name
+
+
+def is_archetype(name: str) -> bool:
+    return len(name.split("-")) > 2
+
+
+@functools.cache
+def archetype_names(voice: str) -> dict[int, str]:
+    """NPCSounds set -> the clip name for it, unique within this voice.
+
+    Blizzard files each set's recordings under a folder that says what it is, so the
+    clip can be `dwarf-male-guard` instead of `dwarf-male-s37` (see tools/soundpaths.py).
+    Several sets share a folder - 36 and 156 are both dwarfmalegrimnpc, the same audio
+    cast twice - so the set the most displays use takes the bare name and the rest keep
+    their row id, which is unique by construction. A set with no folder in the map keeps
+    `s<id>` too, so a name never depends on the map being complete.
+    """
+    from tools.soundpaths import descriptor
+    names: dict[int, str] = {}
+    taken: set[str] = set()
+    for sound_id, _ in (sound_set_displays().get(voice) or Counter()).most_common():
+        word = descriptor(sound_id, voice)
+        if word and word not in taken:
+            taken.add(word)
+            names[sound_id] = f"{voice}-{word}"
+        else:
+            names[sound_id] = f"{voice}-s{sound_id}"
+    return names
+
+
+@functools.cache
+def archetype_of(name: str) -> tuple[str, int] | None:
+    """`dwarf-male-guard` -> ("dwarf-male", 37), for reading a clip name back."""
+    voice = base_voice(name)
+    for sound_id, minted in archetype_names(voice).items():
+        if minted == name:
+            return voice, sound_id
+    return None
+
+
 def archetype_voice(voice: str, display_id: int | None) -> str | None:
     """`<race>-<gender>-s<set>` when this display's archetype has a clip of its own.
 
@@ -277,7 +326,7 @@ def archetype_voice(voice: str, display_id: int | None) -> str | None:
     sound_id = display_sound_set(display_id)
     if not sound_id or sound_id not in sound_set_displays().get(voice, {}):
         return None
-    name = f"{voice}-s{sound_id}"
+    name = archetype_names(voice).get(sound_id, f"{voice}-s{sound_id}")
     clip, plain = VOICES_DIR / f"{name}.wav", VOICES_DIR / f"{voice}.wav"
     if not clip.exists():
         return None

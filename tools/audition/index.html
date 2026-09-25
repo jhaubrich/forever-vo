@@ -47,7 +47,7 @@
   #current { padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
   #current .m { color: var(--dim); font-size: 12px; }
   details#clips { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 10px; }
-  details#clips summary { cursor: pointer; color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+  details#clips summary { cursor: pointer; color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
   #clips-body tr { cursor: pointer; }
   #clips-body tr:hover { background: var(--panel); }
   #clips-body tr.picked { background: var(--panel); }
@@ -116,7 +116,7 @@
     </table>
     <p class="note" id="progress"></p>
 
-    <details id="clips">
+    <details id="clips" open>
       <summary>Source clips &mdash; what this voice's reference is cut from</summary>
       <div class="row" style="margin-top:8px">
         <button id="clips-load">Load candidates</button>
@@ -166,12 +166,33 @@ function applyState(s) {
   $("p-list").textContent = Object.entries(s.pronunciations).map(([w, sp]) => `${w} → ${sp}`).join(", ") || "none";
   const voice = $("voice"), ref = $("reference");
   const keepVoice = voice.value, keepRef = ref.value;
-  voice.innerHTML = s.voices.map(v => `<option value="${v}">${v}${s.resolved[v].tuned ? " ★" : ""}</option>`).join("");
+  voice.innerHTML = voiceOptions(s);
   ref.innerHTML = `<option value="">the voice's own (${"as configured"})</option>` + s.voices.map(v => `<option value="${v}">${v}.wav</option>`).join("");
   if (first) { voice.value = s.voices.includes("dwarf-female") ? "dwarf-female" : s.voices[0]; }
   else { voice.value = keepVoice; ref.value = keepRef; }
   if (first) { $("exag").value = `${s.defaults.exaggeration}, 0.75`; $("cfg").value = `${s.defaults.cfg_weight}, 0.3`; }
   showResolved();
+}
+
+// Grouped, because the list runs to a few hundred: the race voices first, then every
+// archetype the game casts - including the ones with no clip yet, which is where picking
+// clips matters most, since wowdata.archetype_voice puts NPCs on an archetype as soon as
+// its file exists.
+function voiceOptions(s) {
+  const rows = s.pickable || s.voices.map(v => ({ voice: v, clip: true, displays: null }));
+  const group = (label, list) => list.length
+    ? `<optgroup label="${label}">` + list.map(r => {
+        const star = s.resolved[r.voice] && s.resolved[r.voice].tuned ? " ★" : "";
+        const note = r.clip ? "" : ` — no clip yet${r.displays ? `, ${r.displays} displays` : ""}`;
+        return `<option value="${r.voice}">${r.voice}${star}${note}</option>`;
+      }).join("") + "</optgroup>"
+    : "";
+  const isArch = r => r.archetype;
+  const isNpc = r => r.voice.startsWith("npc-");
+  return group("Race voices", rows.filter(r => !isArch(r) && !isNpc(r)))
+       + group("Archetypes — with a clip", rows.filter(r => isArch(r) && r.clip))
+       + group("Archetypes — not built yet", rows.filter(r => isArch(r) && !r.clip))
+       + group("Named NPCs", rows.filter(isNpc));
 }
 
 function showResolved() {

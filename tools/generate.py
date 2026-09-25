@@ -40,7 +40,6 @@ import fcntl
 import hashlib
 import json
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -69,7 +68,7 @@ from tools.textclean import (
     split_gender,
 )
 from tools.textkey import text_key
-from tools.wowdata import voice_for_npc
+from tools.wowdata import base_voice, is_archetype, voice_for_npc
 
 QUEST_EVENTS = {"accept": "a", "progress": "p", "complete": "c"}
 
@@ -121,9 +120,8 @@ class VoiceCatalog:
         # "<race>-<gender>-s<set>" is one archetype of a voice. If that clip is gone -
         # build_voice_references drops an archetype whose head is too thin to carry a
         # delivery - the voice's own clip is a better fallback than another race's.
-        archetype = re.fullmatch(r"(.+)-s\d+", voice)
-        if archetype:
-            base = archetype.group(1)
+        if is_archetype(voice):
+            base = base_voice(voice)
             chain.append(base)
             race, _, gender = base.partition("-")
             own = self.voices_dir / f"{voice}.wav"
