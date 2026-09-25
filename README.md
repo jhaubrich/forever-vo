@@ -74,17 +74,50 @@ under different reference clips and Chatterbox settings side by side, keeping
 the winner in `forever-vo.toml`, and writing a single regenerated file into the
 pack.
 
-On an AMD GPU the same page runs from the `tts-rocm` group: the same Chatterbox
-pin on PyTorch's ROCm 6.2.4 wheel. Torch still answers as CUDA, which is the
-API the model uses. The group lives in its own environment so the default
-`tts` group, the CUDA wheel the nightly run generates with, stays put:
+### Audition on an AMD GPU
+
+The default `tts` group is the CUDA wheel. On AMD, audition uses the
+`tts-rocm` group: the same Chatterbox release on PyTorch's ROCm 6.2.4 build
+(`torch==2.6.0+rocm6.2.4`, the matching `torchaudio`, and
+`pytorch-triton-rocm==3.2.0`). The two groups conflict, so `uv lock` keeps
+both and a normal `./tools/run.sh` stays on CUDA.
+
+The wheel carries its own ROCm libraries. What the machine must already have
+is the `amdgpu` kernel driver, with `/dev/kfd` present (`ls -l /dev/kfd`) and
+your user able to open it. `ffmpeg` has to be on `PATH`; the dev shell from
+`flake.nix` provides it when you go through `./tools/run.sh`.
+
+The unpacked torch is about 17 GB. Give `.venv-rocm` a real disk. A tmpfs,
+including a worktree under `/tmp` on a machine that mounts `/tmp` that way,
+will not hold it. uv hardlinks the wheel out of `~/.cache/uv` when the
+environment is on the same filesystem as that cache, so the second copy costs
+inodes rather than another 17 GB.
 
 ```bash
 UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition
 ```
 
-"Write to pack" and `fvo-generate` stay on that CUDA wheel. A file made on
-ROCm would carry the same fingerprint, and the nightly run would ship it.
+Open http://127.0.0.1:8765. The first take downloads the Chatterbox weights
+(about 3 GB) into `~/.cache/huggingface` and then loads the model, which
+takes around half a minute. Later takes reuse that process. The same
+environment's smoke test prints the HIP version and writes `tools/smoke.wav`:
+
+```bash
+UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm tools/tts_smoke.py
+```
+
+This build reports the GPU through `torch.cuda.is_available()`, and the
+device string stays `cuda`. That is the API Chatterbox already calls. Checked
+on gfx1030 (Radeon RX 6800 / 6900 class): hipBLASLt logs that the
+architecture is unsupported and uses hipblas instead, and the line still
+completes. If `amdgpu.ids` is not installed, the device name prints as
+"AMD Radeon Graphics"; that file is only the marketing name.
+
+"Write to pack" and `fvo-generate` stay on the CUDA wheel. The sound index
+records the text and the tuning, so a file made here would look current and
+the nightly run would ship it. Keeping a voice's settings in
+`forever-vo.toml` is the AMD path: the CUDA generator restages that voice
+from those numbers. `.venv-rocm/` is gitignored.
 
 The tools are a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml`,
 `uv.lock`, `.python-version`; uv fetches the interpreter itself) and
