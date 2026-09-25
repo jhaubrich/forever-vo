@@ -30,6 +30,8 @@ from __future__ import annotations
 import argparse
 import contextlib
 import fcntl
+import functools
+import io
 import itertools
 import json
 import os
@@ -250,6 +252,39 @@ def sources_warnings(config: Config, voice: str) -> list[str]:
     return warnings
 
 
+@functools.cache
+def npc_labels() -> dict[int, str]:
+    """creature display -> something to call its clip, because npc-10357 is nobody.
+
+    A named clip is keyed by display ID, which is all the client offers and all the
+    pack needs. For reading, the corpus knows what 22 of them are called, and Blizzard
+    files the rest under the creature or character the kit belongs to (voljin, peon,
+    wolf rider). Cached for the process: state() is polled every 15 s and load_sources
+    walks the whole corpus.
+    """
+    from tools.soundpaths import folders
+    from tools.wowdata import display_sound_set
+    with contextlib.redirect_stdout(io.StringIO()):
+        sources = generate.load_sources()
+    by_display: dict[int, str] = {}
+    for npc in sources.get("npcs", {}).values():
+        display, name = npc.get("displayID"), npc.get("name")
+        if display and name:
+            by_display.setdefault(int(display), str(name))
+    known = folders()
+    labels: dict[int, str] = {}
+    for path in VOICES_DIR.glob("npc-*.wav"):
+        try:
+            display = int(path.stem.split("-", 1)[1])
+        except ValueError:
+            continue
+        folder = known.get(display_sound_set(display) or 0)
+        label = by_display.get(display) or folder
+        if label:
+            labels[display] = label
+    return labels
+
+
 def reference_seconds(path: Path) -> float:
     from tools.build_voice_references import duration
     try:
@@ -451,8 +486,19 @@ class Studio:
         so building one is what puts those NPCs on it.
         """
         on_disk = set(self.voices())
+        labels = npc_labels()
+
+        def label_of(voice: str) -> str | None:
+            if not voice.startswith("npc-"):
+                return None
+            try:
+                return labels.get(int(voice.split("-", 1)[1]))
+            except ValueError:
+                return None
+
         rows: list[dict[str, Any]] = [
-            {"voice": v, "clip": True, "displays": None, "archetype": is_archetype(v)}
+            {"voice": v, "clip": True, "displays": None, "archetype": is_archetype(v),
+             "label": label_of(v)}
             for v in self.voices()]
         for race_gender, counts in sound_set_displays().items():
             names = archetype_names(race_gender)
@@ -460,7 +506,7 @@ class Studio:
                 name = names[sound_id]
                 if name not in on_disk:
                     rows.append({"voice": name, "clip": False, "displays": displays,
-                                 "archetype": True})
+                                 "archetype": True, "label": None})
         return sorted(rows, key=lambda r: r["voice"])
 
     def state(self) -> dict[str, Any]:

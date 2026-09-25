@@ -212,8 +212,10 @@ function voiceOptions(s) {
   const group = (label, list) => list.length
     ? `<optgroup label="${label}">` + list.map(r => {
         const star = s.resolved[r.voice] && s.resolved[r.voice].tuned ? " ★" : "";
-        const note = r.clip ? "" : ` — no clip yet${r.displays ? `, ${r.displays} displays` : ""}`;
-        return `<option value="${r.voice}">${r.voice}${star}${note}</option>`;
+        const who = r.label ? ` — ${esc(r.label)}` : "";
+        const casts = r.displays ? `, ${r.displays} display${r.displays === 1 ? "" : "s"}` : "";
+        const note = r.clip ? "" : ` — no clip yet${casts}`;
+        return `<option value="${r.voice}">${r.voice}${who}${star}${note}</option>`;
       }).join("") + "</optgroup>"
     : "";
   const isArch = r => r.archetype;
