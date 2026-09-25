@@ -261,7 +261,7 @@ function TalkingHead:CreatePortrait()
     function model:ShowCreature(creatureID, guid)
         self.talking = true
         local unit = guid and Util.DialogUnit()
-        if unit and UnitGUID(unit) ~= guid then
+        if unit and Util.Plain(UnitGUID(unit)) ~= guid then
             unit = nil
         end
         local loaded = unit and guid or creatureID

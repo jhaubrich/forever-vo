@@ -40,6 +40,14 @@ game's own recordings).
   `InterfaceOptions_AddCategory` (use the Settings API),
   `GetGossipText` (use `C_GossipInfo.GetText()`). `GameTooltip:SetText`
   rejects the old 6-argument form.
+- **Unit identity can be secret.** `UnitName`, `UnitGUID`, `UnitSex`,
+  `UnitRace` and `UnitClass` return a *secret value* while the unit's identity
+  is restricted (`ShouldUnitIdentityBeSecret`); it displays through `SetText`
+  but errors in any string operation, comparison or table key ("secret string
+  value", first seen at the Disciple of Naralex, 2026-09-25). Every read of a
+  unit's identity or of dialog text goes through `Util.Plain`, which turns a
+  secret into nil so the speaker falls back to the pack or the line is skipped.
+  Keep new reads behind it; `issecretvalue` is in `docs/forever_api.json`.
 - **Saved variables are written on logout/reload but never read back** on
   this beta. Every session starts from defaults. Consequences: settings reset
   each login (that is why the unvoiced-line reminders are on by default), the

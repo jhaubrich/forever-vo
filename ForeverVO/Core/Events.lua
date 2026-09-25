@@ -39,11 +39,12 @@ local dialogGUID   -- whoever opened the dialog that is up right now
 --- "npc" only while the dialog it opened is still up.
 local function CurrentSpeaker(forQuest)
     local unit = Util.DialogUnit()
-    if forQuest and unit == "npc" and UnitGUID("npc") ~= dialogGUID then
+    if forQuest and unit == "npc" and Util.Plain(UnitGUID("npc")) ~= dialogGUID then
         unit = nil
     end
-    local guid = unit and UnitGUID(unit)
-    local name = unit and UnitName(unit)
+    -- Either may be a secret (Util.Plain) and then reads as unknown
+    local guid = unit and Util.Plain(UnitGUID(unit))
+    local name = unit and Util.Plain(UnitName(unit))
     local key = Util.SpeakerKeyFromGUID(guid)
     if guid and (unit == "questnpc" or not forQuest) then
         dialogGUID = guid
@@ -76,7 +77,7 @@ end
 --- A quest started by reading an item: the item is the speaker, and the
 --- narrator reads it under the book.
 local function ItemSpeaker(itemID)
-    local name = C_Item.GetItemNameByID(itemID) or C_Item.GetItemInfo(itemID)
+    local name = Util.Plain(C_Item.GetItemNameByID(itemID) or C_Item.GetItemInfo(itemID))
     return { name = name, isObject = true, startItemID = itemID }
 end
 
@@ -86,8 +87,9 @@ end
 
 local function QueueQuest(event, text, startItemID)
     local questID = GetQuestID()
-    local title = GetTitleText()
-    if not questID or questID == 0 then
+    local title = Util.Plain(GetTitleText())
+    text = Util.Plain(text)
+    if not questID or questID == 0 or not text then
         return
     end
     local speaker = startItemID and ItemSpeaker(startItemID) or CurrentSpeaker(true)
@@ -167,6 +169,7 @@ local function ShouldPlayGossip(speaker)
 end
 
 local function QueueGossip(event, text)
+    text = Util.Plain(text)
     if not text or text == "" then
         return
     end
@@ -248,7 +251,7 @@ ns.OnInit(function()
         if lastGossipOptions then
             for _, info in ipairs(lastGossipOptions) do
                 if info.gossipOptionID == optionID then
-                    selectedGossipOption = info.name
+                    selectedGossipOption = Util.Plain(info.name)
                     break
                 end
             end

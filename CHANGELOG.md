@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- No more "secret string value" error at NPCs whose identity the client hides
+  from addons (the Disciple of Naralex was the first). The client hands over a
+  sealed value in place of such a unit's name and GUID, and the addon now
+  treats it as unknown: the speaker comes from the voice pack, or the line is
+  skipped, instead of the gossip handler failing.
+
 ## 0.1.4
 
 - The talking head shows the speaker you are actually talking to. It used to

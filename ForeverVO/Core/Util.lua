@@ -45,6 +45,23 @@ function Util.DialogUnit()
     end
 end
 
+--- A value read from the client, or nil if the client made it a secret.
+---
+--- This engine hands an addon a *secret* in place of a unit's name, GUID, sex,
+--- race or class while that unit's identity is restricted (UnitName is
+--- documented SecretWhenUnitNameIdentityRestricted on this build). A secret
+--- goes through SetText fine but errors in any string operation, comparison or
+--- table key, and the Disciple of Naralex came up restricted mid-gossip
+--- (2026-09-25: "secret string value" out of GOSSIP_SHOW). So every read of a
+--- unit's identity or of dialog text passes through here, and a secret reads
+--- as unknown: the speaker is then taken from the pack, or the line skipped.
+function Util.Plain(value)
+    if issecretvalue and issecretvalue(value) then
+        return nil
+    end
+    return value
+end
+
 -- ---------------------------------------------------------------------------
 -- Text normalisation and hashing (mirrored by tools/textkey.py)
 -- ---------------------------------------------------------------------------
