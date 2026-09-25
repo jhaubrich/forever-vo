@@ -197,14 +197,20 @@ def duration(path: Path) -> float:
 
 
 SPEECH_HEAD_CLIPS = 2        # splices inside the window cost delivery; keep the head to a few
-# An archetype is only worth minting if it can get a real head. Rated by ear over
-# twelve races, every voice with 4.8 s or more of speech at the head was preferred to
-# the shipped pooled one, and every voice with 4.0 s or less was worse - troll-male at
-# 3.4 s and troll-female at 3.2 s lost the Jamaican delivery the way dwarves lost the
-# Scottish one (#18), because too little connected speech lets the model fall back on
-# its own neutral prior. Below the bar the speaker falls back to the race voice, which
-# takes the longest slice and so always clears it.
-ARCHETYPE_MIN_HEAD = 4.5
+# An archetype is only worth minting if it can get a real head. Below the bar the
+# speaker falls back to the race voice, which takes the longest slice and so always
+# clears it. The bar was 4.5 s, read off twelve-race listening where every voice at
+# 4.8 s or more was preferred and every voice at 4.0 s or less was worse - but those
+# figures came from the head measurement above, before it stopped counting the first
+# bark behind a one-clip head as speech. Against the corrected number 4.5 s dropped 17
+# of 44 archetypes, every dwarf and every scourge-male among them. So it is set where
+# it has been tested by ear: scourge-male-s82 at 3.5 s (Dark Cleric Beryl, Sarvis) was
+# rated a usable personality beside the 5.5 s race voice, once better than it, and a
+# three-race check at 3.9-4.3 s (dwarf-male-s37, troll-male-s76, tauren-female-s71)
+# came out level with the plain voices - troll's archetype beat its race voice, whose
+# accent was called weak. Raise it again only against fresh listening, on real head
+# seconds.
+ARCHETYPE_MIN_HEAD = 3.5
 # s3gen reads 10 s. Spending it all on shared emote speech left every archetype
 # sounding like the race's emote actor and nothing else; half of it leaves room for
 # the speaker's own clips inside the window, which is what makes one archetype
@@ -238,7 +244,7 @@ def speech_heads(sources: dict[str, list[int]]) -> dict[str, tuple[list[int], in
         pool = speech.get(race_gender)
         if not pool:
             continue        # no spoken emotes for this race; it stays bark-led
-        counts = sound_set_displays().get(race_gender, {})
+        counts: Counter[int] = sound_set_displays().get(race_gender) or Counter()
 
         def displays(name: str, race_gender: str = race_gender, counts: Counter[int] = counts) -> int:
             if name == race_gender:
@@ -280,7 +286,7 @@ def build_reference(voice: str, files: list[Path], head: list[Path] | None = Non
         # speech in the client, was excluded from the reference it should have headed
         return sorted(((duration(p), p) for p in paths), reverse=True)
 
-    chosen, total = [], 0.0
+    chosen, total, head_seconds = [], 0.0, 0.0
     if head:
         # Only clips that can fit the head budget, and the rotation is applied to
         # those. Rotating the unfiltered pool looked right and was not: every voice
@@ -297,6 +303,7 @@ def build_reference(voice: str, files: list[Path], head: list[Path] | None = Non
                 continue
             chosen.append(p)
             total += d
+            head_seconds += d
     for d, p in usable(files):
         if not (0.8 <= d <= 8.0):       # skip grunts and long barks
             continue
@@ -316,7 +323,10 @@ def build_reference(voice: str, files: list[Path], head: list[Path] | None = Non
          "-ac", "1", "-ar", "24000", "-af", "loudnorm", str(out)],
         check=True,
     )
-    head_seconds = sum(duration(p) for p in chosen[:SPEECH_HEAD_CLIPS]) if head else 0.0
+    # Measured while the head is assembled, not as chosen[:SPEECH_HEAD_CLIPS] afterwards:
+    # a voice whose budget fits only one speech clip would otherwise count the first
+    # bark behind it as speech - goblin-male reported a 6.8 s head that was 5.4 s of
+    # joke and 1.4 s of "Hey there!" - and a thin archetype could clear the gate on it.
     if re.fullmatch(r".+-s\d+", voice) and head_seconds < ARCHETYPE_MIN_HEAD:
         # Not enough speech to hold a delivery; wowdata.archetype_voice falls back to
         # the race voice when the clip is absent, and that one has the longest head
