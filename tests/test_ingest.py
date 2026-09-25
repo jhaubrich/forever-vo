@@ -96,6 +96,24 @@ def test_repair_takes_a_flawed_line_out_of_the_radius_when_the_raw_text_fixes_it
     assert unfixed is not None and unfixed["text"] == entry["text"] and unfixed.get("needs") == "mf"
 
 
+def test_untrusted_capture_that_matches_classic_with_its_speaker_needs_nobody() -> None:
+    raw = "What do we have here? You look as though you might need gloves, $N."
+    legacy = {"text": "What do we have here? You look as though you might need gloves, $n.",
+              "player": "Spron Limbertorque", "npc": "658"}
+    sten = {"npc": "658", "name": "Sten Stoutarm", "isObject": None}
+    assert not trusted(legacy, READERS)
+    assert needs_of(legacy, "quests", raw, READERS, sten) is None
+    # a different speaker, no speaker, a branch in the source, or another text keep it open
+    assert needs_of(legacy, "quests", raw, READERS, {**sten, "npc": "659"}) == "mf"
+    assert needs_of(legacy, "quests", raw, READERS, None) == "mf"
+    assert needs_of(legacy, "quests", "Gloves for you, $g lad:lass;.", READERS, sten) == "mf"
+    assert needs_of({**legacy, "text": "Forever reworded this one."}, "quests", raw, READERS, sten) == "mf"
+    # an object on both sides counts as agreement
+    plaque = {**legacy, "npc": "-100", "isObject": True}
+    assert needs_of(plaque, "quests", raw, READERS, {"npc": "-100", "name": "Plaque", "isObject": True}) is None
+    assert needs_of({**legacy, "npc": "658"}, "quests", raw, READERS, {"npc": "-100", "isObject": True}) == "mf"
+
+
 def test_fixed_addon_supersedes_a_flawed_gossip_reading() -> None:
     reader = {"player": "Pellinore", "class": "Hunter", "race": "Windshaper Skyborne"}
     gossip = {

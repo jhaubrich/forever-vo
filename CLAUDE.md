@@ -164,7 +164,10 @@ game's own recordings).
   `trusted_since` under `[readers]` in `forever-vo.toml` (0.1.4) names the first release
   believed at face value: `needs_of` answers `mf` for any quest entry from
   before it, so the pack asks everyone for the line until a trusted capture
-  wins it, and `superseded_gossip` in `backfill` drops an untrusted gossip
+  wins it (unless, since 2026-09-25, the repaired text is Classic's own with no
+  branch and Classic names the same speaker: a re-read could show nothing the
+  raw text does not, and 179 of 510 legacy lines were being asked for on that
+  basis, Spron's two Sten Stoutarm lines among them), and `superseded_gossip` in `backfill` drops an untrusted gossip
   line once a trusted one from the same speaker aligns at 0.9 (gossip keys by
   hash, so the flawed reading would otherwise sit beside its correction for
   good and the addon's fuzzy match could play it). Raise the constant when a

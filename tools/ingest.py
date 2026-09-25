@@ -372,17 +372,34 @@ def rebuild_gender(male: str, female: str) -> str | None:
     return "".join(out)
 
 
-def needs_of(entry: dict, kind: str, source: str | None, readers: Readers) -> str | None:
+def speaker_agrees(entry: dict, speaker: dict | None) -> bool:
+    """True when Classic names the same speaker the capture does: the same creature,
+    or an object or item on both sides (reattribute_entry has already run)."""
+    if not speaker:
+        return False
+    if speaker.get("isObject"):
+        return bool(entry.get("isObject"))
+    return bool(speaker.get("npc")) and str(speaker.get("npc")) == str(entry.get("npc") or "")
+
+
+def needs_of(entry: dict, kind: str, source: str | None, readers: Readers,
+             speaker: dict | None = None) -> str | None:
     """Which readers the pipeline still wants this line from: "mf" (anyone) while
     the capture comes from an addon before readers.trusted_since, whatever it
     says; otherwise None when the text carries its branches or both sexes have
     read it, "f" after a male reading, "m" after a female one, "mf" when the
     reader's sex is unknown. A trusted capture that matches raw text with no
-    branch in it needs nobody."""
+    branch in it needs nobody, and neither does an untrusted one when Classic
+    also names its speaker (`speaker`, from SourceTexts.speakers): everything a
+    re-read could show is already in the raw text. Spron's two Sten Stoutarm
+    lines were asked of every player for that reason (2026-09-25)."""
     text = entry.get("text") or ""
     if kind != "quests" or not text:
         return None
     if not trusted(entry, readers):
+        if (source and not has_gender_branch(source) and _same_reading(text, source)
+                and speaker_agrees(entry, speaker)):
+            return None
         return "mf"
     if has_gender_branch(text):
         return None
@@ -552,7 +569,8 @@ def repair_entry(entry: dict, kind: str, key: str, sources: SourceTexts | None, 
     entry, reattributed = reattribute_entry(entry, kind, key, sources)
     if reattributed:
         stats.reattributed += 1
-    needs = needs_of(entry, kind, source, readers)
+    speaker = sources.speakers.get(key) if sources is not None and kind == "quests" else None
+    needs = needs_of(entry, kind, source, readers, speaker)
     if needs != entry.get("needs"):
         entry = dict(entry)
         entry.pop("needs", None)
