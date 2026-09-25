@@ -453,7 +453,7 @@ function renderHistory(history, picked) {
   const same = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
   box.innerHTML = `<span class="note">Earlier picks: </span>` + history.map((h, i) =>
     `<button data-i="${i}" class="${same(h.clips, picks) ? "current" : ""}" ` +
-    `title="${h.clips.join(", ")}">${h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"} · ${h.seconds}s</button>`
+    `title="${h.clips.join(", ")}">${h.recipe ? "automatic build" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"} · ${h.seconds}s</button>`
   ).join("");
   box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
     const h = history[+b.dataset.i];

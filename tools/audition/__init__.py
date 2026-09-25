@@ -312,13 +312,62 @@ def pick_history(voice: str | None = None) -> dict[str, list[dict[str, Any]]]:
     return {voice: data.get(voice, [])} if voice else data
 
 
-def record_pick(voice: str, clips: list[int], build: str | None, seconds: float) -> None:
+def seed_recipe_history(voice: str) -> None:
+    """Record the automatic build as the oldest entry, so picking has an undo.
+
+    Only picks were kept, which left no way back to what the recipes made - and that is
+    exactly what someone wants when their own clips are not landing. The recipe writes
+    its concat list beside the voice's raw audio and picks write a different file, so
+    that list survives the first pick and says which clips it used, in order.
+    """
+    from tools.refclips import RAW_DIR as CLIP_RAW
+    if any(row.get("recipe") for row in pick_history(voice).get(voice, [])):
+        return      # already recorded; a voice picked before this existed still needs it
+    listing = CLIP_RAW / voice / "concat.txt"
+    if not listing.exists():
+        return
+    clips: list[int] = []
+    for line in listing.read_text(encoding="utf-8").splitlines():
+        stem = Path(line.split("'")[1]).stem if "'" in line else ""
+        if stem.isdigit():
+            clips.append(int(stem))
+    if not clips:
+        return
+    with _config_lock(SOURCE_PICKS):
+        history = pick_history()
+        rows = [row for row in history.get(voice, []) if row.get("clips") != clips]
+        # oldest, not newest: it is what the voice was before anyone picked for it
+        rows.append({"clips": clips, "build": None, "recipe": True, "at": "before picking",
+                     "seconds": round(_concat_seconds(clips, voice), 1)})
+        history[voice] = rows[:PICK_HISTORY]
+        tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
+        tmp.write_text(json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        os.replace(tmp, SOURCE_PICKS)
+
+
+def _concat_seconds(clips: list[int], voice: str) -> float:
+    """How long those clips run, for the history line."""
+    from tools.build_voice_references import duration
+    from tools.refclips import RAW_DIR as CLIP_RAW
+    total = 0.0
+    for fdid in clips:
+        path = CLIP_RAW / voice / f"{fdid}.ogg"
+        if path.exists():
+            try:
+                total += duration(path)
+            except (subprocess.CalledProcessError, OSError):
+                pass
+    return total
+
+
+def record_pick(voice: str, clips: list[int], build: str | None, seconds: float,
+                recipe: bool = False) -> None:
     """Puts this pick at the head of the voice's history, if it is not already there."""
     with _config_lock(SOURCE_PICKS):
         history = pick_history()
         rows = [row for row in history.get(voice, []) if row.get("clips") != clips]
         rows.insert(0, {"clips": clips, "build": build, "seconds": round(seconds, 1),
-                        "at": time.strftime("%Y-%m-%d %H:%M")})
+                        "at": time.strftime("%Y-%m-%d %H:%M"), "recipe": recipe})
         history[voice] = rows[:PICK_HISTORY]
         tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
         tmp.write_text(json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8")
@@ -808,6 +857,7 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         fetch runs; the page polls."""
         _safe(voice)
         found = studio.clips(voice, refresh=refresh)
+        seed_recipe_history(voice)
         config = studio.config()
         picked = config.voices.sources.get(voice)
         return {
