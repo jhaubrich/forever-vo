@@ -341,6 +341,7 @@ class Synth:
                  allow_hip: bool = False):
         import perth
         import torch
+        import torch.version
         if getattr(perth, "PerthImplicitWatermarker", None) is None:
             perth.PerthImplicitWatermarker = perth.DummyWatermarker  # ty: ignore[invalid-assignment]
         from chatterbox.tts import ChatterboxTTS
