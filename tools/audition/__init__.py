@@ -28,8 +28,11 @@ from there. The page is index.html beside this file: one HTML file, no build.
 from __future__ import annotations
 
 import argparse
+import contextlib
+import fcntl
 import itertools
 import json
+import os
 import random
 import re
 import subprocess
@@ -49,6 +52,11 @@ from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from tools import generate
+from tools.build_voice_references import (
+    S3GEN_SECONDS,
+    T3_SECONDS,
+    build_picked_reference,
+)
 from tools.config import (
     CONFIG_TOML,
     DATA_DIR,
@@ -79,19 +87,44 @@ SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
 # forever-vo.toml edits (comments survive: tomlkit round-trips the document)
 # ----------------------------------------------------------------------------
 
+@contextlib.contextmanager
+def _config_lock(path: Path) -> Iterator[None]:
+    """Serialises read-modify-write of the TOML across requests and processes.
+
+    Endpoints here are sync `def`, so FastAPI runs them in a threadpool and two saves
+    genuinely overlap: both parsed the same document, and the second to finish wrote a
+    file missing the first one's change while reporting success. The lock file is
+    separate from the TOML because the write is a rename, which would drop the lock
+    with the inode it was taken on.
+    """
+    lock = path.with_suffix(".toml.lock")
+    with lock.open("w") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
 def _validated_write(path: Path, doc: tomlkit.TOMLDocument) -> Config:
-    """Writes the document only if the models accept it; returns the fresh Config."""
+    """Writes the document only if the models accept it; returns the fresh Config.
+
+    The trial file carries this process and thread, so two overlapping saves cannot
+    validate or promote each other's document.
+    """
     text = tomlkit.dumps(doc)
-    trial = path.with_suffix(".toml.audition")
+    trial = path.with_suffix(f".toml.{os.getpid()}.{threading.get_ident()}.audition")
     trial.write_text(text, encoding="utf-8")
     try:
         load_config.cache_clear()
         load_config(trial)
     except ConfigError as e:
-        trial.unlink(missing_ok=True)
         raise HTTPException(400, f"refused, the result would not validate: {e}") from e
-    trial.replace(path)
-    load_config.cache_clear()
+    else:
+        trial.replace(path)
+    finally:
+        trial.unlink(missing_ok=True)
+        load_config.cache_clear()
     return load_config(path)
 
 
@@ -99,6 +132,12 @@ def write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float,
                  tempo: float = 1.0) -> Config:
     """Sets [tts.voices.<voice>]; a tuning equal to the defaults with no reference
     removes the entry instead, so the file only lists what differs."""
+    with _config_lock(path):
+        return _write_tuning(path, voice, exaggeration, cfg_weight, reference, tempo)
+
+
+def _write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float, reference: str | None,
+                  tempo: float = 1.0) -> Config:
     doc = tomlkit.parse(path.read_text(encoding="utf-8"))
     tts = doc.get("tts")
     if tts is None:
@@ -126,6 +165,11 @@ def write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float,
 
 def write_pronunciation(path: Path, word: str, spoken: str) -> Config:
     """Adds or replaces one [pronunciations] entry; an empty spoken form removes it."""
+    with _config_lock(path):
+        return _write_pronunciation(path, word, spoken)
+
+
+def _write_pronunciation(path: Path, word: str, spoken: str) -> Config:
     doc = tomlkit.parse(path.read_text(encoding="utf-8"))
     table = doc.get("pronunciations")
     if table is None:
@@ -136,6 +180,106 @@ def write_pronunciation(path: Path, word: str, spoken: str) -> Config:
     elif word in table:
         del table[word]
     return _validated_write(path, doc)
+
+
+def write_voice_sources(path: Path, voice: str, clips: list[int], build: str | None = None) -> Config:
+    """Sets [voices.sources.<voice>].clips, head first; an empty list removes the entry,
+    so the file lists only the voices that were picked by ear."""
+    with _config_lock(path):
+        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+        voices = doc.get("voices")
+        if voices is None:
+            voices = tomlkit.table()
+            doc["voices"] = voices
+        sources = voices.get("sources")
+        if sources is None:
+            # a super table, or the children render inline instead of as their own
+            # [voices.sources.<voice>] headers
+            sources = tomlkit.table(is_super_table=True)
+            voices["sources"] = sources
+        if not clips:
+            if voice in sources:
+                del sources[voice]
+        else:
+            entry = tomlkit.table()
+            array = tomlkit.array()
+            array.extend(clips)
+            entry["clips"] = array.multiline(len(clips) > 6)
+            if build:
+                entry["build"] = build
+            entry.add(tomlkit.nl())     # a blank line before whatever follows
+            sources[voice] = entry
+        return _validated_write(path, doc)
+
+
+def sources_warnings(config: Config, voice: str) -> list[str]:
+    """What the owner has to know before picking for this voice, worst first.
+
+    Each of these is a way a pick reaches nobody, or reaches far more lines than the
+    name suggests. Warnings rather than refusals: the owner knows the pack better than
+    this function does.
+    """
+    warnings: list[str] = []
+    tuning = config.tts.voices.get(voice)
+    if tuning and tuning.reference and tuning.reference != voice:
+        warnings.append(
+            f"[tts.voices.{voice}] clones from {tuning.reference}.wav, so {voice}.wav is not "
+            f"what this voice reads - pick for {tuning.reference}, or drop that reference first")
+    catalog = VoiceCatalog(config)
+    borrowers = []
+    for other in _known_voices(config):
+        if other == voice:
+            continue
+        resolved = catalog.resolve(other)
+        if resolved.clip and resolved.clip.stem == voice:
+            borrowers.append(other)
+    if borrowers:
+        shown = ", ".join(borrowers[:8]) + ("..." if len(borrowers) > 8 else "")
+        warnings.append(f"{len(borrowers)} other voice(s) read from {voice}.wav: {shown}")
+    narrator = config.voices.narrator
+    reads_for_narrator = voice == narrator or (
+        not (VOICES_DIR / f"{narrator}.wav").exists()
+        and catalog.resolve(narrator).clip == VOICES_DIR / f"{voice}.wav")
+    if reads_for_narrator:
+        warnings.append("this clip is what the narrator reads: every quest from an object "
+                        "or item, and every <stage direction>")
+    return warnings
+
+
+def reference_seconds(path: Path) -> float:
+    from tools.build_voice_references import duration
+    try:
+        return round(duration(path), 1)
+    except (subprocess.CalledProcessError, OSError):
+        return 0.0
+
+
+def restage_note(voice: str, existed: bool, kept: bool) -> str:
+    """What still has to happen for a re-cut clip to reach players.
+
+    The two cases differ. A clip that did not exist changes which voice NPCs resolve to,
+    and generate.wanted() already restages a changed voice name. A clip that did exist
+    changes no name, and its bytes are not fingerprinted - only the recorded pick is, so
+    the restage follows from writing [voices.sources], not from rebuilding the wav.
+    """
+    if not existed:
+        return (f"{voice}.wav is new. NPCs cast with it resolve to that voice now, so the "
+                f"next generate run restages their lines on its own.")
+    if kept:
+        return (f"{voice}.wav was re-cut and the picks are saved, so its lines are stale and "
+                f"the nightly run will redo them. To do it now: "
+                f"./tools/run.sh tools/generate.py --voice {voice}")
+    return (f"{voice}.wav was re-cut but the picks were not saved, and a clip's audio is in "
+            f"no fingerprint - nothing restages. Save the picks, or run: "
+            f"./tools/run.sh tools/generate.py --force --voice {voice}")
+
+
+def _known_voices(config: Config) -> list[str]:
+    """Voice names worth resolving: the clips on disk plus anything the TOML names."""
+    names = {p.stem for p in VOICES_DIR.glob("*.wav")}
+    names |= set(config.tts.voices) | set(config.voices.fallbacks) | {config.voices.narrator}
+    names |= set(config.voices.narrator_alternates)
+    return sorted(names)
 
 
 # ----------------------------------------------------------------------------
@@ -206,6 +350,9 @@ class Studio:
         self._by_base: dict[str, tuple[Item, Variant]] = {}
         self.model_status = "not loaded"
         self.corpus_status = "not loaded"
+        self.clips_lock = threading.Lock()
+        self._clips: dict[str, list[dict[str, Any]]] = {}
+        self.clips_status: dict[str, str] = {}
         threading.Thread(target=self.rows, daemon=True).start()
 
     def config(self) -> Config:
@@ -237,6 +384,41 @@ class Studio:
                 self._rows = line_rows(items)
                 self.corpus_status = f"{len(self._rows)} lines"
             return self._rows
+
+    def clips(self, voice: str, refresh: bool = False) -> list[dict[str, Any]] | None:
+        """This voice's candidate source clips, or None while a background load runs.
+
+        refclips.candidates downloads every candidate it does not already have and runs
+        ffprobe over each, so the first call for a voice takes minutes: it goes on a
+        thread and the page polls, the way the corpus already does. Afterwards fetch_file
+        short-circuits on the file being there and only ffprobe runs.
+        """
+        with self.clips_lock:
+            if refresh:
+                self._clips.pop(voice, None)
+            if voice in self._clips:
+                return self._clips[voice]
+            if self.clips_status.get(voice) == "loading":
+                return None
+            self.clips_status[voice] = "loading"
+        threading.Thread(target=self._load_clips, args=(voice,), daemon=True).start()
+        return None
+
+    def _load_clips(self, voice: str) -> None:
+        from tools import refclips
+        try:
+            found = [
+                {"n": i, "fdid": c.fdid, "kind": c.kind, "seconds": round(c.seconds, 2),
+                 "url": f"/api/clips/audio/{voice}/{c.fdid}.ogg"}
+                for i, c in enumerate(refclips.candidates(voice), 1)
+            ]
+        except Exception as e:      # noqa: BLE001 - the status line is the error report
+            with self.clips_lock:
+                self.clips_status[voice] = f"failed: {e}"
+            return
+        with self.clips_lock:
+            self._clips[voice] = found
+            self.clips_status[voice] = f"{len(found)} clips"
 
     def forget_corpus(self) -> None:
         """After a config change the spoken text or voices may differ; reload lazily."""
@@ -274,6 +456,8 @@ class Studio:
             "overrides": {v: t.model_dump(exclude_none=True) for v, t in config.tts.voices.items()},
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
+            "sources": {v: e.model_dump(exclude_none=True) for v, e in config.voices.sources.items()},
+            "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
             "model": self.model_status,
             "corpus": self.corpus_status,
             "bulk_service": bulk_service_state(),
@@ -317,6 +501,14 @@ class KeepPronunciation(BaseModel):
 
 class WritePack(BaseModel):
     base: str
+
+
+class BuildSources(BaseModel):
+    """Build a voice's reference from clips chosen by ear, head first."""
+    voice: str
+    clips: list[int] = Field(min_length=1, max_length=40)
+    build: str | None = None
+    keep: bool = True       # also write [voices.sources.<voice>] into forever-vo.toml
 
 
 def _safe(name: str) -> str:
@@ -484,6 +676,58 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         return {"base": variant.base, "voice": item.voice, "seconds": round(seconds, 1),
                 "elapsed": round(time.time() - t0, 1), "fingerprint": fingerprint,
                 "pack_url": f"/api/pack/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}"}
+
+    @app.get("/api/clips/audio/{voice}/{name}")
+    def clip_audio(voice: str, name: str) -> FileResponse:
+        from tools.refclips import RAW_DIR as CLIP_RAW
+        return FileResponse(_under(CLIP_RAW, f"{_safe(voice)}/{_safe(name)}"), media_type="audio/ogg")
+
+    @app.get("/api/clips/reference/{name}")
+    def clip_reference(name: str) -> FileResponse:
+        """The built reference itself, so the result can be heard without a generate."""
+        return FileResponse(_under(VOICES_DIR, _safe(name)), media_type="audio/wav")
+
+    @app.get("/api/clips/{voice}")
+    def clips(voice: str) -> dict[str, Any]:
+        """Candidate clips for one voice. Returns status "loading" while the first
+        fetch runs; the page polls."""
+        _safe(voice)
+        found = studio.clips(voice, refresh=False)
+        config = studio.config()
+        picked = config.voices.sources.get(voice)
+        return {
+            "voice": voice,
+            "status": studio.clips_status.get(voice, "not loaded"),
+            "clips": found or [],
+            "picked": picked.clips if picked else [],
+            "build": picked.build if picked else None,
+            "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
+            "warnings": sources_warnings(config, voice),
+            "reference_url": (f"/api/clips/reference/{voice}.wav"
+                              if (VOICES_DIR / f"{voice}.wav").exists() else None),
+        }
+
+    @app.post("/api/clips/build")
+    def build_sources(request: BuildSources) -> dict[str, Any]:
+        from tools.refclips import RAW_DIR as CLIP_RAW
+        voice = _safe(request.voice)
+        # The picks can only have come from /api/clips, so they are already downloaded;
+        # resolving them through _under keeps this endpoint off the network and guards
+        # the path in one move.
+        paths = [_under(CLIP_RAW, f"{voice}/{fdid}.ogg") for fdid in request.clips]
+        existed = (VOICES_DIR / f"{voice}.wav").exists()
+        try:
+            out = build_picked_reference(voice, paths)
+        except (RuntimeError, ValueError, subprocess.CalledProcessError) as e:
+            raise HTTPException(400, str(e)) from e
+        if request.keep:
+            write_voice_sources(studio.config_path, voice, request.clips, request.build)
+        # A new clip changes what wowdata.archetype_voice casts, which the corpus caches
+        studio.forget_corpus()
+        seconds = reference_seconds(out)
+        return {**studio.state(), "built": out.name, "seconds": seconds, "existed": existed,
+                "reference_url": f"/api/clips/reference/{voice}.wav?t={int(time.time())}",
+                "restage": restage_note(voice, existed, request.keep)}
 
     @app.post("/api/rebuild-tables")
     def rebuild_tables() -> dict[str, Any]:

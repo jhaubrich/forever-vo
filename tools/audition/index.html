@@ -46,6 +46,18 @@
   #toast { position: fixed; right: 20px; bottom: 20px; background: var(--panel); border: 1px solid var(--gold); padding: 10px 14px; border-radius: 4px; display: none; max-width: 480px; }
   #current { padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
   #current .m { color: var(--dim); font-size: 12px; }
+  details#clips { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 10px; }
+  details#clips summary { cursor: pointer; color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+  #clips-body tr { cursor: pointer; }
+  #clips-body tr:hover { background: var(--panel); }
+  #clips-body tr.picked { background: var(--panel); }
+  #clips-body td.pos { color: var(--gold); font-weight: 600; width: 3em; }
+  #clips-body td.at { font-family: ui-monospace, monospace; font-size: 12px; }
+  #clips-wrap { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
+  .pill { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px; border: 1px solid var(--line); margin-left: 6px; }
+  .pill.t3 { border-color: var(--ok); color: var(--ok); }
+  .pill.s3 { border-color: var(--gold); color: var(--gold); }
+  .pill.out { border-color: var(--line); color: var(--dim); }
 </style>
 </head>
 <body>
@@ -103,6 +115,28 @@
       <tbody id="takes-body"></tbody>
     </table>
     <p class="note" id="progress"></p>
+
+    <details id="clips">
+      <summary>Source clips &mdash; what this voice's reference is cut from</summary>
+      <div class="row" style="margin-top:8px">
+        <button id="clips-load">Load candidates</button>
+        <button id="clips-reset">Clear picks</button>
+        <button id="clips-build" class="primary">Build and keep</button>
+        <audio id="clips-ref" controls preload="none" style="flex:0 0 auto"></audio>
+      </div>
+      <p class="note" id="clips-status"></p>
+      <p class="note" id="clips-warn"></p>
+      <p class="note" id="clips-budget"></p>
+      <div id="clips-wrap">
+        <table>
+          <thead><tr><th>Order</th><th>Source</th><th>FileDataID</th><th>Length</th><th>Starts at</th><th>Listen</th></tr></thead>
+          <tbody id="clips-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Click a row to add it, click again to drop it. Click order is the
+        order in the clip, head first &mdash; only the first seconds of a reference reach
+        the model, so what you put at the top is the voice.</p>
+    </details>
   </section>
 </main>
 <div id="toast"></div>
@@ -195,7 +229,14 @@ function pick(row, li) {
   showResolved();
 }
 
-$("voice").addEventListener("change", showResolved);
+$("voice").addEventListener("change", () => {
+  showResolved();
+  if (clipsVoice && $("voice").value !== clipsVoice) {
+    clipsRows = []; picks = []; clipsVoice = null;
+    $("clips-body").innerHTML = ""; $("clips-status").textContent = ""; $("clips-warn").textContent = "";
+    $("clips-budget").textContent = ""; $("clips-ref").removeAttribute("src");
+  }
+});
 $("reference").addEventListener("change", showResolved);
 
 function numbers(value) {
@@ -304,6 +345,89 @@ $("rebuild").addEventListener("click", async () => {
   try { const r = await api("/api/rebuild-tables", { method: "POST" }); toast(r.ok ? "Pack tables rebuilt." : "Rebuild reported a problem; see the server log.", r.ok ? "ok" : "warn"); }
   catch (e) { toast(e.message, "warn"); }
   $("rebuild").disabled = false;
+});
+
+// --- Source clips -----------------------------------------------------------
+// Panel state lives here and is never re-derived from /api/state, because applyState
+// runs every 15 s and would otherwise wipe a half-made pick. It is invalidated in one
+// place: the voice select's change handler. applyState restores voice.value by
+// assignment, which fires no change event, so a refresh cannot reach this.
+let clipsVoice = null, clipsRows = [], picks = [], clipsWindows = { t3: 6, s3gen: 10 }, clipsPoll = null;
+
+function clipsSeconds(fdid) { const r = clipsRows.find(c => c.fdid === fdid); return r ? r.seconds : 0; }
+
+function renderClips() {
+  const body = $("clips-body");
+  if (!clipsRows.length) { body.innerHTML = ""; $("clips-budget").textContent = ""; return; }
+  let at = 0; const offsets = new Map();
+  picks.forEach(f => { offsets.set(f, at); at += clipsSeconds(f); });
+  body.innerHTML = clipsRows.map(c => {
+    const i = picks.indexOf(c.fdid);
+    const off = offsets.get(c.fdid);
+    const band = off === undefined ? "" : off < clipsWindows.t3 ? "t3" : off < clipsWindows.s3gen ? "s3" : "out";
+    return `<tr data-f="${c.fdid}" class="${i >= 0 ? "picked" : ""}">` +
+      `<td class="pos">${i >= 0 ? i + 1 : ""}</td><td>${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
+      `<td class="n">${c.seconds.toFixed(1)}s</td>` +
+      `<td class="at">${off === undefined ? "" : off.toFixed(1) + "s"}` +
+      `${band ? `<span class="pill ${band}">${band === "t3" ? "t3" : band === "s3" ? "s3gen" : "averaged"}</span>` : ""}</td>` +
+      `<td><audio controls preload="none" src="${c.url}" style="width:210px"></audio></td></tr>`;
+  }).join("");
+  body.querySelectorAll("tr").forEach(tr => tr.addEventListener("click", ev => {
+    if (ev.target.closest("audio")) return;
+    const f = +tr.dataset.f, i = picks.indexOf(f);
+    if (i >= 0) picks.splice(i, 1); else picks.push(f);
+    renderClips();
+  }));
+  const total = picks.reduce((t, f) => t + clipsSeconds(f), 0);
+  const inT3 = picks.filter(f => offsets.get(f) < clipsWindows.t3).length;
+  const inS3 = picks.filter(f => offsets.get(f) < clipsWindows.s3gen).length;
+  $("clips-budget").innerHTML = picks.length
+    ? `${picks.length} picked, ${total.toFixed(1)}s &middot; ${inT3} reaching the ${clipsWindows.t3}s t3 window &middot; ` +
+      `${inS3} the ${clipsWindows.s3gen}s s3gen one &middot; ${picks.length - inS3} past both, nudging an average` +
+      (total < clipsWindows.t3 ? ` <span class="warn">&mdash; under a full t3 window</span>` : "")
+    : "Nothing picked yet.";
+}
+
+async function loadClips(refresh) {
+  const voice = $("voice").value;
+  clipsVoice = voice;
+  try {
+    const d = await api(`/api/clips/${encodeURIComponent(voice)}`);
+    if ($("voice").value !== voice) return;
+    clipsWindows = d.windows;
+    $("clips-status").textContent = `${voice}: ${d.status}`;
+    $("clips-warn").innerHTML = d.warnings.map(w => `<span class="warn">${esc(w)}</span>`).join("<br>");
+    $("clips-ref").src = d.reference_url || "";
+    if (d.clips.length) {
+      clipsRows = d.clips;
+      if (refresh !== false || !picks.length) picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
+      const missing = d.picked.length - picks.length;
+      if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
+      renderClips();
+      if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
+    } else if (d.status === "loading" && !clipsPoll) {
+      clipsPoll = setInterval(() => loadClips(false), 3000);
+    }
+  } catch (e) { toast(e.message, "warn"); }
+}
+
+$("clips-load").addEventListener("click", () => {
+  $("clips-status").textContent = "downloading and probing every candidate; the first time for a voice takes a while…";
+  loadClips(true);
+});
+$("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
+$("clips-build").addEventListener("click", async () => {
+  if (!picks.length) { toast("pick at least one clip", "warn"); return; }
+  $("clips-build").disabled = true;
+  try {
+    const r = await api("/api/clips/build", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ voice: clipsVoice, clips: picks, keep: true }) });
+    applyState(r);
+    $("clips-ref").src = r.reference_url;
+    $("clips-status").textContent = `built ${r.built}, ${r.seconds}s`;
+    toast(r.restage, "ok");
+  } catch (e) { toast(e.message, "warn"); }
+  $("clips-build").disabled = false;
 });
 
 refresh();

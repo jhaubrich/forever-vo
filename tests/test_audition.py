@@ -13,8 +13,10 @@ from tools.audition import (
     LineRow,
     random_line,
     search,
+    sources_warnings,
     write_pronunciation,
     write_tuning,
+    write_voice_sources,
 )
 from tools.config import CONFIG_TOML, load_config
 
@@ -90,3 +92,35 @@ def test_random_line_stays_in_the_voice_and_prefers_quests() -> None:
     assert {base("dwarf-male") for _ in range(20)} == {"415-accept"}   # quests first, never the gossip line
     assert base("gnome-female") == "77-aaaa0000"                        # gossip when that is all the voice has
     assert base("orc-male") is None
+
+
+def test_write_voice_sources_adds_and_removes_and_keeps_the_reference_field(toml_copy: Path) -> None:
+    before = toml_copy.read_text(encoding="utf-8")
+    config = write_voice_sources(toml_copy, "bloodelf-female", [539282, 539211, 556543])
+    assert config.voices.sources["bloodelf-female"].clips == [539282, 539211, 556543]
+    text = toml_copy.read_text(encoding="utf-8")
+    assert "[voices.sources.bloodelf-female]" in text
+    assert "# Dwarves came out of Chatterbox sounding American (#18)." in text
+    # [voices.sources.<v>] is what a clip is made of; [tts.voices.<v>].reference is a
+    # different clip to clone from, and writing one must not disturb the other
+    assert config.tts.voices["dwarf-male"].reference == "npc-3597"
+
+    config = write_voice_sources(toml_copy, "bloodelf-female", [])
+    assert "bloodelf-female" not in config.voices.sources
+    assert tomlkit.parse(toml_copy.read_text(encoding="utf-8")).unwrap() == tomlkit.parse(before).unwrap()
+
+
+def test_write_voice_sources_keeps_the_build(toml_copy: Path) -> None:
+    config = write_voice_sources(toml_copy, "goblin-male", [541910], build="12.1.0.69933")
+    assert config.voices.sources["goblin-male"].build == "12.1.0.69933"
+    config = write_voice_sources(toml_copy, "goblin-male", [541910])
+    assert config.voices.sources["goblin-male"].build is None
+
+
+def test_sources_warnings_names_a_clip_the_voice_does_not_actually_read() -> None:
+    config = load_config(CONFIG_TOML)
+    # dwarf-male clones from npc-3597, so picking clips for dwarf-male.wav changes nothing
+    assert any("npc-3597" in w for w in sources_warnings(config, "dwarf-male"))
+    # human-male is the narrator's clip as well as its own
+    assert any("narrator" in w for w in sources_warnings(config, "human-male"))
+    assert sources_warnings(config, "bloodelf-female") == []
