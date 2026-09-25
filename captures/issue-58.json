@@ -1,0 +1,208 @@
+{
+ "addon": "0.1.4",
+ "gossip": {
+  "5482|8cd6b7fd": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Stephen Ryback",
+   "npc": "5482",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "I don't get too many cooks in here looking for training, but I guess I could teach you something if you're ready.",
+   "time": 1790334248,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "5493|e332eb6d": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Arnold Leland",
+   "npc": "5493",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, a fellow Fisherman. Are you perhaps in need of a little training? Maybe I can show you a thing or two?",
+   "time": 1790334460,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "1651": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Lee Brown",
+   "sex": 2
+  },
+  "383": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Jason Mathers",
+   "sex": 2
+  },
+  "5482": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Stephen Ryback",
+   "sex": 2
+  },
+  "5493": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Arnold Leland",
+   "sex": 2
+  },
+  "5497": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Jennea Cannon",
+   "sex": 3
+  },
+  "6306": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Helene Peltskinner",
+   "sex": 3
+  }
+ },
+ "origin": "issue-58",
+ "quests": {
+  "1861-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Jennea Cannon",
+   "npc": "5497",
+   "questID": 1861,
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have the sample, $N?  The flow of magic in Stormwind and Elwynn has been altered, and I must know if it is seeping into the water.",
+   "time": 1790333642,
+   "title": "Mirror Lake",
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "91751-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Helene Peltskinner",
+   "npc": "6306",
+   "questID": 91751,
+   "sex": "m",
+   "source": "community",
+   "text": "Are you looking for an opportunity to practice skinning? My husband usually helps with hunting wolves, but he's busy up by the abbey. I could use a hand collecting more pelts to finish the orders I'm working on.",
+   "time": 1790350202,
+   "title": "Rough Wolf Pelts",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99127-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99127,
+   "sex": "m",
+   "source": "community",
+   "text": "The fish just ain't biting today, and there's something wrong going on with them. It's not just empty hooks. I haven't seen a single minnow up in the water at all.\r\n\r\nLee here set up some traps overnight, go check to see if we've at least got some stock there. If you find anything weird, make sure to show me.",
+   "time": 1790350216,
+   "title": "A Net Disaster",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99127-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99127,
+   "sex": "m",
+   "source": "community",
+   "text": "All the traps are like this? Seems our new neighboring nuisances are causing more destruction than we were aware of. I'll go broke if we don't do something about it.",
+   "time": 1790350360,
+   "title": "A Net Disaster",
+   "wanted": true,
+   "zone": "Elwynn Forest"
+  },
+  "99127-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99127,
+   "sex": "m",
+   "source": "community",
+   "text": "Any catches to speak of?",
+   "time": 1790350360,
+   "title": "A Net Disaster",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99128-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99128,
+   "sex": "m",
+   "source": "community",
+   "text": "This can only be the work of those murlocs on the other side of the lake. They're disgusting little things, with a vicious temper and teeth to match. \r\n\r\nIf we let this continue, there won't be any fish to speak of anywhere in this lake. If you could clear them out a bit, it would help me a ton.",
+   "time": 1790350360,
+   "title": "Slimy Menace",
+   "wanted": true,
+   "zone": "Elwynn Forest"
+  },
+  "99128-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99128,
+   "sex": "m",
+   "source": "community",
+   "text": "Are they dead?",
+   "time": 1790367647,
+   "title": "Slimy Menace",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99143-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Lee Brown",
+   "npc": "1651",
+   "questID": 99143,
+   "sex": "m",
+   "source": "community",
+   "text": "Those fish men must think like actual fish, right? Which means anything they like, fish will like!\r\n\r\nIf you rummage through some of their junk and return to me with anything that seems like it would make good bait, I'll reward you.",
+   "time": 1790350219,
+   "title": "Bottles and Baubles",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
