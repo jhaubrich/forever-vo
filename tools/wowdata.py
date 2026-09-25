@@ -8,6 +8,7 @@ from __future__ import annotations
 import csv
 import functools
 import json
+import os
 import re
 from collections import Counter
 from pathlib import Path
@@ -52,7 +53,13 @@ def load_db2(table: str, build: str = BETA_BUILD) -> dict[int, dict[str, str]]:
 
 
 def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
-    """Downloads a CASC file (e.g. an .ogg voice line) by FileDataID."""
+    """Downloads a CASC file (e.g. an .ogg voice line) by FileDataID.
+
+    Written to a temporary file and renamed. The cache is "the file is there", so a
+    download cut short by a dropped connection or a Ctrl-C used to be kept for good, and
+    every later reference built from that clip was silently truncated: ffmpeg's concat
+    demuxer stops at the first input it cannot open and still exits 0.
+    """
     if dest.exists():
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -60,7 +67,12 @@ def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
     response.raise_for_status()
     if response.headers.get("content-type", "").startswith("application/json"):
         raise FileNotFoundError(f"FileDataID {fdid} not in build {build}: {response.text}")
-    dest.write_bytes(response.content)
+    part = dest.with_name(f"{dest.name}.{os.getpid()}.part")
+    try:
+        part.write_bytes(response.content)
+        os.replace(part, dest)
+    finally:
+        part.unlink(missing_ok=True)
     return dest
 
 

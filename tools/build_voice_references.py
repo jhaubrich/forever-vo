@@ -26,6 +26,7 @@ needed. Raw clips are kept under tools/voices/raw/.
 from __future__ import annotations
 
 import functools
+import os
 import re
 import subprocess
 import sys
@@ -39,6 +40,14 @@ RAW_DIR = VOICES_DIR / "raw"
 TARGET_SECONDS = 20.0
 MAX_CLIP_SECONDS = 15.0   # long enough for a spoken emote line; a bark is 1-3 s
 MAX_FILES_PER_VOICE = 40   # download cap per voice; greeting kits repeat a lot
+T3_SECONDS = 6.0           # chatterbox's t3 encoder reads this much of a reference
+S3GEN_SECONDS = 10.0       # s3gen this much; past it a clip only nudges an averaged embedding
+# ffmpeg concat stops consuming inputs at the first file it cannot open, writes
+# everything before it, and exits 0 - so a truncated clip in the middle of a list
+# yields a short reference that sounds fine and reports success. Compare the output
+# against the inputs to catch it; loudnorm and the container change move the total a
+# little, so allow a small slack rather than demanding an exact match.
+CONCAT_SLACK_SECONDS = 0.3
 
 
 def files_by_kit(build: str = BETA_BUILD) -> dict[int, list[int]]:
@@ -280,7 +289,7 @@ ARCHETYPE_MIN_HEAD = 3.5
 SPEECH_HEAD_SECONDS = 5.5
 # A SPEECH_ONLY clip has no barks to fall back on, so it fills the s3gen window
 # with speech rather than stopping at the head budget.
-SPEECH_ONLY_SECONDS = 10.0
+SPEECH_ONLY_SECONDS = S3GEN_SECONDS
 
 
 def speech_heads(sources: dict[str, list[int]]) -> dict[str, tuple[list[tuple[int, str]], int]]:
@@ -365,6 +374,89 @@ def base_voice(name: str) -> str:
     return name.rsplit("-s", 1)[0] if re.fullmatch(r".+-s\d+", name) else name
 
 
+def concat_line(path: Path) -> str:
+    """One line of an ffmpeg concat list. A quote in a path would end the argument."""
+    return "file '{}'\n".format(str(path.resolve()).replace("'", r"'\''"))
+
+
+def write_concat(voice: str, paths: list[Path], name: str = "concat.txt",
+                 list_dir: Path | None = None) -> Path:
+    """The ffmpeg concat list for one clip, kept beside that voice's raw audio.
+
+    The picked and the automatic builders use different names: both wrote concat.txt and
+    clobbered each other, which also cost the file its one other use - a record of what
+    actually went into the wav sitting next to it.
+    """
+    list_file = (list_dir or RAW_DIR / voice) / name
+    list_file.parent.mkdir(parents=True, exist_ok=True)
+    list_file.write_text("".join(concat_line(p) for p in paths), encoding="utf-8")
+    return list_file
+
+
+def concat_to_wav(voice: str, paths: list[Path], list_name: str = "concat.txt", *,
+                  list_dir: Path | None = None, out: Path | None = None) -> Path:
+    """Concatenates `paths` in order into tools/voices/<voice>.wav, or raises.
+
+    Every input is probed first and the result is measured against their total, because
+    ffmpeg reports success for a concat it truncated (see CONCAT_SLACK_SECONDS). Built to
+    a temporary file and renamed, so a failure leaves the previous reference in place
+    rather than replacing it with a shorter one.
+    """
+    if not paths:
+        raise ValueError(f"{voice}: nothing to concatenate")
+    expected = 0.0
+    for path in paths:
+        try:
+            seconds = duration(path)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"{voice}: {path} will not probe, refusing to build from it") from e
+        if seconds <= 0:
+            raise RuntimeError(f"{voice}: {path} is empty, refusing to build from it")
+        expected += seconds
+    list_file = write_concat(voice, paths, list_name, list_dir)
+    out = out or VOICES_DIR / f"{voice}.wav"
+    tmp = out.with_suffix(f".wav.{os.getpid()}.part")
+    try:
+        subprocess.run(
+            # -f wav because the temporary name ends in .part, which ffmpeg cannot
+            # infer a container from
+            ["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(list_file),
+             "-ac", "1", "-ar", "24000", "-af", "loudnorm", "-f", "wav", str(tmp)],
+            check=True,
+        )
+        got = duration(tmp)
+        if abs(got - expected) > max(CONCAT_SLACK_SECONDS, expected * 0.02):
+            raise RuntimeError(f"{voice}: concatenated {got:.1f}s of an expected {expected:.1f}s; "
+                               f"one of {len(paths)} inputs did not make it in "
+                               f"(see {list_file})")
+        os.replace(tmp, out)
+    finally:
+        tmp.unlink(missing_ok=True)
+    return out
+
+
+def build_picked_reference(voice: str, paths: list[Path]) -> Path:
+    """One reference from clips chosen by ear, in the order given.
+
+    Nothing here sorts, filters or budgets: the order is the choice. build_reference is
+    deliberately not reused - it sorts by duration, drops everything outside 0.8-8.0 s
+    (which is every spoken emote line), stops at TARGET_SECONDS, and deletes a `-s<N>`
+    clip whose measured head is under ARCHETYPE_MIN_HEAD, which a plain concat never has.
+    """
+    out = concat_to_wav(voice, paths, "picked.txt")
+    offset = 0.0
+    t3 = s3gen = 0
+    for path in paths:
+        if offset < T3_SECONDS:
+            t3 += 1
+        if offset < S3GEN_SECONDS:
+            s3gen += 1
+        offset += duration(path)
+    print(f"{out.name}: {len(paths)} clips picked by ear, {offset:.1f}s "
+          f"({t3} reaching the {T3_SECONDS:.0f}s t3 window, {s3gen} the {S3GEN_SECONDS:.0f}s s3gen one)")
+    return out
+
+
 def build_reference(voice: str, files: list[Path], head: list[Path] | None = None,
                     rotation: int = 0, recipe: str = SPEECH_AND_BARKS) -> Path | None:
     """Composes one reference clip. See the recipe constants for the three shapes.
@@ -424,15 +516,7 @@ def build_reference(voice: str, files: list[Path], head: list[Path] | None = Non
     if not chosen or (total < 4.0 and voice.startswith("npc-")):
         print(f"{voice}: not enough usable audio ({total:.1f}s)")
         return None
-    list_file = RAW_DIR / voice / "concat.txt"
-    list_file.parent.mkdir(parents=True, exist_ok=True)
-    list_file.write_text("".join(f"file '{p.resolve()}'\n" for p in chosen), encoding="utf-8")
-    out = VOICES_DIR / f"{voice}.wav"
-    subprocess.run(
-        ["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(list_file),
-         "-ac", "1", "-ar", "24000", "-af", "loudnorm", str(out)],
-        check=True,
-    )
+    out = concat_to_wav(voice, chosen)
     # Measured while the head is assembled, not as chosen[:SPEECH_HEAD_CLIPS] afterwards:
     # a voice whose budget fits only one speech clip would otherwise count the first
     # bark behind it as speech - goblin-male reported a 6.8 s head that was 5.4 s of
