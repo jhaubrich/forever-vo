@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- The first-login welcome no longer freezes the client when the Gamepad
+  (Alpha) UI is on (#44). It was a standard Blizzard popup, and in gamepad mode
+  the client hands every such popup to a path that addons are not allowed to
+  trigger, then blames the addon and shows the same kind of popup again. The
+  welcome is now a plain window of the addon's own, which that path never sees.
+  Thanks to BrandtChristian for tracing it through Blizzard's code.
 - No more "secret string value" error at NPCs whose identity the client hides
   from addons (the Disciple of Naralex was the first). The client hands over a
   sealed value in place of such a unit's name and GUID, and the addon now
