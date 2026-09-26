@@ -408,7 +408,9 @@ function onEvent(ev) {
   tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
   const cell = tr.lastElementChild;
   const keep = document.createElement("button"); keep.textContent = "Keep these settings";
-  keep.title = `Write [tts.voices.${$("voice").value}] with these settings${ev.reference ? " and this clip" : ""} into forever-vo.toml`;
+  keep.title = `Write [tts.voices.${$("voice").value}] with these settings${ev.reference ? " and this clip" : ""} ` +
+    `into forever-vo.toml.\n\nThe settings join that voice's fingerprint, so its lines go stale and the ` +
+    `next generate run redoes them — exactly that voice's files, and the voices that borrow its clip.`;
   keep.addEventListener("click", async () => {
     try {
       applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
@@ -421,7 +423,18 @@ function onEvent(ev) {
   if (current) {
     const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
     write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1]);
-    write.title = "Regenerate this line's pack file under the saved settings (keep first if these are not saved yet)";
+    write.title =
+      "Generate this line once more under the SAVED settings and put that file in the pack, " +
+      "then record its fingerprint so the nightly run neither redoes it nor misses it.\n\n" +
+      "It is not this take. Generation is not seeded — the same text and settings give a " +
+      "different take every time — so what lands in the pack is a fresh roll, close to what " +
+      "you heard but not identical.\n\n" +
+      "The fingerprint is not a seed either: it is a hash of the spoken text and any " +
+      "non-default tuning, and it only answers whether the file needs making again.\n\n" +
+      "It writes the corpus text in the line's own voice, ignoring edits to the box above " +
+      "and the voice selector (#67). Correct the text by capturing it in game; a hand-typed " +
+      "edit would be reverted by the next run anyway.\n\n" +
+      "Disabled until this row's recipe is the saved one — keep the settings first.";
     write.disabled = !isSaved(write.dataset.recipe);
     write.addEventListener("click", async () => {
       write.disabled = true;
