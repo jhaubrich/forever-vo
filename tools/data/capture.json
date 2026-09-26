@@ -943,6 +943,22 @@
    "time": 1790298142,
    "zone": "Silverpine Forest"
   },
+  "227853|066d9580": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Hunter",
+   "event": "gossip",
+   "mapID": 1434,
+   "name": "Pix Xizzix",
+   "npc": "227853",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Booty Bay",
+   "text": "Impulse purchases are the most fun kind of purchases!",
+   "time": 1790385894,
+   "zone": "Stranglethorn Vale"
+  },
   "2329|a28d29e1": {
    "addon": "0.1.2",
    "build": "69977",
@@ -3817,6 +3833,24 @@
    "time": 1790294717,
    "zone": "Thunder Bluff"
   },
+  "2834|c2467ddc": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1434,
+   "name": "Myizz Luckycatch",
+   "npc": "2834",
+   "pack": "Forever",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Booty Bay",
+   "text": "I can teach you fishing skills.",
+   "time": 1790385967,
+   "zone": "Stranglethorn Vale"
+  },
   "2855|1c3f5d2d": {
    "addon": "0.1.5",
    "build": "70009",
@@ -3835,6 +3869,24 @@
    "text": "We use many animal pelts and skins in our creations. ",
    "time": 1790371689,
    "zone": "Orgrimmar"
+  },
+  "2858|d37b59d0": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1434,
+   "name": "Gringer",
+   "npc": "2858",
+   "pack": "Forever",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Booty Bay",
+   "text": "How may I be of service?",
+   "time": 1790386005,
+   "zone": "Stranglethorn Vale"
   },
   "2913|5112b624": {
    "addon": "0.1.4",
@@ -4406,7 +4458,7 @@
    "sex": "f",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1790371932,
+   "time": 1790386574,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
@@ -4444,7 +4496,7 @@
    "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790373887,
+   "time": 1790386558,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
@@ -4521,6 +4573,24 @@
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
    "time": 1790356350,
+   "zone": "Orgrimmar"
+  },
+  "3332|51d936f4": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Hunter",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Lumak",
+   "npc": "3332",
+   "pack": "Forever",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "subzone": "Valley of Honor",
+   "text": "Fish so delicious. You come learn fish? Eat fish? Mmmmm...",
+   "time": 1790386159,
    "zone": "Orgrimmar"
   },
   "3338|e2ff6310": {
@@ -6468,6 +6538,13 @@
    "name": "Karos Razok",
    "sex": 2
   },
+  "227853": {
+   "creatureType": "Humanoid",
+   "level": 60,
+   "modelFileID": 119369,
+   "name": "Pix Xizzix",
+   "sex": 3
+  },
   "2329": {
    "creatureType": "Humanoid",
    "modelFileID": 119563,
@@ -7494,11 +7571,25 @@
    "name": "Pand Stonebinder",
    "sex": 2
   },
+  "2834": {
+   "creatureType": "Humanoid",
+   "level": 43,
+   "modelFileID": 119376,
+   "name": "Myizz Luckycatch",
+   "sex": 2
+  },
   "2855": {
    "creatureType": "Humanoid",
    "level": 24,
    "modelFileID": 917116,
    "name": "Snang",
+   "sex": 2
+  },
+  "2858": {
+   "creatureType": "Humanoid",
+   "level": 55,
+   "modelFileID": 917116,
+   "name": "Gringer",
    "sex": 2
   },
   "2913": {
@@ -7710,6 +7801,13 @@
    "level": 45,
    "modelFileID": 917116,
    "name": "Koma",
+   "sex": 2
+  },
+  "3332": {
+   "creatureType": "Humanoid",
+   "level": 35,
+   "modelFileID": 917116,
+   "name": "Lumak",
    "sex": 2
   },
   "3336": {
