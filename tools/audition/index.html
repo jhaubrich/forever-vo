@@ -479,11 +479,13 @@ function isSaved(recipe) {
 }
 
 $("p-keep").addEventListener("click", async () => {
+  busy($("p-keep"), true);
   try {
     applyState(await api("/api/keep-pronunciation", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ word: $("p-word").value, spoken: $("p-spoken").value }) }));
     toast("Pronunciation kept. Lines that use the word are stale for the next generate run.", "ok");
   } catch (e) { toast(e.message, "warn"); }
+  busy($("p-keep"), false);
 });
 
 let sessionsCache = [];
