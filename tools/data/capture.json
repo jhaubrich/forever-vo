@@ -4448,9 +4448,9 @@
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
-   "addon": "0.1.4",
+   "addon": "0.1.5",
    "build": "70009",
-   "class": "Mage",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789932147,
    "found": true,
@@ -4458,12 +4458,12 @@
    "name": "Doras",
    "npc": "3310",
    "pack": "Forever",
-   "player": "Myrlin",
-   "race": "Orc",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
    "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
-   "time": 1790337271,
+   "time": 1790384537,
    "zone": "Orgrimmar"
   },
   "3318|2f8d506f": {
@@ -4744,7 +4744,7 @@
    "zone": "The Barrens"
   },
   "3399|da278450": {
-   "addon": "0.1.4",
+   "addon": "0.1.5",
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
@@ -4759,7 +4759,7 @@
    "sex": "f",
    "subzone": "The Drag",
    "text": "Can Zamja help you, $r?",
-   "time": 1790366545,
+   "time": 1790384381,
    "zone": "Orgrimmar"
   },
   "3413|c879b3f9": {
@@ -8195,6 +8195,12 @@
    "creatureType": "Humanoid",
    "modelFileID": 878772,
    "name": "Talin Keeneye",
+   "sex": 2
+  },
+  "7161": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Wrenix the Wretched",
    "sex": 2
   },
   "7683": {
@@ -21663,6 +21669,24 @@
    "time": 1790370291,
    "title": "Favorite Food",
    "zone": "Orgrimmar"
+  },
+  "97253-accept": {
+   "addon": "0.1.4",
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Wrenix the Wretched",
+   "npc": "7161",
+   "origin": "issue-69",
+   "questID": 97253,
+   "sex": "m",
+   "source": "community",
+   "text": "Hey, got a sec?\r\n\r\nSo, apparently, nobody I've sent to deal with the recent pirate problem has come back alive. After five or six attempts I thought, \"what if I sent a machine instead?\" Turns out, scimitars double as screwdrivers in a pinch, and before I could redirect it home, it was already in pieces and scattered across their camp!\r\n\r\nI need those parts back, and since this is a quick little retrieval mission, I'd wager your odds for survival are MUCH higher than the others. Whaddya say?",
+   "time": 1790384540,
+   "title": "Parts and Pieces",
+   "wanted": null,
+   "zone": "The Barrens"
   },
   "97277-accept": {
    "addon": "0.1.1",
