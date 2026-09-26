@@ -51,7 +51,7 @@ from typing import Any
 import tomlkit
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from tools import generate
 from tools.build_voice_references import (
@@ -760,6 +760,21 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         spoken = clean(request.text, pronunciations=config.pronunciations)
         if not spoken:
             raise HTTPException(400, "nothing to say once the text is cleaned")
+        # Build one tuning before the stream opens. The settings come from three free
+        # text boxes and the models have bounds - tempo is 0.5 to 2.0 - so a typo used
+        # to raise inside the generator, after 200 had been sent, and the page could
+        # only report that the connection broke. A tempo of 10 looked like a network
+        # error.
+        for exaggeration, cfg_weight, tempo in itertools.product(
+                request.exaggeration, request.cfg_weight, request.tempo):
+            try:
+                VoiceTuning(reference=request.reference, exaggeration=exaggeration,
+                            cfg_weight=cfg_weight, tempo=tempo)
+            except ValidationError as e:
+                detail = "; ".join(f"{'.'.join(str(p) for p in err['loc'])}: {err['msg']}"
+                                   for err in e.errors())
+                raise HTTPException(400, f"{detail} (you gave exaggeration {exaggeration}, "
+                                         f"cfg_weight {cfg_weight}, tempo {tempo})") from e
         session = time.strftime("%Y%m%d-%H%M%S")
         out_dir = AUDITION_DIR / session
         out_dir.mkdir(parents=True, exist_ok=True)
