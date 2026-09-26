@@ -150,6 +150,17 @@ clips = [
     543065,
 ]
 
+[voices.sources.dwarf-female-guard]
+clips = [
+    547838,
+    547823,
+    547842,
+    547822,
+    547828,
+    539968,
+    539970,
+]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
