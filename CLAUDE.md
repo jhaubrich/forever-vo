@@ -48,11 +48,18 @@ game's own recordings).
   unit's identity or of dialog text goes through `Util.Plain`, which turns a
   secret into nil so the speaker falls back to the pack or the line is skipped.
   Keep new reads behind it; `issecretvalue` is in `docs/forever_api.json`.
-- **Saved variables are written on logout/reload but never read back** on
-  this beta. Every session starts from defaults. Consequences: settings reset
-  each login (that is why the unvoiced-line reminders are on by default), the
-  welcome popup's "seen" flag lives in an addon-registered CVar instead, and
-  the capture only ever holds one session, so it is ingested on every write.
+- **Saved variables persist again since about 2026-09-24.** Until then this
+  beta wrote them on logout/reload but never read them back, so every session
+  started from defaults; the owner and others confirmed the fix on 2026-09-25,
+  and the capture DB on disk spans two days and four characters. Leftovers of
+  the old state, all harmless: the unvoiced-line reminders default on, the
+  welcome popup's "seen" flag and the narrator pick live in addon-registered
+  CVars as well as the settings, and ingest treats every write of the file as a
+  merge (it always did, and must keep doing so: the DB now accumulates across
+  sessions and characters, so one write carries days of play). The reminders
+  count what this session recorded apart from what was already waiting
+  (`Capture:Summary`'s last two returns) since 0.1.6; before that the logout
+  reminder said "141 lines this session" for two days of captures.
 - The addon compartment exists in the code but does not show on the Camelot
   minimap skin, hence our own minimap button.
 - Quest and gossip **text is not in the client files**. The server sends it.
@@ -648,9 +655,9 @@ owner's machine picks the files up on the next sync.
   of them. The four dropped voices' files (human-female, dwarf-male,
   nightelf-female, troll-female) are still under `Sounds/*/Narrator/` and in
   `sound_index.json`; `rebuild_tables` and the release only look at the
-  configured voices, so they are dead weight until deleted. The player's pick lives in the
-  `ForeverVO_narratorVoice` CVar, because saved variables do not survive a
-  session on this beta.
+  configured voices, so they are dead weight until deleted. The player's pick
+  lives in the `ForeverVO_narratorVoice` CVar as well as the settings, from
+  when saved variables did not survive a session on this beta.
 - The talking head defaults to the faction parchment; clearing `factionHead`
   gives Blizzard's dark panel (the "Normal" kit). Gold text vanished on the
   parchment until each kit got its own dark Name/Title/Text and no shadow:

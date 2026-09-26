@@ -53,8 +53,10 @@ audio:
    Chatterbox on your GPU, and rebuilds the pack tables.
 4. Restart the client (new sound files are only seen at launch) and play on.
 
-The beta client currently does not read saved variables back at login, so run
-`ingest.py` after every session; the `.bak` file gives one session of slack.
+The capture persists between sessions (the beta reads saved variables back
+since late September 2026; before that each login started empty), so `ingest.py`
+can run whenever you like. It merges, so running it after every session costs
+nothing.
 
 ## Voice pack format
 

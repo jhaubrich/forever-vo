@@ -2,7 +2,9 @@ local _, ns = ...
 local Util = ns.Util
 
 --[[
-"/fvo export": packs this session's unvoiced lines into a string players can
+"/fvo export": packs the capture's unvoiced lines (everything recorded since
+the last time the DB was cleared, across sessions and characters now that the
+beta reads saved variables back) into a string players can
 paste into a GitHub issue (see .github/ISSUE_TEMPLATE/capture.yml). The
 string is JSON, zlib-compressed and base64-encoded with the client's own
 C_EncodingUtil, prefixed with "FVO1:". The character's name, class and race are
@@ -166,19 +168,29 @@ function Export:OnLineCaptured(contributes)
     end
 end
 
--- Last-chance reminder when a logout or quit timer starts (the beta client
--- forgets the capture between sessions, so lines not exported now are lost
--- to the export path).
+-- Reminder when a logout or quit timer starts. The capture persists between
+-- sessions, so nothing is lost by leaving; the count says what this session
+-- added and what was already waiting from earlier ones.
 ns.OnInit(function()
     local frame = CreateFrame("Frame")
     frame:RegisterEvent("PLAYER_CAMPING")
     frame:RegisterEvent("PLAYER_QUITING")
     frame:SetScript("OnEvent", function()
-        local _, questsMissing, _, gossipMissing = ns.Capture:Summary()
+        local _, questsMissing, _, gossipMissing, _, sessionMissing = ns.Capture:Summary()
         local missing = questsMissing + gossipMissing
-        if missing > 0 then
-            ns.Print(format("%d %s seen this session are worth contributing. |cffffd100/fvo export|r before you go, or they are forgotten.",
-                missing, Util.Plural(missing, "line")))
+        if missing == 0 then
+            return
+        end
+        local earlier = missing - sessionMissing
+        if earlier > 0 and sessionMissing > 0 then
+            ns.Print(format("%d %s from this session and %d from earlier ones are worth contributing. |cffffd100/fvo export|r packs them all; they keep until you do.",
+                sessionMissing, Util.Plural(sessionMissing, "line"), earlier))
+        elseif sessionMissing > 0 then
+            ns.Print(format("%d %s from this session are worth contributing. |cffffd100/fvo export|r packs them; they keep until you do.",
+                sessionMissing, Util.Plural(sessionMissing, "line")))
+        else
+            ns.Print(format("%d %s from earlier sessions are still worth contributing. |cffffd100/fvo export|r packs them.",
+                earlier, Util.Plural(earlier, "line")))
         end
     end)
 end)

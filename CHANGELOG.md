@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- The reminders about lines worth contributing now say what this session
+  added and what was already waiting from earlier ones. The beta client keeps
+  saved variables between logins again, so the capture accumulates across
+  sessions and characters, and the old logout message counted all of it as
+  "this session" ("141 lines" after a fishing trip). Nothing is forgotten by
+  logging out any more; `/fvo export` packs everything whenever you like.
+
 ## 0.1.5
 
 - Skyborne characters no longer leave "skyborne" in the lines they capture.

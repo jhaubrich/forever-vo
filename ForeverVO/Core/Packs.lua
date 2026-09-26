@@ -175,8 +175,9 @@ function Packs:NarratorVoice()
     return DEFAULT_NARRATOR -- the pack that carried it is no longer installed
 end
 
---- Picks the narrator voice, and remembers it in an addon CVar: this client
---- writes saved variables but never reads them back (see Welcome.lua).
+--- Picks the narrator voice, and remembers it in an addon CVar as well as the
+--- settings: until 2026-09-25 this beta wrote saved variables but never read
+--- them back, and the CVar is kept so the pick made before the fix survives.
 function Packs:SetNarratorVoice(voice)
     ns.db.narratorVoice = voice
     pcall(C_CVar.SetCVar, NARRATOR_CVAR, voice)

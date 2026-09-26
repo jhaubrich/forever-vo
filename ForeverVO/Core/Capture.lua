@@ -7,14 +7,17 @@ variable ForeverVOCaptureDB, along with who said it and whether a pack had
 audio for it. tools/ingest.py merges these files; tools/generate.py voices what
 is missing. Nothing here affects playback.
 
-Note: the Forever beta client does not read saved variables back at login, so
-each session starts empty. The file is still written on logout.
+The DB persists across sessions and characters since the beta started reading
+saved variables back (confirmed 2026-09-25; before that every login began
+empty). A key recorded since this login is remembered in `session`, so the
+reminders can tell what this session added from what was already waiting.
 ]]
 
 local Capture = {}
 ns.Capture = Capture
 
 local modelFrame
+local session = {}   -- "quests:<key>" / "gossip:<key>" recorded since login
 
 local function GetDB()
     local db = ForeverVOCaptureDB
@@ -143,9 +146,13 @@ function Capture:Record(line)
         if not line.questID or line.questID == 0 then
             return
         end
-        db.quests[format("%d-%s", line.questID, line.event)] = entry
+        local key = format("%d-%s", line.questID, line.event)
+        db.quests[key] = entry
+        session["quests:" .. key] = true
     else
-        db.gossip[format("%s|%s", npcKey or line.speaker.name or "?", Util.TextKey(entry.text))] = entry
+        local key = format("%s|%s", npcKey or line.speaker.name or "?", Util.TextKey(entry.text))
+        db.gossip[key] = entry
+        session["gossip:" .. key] = true
     end
     if ns.Export then
         ns.Export:OnLineCaptured(Capture.Contributes(entry))
@@ -158,17 +165,30 @@ function Capture.Contributes(entry)
     return not entry.found or entry.wanted == true
 end
 
---- Counts of lines seen, and of those an export would carry.
+--- Counts of lines in the capture and of those an export would carry, over the
+--- whole DB and then over what this session recorded:
+--- quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing.
 function Capture:Summary()
     local db = GetDB()
     local quests, questsMissing, gossip, gossipMissing = 0, 0, 0, 0
-    for _, entry in pairs(db.quests) do
+    local sessionSeen, sessionMissing = 0, 0
+    for key, entry in pairs(db.quests) do
         quests = quests + 1
-        if Capture.Contributes(entry) then questsMissing = questsMissing + 1 end
+        local contributes = Capture.Contributes(entry)
+        if contributes then questsMissing = questsMissing + 1 end
+        if session["quests:" .. key] then
+            sessionSeen = sessionSeen + 1
+            if contributes then sessionMissing = sessionMissing + 1 end
+        end
     end
-    for _, entry in pairs(db.gossip) do
+    for key, entry in pairs(db.gossip) do
         gossip = gossip + 1
-        if Capture.Contributes(entry) then gossipMissing = gossipMissing + 1 end
+        local contributes = Capture.Contributes(entry)
+        if contributes then gossipMissing = gossipMissing + 1 end
+        if session["gossip:" .. key] then
+            sessionSeen = sessionSeen + 1
+            if contributes then sessionMissing = sessionMissing + 1 end
+        end
     end
-    return quests, questsMissing, gossip, gossipMissing
+    return quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing
 end

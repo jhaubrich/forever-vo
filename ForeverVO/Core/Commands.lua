@@ -8,17 +8,18 @@ the minimap in modern clients).
 
 local function Status()
     local packs = ns.Packs:Count()
-    local quests, questsMissing, gossip, gossipMissing = ns.Capture:Summary()
-    ns.Print(format("%d voice %s loaded. This session: %d quest %s (%d without audio), %d gossip %s (%d without audio).",
+    local quests, questsMissing, gossip, gossipMissing, sessionSeen = ns.Capture:Summary()
+    ns.Print(format("%d voice %s loaded. Captured: %d quest %s (%d without audio), %d gossip %s (%d without audio); %d %s this session.",
         packs, ns.Util.Plural(packs, "pack"), quests, ns.Util.Plural(quests, "text"), questsMissing,
-        gossip, ns.Util.Plural(gossip, "text"), gossipMissing))
+        gossip, ns.Util.Plural(gossip, "text"), gossipMissing, sessionSeen, ns.Util.Plural(sessionSeen, "line")))
     if packs == 0 then
         ns.Print("No voice pack found. Install Forever Voiceover Data: Base, Base Endgame and Data: Forever from CurseForge next to ForeverVO.")
     end
 end
 
 --- Cycles through the narrator voices the installed packs carry. The pick is
---- kept in a CVar, so unlike the other settings it survives a session.
+--- kept in a CVar as well as the settings (from when this beta did not read
+--- saved variables back).
 local function NextNarratorVoice()
     local voices = ns.Packs:NarratorVoices()
     if #voices < 2 then
@@ -57,7 +58,7 @@ local commands = {
     end },
     narrator = { "Switch to the next narrator voice", NextNarratorVoice },
     status = { "Show loaded packs and capture counts", Status },
-    export = { "Copy this session's unvoiced lines to contribute", function() ns.Export:Show() end },
+    export = { "Copy the captured unvoiced lines to contribute", function() ns.Export:Show() end },
     welcome = { "Show the welcome message again", function() ns.Welcome:Show() end },
     debug  = { "Toggle debug messages", function()
         ns.db.debug = not ns.db.debug

@@ -3,8 +3,9 @@ local _, ns = ...
 --[[
 One-time welcome on first login explaining where the voices come from and how
 to contribute lines. The "seen" flag is kept in an addon-registered CVar rather
-than saved variables, because this beta client does not load saved variables
-back, but it does persist the CVar store.
+than saved variables: until late September 2026 this beta client did not load
+saved variables back but did persist the CVar store, and the CVar stays so
+nobody who has seen the welcome sees it again.
 
 The welcome is a frame of the addon's own, not a StaticPopup. With the client's
 alpha gamepad UI on, every StaticPopup that opens is handed to the gamepad
