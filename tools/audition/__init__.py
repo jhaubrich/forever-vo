@@ -42,6 +42,7 @@ import sys
 import threading
 import time
 import webbrowser
+from collections import Counter
 from collections.abc import Iterator
 from dataclasses import dataclass
 from importlib import resources
@@ -262,6 +263,20 @@ def sources_warnings(config: Config, voice: str) -> list[str]:
 
 
 @functools.cache
+@functools.cache
+def named_display_count(display_id: int) -> int:
+    """How many creature displays share this named clip's kit - three at most, by the
+    rule that mints them (NAMED_MAX_DISPLAYS)."""
+    from tools.build_voice_references import NAMED_MAX_DISPLAYS
+    from tools.wowdata import display_sound_set, load_db2
+    sound_id = display_sound_set(display_id)
+    if not sound_id:
+        return 1
+    shared = sum(1 for row in load_db2("CreatureDisplayInfo").values()
+                 if int(row.get("NPCSoundID") or 0) == sound_id)
+    return min(shared, NAMED_MAX_DISPLAYS) or 1
+
+
 def npc_labels() -> dict[int, str]:
     """creature display -> something to call its clip, because npc-10357 is nobody.
 
@@ -491,6 +506,7 @@ class Studio:
         self._by_base: dict[str, tuple[Item, Variant]] = {}
         self.model_status = "not loaded"
         self.corpus_status = "not loaded"
+        self._lines_per_voice: Counter[str] | None = None
         self.clips_lock = threading.Lock()
         self._clips: dict[str, list[dict[str, Any]]] = {}
         self.clips_status: dict[str, str] = {}
@@ -525,6 +541,18 @@ class Studio:
                 self._rows = line_rows(items)
                 self.corpus_status = f"{len(self._rows)} lines"
             return self._rows
+
+    def lines_per_voice(self) -> dict[str, int]:
+        """How many lines each voice actually speaks - the reason to bother with it.
+
+        Cached beside the corpus it is counted from, because state() is polled every
+        15 s and this walks every row.
+        """
+        rows = self.rows()      # takes corpus_lock itself; must not be held here
+        with self.corpus_lock:
+            if self._lines_per_voice is None:
+                self._lines_per_voice = Counter(row.voice for row in rows)
+            return dict(self._lines_per_voice)
 
     def clips(self, voice: str, refresh: bool = False) -> list[dict[str, Any]] | None:
         """This voice's candidate source clips, or None while a background load runs.
@@ -567,6 +595,7 @@ class Studio:
         """After a config change the spoken text or voices may differ; reload lazily."""
         with self.corpus_lock:
             self._rows = None
+            self._lines_per_voice = None
             self._by_base = {}
         threading.Thread(target=self.rows, daemon=True).start()
 
@@ -591,6 +620,18 @@ class Studio:
         """
         on_disk = set(self.voices())
         labels = npc_labels()
+        counts = sound_set_displays()
+        # How many creature displays each voice answers for. An archetype's is its own
+        # NPCSounds set; a race voice's is every set of that race and gender, since it
+        # is what a speaker falls back to; a named clip's is the handful sharing its kit.
+        displays: dict[str, int] = {}
+        for race_gender, sets in counts.items():
+            displays[race_gender] = sum(sets.values())
+            for sound_id, n in sets.items():
+                displays[archetype_names(race_gender)[sound_id]] = n
+        for display_id in labels:
+            displays[f"npc-{display_id}"] = named_display_count(display_id)
+        spoken = self.lines_per_voice()
 
         def label_of(voice: str) -> str | None:
             if not voice.startswith("npc-"):
@@ -601,16 +642,16 @@ class Studio:
                 return None
 
         rows: list[dict[str, Any]] = [
-            {"voice": v, "clip": True, "displays": None, "archetype": is_archetype(v),
-             "label": label_of(v)}
+            {"voice": v, "clip": True, "displays": displays.get(v), "archetype": is_archetype(v),
+             "label": label_of(v), "lines": spoken.get(v, 0)}
             for v in self.voices()]
-        for race_gender, counts in sound_set_displays().items():
+        for race_gender, sets_of in counts.items():
             names = archetype_names(race_gender)
-            for sound_id, displays in counts.items():
+            for sound_id, counted in sets_of.items():
                 name = names[sound_id]
                 if name not in on_disk:
-                    rows.append({"voice": name, "clip": False, "displays": displays,
-                                 "archetype": True, "label": None})
+                    rows.append({"voice": name, "clip": False, "displays": counted,
+                                 "archetype": True, "label": None, "lines": spoken.get(name, 0)})
         return sorted(rows, key=lambda r: r["voice"])
 
     def state(self) -> dict[str, Any]:

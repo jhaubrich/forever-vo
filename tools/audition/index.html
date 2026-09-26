@@ -249,8 +249,13 @@ function voiceOptions(s) {
     ? `<optgroup label="${label}">` + list.map(r => {
         const star = s.resolved[r.voice] && s.resolved[r.voice].tuned ? " ★" : "";
         const who = r.label ? ` — ${esc(r.label)}` : "";
-        const casts = r.displays ? `, ${r.displays} display${r.displays === 1 ? "" : "s"}` : "";
-        const note = r.clip ? "" : ` — no clip yet${casts}`;
+        // what the voice is worth picking for: how many creature displays it answers
+        // for, and how many lines it actually speaks
+        const bits = [];
+        if (r.displays) bits.push(`${r.displays} display${r.displays === 1 ? "" : "s"}`);
+        if (r.lines) bits.push(`${r.lines} line${r.lines === 1 ? "" : "s"}`);
+        if (!r.clip) bits.unshift("no clip yet");
+        const note = bits.length ? ` — ${bits.join(", ")}` : "";
         return `<option value="${r.voice}">${r.voice}${who}${star}${note}</option>`;
       }).join("") + "</optgroup>"
     : "";
