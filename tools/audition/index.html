@@ -23,6 +23,14 @@
   button { cursor: pointer; }
   button.primary { background: var(--gold); color: #1a1408; border-color: var(--gold); font-weight: 600; }
   button:disabled { opacity: .45; cursor: default; }
+  /* A button that is working keeps its label and grows a spinner, so a greyed-out
+     button reads as "busy" rather than "broken" - the model load alone is ~30 s. */
+  @keyframes fvo-spin { to { transform: rotate(360deg); } }
+  button.busy { opacity: .85; }
+  button.busy::after { content: ""; display: inline-block; width: .75em; height: .75em;
+    margin-left: .5em; vertical-align: -.05em; border: 2px solid currentColor;
+    border-right-color: transparent; border-radius: 50%; animation: fvo-spin .7s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { button.busy::after { animation-duration: 2.4s; } }
   label { display: block; color: var(--dim); font-size: 12px; margin: 8px 0 3px; }
   .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .row > * { flex: 1; }
@@ -211,6 +219,13 @@ const $ = (id) => document.getElementById(id);
 let state = null;
 let current = null;   // the picked LineRow, or null for free text
 
+// Disable and spin together, so the two can never disagree.
+function busy(el, on) {
+  if (!el) return;
+  el.disabled = !!on;
+  el.classList.toggle("busy", !!on);
+}
+
 function toast(message, cls) {
   const t = $("toast"); t.textContent = message; t.className = cls || ""; t.style.display = "block";
   clearTimeout(toast.timer); toast.timer = setTimeout(() => t.style.display = "none", 6000);
@@ -387,7 +402,7 @@ $("go").addEventListener("click", async () => {
              tempo: numbers($("tempo").value, "tempo"),
              takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
-  $("go").disabled = true; $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
+  busy($("go"), true); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
   try {
     const response = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
@@ -398,7 +413,7 @@ $("go").addEventListener("click", async () => {
       let nl; while ((nl = buffer.indexOf("\n")) >= 0) { const line = buffer.slice(0, nl); buffer = buffer.slice(nl + 1); if (line.trim()) onEvent(JSON.parse(line)); }
     }
   } catch (e) { toast(e.message, "warn"); }
-  $("go").disabled = false; refresh(); loadSessions();
+  busy($("go"), false); refresh(); loadSessions();
 });
 
 function onEvent(ev) {
@@ -417,12 +432,14 @@ function onEvent(ev) {
     `into forever-vo.toml.\n\nThe settings join that voice's fingerprint, so its lines go stale and the ` +
     `next generate run redoes them — exactly that voice's files, and the voices that borrow its clip.`;
   keep.addEventListener("click", async () => {
+    busy(keep, true);
     try {
       applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, reference: ev.reference }) }));
       toast(`Kept for ${$("voice").value}. The next generate run restages that voice's files.`, "ok");
       document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
     } catch (e) { toast(e.message, "warn"); }
+    busy(keep, false);
   });
   cell.appendChild(keep);
   if (current) {
@@ -442,13 +459,13 @@ function onEvent(ev) {
       "Disabled until this row's recipe is the saved one — keep the settings first.";
     write.disabled = !isSaved(write.dataset.recipe);
     write.addEventListener("click", async () => {
-      write.disabled = true;
+      busy(write, true);
       try {
         const r = await api("/api/write-pack", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ base: current.base }) });
         toast(`Wrote ${r.base} (${r.seconds}s) into the pack and stamped its fingerprint.`, "ok");
         current.pack_url = r.pack_url; pick(current, $("results").querySelector("li.active") || document.createElement("li"));
       } catch (e) { toast(e.message, "warn"); }
-      write.disabled = false;
+      busy(write, false);
     });
     cell.appendChild(write);
   }
@@ -489,10 +506,10 @@ $("sessions").addEventListener("change", () => {
 });
 
 $("rebuild").addEventListener("click", async () => {
-  $("rebuild").disabled = true;
+  busy($("rebuild"), true);
   try { const r = await api("/api/rebuild-tables", { method: "POST" }); toast(r.ok ? "Pack tables rebuilt." : "Rebuild reported a problem; see the server log.", r.ok ? "ok" : "warn"); }
   catch (e) { toast(e.message, "warn"); }
-  $("rebuild").disabled = false;
+  busy($("rebuild"), false);
 });
 
 // --- Source clips -----------------------------------------------------------
@@ -566,6 +583,7 @@ async function loadClips(refresh) {
     if ($("voice").value !== voice) return;
     clipsWindows = d.windows;
     $("clips-status").textContent = `${voice}: ${d.status}`;
+    if (d.status.startsWith("failed")) busy($("clips-load"), false);
     $("clips-warn").innerHTML = d.warnings.map(w => `<span class="warn">${esc(w)}</span>`).join("<br>");
     $("clips-ref").src = d.reference_url || "";
     // before the candidates, not after: the history is the reason to open the panel
@@ -579,14 +597,17 @@ async function loadClips(refresh) {
       renderClips();
       renderHistory(d.history, picks);   // again, now that picks are seeded
       if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
+      busy($("clips-load"), false);
     } else if (d.status === "loading" && !clipsPoll) {
       clipsPoll = setInterval(() => loadClips(false), 3000);
     }
-  } catch (e) { toast(e.message, "warn"); }
+  } catch (e) { toast(e.message, "warn"); busy($("clips-load"), false); }
 }
 
 $("clips-load").addEventListener("click", () => {
   $("clips-status").textContent = "downloading and probing every candidate; the first time for a voice takes a while…";
+  // spins until the rows land, which for a race voice is minutes of downloads
+  busy($("clips-load"), true);
   loadClips(true);
 });
 $("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
@@ -594,7 +615,7 @@ $("clips-help-toggle").addEventListener("click", () => { $("clips-help").hidden 
 $("knobs-help-toggle").addEventListener("click", () => { $("knobs-help").hidden = !$("knobs-help").hidden; });
 $("clips-build").addEventListener("click", async () => {
   if (!picks.length) { toast("pick at least one clip", "warn"); return; }
-  $("clips-build").disabled = true;
+  busy($("clips-build"), true);
   try {
     const r = await api("/api/clips/build", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ voice: clipsVoice, clips: picks, keep: true }) });
@@ -604,7 +625,7 @@ $("clips-build").addEventListener("click", async () => {
     renderHistory(r.history, picks);
     toast(r.restage, "ok");
   } catch (e) { toast(e.message, "warn"); }
-  $("clips-build").disabled = false;
+  busy($("clips-build"), false);
 });
 
 refresh();
