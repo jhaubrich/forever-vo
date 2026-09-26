@@ -6500,6 +6500,7 @@
    "build": "70009",
    "class": "Warlock",
    "event": "gossip",
+   "firstSeen": 1790449948,
    "found": true,
    "mapID": 1454,
    "name": "Yelmak",
