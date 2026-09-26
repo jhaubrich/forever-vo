@@ -1,0 +1,99 @@
+{
+ "addon": "0.1.5",
+ "gossip": {},
+ "npcs": {
+  "2226": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Karos Razok",
+   "sex": 2
+  },
+  "4551": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Michael Garrett",
+   "sex": 2
+  },
+  "4556": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Gordon Wendham",
+   "sex": 2
+  },
+  "6389": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Deathguard Podrig",
+   "sex": 2
+  }
+ },
+ "origin": "issue-124",
+ "quests": {
+  "6321-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Karos Razok",
+   "npc": "2226",
+   "questID": 6321,
+   "sex": "m",
+   "source": "community",
+   "text": "You appear to be on official business...",
+   "time": 1790410825,
+   "title": "Supplying the Sepulcher",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "6322-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Michael Garrett",
+   "npc": "4551",
+   "questID": 6322,
+   "sex": "m",
+   "source": "community",
+   "text": "If you must travel a long distance, then a bat is your best option.",
+   "time": 1790411051,
+   "title": "Michael Garrett",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "6323-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Gordon Wendham",
+   "npc": "4556",
+   "questID": 6323,
+   "sex": "m",
+   "source": "community",
+   "text": "I keep my weapons in top condition.  They are cleaned and ready for use.",
+   "time": 1790411009,
+   "title": "Ride to the Undercity",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "6324-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Deathguard Podrig",
+   "npc": "6389",
+   "questID": 6324,
+   "sex": "m",
+   "source": "community",
+   "text": "$N, you return.  Do you have our supplies from the Undercity?",
+   "time": 1790411447,
+   "title": "Return to Podrig",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
