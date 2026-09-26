@@ -1,0 +1,50 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "2988|00c35128": {
+   "build": "70009",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Morin Cloudstalker",
+   "npc": "2988",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "The Outrunners' duty is to ensure the safety of those who travel across the plains of Mulgore. Those that would threaten the safety of the $r homeland risk punishment at our hands.",
+   "time": 1790426998,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "npcs": {
+  "2988": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Morin Cloudstalker",
+   "sex": 2
+  }
+ },
+ "origin": "issue-152",
+ "quests": {
+  "765-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Morin Cloudstalker",
+   "npc": "2988",
+   "questID": 765,
+   "sex": "m",
+   "source": "community",
+   "text": "I seethe with anger at the thought of the atrocities the Venture Co. is willing to perpetrate against us in the name of profit.",
+   "time": 1790426999,
+   "title": "Supervisor Fizsprocket",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
