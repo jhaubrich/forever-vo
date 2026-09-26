@@ -84,7 +84,7 @@
   <aside>
     <h2>Find a line</h2>
     <input id="q" placeholder="quest title, NPC, words, or a base name like 415-accept" autocomplete="off">
-    <div class="row" style="margin-top:6px"><button id="random">Random line in this voice</button></div>
+    <div class="row" style="margin-top:6px"><button id="random">Random line</button><button id="in-voice">All lines in this voice</button></div>
     <ul id="results"></ul>
     <p class="note">Every word must match. Pick a line to load its spoken text and voice; free text below works too. The random button draws a quest line spoken in the selected voice.</p>
 
@@ -296,7 +296,7 @@ $("q").addEventListener("input", () => {
   searchTimer = setTimeout(async () => {
     const q = $("q").value.trim();
     if (!q) { $("results").innerHTML = ""; return; }
-    try { renderResults(await api(`/api/lines?q=${encodeURIComponent(q)}`)); }
+    try { renderResults((await api(`/api/lines?q=${encodeURIComponent(q)}`)).rows); }
     catch (e) { toast(e.message, "warn"); }
   }, 250);
 });
@@ -309,6 +309,21 @@ function renderResults(rows) {
   items.forEach(li => li.addEventListener("click", () => pick(rows[+li.dataset.i], li)));
   return items;
 }
+
+// A voice's own lines, longest first: a reference that holds up on a greeting can still
+// fall apart on a paragraph, and these are the words it will actually have to say.
+$("in-voice").addEventListener("click", async () => {
+  const voice = $("voice").value;
+  try {
+    const d = await api(`/api/lines?voice=${encodeURIComponent(voice)}`);
+    if (!d.rows.length) { toast(`no lines are spoken in ${voice}`, "warn"); $("results").innerHTML = ""; return; }
+    renderResults(d.rows);
+    $("q").value = "";
+    toast(d.total > d.rows.length
+      ? `${voice}: the ${d.rows.length} longest of ${d.total} lines`
+      : `${voice}: ${d.total} line${d.total === 1 ? "" : "s"}`, "ok");
+  } catch (e) { toast(e.message, "warn"); }
+});
 
 $("random").addEventListener("click", async () => {
   try {

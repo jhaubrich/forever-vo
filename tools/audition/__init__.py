@@ -463,6 +463,19 @@ def search(rows: list[LineRow], query: str, limit: int = 40) -> list[LineRow]:
     return hits[:limit]
 
 
+def lines_in_voice(rows: list[LineRow], voice: str, limit: int = 60) -> list[LineRow]:
+    """That voice's own lines, the longest first.
+
+    Auditioning a voice on the words it will actually say beats free text, and beats one
+    random draw: a reference that holds up on a short greeting can still fall apart on a
+    paragraph. Longest first because those are the ones that show a delivery - and
+    because the pack's own long lines are what the owner notices in play.
+    """
+    hits = [row for row in rows if row.voice == voice]
+    hits.sort(key=lambda r: (-len(r.spoken), r.base))
+    return hits[:limit]
+
+
 # ----------------------------------------------------------------------------
 # The studio: one model, one corpus, the config file
 # ----------------------------------------------------------------------------
@@ -709,8 +722,17 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
                 "pack_url": f"/api/pack/{row.subfolder}/{row.base}.mp3" if exists else None}
 
     @app.get("/api/lines")
-    def lines(q: str = Query(min_length=1)) -> list[dict[str, Any]]:
-        return [payload(row) for row in search(studio.rows(), q)]
+    def lines(q: str = "", voice: str = "") -> dict[str, Any]:
+        """Search by words, or list one voice's own lines when `voice` is given."""
+        rows = studio.rows()
+        if voice:
+            _safe(voice)
+            found = lines_in_voice(rows, voice)
+            total = sum(1 for row in rows if row.voice == voice)
+            return {"rows": [payload(row) for row in found], "total": total, "voice": voice}
+        if not q:
+            raise HTTPException(400, "give q= words to search for, or voice= to list a voice's lines")
+        return {"rows": [payload(row) for row in search(rows, q)], "total": None, "voice": None}
 
     @app.get("/api/random")
     def random_in_voice(voice: str = Query(min_length=1)) -> dict[str, Any]:
