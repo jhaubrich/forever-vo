@@ -8,6 +8,9 @@
   sessions and characters, and the old logout message counted all of it as
   "this session" ("141 lines" after a fishing trip). Nothing is forgotten by
   logging out any more; `/fvo export` packs everything whenever you like.
+- The narrator menu names the voices you will hear, "Human male" and "Orc
+  male", instead of "Narrator" for the first. The default narrator is cloned
+  from the human male recordings, so that is what it is.
 
 ## 0.1.5
 

@@ -154,9 +154,12 @@ function Packs:NarratorVoices()
 end
 
 --- "dwarf-male" -> "Dwarf male". Unknown races keep their own name, capitalised.
+--- The default narrator is cloned from the human male clip (narrator has no clip
+--- of its own; [voices.fallbacks] in forever-vo.toml sends it there), so the
+--- menu names the voice a player will hear rather than the role.
 function Packs.NarratorVoiceLabel(voice)
     if voice == DEFAULT_NARRATOR then
-        return "Narrator"
+        return "Human male"
     end
     local race, gender = voice:match("^(.+)%-(%a+)$")
     if not race then
