@@ -59,17 +59,19 @@
   .pill.s3 { border-color: var(--gold); color: var(--gold); }
   .pill.out { border-color: var(--line); color: var(--dim); }
   button.help { flex: 0 0 auto; width: 22px; height: 22px; padding: 0; border-radius: 50%; line-height: 1; color: var(--gold); border-color: var(--gold); }
-  #clips-help { border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; padding: 10px 14px; margin: 8px 0; background: var(--panel); }
-  #clips-help h4 { margin: 0 0 6px; font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
-  #clips-help p, #clips-help li { color: var(--dim); font-size: 12px; margin: 4px 0; }
-  #clips-help ul { margin: 4px 0; padding-left: 18px; }
-  #clips-help b { color: var(--ink); font-weight: 500; }
-  #clips-help code { color: var(--ink); }
-  #clips-help table { margin: 6px 0; }
+  #clips-help, #knobs-help { border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; padding: 10px 14px; margin: 8px 0; background: var(--panel); }
+  #clips-help h4, #knobs-help h4 { margin: 0 0 6px; font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
+  #clips-help p, #clips-help li, #knobs-help p, #knobs-help li { color: var(--dim); font-size: 12px; margin: 4px 0; }
+  #clips-help ul, #knobs-help ul { margin: 4px 0; padding-left: 18px; }
+  #clips-help b, #knobs-help b { color: var(--ink); font-weight: 500; }
+  #clips-help code, #knobs-help code { color: var(--ink); }
+  #clips-help table, #knobs-help table { margin: 6px 0; }
   #clips-history { margin: 6px 0; }
   #clips-history button { font-size: 12px; padding: 2px 8px; margin: 0 6px 4px 0; }
   #clips-history button.current { border-color: var(--gold); color: var(--gold); }
-  #clips-help td { padding: 3px 8px 3px 0; border: 0; font-size: 12px; color: var(--dim); }
+  #clips-help td, #knobs-help td { padding: 3px 8px 3px 0; border: 0; font-size: 12px; color: var(--dim); vertical-align: top; }
+  #clips-help td:first-child, #knobs-help td:first-child { font-family: ui-monospace, monospace; color: var(--ink); white-space: nowrap; }
+  #knobs-help td:last-child { max-width: 70ch; }
   #clips-help td:first-child { font-family: ui-monospace, monospace; color: var(--ink); white-space: nowrap; }
 </style>
 </head>
@@ -118,7 +120,36 @@
       <div><label for="exag">Exaggeration values (0&ndash;2)</label><input id="exag" value="0.45, 0.75"></div>
       <div><label for="cfg">cfg_weight values (0&ndash;1)</label><input id="cfg" value="0.5, 0.3"></div>
       <div><label for="tempo">Tempo values (0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept)</label><input id="tempo" value="1.0"></div>
+      <button id="knobs-help-toggle" class="help" title="What these three do">?</button>
       <button id="go" class="primary">Generate</button>
+    </div>
+    <div id="knobs-help" hidden>
+      <h4>What these three do</h4>
+      <p>They shape <b>how a line is delivered</b>. They do not decide the accent or the
+        character of the voice &mdash; that comes from the clips the reference is cut from,
+        below.</p>
+      <table>
+        <tr><td>exaggeration</td><td>0&ndash;2. A real conditioning input to the model
+          (<code>emotion_adv</code>): how much expression to put in. Higher is more
+          emphatic, and past about 1 it starts to sound performed.</td></tr>
+        <tr><td>cfg_weight</td><td>0&ndash;1. Classifier-free guidance. At each token the
+          model predicts twice, once with your text and reference and once without, and
+          pushes away from the second: <code>logits = cond + cfg &times; (cond &minus; uncond)</code>.
+          Higher tracks the prompt harder, and clips pauses as it goes;
+          <b>lower is Chatterbox's own advice for a rushed voice</b>, which is why the
+          tuned voices here sit at 0.3. At 0 there is no guidance at all.</td></tr>
+        <tr><td>tempo</td><td>0.5&ndash;2.0. Not a model knob &mdash; Chatterbox has no pace
+          control. A pitch-preserving stretch applied when the mp3 is written, and the
+          stretched length is what the addon pages text against. Try a lower cfg_weight
+          first.</td></tr>
+      </table>
+      <p>The two interact: guidance amplifies whatever the conditioning says, so raising
+        exaggeration <i>and</i> cfg_weight compounds. The pairing in this pack &mdash; 0.75
+        exaggeration with 0.3 cfg_weight &mdash; is deliberately the other way round: more
+        expression, less pressure on it.</p>
+      <p class="warn">Not an accent control. Four settings pairs over eight takes of
+        goblin-male moved its accent not at all, while changing the source clips took the
+        same voice from &ldquo;sounds like a gnome&rdquo; to level with the shipped pack.</p>
     </div>
     <p class="note" id="resolved"></p>
 
@@ -527,6 +558,7 @@ $("clips-load").addEventListener("click", () => {
 });
 $("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
 $("clips-help-toggle").addEventListener("click", () => { $("clips-help").hidden = !$("clips-help").hidden; });
+$("knobs-help-toggle").addEventListener("click", () => { $("knobs-help").hidden = !$("knobs-help").hidden; });
 $("clips-build").addEventListener("click", async () => {
   if (!picks.length) { toast("pick at least one clip", "warn"); return; }
   $("clips-build").disabled = true;
