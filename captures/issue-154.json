@@ -1,0 +1,104 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "2988|00c35128": {
+   "build": "70009",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Morin Cloudstalker",
+   "npc": "2988",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "The Outrunners' duty is to ensure the safety of those who travel across the plains of Mulgore. Those that would threaten the safety of the $r homeland risk punishment at our hands.",
+   "time": 1790426998,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "npcs": {
+  "2988": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Morin Cloudstalker",
+   "sex": 2
+  },
+  "5900": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122560,
+   "name": "Telf Joolam",
+   "sex": 2
+  }
+ },
+ "origin": "issue-154",
+ "quests": {
+  "1524-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Telf Joolam",
+   "npc": "5900",
+   "questID": 1524,
+   "sex": "m",
+   "source": "community",
+   "text": "Greetin's, $N. You've found yourself at the Shrine of the Dormant Flame. Only those knowledgeable enough in the shamanistic arts will ever learn the secrets of this place and the power it holds. I'm sorry you made the trip all this way, only to be turned back now--the journey up here is far from safe after all--but I am the keeper of the shrine, and I cannot allow just anyone to wander around here.",
+   "time": 1790427753,
+   "title": "Call of Fire",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "1525-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Telf Joolam",
+   "npc": "5900",
+   "questID": 1525,
+   "sex": "m",
+   "source": "community",
+   "text": "I have enough ingredients for a sapta of fire if you can find the reagent pouch and some fire tar. The Burning Blade fanatics carry the proper components for most of their spells in those pouches, and usually have enough of the items I need that we will not have to search much farther for anything else.\n\nThe saptas are always made from ingredients that are closely tied to their respective elements. It makes our work easier because of the warlocks' ties to fire.",
+   "time": 1790430052,
+   "title": "Call of Fire",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "765-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Morin Cloudstalker",
+   "npc": "2988",
+   "questID": 765,
+   "sex": "m",
+   "source": "community",
+   "text": "I seethe with anger at the thought of the atrocities the Venture Co. is willing to perpetrate against us in the name of profit.",
+   "time": 1790426999,
+   "title": "Supervisor Fizsprocket",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "98424-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": true,
+   "mapID": 1413,
+   "name": "Unknown",
+   "npc": null,
+   "questID": 98424,
+   "sex": "m",
+   "source": "community",
+   "text": "Some particularly worn papers are held separately, folded in Fizsprocket's inside breast pocket.\r\n\r\nThey seem to detail important information that could be used against the Venture Co. and its operations in the region. It would be prudent to look for more before returning to Morin Cloudstalker.",
+   "time": 1790427441,
+   "title": "Fizsprocket's Notes",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
