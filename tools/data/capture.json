@@ -8169,6 +8169,24 @@
    "time": 1790197643,
    "zone": "Durotar"
   },
+  "5958|6e89a35a": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Mage",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Thuul",
+   "npc": "5958",
+   "pack": "Forever",
+   "player": "Myrlin",
+   "race": "Orc",
+   "sex": "m",
+   "subzone": "Valley of Spirits",
+   "text": "As a mage, you are one of a select group that can conjure a portal to transport you back to this very place.  I can teach you if you are ready.",
+   "time": 1790452133,
+   "zone": "Orgrimmar"
+  },
   "6027|721fd095": {
    "addon": "0.1.5",
    "build": "70009",
@@ -12085,6 +12103,13 @@
    "level": 31,
    "modelFileID": 917116,
    "name": "Razor Hill Grunt",
+   "sex": 2
+  },
+  "5958": {
+   "creatureType": "Humanoid",
+   "level": 45,
+   "modelFileID": 1022938,
+   "name": "Thuul",
    "sex": 2
   },
   "6027": {
