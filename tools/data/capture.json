@@ -8796,9 +8796,9 @@
   "3296": {
    "creatureType": "Humanoid",
    "level": 55,
-   "modelFileID": 917116,
+   "modelFileID": 949470,
    "name": "Orgrimmar Grunt",
-   "sex": 2
+   "sex": 3
   },
   "3304": {
    "creatureType": "Humanoid",
