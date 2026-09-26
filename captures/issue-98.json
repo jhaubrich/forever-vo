@@ -1,0 +1,72 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "1515|778f03ac": {
+   "build": "70009",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Executor Zygand",
+   "npc": "1515",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "The Scarlet Crusade is encroaching on our homeland. The foolish zealots do not realize that the loyal servants of The Dark Lady shall see to their demise.",
+   "time": 1790404249,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "1515": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Executor Zygand",
+   "sex": 2
+  },
+  "1931": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Captured Scarlet Zealot",
+   "sex": 2
+  }
+ },
+ "origin": "issue-98",
+ "quests": {
+  "407-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Captured Scarlet Zealot",
+   "npc": "1931",
+   "questID": 407,
+   "sex": "m",
+   "source": "community",
+   "text": "Stay away, foul and unholy creature!  May the Light protect me!  The Scarlet Crusade shall rid Azeroth of your. . .\n\n. . .oh wait.  Is that food for me?  I am so hungry. . .",
+   "time": 1790404451,
+   "title": "Fields of Grief",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "427-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Executor Zygand",
+   "npc": "1515",
+   "questID": 427,
+   "sex": "m",
+   "source": "community",
+   "text": "If you wish to prove your worth to The Dark Lady, slay 10 Scarlet Warriors, $c.",
+   "time": 1790404251,
+   "title": "At War With The Scarlet Crusade",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
