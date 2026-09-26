@@ -16,6 +16,11 @@ run leaves them alone.
 It refuses to move an entry whose clip is not there to compare, and it never touches
 the fingerprint: if the text or the tuning did change, that check still fires and the
 file is regenerated on its own merits.
+
+**Delete this file and its console script once it has run.** It exists for one rename,
+`-s<NPCSounds row>` to the name Blizzard gives the set, and the condition it looks for
+can only be true once: afterwards it finds nothing and prints so. Keeping it would leave
+a migration in the tree that reads as though it might still be needed.
 """
 from __future__ import annotations
 
