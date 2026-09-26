@@ -202,6 +202,69 @@ clips = [
     550386,
 ]
 
+[voices.sources.gnome-female-nerdy]
+clips = [
+    540406,
+    550409,
+    550408,
+    550417,
+    550419,
+    550406,
+    550421,
+    550415,
+    550410,
+    550414,
+    550418,
+    550420,
+]
+
+[voices.sources.gnome-male-young]
+clips = [
+    550454,
+    550455,
+    550461,
+    550456,
+    550450,
+    550451,
+    550459,
+    550460,
+    550453,
+    550457,
+]
+
+[voices.sources.gnome-male-standard]
+clips = [
+    540467,
+    550444,
+    550476,
+    550439,
+    550434,
+    550448,
+    550443,
+    550437,
+    550445,
+    550446,
+    550449,
+    550447,
+    550438,
+]
+
+[voices.sources.human-male-official]
+clips = [
+    540715,
+    540689,
+    552189,
+    552188,
+    552185,
+    552180,
+    552194,
+    552183,
+    552175,
+    552191,
+    552190,
+    552187,
+]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
@@ -312,8 +375,57 @@ cfg_weight = 0.7
 
 [tts.voices.gnome-female-happy]
 exaggeration = 0.7
-cfg_weight = 0.3
+cfg_weight = 0.6
 tempo = 1.2
+
+[tts.voices.gnome-female-nerdy]
+exaggeration = 0.7
+cfg_weight = 0.7
+tempo = 1.3
+
+[tts.voices.gnome-female-standard]
+exaggeration = 0.6
+cfg_weight = 0.7
+tempo = 1.2
+
+[tts.voices.gnome-male-standard]
+exaggeration = 0.6
+cfg_weight = 0.7
+tempo = 1.3
+
+[tts.voices.gnome-male-young]
+exaggeration = 0.6
+cfg_weight = 0.5
+tempo = 1.2
+
+[tts.voices.gnome-male-zany]
+exaggeration = 1.0
+cfg_weight = 0.5
+tempo = 1.2
+
+[tts.voices.human-male-official]
+exaggeration = 0.1
+cfg_weight = 0.9
+tempo = 1.05
+
+[tts.voices.scourge-male-warrior]
+exaggeration = 0.2
+cfg_weight = 0.7
+
+[tts.voices.tauren-male-warrior]
+exaggeration = 0.3
+cfg_weight = 0.7
+tempo = 1.15
+
+[tts.voices.tauren-female-official]
+exaggeration = 0.2
+cfg_weight = 0.7
+tempo = 1.1
+
+[tts.voices.orc-male-guard]
+exaggeration = 0.5
+cfg_weight = 0.6
+tempo = 1.05
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
@@ -322,6 +434,7 @@ Kharanos = "Karranos"
 Sharptalon = "Sharp Talon"
 Tirisfal = "Tirrisfal"
 Varimathras = "Vairimathrus"
+Feralas = "fairalass"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
