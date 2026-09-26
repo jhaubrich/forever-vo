@@ -1,0 +1,33 @@
+{
+ "addon": "0.1.5",
+ "gossip": {},
+ "npcs": {
+  "2226": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Karos Razok",
+   "sex": 2
+  }
+ },
+ "origin": "issue-122",
+ "quests": {
+  "6321-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Karos Razok",
+   "npc": "2226",
+   "questID": 6321,
+   "sex": "m",
+   "source": "community",
+   "text": "You appear to be on official business...",
+   "time": 1790410825,
+   "title": "Supplying the Sepulcher",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
