@@ -1,0 +1,33 @@
+{
+ "addon": "0.1.4",
+ "gossip": {},
+ "npcs": {
+  "7161": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Wrenix the Wretched",
+   "sex": 2
+  }
+ },
+ "origin": "issue-69",
+ "quests": {
+  "97253-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Wrenix the Wretched",
+   "npc": "7161",
+   "questID": 97253,
+   "sex": "m",
+   "source": "community",
+   "text": "Hey, got a sec?\r\n\r\nSo, apparently, nobody I've sent to deal with the recent pirate problem has come back alive. After five or six attempts I thought, \"what if I sent a machine instead?\" Turns out, scimitars double as screwdrivers in a pinch, and before I could redirect it home, it was already in pieces and scattered across their camp!\r\n\r\nI need those parts back, and since this is a quick little retrieval mission, I'd wager your odds for survival are MUCH higher than the others. Whaddya say?",
+   "time": 1790384540,
+   "title": "Parts and Pieces",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
