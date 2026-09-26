@@ -1,0 +1,213 @@
+{
+ "addon": "0.1.5",
+ "gossip": {},
+ "npcs": {
+  "1937": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Apothecary Renferrel",
+   "sex": 2
+  },
+  "1938": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Dalar Dawnweaver",
+   "sex": 2
+  },
+  "1951": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Quinn Yorick",
+   "sex": 2
+  },
+  "2226": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Karos Razok",
+   "sex": 2
+  },
+  "4551": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Michael Garrett",
+   "sex": 2
+  },
+  "4556": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Gordon Wendham",
+   "sex": 2
+  },
+  "6389": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Deathguard Podrig",
+   "sex": 2
+  }
+ },
+ "origin": "issue-130",
+ "quests": {
+  "421-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Dalar Dawnweaver",
+   "npc": "1938",
+   "questID": 421,
+   "sex": "m",
+   "source": "community",
+   "text": "If you wish to prove yourself to me, you must kill 5 Moonrage Whitescalps.  Accomplish that task, and I will see to it your skill is put to more worthy assignments.",
+   "time": 1790411558,
+   "title": "Prove Your Worth",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "430-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Quinn Yorick",
+   "npc": "1951",
+   "questID": 430,
+   "sex": "m",
+   "source": "community",
+   "text": "<Quinn takes the potion and drinks it.>\r\n\r\n<A few moments pass in suspenseful silence.>",
+   "time": 1790412226,
+   "title": "Return to Quinn",
+   "wanted": true,
+   "zone": "Silverpine Forest"
+  },
+  "6321-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Karos Razok",
+   "npc": "2226",
+   "questID": 6321,
+   "sex": "m",
+   "source": "community",
+   "text": "You appear to be on official business...",
+   "time": 1790410825,
+   "title": "Supplying the Sepulcher",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "6322-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Michael Garrett",
+   "npc": "4551",
+   "questID": 6322,
+   "sex": "m",
+   "source": "community",
+   "text": "If you must travel a long distance, then a bat is your best option.",
+   "time": 1790411051,
+   "title": "Michael Garrett",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "6323-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Gordon Wendham",
+   "npc": "4556",
+   "questID": 6323,
+   "sex": "m",
+   "source": "community",
+   "text": "I keep my weapons in top condition.  They are cleaned and ready for use.",
+   "time": 1790411009,
+   "title": "Ride to the Undercity",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "6324-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Deathguard Podrig",
+   "npc": "6389",
+   "questID": 6324,
+   "sex": "m",
+   "source": "community",
+   "text": "$N, you return.  Do you have our supplies from the Undercity?",
+   "time": 1790411447,
+   "title": "Return to Podrig",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "91920-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Quinn Yorick",
+   "npc": "1951",
+   "questID": 91920,
+   "sex": "m",
+   "source": "community",
+   "text": "I wouldn't dare to question the effectiveness of Apothecary Renferrel's formulae, however I would be lying if I said that the potion made any noticeable difference.\r\n\r\nAlong the shore of Lake Lordamere are a swarm of murlocs, and of note, murlocs have eyes. I suspect the apothecary's willingness to try new things is suppressed by his recent obsession with hearts. Bring him a few.\r\n\r\nIf my choice is to inevitably die a second death or have Renferrel kill me for questioning his methods, I choose the latter.",
+   "time": 1790412232,
+   "title": "Wild Eyes",
+   "wanted": true,
+   "zone": "Silverpine Forest"
+  },
+  "91920-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "sex": "m",
+   "source": "community",
+   "text": "The potion didn't work? Of course it didn't work. You brought me insufficient hearts. The recipe clearly calls for six. You brought three.\r\n\r\nHowever, I confess I hadn't considered applications for murloc parts until now...\r\n\r\n<Renferrel takes the eyes.>\r\n\r\nI can afford to sacrifice a few of my own hearts to get your Deathstalker's strength back.",
+   "time": 1790412993,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "91920-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "sex": "m",
+   "source": "community",
+   "text": "Oh. You're back?",
+   "time": 1790412989,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "91921-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91921,
+   "sex": "m",
+   "source": "community",
+   "text": "Here is the new potion to aid in Quinn's recovery, made with love extracted from six whole hearts.\r\n\r\nNow, please excuse me before your presence necessitates more paperwork.",
+   "time": 1790413011,
+   "title": "Return to Quinn (Again)",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
