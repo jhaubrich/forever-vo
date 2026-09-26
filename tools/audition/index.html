@@ -115,9 +115,9 @@
       <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
     </div>
     <div class="row">
-      <div><label for="exag">Exaggeration values</label><input id="exag" value="0.45, 0.75"></div>
-      <div><label for="cfg">cfg_weight values</label><input id="cfg" value="0.5, 0.3"></div>
-      <div><label for="tempo">Tempo values (1.0 as generated; a time stretch, pitch kept)</label><input id="tempo" value="1.0"></div>
+      <div><label for="exag">Exaggeration values (0&ndash;2)</label><input id="exag" value="0.45, 0.75"></div>
+      <div><label for="cfg">cfg_weight values (0&ndash;1)</label><input id="cfg" value="0.5, 0.3"></div>
+      <div><label for="tempo">Tempo values (0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept)</label><input id="tempo" value="1.0"></div>
       <button id="go" class="primary">Generate</button>
     </div>
     <p class="note" id="resolved"></p>
@@ -204,7 +204,7 @@ function applyState(s) {
   ref.innerHTML = `<option value="">the voice's own (${"as configured"})</option>` + s.voices.map(v => `<option value="${v}">${v}.wav</option>`).join("");
   if (first) { voice.value = s.voices.includes("dwarf-female") ? "dwarf-female" : s.voices[0]; }
   else { voice.value = keepVoice; ref.value = keepRef; }
-  if (first) { $("exag").value = `${s.defaults.exaggeration}, 0.75`; $("cfg").value = `${s.defaults.cfg_weight}, 0.3`; }
+  if (first) loadVoiceSettings();
   showResolved();
 }
 
@@ -229,6 +229,21 @@ function voiceOptions(s) {
        + group("Archetypes — with a clip", rows.filter(r => isArch(r) && r.clip))
        + group("Archetypes — not built yet", rows.filter(r => isArch(r) && !r.clip))
        + group("Named NPCs", rows.filter(isNpc));
+}
+
+// The three boxes keep whatever was typed last, and "Keep these settings" writes them:
+// switch to a voice someone tuned by ear and press it, and 0.75 / 0.3 is replaced by
+// the numbers left over from the voice before. They are loaded from the voice itself
+// on every change of voice, so Keep can only ever write that voice's own settings back
+// or a deliberate edit of them. Not on the 15 s refresh, which would discard a sweep
+// being typed.
+function loadVoiceSettings() {
+  if (!state) return;
+  const r = state.resolved[$("voice").value];
+  const d = state.defaults;
+  $("exag").value = `${r ? r.exaggeration : d.exaggeration}`;
+  $("cfg").value = `${r ? r.cfg_weight : d.cfg_weight}`;
+  $("tempo").value = `${r ? r.tempo : d.tempo}`;
 }
 
 function showResolved() {
@@ -287,6 +302,7 @@ function pick(row, li) {
 }
 
 $("voice").addEventListener("change", () => {
+  loadVoiceSettings();
   showResolved();
   if (clipsVoice && $("voice").value !== clipsVoice) {
     clipsRows = []; picks = []; clipsVoice = null;
@@ -296,9 +312,19 @@ $("voice").addEventListener("change", () => {
 });
 $("reference").addEventListener("change", showResolved);
 
-function numbers(value) {
+// The server rejects a setting outside its bounds, but it should not have to: a typo
+// in one of these boxes is caught here, naming the field and what it allows, rather
+// than coming back as a failed request.
+const BOUNDS = { exag: [0, 2, "Exaggeration"], cfg: [0, 1, "cfg_weight"], tempo: [0.5, 2, "Tempo"] };
+
+function numbers(value, field) {
   const out = value.split(/[,\s]+/).filter(Boolean).map(Number);
   if (!out.length || out.some(isNaN)) throw new Error("give numbers separated by commas");
+  if (field && BOUNDS[field]) {
+    const [lo, hi, name] = BOUNDS[field];
+    const bad = out.filter(n => n < lo || n > hi);
+    if (bad.length) throw new Error(`${name} must be between ${lo} and ${hi}; you gave ${bad.join(", ")}`);
+  }
   return out;
 }
 
@@ -306,7 +332,8 @@ $("go").addEventListener("click", async () => {
   let body;
   try {
     body = { text: $("text").value, voice: $("voice").value, reference: $("reference").value || null,
-             exaggeration: numbers($("exag").value), cfg_weight: numbers($("cfg").value), tempo: numbers($("tempo").value),
+             exaggeration: numbers($("exag").value, "exag"), cfg_weight: numbers($("cfg").value, "cfg"),
+             tempo: numbers($("tempo").value, "tempo"),
              takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
   $("go").disabled = true; $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
