@@ -161,6 +161,47 @@ clips = [
     539970,
 ]
 
+[voices.sources.dwarf-female-maternal]
+clips = [
+    540017,
+    547838,
+    547843,
+    547847,
+    547837,
+    547835,
+    547845,
+    547840,
+]
+
+[voices.sources.dwarf-female-young]
+clips = [
+    539989,
+    547856,
+    547853,
+    547854,
+    547852,
+    547857,
+    547858,
+    547861,
+]
+
+[voices.sources.dwarf-male-standard]
+clips = [540030, 540049, 547890, 547888]
+
+[voices.sources.gnome-female-happy]
+clips = [
+    540423,
+    540444,
+    550388,
+    550378,
+    550384,
+    550382,
+    550387,
+    550373,
+    550381,
+    550386,
+]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
@@ -246,6 +287,33 @@ cfg_weight = 0.4
 [tts.voices.troll-female]
 exaggeration = 0.6
 cfg_weight = 0.5
+
+[tts.voices.dwarf-female-guard]
+exaggeration = 0.2
+cfg_weight = 0.5
+tempo = 1.2
+
+[tts.voices.dwarf-female-maternal]
+exaggeration = 0.6
+cfg_weight = 0.9
+tempo = 1.1
+
+[tts.voices.dwarf-female-young]
+exaggeration = 0.75
+cfg_weight = 0.6
+
+[tts.voices.dwarf-male-guard]
+exaggeration = 0.1
+cfg_weight = 0.5
+
+[tts.voices.dwarf-male-standard]
+exaggeration = 0.3
+cfg_weight = 0.7
+
+[tts.voices.gnome-female-happy]
+exaggeration = 0.7
+cfg_weight = 0.3
+tempo = 1.2
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
