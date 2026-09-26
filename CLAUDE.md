@@ -600,8 +600,16 @@ of the 10 s window, then the knobs.
   9,132 lines re-cast to an archetype (the voice-change check, plus dwarves
   under "text changed" because the archetype's fingerprint drops the
   `reference` knob) and nothing on a plain voice, since clip audio is not in
-  the fingerprint (#51) - so the rename costs those lines a second restaging,
-  and any already rendered under an `-s<set>` name are rendered again.
+  the fingerprint (#51). The rename itself restaged nothing: on 2026-09-26,
+  after #66 merged, the references were rebuilt under the new names and a
+  one-shot `fvo-migrate-voice-names` (deleted the same day) moved the 6,144
+  index entries recorded under an `-s<set>` name to the renamed voice. The
+  picks and the new `[tts.voices]` rows on the plain voices restaged ~15,800
+  files, nearly the whole pack, because human-male is also the narrator and
+  seven fallback races; a re-pick of a plain voice costs that again. The
+  sweep also deletes any three-segment wav it did not mint, so the owner's
+  `dwarf-female-emotes.wav` A/B clip is kept in `tools/voices/before-66/`
+  (gitignored).
   The retail `SoundKitEntry` CSV is large and wago.tools timed out on it once;
   a `curl` into `tools/data/db2/<build>/` with a long timeout is the workaround. Sorting
   candidate clips longest-first used to hand the head to whichever set had the
