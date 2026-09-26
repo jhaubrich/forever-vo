@@ -6333,7 +6333,7 @@
   "3309|ae78a458": {
    "addon": "0.1.5",
    "build": "70009",
-   "class": "Mage",
+   "class": "Warlock",
    "event": "gossip",
    "firstSeen": 1789924497,
    "found": true,
@@ -6341,12 +6341,12 @@
    "name": "Karus",
    "npc": "3309",
    "pack": "Forever",
-   "player": "Myrlin",
-   "race": "Orc",
+   "player": "Morgause",
+   "race": "Troll",
    "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790424250,
+   "time": 1790451005,
    "zone": "Orgrimmar"
   },
   "3310|cc0cf280": {
@@ -6511,7 +6511,7 @@
    "sex": "f",
    "subzone": "The Drag",
    "text": "Another student, eh? All right. I'll see what I can do to help you out.",
-   "time": 1790449948,
+   "time": 1790450800,
    "zone": "Orgrimmar"
   },
   "3348|0b887bc7": {
@@ -6528,7 +6528,7 @@
    "sex": "f",
    "subzone": "The Drag",
    "text": "Hmm...",
-   "time": 1790449863,
+   "time": 1790450723,
    "zone": "Orgrimmar"
   },
   "3352|08830bac": {
