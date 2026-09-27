@@ -9,9 +9,9 @@ the rest). body= fills a blank issue, and this repo's forms would ignore it.
 labels= is a permission the player does not have, and GitHub answers that
 with a 404, so the form file's own labels are left to apply on their own.
 
-The client cannot open a browser. LaunchURL and CopyToClipboard are both
-protected, and LaunchURL only accepts Blizzard's own sites, so this is the
-same copy window as /fvo export: a highlighted box and Ctrl+C. It is not a
+The client cannot open a browser. LaunchURL only accepts Blizzard's own sites,
+and CopyToClipboard is protected, so Copy Link tries it and, when the client
+refuses, highlights the link for Ctrl+C instead. The window is not a
 StaticPopup. With the gamepad UI on, every StaticPopup is handed to a
 protected path and the client freezes (#44).
 
@@ -37,8 +37,10 @@ local CHOICES = {
     { key = "playback", label = "The addon misbehaved", template = "bug-playback.yml", title = "Playback" },
 }
 
-local HINT = "Press Ctrl+C to copy the link, then paste it into a browser. Choose what is wrong with the line on the GitHub form, and submit.\nYour character name has been removed."
-local HINT_SHORT = "Press Ctrl+C to copy the link, then paste it into a browser. The link was shortened. The spoken text is in the box below; paste it into the details field on GitHub, choose what is wrong, and submit.\nYour character name has been removed."
+local HINT = "Edit the report if you need to, then Copy Link and paste it into a browser. Choose what is wrong on the GitHub form, and submit.\nYour character name has been removed."
+local COPIED = "Copied"
+local COPIED_SHORT = "Copied. The link was shortened."
+local PRESS_COPY = "Press Ctrl+C"
 
 --- Percent-encode one query component. Unreserved characters stay as they
 --- are; everything else, spaces included, is %XX per byte, so a multi-byte
@@ -199,38 +201,36 @@ local function Tail(item)
     return table.concat(lines, "\n")
 end
 
-local function ShownText(text, includeText)
-    if not includeText then
-        return "Too long for this link. Paste it into this box from the other box in the copy window."
+--- The blank line after the prompt is where the cursor starts, so typing
+--- stays above the sound and pack lines.
+local NOTE_MARK = {
+    voices = "Note:\n\n",
+    captures = "What it should be:\n\n",
+    playback = "Note:\n\n",
+}
+
+local function BodyFor(choice, item, text)
+    local shown = text ~= "" and text or "(none)"
+    local tail = Tail(item)
+    local mark = NOTE_MARK[choice.key]
+    local head
+    if choice.key == "captures" then
+        head = format("The talking head showed:\n\n%s\n\n%s\n%s", shown, mark, tail)
+    elseif choice.key == "playback" then
+        head = format("While this line was playing: %s\n\n%s\n\n%s\n%s", Identity(item), shown, mark, tail)
+    else
+        head = format("Spoken text:\n\n%s\n\n%s\n%s", shown, mark, tail)
     end
-    if text == "" then
-        return "(none)"
-    end
-    return text
+    return head
 end
 
 --- kind is left unset on the voice and capture forms. It is a required
 --- dropdown whose option text would have to be copied here and matched
---- exactly, and the player picks it on the form.
-local function Fields(choice, item, text, note, includeText)
+--- exactly, and the player picks it on the form. The editable box is the
+--- textarea; the title, the line, and the versions stay beside it.
+local function FieldsFromBody(choice, item, body)
     local identity = Identity(item)
     local title = IssueTitle(choice, item)
-    local shown = ShownText(text, includeText)
-    local tail = Tail(item)
-    local body
-    if choice.key == "captures" then
-        body = format("The talking head showed:\n\n%s\n\nWhat it should be:\n\n%s\n\n%s",
-            shown, note, tail)
-    elseif choice.key == "playback" then
-        body = format("While this line was playing: %s\n\n%s", identity, shown)
-        if note ~= "" then
-            body = body .. "\n\n" .. note
-        end
-        body = body .. "\n\n" .. tail
-    else
-        body = format("Spoken text:\n\n%s\n\nNote:\n\n%s\n\n%s",
-            shown, note ~= "" and note or "(none)", tail)
-    end
     if choice.key == "playback" then
         return {
             { "template", choice.template },
@@ -253,12 +253,38 @@ local function Fields(choice, item, text, note, includeText)
     }
 end
 
-local function LinkFor(choice, item, text, note)
-    local url = Query(Fields(choice, item, text, note, true))
-    if #url <= URL_BUDGET then
-        return url, nil
+--- Drops characters off the end of the body until the URL fits. The edit box
+--- keeps the full text; only the link is shortened.
+local function LinkFromBody(choice, item, body)
+    local function urlFor(text)
+        return Query(FieldsFromBody(choice, item, text))
     end
-    return Query(Fields(choice, item, text, note, false)), text
+    local url = urlFor(body)
+    if #url <= URL_BUDGET then
+        return url, false
+    end
+    local suffix = "\n\n(shortened to fit the link)"
+    local cut = #body
+    while cut > 0 do
+        while cut > 0 and body:byte(cut) >= 128 and body:byte(cut) < 192 do
+            cut = cut - 1
+        end
+        if cut > 0 and body:byte(cut) >= 192 then
+            cut = cut - 1
+        end
+        if cut < 0 then
+            cut = 0
+        end
+        url = urlFor(body:sub(1, cut) .. suffix)
+        if #url <= URL_BUDGET then
+            return url, true
+        end
+        if cut == 0 then
+            break
+        end
+        cut = math.max(cut - 200, 0)
+    end
+    return urlFor(suffix), true
 end
 
 function Report:Current()
@@ -274,9 +300,6 @@ local function CopyBox(parent, onEscape)
     scroll.EditBox:SetMaxLetters(0)
     scroll.EditBox:SetFontObject("GameFontHighlightSmall")
     scroll.EditBox:SetScript("OnEscapePressed", onEscape)
-    scroll.EditBox:SetScript("OnEditFocusGained", function(editBox)
-        editBox:HighlightText()
-    end)
     if scroll.CharCount then
         scroll.CharCount:Hide()
     end
@@ -297,6 +320,15 @@ local function RadioLabel(button)
         button.Text = label
     end
     return label
+end
+
+--- Replaces the scroll's anchors. SetPoint adds a point, so a second
+--- BOTTOMRIGHT would stack on the first.
+local function PlaceScroll(frame, bottom)
+    local scroll = frame.Scroll
+    scroll:ClearAllPoints()
+    scroll:SetPoint("TOPLEFT", frame.Kinds[#CHOICES], "BOTTOMLEFT", 0, -12)
+    scroll:SetPoint("BOTTOMRIGHT", -30, bottom)
 end
 
 function Report:GetFrame()
@@ -344,77 +376,85 @@ function Report:GetFrame()
         frame.Kinds[index] = radio
     end
 
-    frame.NoteLabel = frame:CreateFontString(nil, "ARTWORK")
-    frame.NoteLabel:SetFontObject("GameFontNormal")
-    frame.NoteLabel:SetJustifyH("LEFT")
-    frame.NoteLabel:SetPoint("TOPLEFT", frame.Kinds[#CHOICES], "BOTTOMLEFT", 0, -12)
-    frame.NoteLabel:SetText("Add a note (optional)")
-
-    local note = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
-    note:SetAutoFocus(false)
-    note:SetHeight(22)
-    note:SetFontObject("GameFontHighlightSmall")
-    note:SetMaxLetters(300)
-    note:SetPoint("TOPLEFT", frame.NoteLabel, "BOTTOMLEFT", 6, -4)
-    note:SetPoint("RIGHT", -20, 0)
-    note:SetScript("OnEscapePressed", function() frame:Hide() end)
-    note:SetScript("OnEnterPressed", function(editBox) editBox:ClearFocus() end)
-    note:SetScript("OnTextChanged", function(_, userInput)
-        if userInput then
-            Report:Refresh(false)
-        end
-    end)
-    frame.Note = note
-
     local function Hide()
         frame:Hide()
     end
+
     frame.Scroll = CopyBox(frame, Hide)
-    frame.Scroll.EditBox:SetScript("OnTextChanged", function(editBox, userInput)
+    PlaceScroll(frame, 46)
+    frame.Scroll.EditBox:SetScript("OnTextChanged", function(_, userInput)
+        if userInput then
+            Report:ClearStatus()
+        end
+    end)
+
+    -- Shown only when the client will not put the link on the clipboard.
+    local link = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
+    link:SetAutoFocus(false)
+    link:SetHeight(22)
+    link:SetFontObject("GameFontHighlightSmall")
+    link:SetMaxLetters(0)
+    link:SetPoint("BOTTOMLEFT", 22, 40)
+    link:SetPoint("BOTTOMRIGHT", -16, 40)
+    link:SetScript("OnEscapePressed", Hide)
+    link:SetScript("OnTextChanged", function(editBox, userInput)
         if userInput then
             editBox:SetText(frame.link or "")
             editBox:HighlightText()
         end
     end)
-
-    frame.OverflowLabel = frame:CreateFontString(nil, "ARTWORK")
-    frame.OverflowLabel:SetFontObject("GameFontNormal")
-    frame.OverflowLabel:SetJustifyH("LEFT")
-    frame.OverflowLabel:SetText("Spoken text")
-
-    frame.Overflow = CopyBox(frame, Hide)
-    frame.Overflow.EditBox:SetScript("OnTextChanged", function(editBox, userInput)
-        if userInput then
-            editBox:SetText(frame.spoken or "")
-            editBox:HighlightText()
-        end
+    link:SetScript("OnEditFocusGained", function(editBox)
+        editBox:HighlightText()
     end)
-    frame.Overflow:Hide()
-    frame.OverflowLabel:Hide()
+    link:Hide()
+    frame.LinkBox = link
+
+    frame.CopyButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    frame.CopyButton:SetSize(110, 22)
+    frame.CopyButton:SetPoint("BOTTOMRIGHT", -16, 12)
+    frame.CopyButton:SetText("Copy Link")
+    frame.CopyButton:SetScript("OnClick", function()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        Report:CopyLink()
+    end)
+
+    frame.Status = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    frame.Status:SetPoint("RIGHT", frame.CopyButton, "LEFT", -12, 0)
+    frame.Status:SetJustifyH("RIGHT")
+    frame.Status:SetText("")
     return frame
 end
 
-function Report:Layout(overflow)
+function Report:ClearStatus()
     local frame = self.frame
-    local scroll = frame.Scroll
-    scroll:ClearAllPoints()
-    scroll:SetPoint("TOPLEFT", frame.Note, "BOTTOMLEFT", -6, -10)
-    scroll:SetPoint("RIGHT", -30, 0)
-    if overflow then
-        frame:SetHeight(640)
-        frame.OverflowLabel:Show()
-        frame.Overflow:Show()
-        frame.OverflowLabel:ClearAllPoints()
-        frame.OverflowLabel:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 16, 168)
-        frame.Overflow:ClearAllPoints()
-        frame.Overflow:SetPoint("TOPLEFT", frame.OverflowLabel, "BOTTOMLEFT", 0, -4)
-        frame.Overflow:SetPoint("BOTTOMRIGHT", -30, 16)
-        scroll:SetPoint("BOTTOM", frame.OverflowLabel, "TOP", 0, 8)
-    else
-        frame:SetHeight(470)
-        frame.OverflowLabel:Hide()
-        frame.Overflow:Hide()
-        scroll:SetPoint("BOTTOM", frame, "BOTTOM", 0, 16)
+    if not frame then
+        return
+    end
+    if self.statusTimer then
+        self.statusTimer:Cancel()
+        self.statusTimer = nil
+    end
+    frame.Status:SetText("")
+    if frame.LinkBox:IsShown() then
+        frame.LinkBox:Hide()
+        PlaceScroll(frame, 46)
+    end
+end
+
+function Report:ShowStatus(text, r, g, b, hold)
+    local frame = self.frame
+    if self.statusTimer then
+        self.statusTimer:Cancel()
+        self.statusTimer = nil
+    end
+    frame.Status:SetText(text)
+    frame.Status:SetTextColor(r, g, b)
+    if not hold then
+        self.statusTimer = C_Timer.NewTimer(4, function()
+            if frame.Status:GetText() == text then
+                frame.Status:SetText("")
+            end
+        end)
     end
 end
 
@@ -429,31 +469,53 @@ function Report:SetKind(index)
             radio:SetHitRectInsets(0, -(width + 8), 0, 0)
         end
     end
-    self:Refresh(true)
+    self:FillBody()
 end
 
-function Report:Refresh(focusLink)
+function Report:FillBody()
+    local frame = self.frame
+    local item = frame.item
+    if not item then
+        return
+    end
+    self:ClearStatus()
+    local choice = CHOICES[self.kind or 1]
+    local body = BodyFor(choice, item, SpokenText(item))
+    local editBox = frame.Scroll.EditBox
+    editBox:SetText(body)
+    editBox:SetFocus()
+    local mark = NOTE_MARK[choice.key]
+    local at = mark and body:find(mark, 1, true)
+    editBox:SetCursorPosition(at and (at + #mark - 1) or 0)
+end
+
+function Report:CopyLink()
     local frame = self.frame
     local item = frame.item
     if not item then
         return
     end
     local choice = CHOICES[self.kind or 1]
-    local note = strtrim(frame.Note:GetText() or "")
-    local text = SpokenText(item)
-    local url, overflow = LinkFor(choice, item, text, note)
+    local body = frame.Scroll.EditBox:GetText() or ""
+    local url, shortened = LinkFromBody(choice, item, body)
     frame.link = url
-    frame.spoken = overflow
-    frame.Hint:SetText(overflow and HINT_SHORT or HINT)
-    self:Layout(overflow ~= nil)
-    frame.Scroll.EditBox:SetText(url)
-    if overflow then
-        frame.Overflow.EditBox:SetText(overflow)
+    -- Protected. A click from this addon is insecure code, so this usually
+    -- fails and the link is highlighted for Ctrl+C instead.
+    local copied = CopyToClipboard and pcall(CopyToClipboard, url)
+    if copied then
+        if frame.LinkBox:IsShown() then
+            frame.LinkBox:Hide()
+            PlaceScroll(frame, 46)
+        end
+        self:ShowStatus(shortened and COPIED_SHORT or COPIED, 0.2, 0.9, 0.2, false)
+        return
     end
-    if focusLink then
-        frame.Scroll.EditBox:SetFocus()
-        frame.Scroll.EditBox:HighlightText()
-    end
+    PlaceScroll(frame, 70)
+    frame.LinkBox:Show()
+    frame.LinkBox:SetText(url)
+    frame.LinkBox:SetFocus()
+    frame.LinkBox:HighlightText()
+    self:ShowStatus(PRESS_COPY, 1, 0.82, 0, true)
 end
 
 function Report:Show(item)
@@ -463,7 +525,6 @@ function Report:Show(item)
     end
     local frame = self:GetFrame()
     frame.item = item
-    frame.Note:SetText("")
     frame:Show()
     self:SetKind(1)
 end
