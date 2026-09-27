@@ -224,25 +224,20 @@ local function NarratorSpeaks(item)
     end
 end
 
-local function Section(heading, body)
-    return "## " .. heading .. "\n\n" .. body
-end
-
 local function Tail(item)
-    local sections = {}
-    -- The same words as the GitHub "Which line" box. That box is one line, so
-    -- a long title looks cut off there; here it wraps.
-    table.insert(sections, Section("Line", Identity(item)))
+    -- Facts, not headings. The spoken text and the note above are the titles.
+    local lines = {}
+    table.insert(lines, "Line: " .. Identity(item))
     local voice = HeardVoice(item)
     if voice then
-        table.insert(sections, Section("Voice", voice))
+        table.insert(lines, "Voice: " .. voice)
     end
     if NarratorSpeaks(item) then
-        table.insert(sections, Section("Narrator", ns.Packs.NarratorVoiceLabel(ns.Packs:NarratorVoice())))
+        table.insert(lines, "Narrator: " .. ns.Packs.NarratorVoiceLabel(ns.Packs:NarratorVoice()))
     end
     local sound = ShortSound(item.path)
     if sound then
-        table.insert(sections, Section("Sound", sound))
+        table.insert(lines, "Sound: " .. sound)
     end
     if item.parts then
         local parts = {}
@@ -253,18 +248,18 @@ local function Tail(item)
             end
         end
         if #parts > 0 then
-            table.insert(sections, Section("Parts", table.concat(parts, ", ")))
+            table.insert(lines, "Parts: " .. table.concat(parts, ", "))
         end
     end
     if item.pack and item.pack.name then
         local version = item.pack.version
-        table.insert(sections, Section("Pack", version and format("%s %s", item.pack.name, version) or item.pack.name))
+        table.insert(lines, "Pack: " .. (version and format("%s %s", item.pack.name, version) or item.pack.name))
     end
     local sex = ReaderSex()
     if sex then
-        table.insert(sections, Section("Reader sex", sex))
+        table.insert(lines, "Reader sex: " .. sex)
     end
-    return table.concat(sections, "\n\n")
+    return table.concat(lines, "\n")
 end
 
 --- The blank line under this heading is where the cursor starts, so typing
