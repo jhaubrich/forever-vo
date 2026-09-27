@@ -45208,6 +45208,7 @@
    "build": "70009",
    "class": "Rogue",
    "event": "accept",
+   "firstSeen": 1790545823,
    "mapID": 2521,
    "name": "Raan Wildwind",
    "needs": "f",
