@@ -1,0 +1,33 @@
+{
+ "addon": "0.1.5",
+ "gossip": {},
+ "npcs": {
+  "658": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Sten Stoutarm",
+   "sex": 2
+  }
+ },
+ "origin": "issue-268",
+ "quests": {
+  "179-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Sten Stoutarm",
+   "npc": "658",
+   "questID": 179,
+   "sex": "m",
+   "source": "community",
+   "text": "Wolves giving you a bit of trouble? You'd do well to avoid the fangs and claws and other sharp bits, yes?",
+   "time": 1790528098,
+   "title": "Dwarven Outfitters",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
