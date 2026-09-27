@@ -1,0 +1,170 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "246389|8e0ab317": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Hilda the Breaker",
+   "npc": "246389",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Why do they call me \"The Breaker\"?\r\n\r\nTrust me, you don't want to know.",
+   "time": 1790497816,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "246389|b676ae27": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Hilda the Breaker",
+   "npc": "246389",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "A little bit of a lot of things. Mostly I take the soft and weak and reshape them into hardened fighters once again.\r\n\r\nIt's a tough world out there, and even our own people mistrust us. We need to be tough and self-reliant if we are to fit into this \"horde\" with the rest of our people.",
+   "time": 1790497140,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "259190|364e1d5b": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Ephram Barbaro",
+   "npc": "259190",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Oi, what do you want?",
+   "time": 1790497157,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "267008|b4ea9d59": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Leonid Barthalomew the Revered",
+   "npc": "267008",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "They named it Bandarion Keep. I wonder what Garek would make of that?",
+   "time": 1790461439,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "1495": {
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Deathguard Linnea",
+   "sex": 3
+  },
+  "246389": {
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Hilda the Breaker",
+   "sex": 3
+  },
+  "251905": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Zerril Softbreeze",
+   "sex": 2
+  },
+  "259190": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Ephram Barbaro",
+   "sex": 2
+  },
+  "267008": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Leonid Barthalomew the Revered",
+   "sex": 2
+  }
+ },
+ "origin": "issue-230",
+ "quests": {
+  "92553-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Zerril Softbreeze",
+   "npc": "251905",
+   "questID": 92553,
+   "sex": "m",
+   "source": "community",
+   "text": "Up for a bit of work? I could use a bit of muscle from a strong adventuring-type such as yourself. With how dangerous things are getting around here, no one's had much time to hunt or forage of late, and I need someone to get out there and source me fresh eggs and strider meat to keep this village fed.\r\n\r\nI'd be happy to teach you one of my famous recipes if you can bring me what I need. What do you say?",
+   "time": 1790459134,
+   "title": "Restocking the Larders",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "99152-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Hilda the Breaker",
+   "npc": "246389",
+   "questID": 99152,
+   "sex": "m",
+   "source": "community",
+   "text": "Well done, recruit. We might just make something out of you yet.\r\n\r\nWith these bones we may be able to better understand how such a threat was able to go unnoticed for so long.",
+   "time": 1790497825,
+   "title": "As Above, So Below",
+   "wanted": true,
+   "zone": "Tirisfal Glades"
+  },
+  "99152-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Hilda the Breaker",
+   "npc": "246389",
+   "questID": 99152,
+   "sex": "m",
+   "source": "community",
+   "text": "You'd best not be returning empty-handed. I either need the bones I asked for, or your body on a stretcher to confirm you at least gave it your all trying to get them.",
+   "time": 1790497818,
+   "title": "As Above, So Below",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "99156-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Deathguard Linnea",
+   "npc": "1495",
+   "questID": 99156,
+   "sex": "m",
+   "source": "community",
+   "text": "Have you dealt with our little problem?",
+   "time": 1790460728,
+   "title": "Rear Guard Patrol",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
