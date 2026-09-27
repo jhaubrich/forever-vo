@@ -7033,8 +7033,8 @@
    "zone": "Mulgore"
   },
   "2995|bfaf54b7": {
-   "addon": "0.1.4",
-   "build": "69977",
+   "addon": "0.1.5",
+   "build": "70009",
    "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789937445,
@@ -7043,12 +7043,12 @@
    "name": "Tal",
    "npc": "2995",
    "pack": "Forever",
-   "player": "Pellinore Fixpoint",
+   "player": "Pellinore",
    "race": "Windshaper Skyborne",
    "sex": "f",
    "subzone": "",
    "text": "When mounted on the back of a wind rider, one sees that its reputation for strength and speed is well earned.",
-   "time": 1790275543,
+   "time": 1790539515,
    "zone": "Thunder Bluff"
   },
   "3004|dfa12b04": {
@@ -11114,7 +11114,7 @@
   "11835": {
    "creatureType": "Humanoid",
    "level": 50,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Theodore Griffs",
    "sex": 2
   },
@@ -11691,28 +11691,28 @@
   "1937": {
    "creatureType": "Humanoid",
    "level": 14,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Apothecary Renferrel",
    "sex": 2
   },
   "1938": {
    "creatureType": "Humanoid",
    "level": 21,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Dalar Dawnweaver",
    "sex": 2
   },
   "1950": {
    "creatureType": "Humanoid",
    "level": 15,
-   "modelFileID": 121608,
+   "modelFileID": 997378,
    "name": "Rane Yorick",
    "sex": 3
   },
   "1951": {
    "creatureType": "Humanoid",
    "level": 14,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Quinn Yorick",
    "sex": 2
   },
@@ -11782,7 +11782,7 @@
   "2055": {
    "creatureType": "Humanoid",
    "level": 50,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Master Apothecary Faranell",
    "sex": 2
   },
@@ -11849,7 +11849,7 @@
   "2121": {
    "creatureType": "Humanoid",
    "level": 20,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Shadow Priest Allister",
    "sex": 2
   },
@@ -11907,7 +11907,7 @@
   "2226": {
    "creatureType": "Humanoid",
    "level": 55,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Karos Razok",
    "sex": 2
   },
@@ -12183,7 +12183,7 @@
   "250686": {
    "creatureType": "Humanoid",
    "level": 25,
-   "modelFileID": 121608,
+   "modelFileID": 997378,
    "name": "Tabitha Heartweaver",
    "sex": 3
   },
@@ -12203,7 +12203,7 @@
   "251001": {
    "creatureType": "Humanoid",
    "level": 55,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Deathguard Kristof",
    "sex": 2
   },
@@ -13108,7 +13108,7 @@
   "266484": {
    "creatureType": "Undead",
    "level": 30,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Morbin Lightbane",
    "sex": 2
   },
@@ -14145,7 +14145,7 @@
   "4551": {
    "creatureType": "Humanoid",
    "level": 55,
-   "modelFileID": 121768,
+   "modelFileID": 959310,
    "name": "Michael Garrett",
    "sex": 2
   },
@@ -14749,7 +14749,7 @@
   "7825": {
    "creatureType": "Humanoid",
    "level": 50,
-   "modelFileID": 121608,
+   "modelFileID": 997378,
    "name": "Oran Snakewrithe",
    "sex": 3
   },
