@@ -18,6 +18,7 @@ under us would restage a voice for nothing.
     ./tools/run.sh fvo-soundpaths            # show what each set is called
     ./tools/run.sh fvo-soundpaths --refresh  # re-derive from the listfile (~100 MB once)
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,8 +31,10 @@ import requests
 from tools.config import DATA_DIR, GENDER_DICT, RACE_DICT
 
 SOUND_SETS = DATA_DIR / "sound_sets.json"
-LISTFILE_URL = ("https://github.com/wowdev/wow-listfile/releases/latest/download/"
-                "community-listfile.csv")
+LISTFILE_URL = (
+    "https://github.com/wowdev/wow-listfile/releases/latest/download/"
+    "community-listfile.csv"
+)
 # The folder is named for the kit, the file for the line inside it; both carry the same
 # stem, so the folder alone is enough and is stable across the numbered takes.
 SOUND_PATH = re.compile(r"^sound/creature/([^/]+)/", re.IGNORECASE)
@@ -40,6 +43,7 @@ SOUND_PATH = re.compile(r"^sound/creature/([^/]+)/", re.IGNORECASE)
 def kit_first_file() -> dict[int, int]:
     """NPCSounds row -> the FileDataID of its first greeting, which names the folder."""
     from tools.wowdata import load_db2  # only --refresh needs the client tables
+
     kits: dict[int, list[int]] = {}
     for row in load_db2("SoundKitEntry").values():
         kits.setdefault(int(row["SoundKitID"]), []).append(int(row["FileDataID"]))
@@ -61,7 +65,10 @@ def refresh() -> dict[str, str]:
     for sound_id, fdid in kit_first_file().items():
         wanted.setdefault(fdid, []).append(sound_id)
     found: dict[str, str] = {}
-    print(f"looking up {len(wanted)} sound sets in the community listfile", file=sys.stderr)
+    print(
+        f"looking up {len(wanted)} sound sets in the community listfile",
+        file=sys.stderr,
+    )
     with requests.get(LISTFILE_URL, stream=True, timeout=600) as response:
         response.raise_for_status()
         for raw in response.iter_lines():
@@ -77,15 +84,22 @@ def refresh() -> dict[str, str]:
             if match:
                 for sound_id in sets:
                     found[str(sound_id)] = match.group(1).lower()
-    SOUND_SETS.write_text(json.dumps(found, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"{len(found)} of {len(wanted)} sets named, written to {SOUND_SETS}", file=sys.stderr)
+    SOUND_SETS.write_text(
+        json.dumps(found, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(
+        f"{len(found)} of {len(wanted)} sets named, written to {SOUND_SETS}",
+        file=sys.stderr,
+    )
     return found
 
 
 def folders() -> dict[int, str]:
     if not SOUND_SETS.exists():
         return {}
-    return {int(k): v for k, v in json.loads(SOUND_SETS.read_text(encoding="utf-8")).items()}
+    return {
+        int(k): v for k, v in json.loads(SOUND_SETS.read_text(encoding="utf-8")).items()
+    }
 
 
 def descriptor(sound_id: int, voice: str) -> str | None:
@@ -102,7 +116,7 @@ def descriptor(sound_id: int, voice: str) -> str | None:
     race, _, gender = voice.partition("-")
     for prefix in (f"{race}{gender}", f"{_client_race(race)}{gender}"):
         if prefix and folder.startswith(prefix):
-            rest = folder[len(prefix):]
+            rest = folder[len(prefix) :]
             rest = re.sub(r"npc$", "", rest).strip("_-")
             return rest or "standard"
     return None
@@ -114,13 +128,17 @@ def _client_race(race: str) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--refresh", action="store_true", help="re-derive from the listfile")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--refresh", action="store_true", help="re-derive from the listfile"
+    )
     args = parser.parse_args(argv if argv is not None else sys.argv[1:])
     if args.refresh:
         refresh()
     from tools.wowdata import load_db2
+
     known = folders()
     if not known:
         print("no map yet; run with --refresh")

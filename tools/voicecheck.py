@@ -18,6 +18,7 @@ one.
 speaker similarity against the reference clip, with the spread across takes, so a
 claim like "0.75/0.3 is more Scottish" comes with error bars.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -55,7 +56,11 @@ def load_texts(alternates: list[str]) -> dict[str, str]:
         for voice in alternates:
             sources[f"Narrator/{voice}/{base}"] = text
 
-    files = [DATA_DIR / "bulk" / "classic.json", DATA_DIR / "bulk" / "questcache.json", CAPTURE_JSON]
+    files = [
+        DATA_DIR / "bulk" / "classic.json",
+        DATA_DIR / "bulk" / "questcache.json",
+        CAPTURE_JSON,
+    ]
     for path in files:
         if not path.exists():
             continue
@@ -108,7 +113,7 @@ def cmd_rate(args) -> int:
             missing += 1
             continue
         count = words(text)
-        if count < 8 or duration < 1.0:      # too short to time reliably
+        if count < 8 or duration < 1.0:  # too short to time reliably
             continue
         by_voice.setdefault(voice, []).append(count / duration * 60.0)
     # "% vs all voices" and the line count have to be taken before filtering, or
@@ -117,8 +122,11 @@ def cmd_rate(args) -> int:
     overall = statistics.median(every) if every else 0
     if args.voice:
         # a voice's archetypes are the same voice for this purpose
-        by_voice = {v: r for v, r in by_voice.items()
-                    if v in args.voice or base_voice(v) in args.voice}
+        by_voice = {
+            v: r
+            for v, r in by_voice.items()
+            if v in args.voice or base_voice(v) in args.voice
+        }
     rows = sorted(by_voice.items(), key=lambda kv: statistics.median(kv[1]))
     print(f"{'voice':<18} {'lines':>6} {'words/min':>10} {'spread (p10-p90)':>20}")
     for voice, rates in rows:
@@ -130,11 +138,15 @@ def cmd_rate(args) -> int:
             delta = (statistics.median(rates) - overall) / overall * 100
             if abs(delta) >= 5:
                 flag = f"  {delta:+.0f}% vs all voices"
-        print(f"{voice:<18} {len(rates):>6} {statistics.median(rates):>10.1f} {f'{p10:.0f} - {p90:.0f}':>20}{flag}")
+        print(
+            f"{voice:<18} {len(rates):>6} {statistics.median(rates):>10.1f} {f'{p10:.0f} - {p90:.0f}':>20}{flag}"
+        )
     if overall:
-        print(f"\nmedian across every voiced line: {overall:.1f} words/min "
-              f"({len(every)} lines measured of {len(index)} index entries; {missing} had no text, "
-              f"the rest were too short to time)")
+        print(
+            f"\nmedian across every voiced line: {overall:.1f} words/min "
+            f"({len(every)} lines measured of {len(index)} index entries; {missing} had no text, "
+            f"the rest were too short to time)"
+        )
     return 0
 
 
@@ -166,6 +178,7 @@ def cmd_takes(args) -> int:
 
     import perth
     import torchaudio
+
     if getattr(perth, "PerthImplicitWatermarker", None) is None:
         perth.PerthImplicitWatermarker = perth.DummyWatermarker  # ty: ignore[invalid-assignment]
     from chatterbox.tts import ChatterboxTTS
@@ -186,55 +199,104 @@ def cmd_takes(args) -> int:
             made, rates = [], []
             for li, text in enumerate(lines):
                 for take in range(args.takes):
-                    path = out_dir / f"{voice}-e{exaggeration}-c{cfg_weight}-l{li}-t{take}.mp3"
+                    path = (
+                        out_dir
+                        / f"{voice}-e{exaggeration}-c{cfg_weight}-l{li}-t{take}.mp3"
+                    )
                     if not path.exists():
                         started = time.time()
-                        wav = model.generate(text, exaggeration=exaggeration,
-                                             cfg_weight=cfg_weight, audio_prompt_path=str(reference)).cpu()
+                        wav = model.generate(
+                            text,
+                            exaggeration=exaggeration,
+                            cfg_weight=cfg_weight,
+                            audio_prompt_path=str(reference),
+                        ).cpu()
                         torchaudio.save(str(path), wav, model.sr, format="mp3")
                         seconds = wav.shape[-1] / model.sr
-                        print(f"   line {li} take {take}: {seconds:4.1f}s in {time.time()-started:3.0f}s", flush=True)
+                        print(
+                            f"   line {li} take {take}: {seconds:4.1f}s in {time.time() - started:3.0f}s",
+                            flush=True,
+                        )
                     else:
                         import subprocess
-                        seconds = float(subprocess.run(
-                            ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-                            capture_output=True, text=True, check=False).stdout.strip() or 0)
+
+                        seconds = float(
+                            subprocess.run(
+                                [
+                                    "ffprobe",
+                                    "-v",
+                                    "error",
+                                    "-show_entries",
+                                    "format=duration",
+                                    "-of",
+                                    "csv=p=0",
+                                    str(path),
+                                ],
+                                capture_output=True,
+                                text=True,
+                                check=False,
+                            ).stdout.strip()
+                            or 0
+                        )
                     made.append(path)
                     rates.append(words(text) / seconds * 60.0)
             sims = speaker_similarity(model, made, reference)
-            print(f"  exaggeration {exaggeration}, cfg_weight {cfg_weight}: "
-                  f"similarity {statistics.mean(sims):.3f} +/- {statistics.pstdev(sims):.3f} "
-                  f"(worst {min(sims):.3f}), {statistics.median(rates):.0f} words/min over {len(made)} takes")
+            print(
+                f"  exaggeration {exaggeration}, cfg_weight {cfg_weight}: "
+                f"similarity {statistics.mean(sims):.3f} +/- {statistics.pstdev(sims):.3f} "
+                f"(worst {min(sims):.3f}), {statistics.median(rates):.0f} words/min over {len(made)} takes"
+            )
     return 0
 
 
 # Neutral quest-giver prose, long enough to time and to let the voice settle.
 LINES = [
-    ("The road south is not safe for travellers, and the guards will not go with you. "
-     "Take what supplies you can carry and keep to the high ground until morning."),
-    ("I have seen what they do to those they capture. Do not let them take you alive, "
-     "and do not come back here without the proof I asked for."),
-    ("My family has worked this land for three generations. I will not abandon it now, "
-     "whatever the elders decide at the next council."),
+    (
+        "The road south is not safe for travellers, and the guards will not go with you. "
+        "Take what supplies you can carry and keep to the high ground until morning."
+    ),
+    (
+        "I have seen what they do to those they capture. Do not let them take you alive, "
+        "and do not come back here without the proof I asked for."
+    ),
+    (
+        "My family has worked this land for three generations. I will not abandon it now, "
+        "whatever the elders decide at the next council."
+    ),
 ]
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    rate = sub.add_parser("rate", help="words per minute per voice, from files already voiced (no GPU)")
+    rate = sub.add_parser(
+        "rate", help="words per minute per voice, from files already voiced (no GPU)"
+    )
     rate.add_argument("--voice", action="append", help="restrict to these voices")
     rate.set_defaults(func=cmd_rate)
 
-    takes = sub.add_parser("takes", help="generate repeated takes and measure speaker similarity")
+    takes = sub.add_parser(
+        "takes", help="generate repeated takes and measure speaker similarity"
+    )
     takes.add_argument("--voice", action="append", required=True)
-    takes.add_argument("--takes", type=int, default=5, help="takes per line per setting (default 5)")
-    takes.add_argument("--lines", type=int, default=2, help="how many sample lines (default 2, max 3)")
-    takes.add_argument("--settings", default="0.45/0.5",
-                       help="comma separated exaggeration/cfg_weight pairs, e.g. 0.45/0.5,0.75/0.3")
+    takes.add_argument(
+        "--takes", type=int, default=5, help="takes per line per setting (default 5)"
+    )
+    takes.add_argument(
+        "--lines", type=int, default=2, help="how many sample lines (default 2, max 3)"
+    )
+    takes.add_argument(
+        "--settings",
+        default="0.45/0.5",
+        help="comma separated exaggeration/cfg_weight pairs, e.g. 0.45/0.5,0.75/0.3",
+    )
     takes.add_argument("--device", default="cuda")
-    takes.add_argument("--out", default="tools/data/voicecheck", help="where to write the takes")
+    takes.add_argument(
+        "--out", default="tools/data/voicecheck", help="where to write the takes"
+    )
     takes.set_defaults(func=cmd_takes)
 
     args = parser.parse_args(argv if argv is not None else sys.argv[1:])

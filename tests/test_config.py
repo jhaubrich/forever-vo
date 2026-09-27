@@ -1,4 +1,5 @@
 """forever-vo.toml loads, and the models resolve the way the pipeline relies on."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -44,10 +45,14 @@ def test_pronunciations_respell_whole_words_and_keep_shouting() -> None:
 
 
 def test_readers_parse_the_version_and_know_the_poster() -> None:
-    readers = Readers.model_validate({
-        "trusted_since": "0.1.4",
-        "community": {"comment-1": {"player": "It", "class": "Paladin", "restore_name": True}},
-    })
+    readers = Readers.model_validate(
+        {
+            "trusted_since": "0.1.4",
+            "community": {
+                "comment-1": {"player": "It", "class": "Paladin", "restore_name": True}
+            },
+        }
+    )
     assert readers.trusted_since == (0, 1, 4)
     assert readers.trusted_since_text == "0.1.4"
     poster = readers.known(None, "comment-1")
@@ -59,7 +64,13 @@ def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
         (tmp_path / f"{name}.wav").write_bytes(b"")
     config = Config(
         voices=Voices(fallbacks={"darkirondwarf": "dwarf", "narrator": "human-male"}),
-        tts=Tts(voices={"dwarf-male": VoiceTuning(reference="npc-3597", exaggeration=0.75, cfg_weight=0.3)}),
+        tts=Tts(
+            voices={
+                "dwarf-male": VoiceTuning(
+                    reference="npc-3597", exaggeration=0.75, cfg_weight=0.3
+                )
+            }
+        ),
     )
     catalog = VoiceCatalog(config, voices_dir=tmp_path)
 
@@ -77,21 +88,33 @@ def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
     archetype = catalog.resolve("dwarf-male-s36")
     assert archetype.source == "dwarf-male-s36"
     assert archetype.clip == tmp_path / "dwarf-male-s36.wav"
-    assert (archetype.settings.exaggeration, archetype.settings.cfg_weight) == (0.75, 0.3)
+    assert (archetype.settings.exaggeration, archetype.settings.cfg_weight) == (
+        0.75,
+        0.3,
+    )
     assert archetype.settings.reference is None
     assert catalog.tuned("dwarf-male-s36")
     assert catalog.fingerprint("dwarf-male-s36", "Well met.") == (
-        text_key("Well met.") + "+cfg_weight=0.3,exaggeration=0.75")
+        text_key("Well met.") + "+cfg_weight=0.3,exaggeration=0.75"
+    )
     missing = catalog.resolve("dwarf-male-s99")
     assert missing.source == "dwarf-male"
     assert missing.clip == tmp_path / "npc-3597.wav"
     assert missing.settings.reference == "npc-3597"
     assert missing.settings.exaggeration == 0.75
 
-    own = config.model_copy(update={"tts": Tts(voices={
-        "dwarf-male": VoiceTuning(reference="npc-3597", exaggeration=0.75, cfg_weight=0.3),
-        "dwarf-male-s36": VoiceTuning(exaggeration=0.2, cfg_weight=0.9),
-    })})
+    own = config.model_copy(
+        update={
+            "tts": Tts(
+                voices={
+                    "dwarf-male": VoiceTuning(
+                        reference="npc-3597", exaggeration=0.75, cfg_weight=0.3
+                    ),
+                    "dwarf-male-s36": VoiceTuning(exaggeration=0.2, cfg_weight=0.9),
+                }
+            )
+        }
+    )
     kept = VoiceCatalog(own, voices_dir=tmp_path).resolve("dwarf-male-s36")
     assert kept.clip == tmp_path / "dwarf-male-s36.wav"
     assert (kept.settings.exaggeration, kept.settings.cfg_weight) == (0.2, 0.9)
@@ -103,8 +126,19 @@ def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
     # a voice on the defaults hashes exactly as before, a tuned one differently, and a
     # knob at its default (tempo) never joins the suffix, so stamped fingerprints hold
     assert catalog.fingerprint("human-male", "Well met.") == text_key("Well met.")
-    assert catalog.fingerprint("dwarf-male", "Well met.") == text_key("Well met.") + "+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597"
-    assert catalog.fingerprint("darkirondwarf-male", "Well met.") == catalog.fingerprint("dwarf-male", "Well met.")
+    assert (
+        catalog.fingerprint("dwarf-male", "Well met.")
+        == text_key("Well met.")
+        + "+cfg_weight=0.3,exaggeration=0.75,reference=npc-3597"
+    )
+    assert catalog.fingerprint(
+        "darkirondwarf-male", "Well met."
+    ) == catalog.fingerprint("dwarf-male", "Well met.")
 
-    faster = config.model_copy(update={"tts": Tts(voices={"human-male": VoiceTuning(tempo=1.1)})})
-    assert VoiceCatalog(faster, voices_dir=tmp_path).fingerprint("human-male", "Well met.") == text_key("Well met.") + "+tempo=1.1"
+    faster = config.model_copy(
+        update={"tts": Tts(voices={"human-male": VoiceTuning(tempo=1.1)})}
+    )
+    assert (
+        VoiceCatalog(faster, voices_dir=tmp_path).fingerprint("human-male", "Well met.")
+        == text_key("Well met.") + "+tempo=1.1"
+    )

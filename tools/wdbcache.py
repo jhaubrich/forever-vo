@@ -10,6 +10,7 @@ Record layout (build 69913): a fixed part whose size is 488 + 43*n bytes,
 then bit-packed string lengths (9,12,12,9,10,8,10,8,11 bits, MSB first),
 then optional quest objectives, then the strings back to back at the end.
 """
+
 from __future__ import annotations
 
 import json
@@ -22,7 +23,17 @@ from tools.config import BETA_DIR, DATA_DIR
 CACHE = BETA_DIR / "Cache" / "WDB" / "enUS" / "questcache.wdb"
 OUTPUT = DATA_DIR / "bulk" / "questcache.json"
 LENGTH_BITS = [9, 12, 12, 9, 10, 8, 10, 8, 11]
-FIELDS = ["title", "objectives", "details", "area", "giverText", "giverName", "turninText", "turninName", "completionLog"]
+FIELDS = [
+    "title",
+    "objectives",
+    "details",
+    "area",
+    "giverText",
+    "giverName",
+    "turninText",
+    "turninName",
+    "completionLog",
+]
 FIXED_BASE, FIXED_STEP, FIXED_MAX_STEPS = 488, 43, 12
 
 
@@ -53,7 +64,7 @@ def decode_at(record: bytes, p: int) -> dict[str, str] | None:
     parts, offset = [], 0
     for n in lengths:
         try:
-            text = blob[offset:offset + n].decode("utf-8")
+            text = blob[offset : offset + n].decode("utf-8")
         except UnicodeDecodeError:
             return None
         if any(ord(c) < 32 and c not in "\n\r\t" for c in text):
@@ -69,7 +80,9 @@ def decode_at(record: bytes, p: int) -> dict[str, str] | None:
     if details and not (details[0].isalnum() or details[0] in "\"'(<$"):
         return None
     result = dict(zip(FIELDS, parts))
-    result["_gap"] = start - (p + 12)  # bytes between the length bits and the strings (quest objectives)
+    result["_gap"] = start - (
+        p + 12
+    )  # bytes between the length bits and the strings (quest objectives)
     return result
 
 
@@ -100,15 +113,19 @@ def read_cache(path: Path) -> dict[int, dict[str, str]]:
         entry, length = struct.unpack_from("<II", data, pos)
         if entry == 0 and length == 0:
             break
-        record = data[pos + 8:pos + 8 + length]
+        record = data[pos + 8 : pos + 8 + length]
         pos += 8 + length
         parsed = parse_record(record)
         if parsed:
-            parsed["sortID"] = struct.unpack_from("<i", record, 24)[0]  # AreaTable ID (>0) or QuestSort ID (<0)
+            parsed["sortID"] = struct.unpack_from("<i", record, 24)[
+                0
+            ]  # AreaTable ID (>0) or QuestSort ID (<0)
             quests[entry] = parsed
         else:
             failed += 1
-    print(f"{path.name}: build {build}, {len(quests)} quests parsed, {failed} records not understood")
+    print(
+        f"{path.name}: build {build}, {len(quests)} quests parsed, {failed} records not understood"
+    )
     return quests
 
 
@@ -120,11 +137,17 @@ def main(argv: list[str] | None = None) -> int:
     for quest_id, q in sorted(quests.items()):
         if q["details"].strip():
             out["quests"][f"{quest_id}-accept"] = {
-                "event": "accept", "questID": quest_id, "title": q["title"], "text": q["details"],
-                "sortID": q["sortID"], "source": "questcache",
+                "event": "accept",
+                "questID": quest_id,
+                "title": q["title"],
+                "text": q["details"],
+                "sortID": q["sortID"],
+                "source": "questcache",
             }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+    OUTPUT.write_text(
+        json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8"
+    )
     print(f"{OUTPUT}: {len(out['quests'])} quest offer texts")
     return 0
 

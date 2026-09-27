@@ -1,4 +1,5 @@
 """A species alias borrows another kind's clip only when the species has none of its own."""
+
 from __future__ import annotations
 
 from tools.config import Voices

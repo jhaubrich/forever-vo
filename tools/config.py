@@ -9,6 +9,7 @@ about the readers of old captures, and the release parameters. load_config()
 reads and validates the file once; a function that needs a section takes that
 model by type hint (`voices: Voices`, `readers: Readers`, ...).
 """
+
 from __future__ import annotations
 
 import functools
@@ -42,10 +43,12 @@ PACK_DIR = ROOT / PACK_NAME
 PACK_DATA_DIR = PACK_DIR / "Data"
 SOUNDS_DIR = PACK_DIR / "Sounds"
 
-WOW_DIR = Path(os.environ.get(
-    "WOW_DIR",
-    Path.home() / "Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft",
-))
+WOW_DIR = Path(
+    os.environ.get(
+        "WOW_DIR",
+        Path.home() / "Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft",
+    )
+)
 BETA_DIR = WOW_DIR / "_classic_beta_"
 BETA_BUILD = os.environ.get("WOW_BETA_BUILD", "1.60.1.69913")
 # Blood elves and goblins were not playable in Classic 1.x, so this client carries
@@ -59,16 +62,47 @@ WAGO_BASE = "https://wago.tools"
 # ChrRaces IDs -> voice family (forever-vo/tools/voices/<race>-<gender>.wav)
 RACE_DICT = {
     -1: "narrator",
-    1: "human", 2: "orc", 3: "dwarf", 4: "nightelf", 5: "scourge", 6: "tauren",
-    7: "gnome", 8: "troll", 9: "goblin", 10: "bloodelf", 11: "draenei",
-    12: "felorc", 13: "naga", 14: "broken", 15: "skeleton", 16: "vrykul",
-    17: "tuskarr", 18: "foresttroll", 19: "taunka", 20: "northrendskeleton",
-    21: "icetroll", 22: "worgen", 23: "human", 24: "pandaren", 25: "pandaren",
-    26: "pandaren", 27: "nightborne", 28: "highmountaintauren", 29: "voidelf",
-    30: "lightforgeddraenei", 31: "zandalari", 32: "kultiran", 33: "thinhuman",
-    34: "darkirondwarf", 35: "vulpera", 36: "magharorc", 37: "mechagnome",
-    52: "dracthyr", 70: "dracthyr",
-    95: "skyborne", 96: "skyborne",
+    1: "human",
+    2: "orc",
+    3: "dwarf",
+    4: "nightelf",
+    5: "scourge",
+    6: "tauren",
+    7: "gnome",
+    8: "troll",
+    9: "goblin",
+    10: "bloodelf",
+    11: "draenei",
+    12: "felorc",
+    13: "naga",
+    14: "broken",
+    15: "skeleton",
+    16: "vrykul",
+    17: "tuskarr",
+    18: "foresttroll",
+    19: "taunka",
+    20: "northrendskeleton",
+    21: "icetroll",
+    22: "worgen",
+    23: "human",
+    24: "pandaren",
+    25: "pandaren",
+    26: "pandaren",
+    27: "nightborne",
+    28: "highmountaintauren",
+    29: "voidelf",
+    30: "lightforgeddraenei",
+    31: "zandalari",
+    32: "kultiran",
+    33: "thinhuman",
+    34: "darkirondwarf",
+    35: "vulpera",
+    36: "magharorc",
+    37: "mechagnome",
+    52: "dracthyr",
+    70: "dracthyr",
+    95: "skyborne",
+    96: "skyborne",
 }
 GENDER_DICT = {0: "male", 1: "female"}
 
@@ -77,8 +111,10 @@ GENDER_DICT = {0: "male", 1: "female"}
 # forever-vo.toml
 # ----------------------------------------------------------------------------
 
+
 class Strict(BaseModel):
     """A typo in the TOML is an error, not a silently ignored key."""
+
     model_config = ConfigDict(extra="forbid")
 
 
@@ -97,18 +133,32 @@ class VoiceSources(Strict):
     FileDataIDs rather than positions in a listing, so a client update cannot silently
     repoint a pick at different audio.
     """
+
     clips: list[int] = []
-    build: str | None = None     # the wago build to fetch them from; the beta client by default
+    build: str | None = (
+        None  # the wago build to fetch them from; the beta client by default
+    )
 
 
 class Voices(Strict):
     """[voices]: which clip a speaker is cloned from when it has none of its own."""
-    narrator: str = "narrator"                  # reads quests from objects and items; keeps the plain sound path
-    narrator_alternates: list[str] = []         # every narrator line is also generated in each of these
-    fallbacks: dict[str, str] = {}              # race without a clip -> race whose clip it borrows
-    zone_hints: dict[str, str] = {}             # zone name -> race, when the client tables give none
-    species_aliases: dict[str, str] = {}        # model folder -> voice name, where a close clip exists
-    sources: dict[str, VoiceSources] = {}       # voice -> clips picked by ear, overriding the recipes
+
+    narrator: str = (
+        "narrator"  # reads quests from objects and items; keeps the plain sound path
+    )
+    narrator_alternates: list[
+        str
+    ] = []  # every narrator line is also generated in each of these
+    fallbacks: dict[str, str] = {}  # race without a clip -> race whose clip it borrows
+    zone_hints: dict[
+        str, str
+    ] = {}  # zone name -> race, when the client tables give none
+    species_aliases: dict[
+        str, str
+    ] = {}  # model folder -> voice name, where a close clip exists
+    sources: dict[
+        str, VoiceSources
+    ] = {}  # voice -> clips picked by ear, overriding the recipes
 
     @property
     def narrator_voices(self) -> list[str]:
@@ -117,14 +167,20 @@ class Voices(Strict):
 
 class VoiceTuning(Strict):
     """[tts.voices.<voice>]: what one voice does differently from the [tts] defaults."""
-    reference: str | None = None    # clip stem under tools/voices/ to clone from instead of <voice>.wav
+
+    reference: str | None = (
+        None  # clip stem under tools/voices/ to clone from instead of <voice>.wav
+    )
     exaggeration: float | None = None
     cfg_weight: float | None = None
-    tempo: float | None = Field(default=None, ge=0.5, le=2.0)   # time stretch at encode time, pitch kept; 1.0 is as generated
+    tempo: float | None = Field(
+        default=None, ge=0.5, le=2.0
+    )  # time stretch at encode time, pitch kept; 1.0 is as generated
 
 
 class TtsSettings(Strict):
     """Resolved Chatterbox conditioning for one voice."""
+
     exaggeration: float
     cfg_weight: float
     tempo: float = 1.0
@@ -133,6 +189,7 @@ class TtsSettings(Strict):
 
 class Tts(Strict):
     """[tts]: Chatterbox conditioning, with per-voice overrides."""
+
     exaggeration: float = 0.45
     cfg_weight: float = 0.5
     tempo: float = Field(default=1.0, ge=0.5, le=2.0)
@@ -140,7 +197,9 @@ class Tts(Strict):
 
     @property
     def defaults(self) -> TtsSettings:
-        return TtsSettings(exaggeration=self.exaggeration, cfg_weight=self.cfg_weight, tempo=self.tempo)
+        return TtsSettings(
+            exaggeration=self.exaggeration, cfg_weight=self.cfg_weight, tempo=self.tempo
+        )
 
     def settings_for(self, voice: str) -> TtsSettings:
         """The defaults with this voice's own overrides on top. Borrowed clips are
@@ -148,8 +207,12 @@ class Tts(Strict):
         whose clip it actually uses and asks for that one's settings."""
         tuning = self.voices.get(voice) or VoiceTuning()
         return TtsSettings(
-            exaggeration=self.exaggeration if tuning.exaggeration is None else tuning.exaggeration,
-            cfg_weight=self.cfg_weight if tuning.cfg_weight is None else tuning.cfg_weight,
+            exaggeration=self.exaggeration
+            if tuning.exaggeration is None
+            else tuning.exaggeration,
+            cfg_weight=self.cfg_weight
+            if tuning.cfg_weight is None
+            else tuning.cfg_weight,
             tempo=self.tempo if tuning.tempo is None else tuning.tempo,
             reference=tuning.reference,
         )
@@ -162,8 +225,11 @@ class Tts(Strict):
         a knob left at its default (tempo 1.0 on every voice tuned before tempo
         existed) must not change a fingerprint that is already stamped."""
         defaults = self.defaults
-        return {name: value for name, value in settings.model_dump().items()
-                if value is not None and value != getattr(defaults, name)}
+        return {
+            name: value
+            for name, value in settings.model_dump().items()
+            if value is not None and value != getattr(defaults, name)
+        }
 
 
 class Pronunciations(RootModel[dict[str, str]]):
@@ -178,7 +244,9 @@ class Pronunciations(RootModel[dict[str, str]]):
     def compiled(self) -> tuple[re.Pattern[str] | None, dict[str, str]]:
         if not self.root:
             return None, {}
-        pattern = re.compile(r"\b(" + "|".join(map(re.escape, self.root)) + r")\b", re.IGNORECASE)
+        pattern = re.compile(
+            r"\b(" + "|".join(map(re.escape, self.root)) + r")\b", re.IGNORECASE
+        )
         return pattern, {word.lower(): spoken for word, spoken in self.root.items()}
 
     def respell(self, text: str) -> str:
@@ -195,19 +263,27 @@ class Pronunciations(RootModel[dict[str, str]]):
 
 class Reader(Strict):
     """What a contributor told us about the character that captured their lines."""
+
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
     player: str | None = None
     class_: str | None = Field(default=None, alias="class")
     race: str | None = None
-    restore_name: bool = False      # the name is an ordinary word ("It"), so every $n the old client wrote is that word
+    restore_name: bool = False  # the name is an ordinary word ("It"), so every $n the old client wrote is that word
 
 
 class Readers(Strict):
     """[readers]: how far captures are believed, and who read the ones that
     predate the addon recording it."""
-    trusted_since: tuple[int, ...] = (0, 1, 4)   # first addon release whose captures are taken at face value
-    legacy: dict[str, Reader] = {}               # by character name: owner captures before capture version 3
-    community: dict[str, Reader] = {}            # by export origin (the issue comment id)
+
+    trusted_since: tuple[int, ...] = (
+        0,
+        1,
+        4,
+    )  # first addon release whose captures are taken at face value
+    legacy: dict[
+        str, Reader
+    ] = {}  # by character name: owner captures before capture version 3
+    community: dict[str, Reader] = {}  # by export origin (the issue comment id)
 
     @field_validator("trusted_since", mode="before")
     @classmethod
@@ -226,10 +302,15 @@ class Readers(Strict):
 
 class Release(Strict):
     """[release]: what release_pack.py needs beyond the API key in .env."""
+
     curseforge_projects: dict[str, int] = {}
-    base_split_level: int = 40          # Base is quests to this level with all gossip; Base Endgame the rest
-    bitrate: str = "32k"                # release mp3 bitrate (mono, 22.05 kHz); the working files keep full quality
-    transcode_workers: int = 4          # ffmpeg is CPU work; leave cores for the GPU workers' own decoding
+    base_split_level: int = (
+        40  # Base is quests to this level with all gossip; Base Endgame the rest
+    )
+    bitrate: str = "32k"  # release mp3 bitrate (mono, 22.05 kHz); the working files keep full quality
+    transcode_workers: int = (
+        4  # ffmpeg is CPU work; leave cores for the GPU workers' own decoding
+    )
 
 
 class Config(Strict):
