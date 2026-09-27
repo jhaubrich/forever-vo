@@ -111,6 +111,7 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
                 ns.db.showHead = not ns.db.showHead
                 ns.UI.TalkingHead:ApplySettings()
             end)
+            root:CreateButton("Send quests to project", function() ns.Export:Show() end)
             root:CreateButton("Options", function() ns.SettingsPanel:Open() end)
         end)
     else

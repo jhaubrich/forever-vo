@@ -20,6 +20,8 @@
   hundred times over. The per-line notice now only says the line is saved,
   and the welcome text and the export window both say you do not have to do
   this for each quest.
+- Right-click on the minimap button (or the addon compartment entry) has
+  "Send quests to project": the same as `/fvo export`, without typing it.
 - The reminders about lines worth contributing now say what this session
   added and what was already waiting from earlier ones. The beta client keeps
   saved variables between logins again, so the capture accumulates across
