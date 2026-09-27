@@ -247,8 +247,14 @@ leaf helpers called from everywhere, `textclean.clean()` and
 repository's file, so one-liners keep working. There is deliberately no
 per-line table (`[lines."91741-accept"]`): the file would grow without bound.
 `./tools/run.sh pytest` runs `tests/`, which loads the real TOML and checks
-the tuning resolution; `ruff check` and `ty check` are both clean and should
-stay so.
+the tuning resolution; `ruff check`, `ruff format --check` (ruff's defaults,
+no `[tool.ruff]`; the whole tree was formatted on 2026-09-27) and `ty check`
+are all clean and should stay so. `.github/workflows/check.yml` runs the first
+three and pytest (`--no-group tts`, so `fastapi` is in the `dev` group for the
+audition tests) plus `luac5.1 -p`, `apicheck` and `textkey_parity` on every
+pull request, and deliberately not on pushes to main, which are mostly
+captures and tables. A test must not depend on gitignored files (voice clips,
+`bulk/classic.json`); take the directory as a parameter instead.
 
 **`uv run audition`** (`tools/audition/`, a FastAPI app and one `index.html`,
 no front-end framework, on port 8765) is the page for ear tests: pick a line
