@@ -15,6 +15,10 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- g: which of a/p/c exist as m-/f- variants, because $G branches per line
       --    ("a" = only the accept text branches). `true` means all of them, as
       --    packs built before this wrote it.
+      -- va/vp/vc: the voice that rendered that event's file (scourge-male-dark).
+      --    The same string names the clip. Absent on packs built before it
+      --    was recorded. A line played from Narrator/<voice>/ is that voice
+      --    instead, since va is the main file's.
       -- wa/wp/wc: the pipeline still wants this event captured again, by a
       --    reader whose sex letter (m/f) is in the string: "f" when only a
       --    male character has read a line the client resolved a $G branch
@@ -32,7 +36,7 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
     },
     gossip = {
       [speakerKey] = {
-        { f = "288-1a2b3c4d", h = "1a2b3c4d", t = "original text", d = 4.5, g = true,
+        { f = "288-1a2b3c4d", h = "1a2b3c4d", t = "original text", d = 4.5, v = "human-male", g = true,
           n = { [1] = 4.7 },      -- duration per alternate narrator voice
           P = { { d = 2.0 }, { d = 1.1, n = true } },   -- parts, as aP above; files <f>-p<i> with
           nP = { [1] = { [2] = 1.2 } } },               -- the speaker before the hash: 288-p2-1a2b3c4d
@@ -232,10 +236,11 @@ local function ResolveParts(pack, subfolder, base, parts, alternates, voice)
     return resolved, total
 end
 
---- Finds the audio for a quest event. Returns path, duration, pack, parts or
---- nil. `parts` is set for a line the queue plays as a sequence (see
---- ResolveParts); `path` then names the whole-line file where one exists, or
---- the first part, so the queue can still tell one line from another.
+--- Finds the audio for a quest event. Returns path, duration, pack, parts,
+--- voice or nil. `voice` is the archetype that rendered the file (va/vp/vc),
+--- or the narrator voice when that recording is the one playing. `parts` is
+--- set for a line the queue plays as a sequence (see ResolveParts); `path`
+--- then names the whole-line file where one exists, or the first part.
 ---@param questID number
 ---@param event "accept"|"progress"|"complete"
 function Packs:FindQuest(questID, event)
@@ -256,16 +261,17 @@ function Packs:FindQuest(questID, event)
                 base = Util.PlayerGenderPrefix() .. base
             end
             local voice = self:NarratorVoice()
+            local recorded = entry["v" .. field]
             local alternate = voice ~= DEFAULT_NARRATOR and NarratorRecord(pack, questID, voice) or nil
             if parts then
                 local resolved, total = ResolveParts(pack, "Quests", base, parts, alternate and alternate[field .. "P"], voice)
                 local path = entry[field] and SoundPath(pack, "Quests", base) or resolved[1].path
-                return path, total, pack, resolved
+                return path, total, pack, resolved, recorded
             end
             if alternate and alternate[field] then
-                return SoundPath(pack, "Quests\\Narrator\\" .. voice, base), alternate[field], pack
+                return SoundPath(pack, "Quests\\Narrator\\" .. voice, base), alternate[field], pack, nil, voice
             end
-            return SoundPath(pack, "Quests", base), entry[field], pack
+            return SoundPath(pack, "Quests", base), entry[field], pack, nil, recorded
         end
     end
 end
@@ -321,7 +327,9 @@ function Packs:SpeakerKeyByName(name)
 end
 
 --- Finds gossip/greeting audio for a speaker. Exact hash match first, then the
---- most similar text above the fuzzy threshold. Returns path, duration, pack.
+--- most similar text above the fuzzy threshold. Returns path, duration, pack,
+--- parts, voice. `voice` is the archetype on the entry, or the narrator voice
+--- when that recording is the one playing.
 ---@param speakerKey number
 ---@param text string
 function Packs:FindGossip(speakerKey, text)
@@ -370,13 +378,13 @@ function Packs:FindGossip(speakerKey, text)
         local resolved, total = ResolveParts(bestPack, "Gossip", base, bestEntry.P,
             index and bestEntry.nP and bestEntry.nP[index], voice)
         local path = bestEntry.d and SoundPath(bestPack, "Gossip", base) or resolved[1].path
-        return path, total, bestPack, resolved
+        return path, total, bestPack, resolved, bestEntry.v
     end
     if index and bestEntry.n then
         local seconds = bestEntry.n[index]
         if seconds then
-            return SoundPath(bestPack, "Gossip\\Narrator\\" .. voice, base), seconds, bestPack
+            return SoundPath(bestPack, "Gossip\\Narrator\\" .. voice, base), seconds, bestPack, nil, voice
         end
     end
-    return SoundPath(bestPack, "Gossip", base), bestEntry.d, bestPack
+    return SoundPath(bestPack, "Gossip", base), bestEntry.d, bestPack, nil, bestEntry.v
 end

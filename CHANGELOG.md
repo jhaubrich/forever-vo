@@ -5,8 +5,8 @@
 - The bug icon on the talking head, and `/fvo report`, opens the text of a GitHub
   issue about the line that is playing. Edit it, then Copy Link, and paste
   the link into a browser. The title and the description are already filled
-  in. The character name is removed from the text. You still pick what is
-  wrong on the form, and submit.
+  in. It names the voice that read the line. The character name is removed
+  from the text. You still pick what is wrong on the form, and submit.
 - The reminders about lines worth contributing now say what this session
   added and what was already waiting from earlier ones. The beta client keeps
   saved variables between logins again, so the capture accumulates across

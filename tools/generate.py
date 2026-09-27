@@ -626,6 +626,20 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, Any], config: Confi
         recorded = sound_index.get(name, 0.0)
         return recorded["d"] if isinstance(recorded, dict) else float(recorded)
 
+    def recorded_voice(*names: str) -> str | None:
+        """The voice sound_index recorded for these files, when they agree.
+        That is the archetype (scourge-male-dark), which is also the clip's
+        file name. A probed placeholder has no voice and is skipped."""
+        found = set()
+        for name in names:
+            recorded = sound_index.get(name)
+            voice = recorded.get("v") if isinstance(recorded, dict) else None
+            if isinstance(voice, str) and voice:
+                found.add(voice)
+        if len(found) == 1:
+            return found.pop()
+        return None
+
     quests: dict[int, dict] = {}
     gossip: dict[int, list[dict]] = {}
     npcs: dict[int, str] = {}
@@ -695,6 +709,12 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, Any], config: Confi
             record = quests.setdefault(quest_id, {})
             if duration is not None:
                 record[letter] = duration
+            # va/vp/vc: the voice that rendered this event's file. The addon
+            # names it on a report. Absent on a file probed before it was
+            # generated, and when the m- and f- files disagree.
+            line_voice = recorded_voice(*available) if available else None
+            if line_voice:
+                record["v" + letter] = line_voice
             if parts_record:
                 record[letter + "P"] = parts_record
             for voice, durations in part_alternates.items():
@@ -732,6 +752,7 @@ def rebuild_tables(items: list[Item], sound_index: dict[str, Any], config: Confi
                 "h": item.hash,
                 "t": item.raw_text.replace("\r", " ").replace("\n", " "),
                 "d": duration,
+                "v": recorded_voice(*available) if available else None,
                 "g": gendered or None,
                 "n": alternates or None,   # voice -> duration, turned into indices below
                 "P": parts_record,

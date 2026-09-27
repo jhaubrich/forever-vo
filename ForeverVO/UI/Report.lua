@@ -171,8 +171,72 @@ local function SpokenText(item)
     return text or ""
 end
 
+local QUEST_VOICE = { accept = "va", progress = "vp", complete = "vc" }
+local QUEST_PARTS = { accept = "aP", progress = "pP", complete = "cP" }
+
+local function NarratorFolder(path)
+    return path and path:match("\\Narrator\\([^\\]+)\\")
+end
+
+--- The archetype sound_index recorded for this file (scourge-male-dark), which
+--- is also the clip's name. A narrator recording is not an archetype.
+local function HeardVoice(item)
+    if NarratorFolder(item.path) or item.voice == "narrator" then
+        return nil
+    end
+    if item.voice then
+        return item.voice
+    end
+    local pack = item.pack
+    if item.kind ~= "quest" or not pack or not pack.quests or not item.questID then
+        return nil
+    end
+    local key = QUEST_VOICE[item.event]
+    local entry = key and pack.quests[item.questID]
+    local voice = entry and entry[key]
+    if voice and voice ~= "narrator" then
+        return voice
+    end
+end
+
+--- True when the narrator reads this line, or a stage direction inside it.
+local function NarratorSpeaks(item)
+    if NarratorFolder(item.path) or item.voice == "narrator" then
+        return true
+    end
+    local pack = item.pack
+    if item.kind == "quest" and pack and pack.quests and item.questID then
+        local key = QUEST_PARTS[item.event]
+        local parts = key and pack.quests[item.questID] and pack.quests[item.questID][key]
+        if parts then
+            for _, part in ipairs(parts) do
+                if part.n then
+                    return true
+                end
+            end
+        end
+    end
+    if item.parts then
+        for _, part in ipairs(item.parts) do
+            if NarratorFolder(part.path) then
+                return true
+            end
+        end
+    end
+end
+
 local function Tail(item)
     local lines = {}
+    -- The same words as the GitHub "Which line" box. That box is one line, so
+    -- a long title looks cut off there; here it wraps.
+    table.insert(lines, "Line: " .. Identity(item))
+    local voice = HeardVoice(item)
+    if voice then
+        table.insert(lines, "Voice: " .. voice)
+    end
+    if NarratorSpeaks(item) then
+        table.insert(lines, "Narrator: " .. ns.Packs.NarratorVoiceLabel(ns.Packs:NarratorVoice()))
+    end
     local sound = ShortSound(item.path)
     if sound then
         table.insert(lines, "Sound: " .. sound)
@@ -193,7 +257,6 @@ local function Tail(item)
         local version = item.pack.version
         table.insert(lines, version and format("Pack: %s %s", item.pack.name, version) or ("Pack: " .. item.pack.name))
     end
-    table.insert(lines, "Narrator: " .. ns.Packs.NarratorVoiceLabel(ns.Packs:NarratorVoice()))
     local sex = ReaderSex()
     if sex then
         table.insert(lines, "Reader sex: " .. sex)
