@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The welcome no longer says a voice pack is coming and that you will hear
+  nothing; the packs have been on CurseForge since September 22.
 - `/fvo export` opens the contribution as text, the same way a report does.
   Edit the note, then Copy Link, and paste the link into a browser. The
   Contribute captured lines form is filled in, and the export string is under
