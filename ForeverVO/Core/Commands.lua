@@ -58,8 +58,11 @@ local commands = {
     end },
     narrator = { "Switch to the next narrator voice", NextNarratorVoice },
     status = { "Show loaded packs and capture counts", Status },
-    export = { "Copy the unvoiced lines heard since your last export to contribute", function() ns.Export:Show() end },
-    ["export all"] = { "Copy every captured unvoiced line, exported before or not", function() ns.Export:Show(true) end },
+    export = { "Copy a link that opens a GitHub issue with the unvoiced lines heard since your last export", function() ns.Export:Show() end },
+    ["export all"] = { "The same, with every captured unvoiced line, exported before or not", function() ns.Export:Show(true) end },
+    report = { "Copy a link that opens a GitHub issue about the line that is playing", function()
+        ns.Report:Show(ns.Report:Current())
+    end },
     welcome = { "Show the welcome message again", function() ns.Welcome:Show() end },
     debug  = { "Toggle debug messages", function()
         ns.db.debug = not ns.db.debug
@@ -95,6 +98,10 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
             root:CreateTitle("Forever Voiceover")
             root:CreateButton(Queue:IsPaused() and "Resume" or "Pause", function() Queue:TogglePause() end)
             root:CreateButton("Skip current line", function() Queue:Skip() end)
+            local current = Queue:Current()
+            if current then
+                root:CreateButton("Report this line", function() ns.Report:Show(current) end)
+            end
             root:CreateButton("Clear queue", function() Queue:Clear() end)
             root:CreateCheckbox("Show the panel", function() return ns.db.showPanel end, function()
                 ns.db.showPanel = not ns.db.showPanel
@@ -104,6 +111,7 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
                 ns.db.showHead = not ns.db.showHead
                 ns.UI.TalkingHead:ApplySettings()
             end)
+            root:CreateButton("Send quests to project", function() ns.Export:Show() end)
             root:CreateButton("Options", function() ns.SettingsPanel:Open() end)
         end)
     else

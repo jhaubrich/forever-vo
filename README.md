@@ -150,12 +150,16 @@ of a run and `--narrator-only` makes a run of nothing else.
 
 ## In game
 
-- `/fvo` opens the options. `/fvo pause|resume|skip|clear|replay|queue|head|reset|narrator|status|debug`.
+- `/fvo` opens the options. `/fvo pause|resume|skip|clear|replay|queue|head|reset|narrator|status|report|debug`.
 - The narrator reads the lines with no speaker to voice them: quests and
   chatter from objects, items and signs. Options > Audio > Narrator voice picks
   which voice that is, from whatever the pack carries; `/fvo narrator` cycles.
 - Right-click the talking head to skip; the X clears the queue; "Queue" shows
   what is waiting; drag to move (lockable in options).
+- The bug icon on the talking head, or `/fvo report`, opens the text of a GitHub
+  issue about the line that is playing. Edit it if you need to, then Copy
+  Link and paste the link into a browser. The title and the description are
+  already filled in. Your character name is removed.
 - The addon compartment entry (next to the minimap) has the same controls.
 - Opening a quest in the quest log puts a Play button beside Back, for quests
   that have audio.
@@ -174,9 +178,10 @@ shared for non-commercial use.
 
 Quest and gossip text only exists on the server, so the pack can only grow
 from what players see. With the addon on, play (the new zones matter most),
-then type `/fvo export`, press Ctrl+C, and paste the string into a new
-"Contribute captured lines" issue:
-https://github.com/quinn-dougherty/forever-vo/issues/new?template=capture.yml.
+then type `/fvo export`. The window shows the contribution. Copy Link, and
+paste the link into a browser: it opens a "Contribute captured lines" issue
+with the text filled in
+(https://github.com/quinn-dougherty/forever-vo/issues/new?template=capture.yml).
 A bot decodes it into `captures/`, reacts with 🚀, closes the issue, and the
 next pack build voices it. Your character name is removed before export.
 (Pasting it as a comment on the older inbox, issue #1, still works too.)

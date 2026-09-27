@@ -9,7 +9,7 @@ The playback queue. Items are plain tables:
     event = "accept" | "progress" | "complete" | "greeting" | "gossip",
     questID, title, text, name,        -- what is being said and by whom
     speakerKey, guid, isObject,        -- who to show in the portrait
-    path, duration, pack,              -- resolved audio
+    path, duration, pack, voice,       -- resolved audio, and the archetype that rendered it
     parts,                             -- optional { {path, duration}, ... } played back to
                                        -- back: a line the speaker and the narrator share
     handle, timer,                     -- runtime playback state
