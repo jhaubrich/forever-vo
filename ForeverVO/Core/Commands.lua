@@ -59,6 +59,9 @@ local commands = {
     narrator = { "Switch to the next narrator voice", NextNarratorVoice },
     status = { "Show loaded packs and capture counts", Status },
     export = { "Copy the captured unvoiced lines to contribute", function() ns.Export:Show() end },
+    report = { "Copy a link that opens a GitHub issue about the line that is playing", function()
+        ns.Report:Show(ns.Report:Current())
+    end },
     welcome = { "Show the welcome message again", function() ns.Welcome:Show() end },
     debug  = { "Toggle debug messages", function()
         ns.db.debug = not ns.db.debug
@@ -94,6 +97,10 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
             root:CreateTitle("Forever Voiceover")
             root:CreateButton(Queue:IsPaused() and "Resume" or "Pause", function() Queue:TogglePause() end)
             root:CreateButton("Skip current line", function() Queue:Skip() end)
+            local current = Queue:Current()
+            if current then
+                root:CreateButton("Report this line", function() ns.Report:Show(current) end)
+            end
             root:CreateButton("Clear queue", function() Queue:Clear() end)
             root:CreateCheckbox("Show the panel", function() return ns.db.showPanel end, function()
                 ns.db.showPanel = not ns.db.showPanel

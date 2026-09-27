@@ -6,7 +6,8 @@ The talking head: a frame that mirrors Blizzard's own TalkingHeadFrame
 (Blizzard_FrameXML/TalkingHeadUI.xml) in size, atlases, anchors and fade
 animations, so it reads as part of the client. Shows the current queue item
 with the speaker's model, name, title, and the spoken text paged in time with
-the audio. Right-click skips, the X clears the queue.
+the audio. Right-click skips, the X clears the queue. Report copies a link that opens a
+GitHub issue about the line.
 ]]
 
 local FRAME_WIDTH, FRAME_HEIGHT = 570, 155
@@ -353,6 +354,18 @@ function TalkingHead:CreateControls()
         Queue:TogglePause()
     end)
     frame.PauseButton:SetPoint("RIGHT", frame.SkipButton, "LEFT", -4, 0)
+
+    frame.ReportButton = Button("Report", 78, function()
+        ns.Report:Show(self.displayed or Queue:Current())
+    end)
+    frame.ReportButton:SetPoint("RIGHT", frame.PauseButton, "LEFT", -4, 0)
+    frame.ReportButton:SetScript("OnEnter", function(button)
+        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+        GameTooltip:SetText("Report this line")
+        GameTooltip:AddLine("Copy a link that opens a GitHub issue about this line. Your character name is removed.", 1, 0.82, 0, true)
+        GameTooltip:Show()
+    end)
+    frame.ReportButton:SetScript("OnLeave", GameTooltip_Hide)
 end
 
 function TalkingHead:CreateAnimations()

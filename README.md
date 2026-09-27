@@ -150,12 +150,15 @@ of a run and `--narrator-only` makes a run of nothing else.
 
 ## In game
 
-- `/fvo` opens the options. `/fvo pause|resume|skip|clear|replay|queue|head|reset|narrator|status|debug`.
+- `/fvo` opens the options. `/fvo pause|resume|skip|clear|replay|queue|head|reset|narrator|status|report|debug`.
 - The narrator reads the lines with no speaker to voice them: quests and
   chatter from objects, items and signs. Options > Audio > Narrator voice picks
   which voice that is, from whatever the pack carries; `/fvo narrator` cycles.
 - Right-click the talking head to skip; the X clears the queue; "Queue" shows
   what is waiting; drag to move (lockable in options).
+- Report, on the talking head or `/fvo report`, copies a link. Paste it into
+  a browser to open a GitHub issue about the line that is playing, with the
+  title and the description filled in. Your character name is removed.
 - The addon compartment entry (next to the minimap) has the same controls.
 - Opening a quest in the quest log puts a Play button beside Back, for quests
   that have audio.

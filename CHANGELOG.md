@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Report, on the talking head and `/fvo report`, copies a link. Paste it into
+  a browser and GitHub opens an issue about the line that is playing, with
+  the title and the description filled in. The character name is removed from
+  the text. You still pick what is wrong on the form, and submit.
 - The reminders about lines worth contributing now say what this session
   added and what was already waiting from earlier ones. The beta client keeps
   saved variables between logins again, so the capture accumulates across
