@@ -2397,6 +2397,22 @@
    "wanted": null,
    "zone": "Tirisfal Glades"
   },
+  "246344|3f8410df": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Paladin",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Alodan the Hopeful",
+   "npc": "246344",
+   "player": "Fixpoint",
+   "race": "Undead",
+   "sex": "m",
+   "subzone": "The Pools of Vision",
+   "text": "Welcome back to the light, friend. Do you require training?",
+   "time": 1790531306,
+   "zone": "Thunder Bluff"
+  },
   "246349|da04ef25": {
    "addon": "0.1.5",
    "build": "70009",
@@ -7100,9 +7116,28 @@
    "wanted": null,
    "zone": "Mulgore"
   },
+  "3084|5206b4c5": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Paladin",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "pack": "Forever",
+   "player": "Fixpoint",
+   "race": "Undead",
+   "sex": "m",
+   "subzone": "",
+   "text": "Which trainer do you seek?",
+   "time": 1790531210,
+   "zone": "Thunder Bluff"
+  },
   "3084|5d6f0b28": {
-   "build": "69913",
-   "class": "Hunter",
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Paladin",
    "event": "gossip",
    "firstSeen": 1789944438,
    "found": true,
@@ -7110,11 +7145,12 @@
    "name": "Bluffwatcher",
    "npc": "3084",
    "pack": "Forever",
-   "player": "Pellinore Fixpoint",
-   "race": "Windshaper Skyborne",
+   "player": "Fixpoint",
+   "race": "Undead",
+   "sex": "m",
    "subzone": "",
    "text": "What are you looking for?",
-   "time": 1790113463,
+   "time": 1790531206,
    "zone": "Thunder Bluff"
   },
   "3084|a56de79f": {
@@ -7128,6 +7164,22 @@
    "subzone": "",
    "text": "First Aid is always a nice skill to have.  Many a time during battle has it saved my hide.  Visit Spiritual Healing on the Spirit Rise.  Pand Stonebinder can teach you all you need to know to save your hide as well.",
    "time": 1789944441,
+   "zone": "Thunder Bluff"
+  },
+  "3084|a66cdbb7": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Paladin",
+   "event": "gossip",
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "player": "Fixpoint",
+   "race": "Undead",
+   "sex": "m",
+   "subzone": "",
+   "text": "Your interests would be best served by Sir Alodan. He is with the other members of the Undercity near the Pools of Vision.",
+   "time": 1790531213,
    "zone": "Thunder Bluff"
   },
   "3084|ef767f20": {
@@ -7735,6 +7787,7 @@
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
+   "firstSeen": 1790529039,
    "found": true,
    "mapID": 1454,
    "name": "Soran",
@@ -11777,6 +11830,13 @@
    "modelFileID": 997378,
    "name": "Shari Stilwell",
    "sex": 3
+  },
+  "246344": {
+   "creatureType": "Humanoid",
+   "level": 30,
+   "modelFileID": 959310,
+   "name": "Alodan the Hopeful",
+   "sex": 2
   },
   "246349": {
    "creatureType": "Humanoid",
@@ -40041,6 +40101,7 @@
    "build": "70009",
    "class": "Hunter",
    "event": "accept",
+   "firstSeen": 1790530617,
    "mapID": 1456,
    "name": "Tah Winterhoof",
    "needs": "m",
