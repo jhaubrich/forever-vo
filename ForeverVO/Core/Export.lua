@@ -6,7 +6,9 @@ local Util = ns.Util
 the last time the DB was cleared, across sessions and characters now that the
 beta reads saved variables back) into a string players can
 paste into a GitHub issue (see .github/ISSUE_TEMPLATE/capture.yml). The
-string is JSON, zlib-compressed and base64-encoded with the client's own
+window shows that issue as text, and Copy Link builds the form URL with the
+string in it, the same way /fvo report does. The string is JSON,
+zlib-compressed and base64-encoded with the client's own
 C_EncodingUtil, prefixed with "FVO1:". The character's name, class and race are
 replaced by the $n/$c/$r placeholders (Util.Tokenize) at capture, so nothing
 identifying leaves the client and no line is voiced for one class only. The
@@ -27,6 +29,35 @@ ns.Export = Export
 
 local NUDGE_AFTER = 10
 local PREFIX = "FVO1:"
+local ISSUE = "https://github.com/quinn-dougherty/forever-vo/issues/new"
+-- Past this, GitHub returns 414 URI Too Long. The export string is the only
+-- field that grows without a bound, so a long one is left out of the link.
+local URL_BUDGET = 6000
+local NOTE = "## Note:\n\n"
+local PRESS_COPY = "Click the link, then Ctrl+C"
+local PRESS_COPY_SHORT = "Click the link, then Ctrl+C. Paste the export string into the form; it was too long for the link."
+
+--- Percent-encode one query component. Same rule as the report link.
+local function Encode(value)
+    return (tostring(value):gsub(".", function(char)
+        local byte = char:byte()
+        if (byte >= 48 and byte <= 57)
+            or (byte >= 65 and byte <= 90)
+            or (byte >= 97 and byte <= 122)
+            or char == "-" or char == "_" or char == "." or char == "~" then
+            return char
+        end
+        return format("%%%02X", byte)
+    end))
+end
+
+local function Query(fields)
+    local parts = {}
+    for i, field in ipairs(fields) do
+        parts[i] = Encode(field[1]) .. "=" .. Encode(field[2])
+    end
+    return ISSUE .. "?" .. table.concat(parts, "&")
+end
 
 --- Builds the export table from ForeverVOCaptureDB: lines without audio, and
 --- voiced lines the pack asked to hear again from a reader like this one.
@@ -90,9 +121,53 @@ function Export:Encode()
     return PREFIX .. C_EncodingUtil.EncodeBase64(compressed), #data.lines
 end
 
+--- The issue text. The note is where the cursor starts. The facts under it
+--- are labels, and the export string stays whole at the bottom so a note
+--- does not land in the middle of it.
+function Export:Body(data, payload)
+    local count = #data.lines
+    local summary = format("%d %s. Your character name has been removed.",
+        count, Util.Plural(count, "line"))
+    local facts = { "Lines: " .. count, "Addon: " .. (data.addon or "dev") }
+    if data.build and data.build ~= "" then
+        table.insert(facts, "Build: " .. tostring(data.build))
+    end
+    return format("## Captured lines\n\n%s\n\n%s\n\n%s\n\n## Export string\n\n%s",
+        summary, NOTE, table.concat(facts, "\n"), payload)
+end
+
+--- The capture form's export field is the whole text, and the decoder finds
+--- the FVO1 string inside it. A string that will not fit in the URL is left
+--- out; the form still opens on the right template.
+function Export:Link(body, count)
+    local title = format("Captured lines (%d)", count)
+    local function urlFor(text)
+        return Query({
+            { "template", "capture.yml" },
+            { "title", title },
+            { "export", text },
+        })
+    end
+    local url = urlFor(body)
+    if #url <= URL_BUDGET then
+        return url, false
+    end
+    return Query({
+        { "template", "capture.yml" },
+        { "title", title },
+    }), true
+end
+
 -- ---------------------------------------------------------------------------
 -- Dialog
 -- ---------------------------------------------------------------------------
+
+local function PlaceScroll(frame, bottom)
+    local scroll = frame.Scroll
+    scroll:ClearAllPoints()
+    scroll:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", 0, -12)
+    scroll:SetPoint("BOTTOMRIGHT", -30, bottom)
+end
 
 function Export:GetFrame()
     if self.frame then
@@ -100,9 +175,10 @@ function Export:GetFrame()
     end
     local frame = CreateFrame("Frame", "ForeverVOExportFrame", UIParent, "ButtonFrameTemplate")
     self.frame = frame
-    frame:SetSize(520, 340)
+    frame:SetSize(540, 470)
     frame:SetPoint("CENTER")
     frame:SetFrameStrata("DIALOG")
+    frame:SetClampedToScreen(true)
     frame:SetMovable(true)
     frame:EnableMouse(true)
     frame:RegisterForDrag("LeftButton")
@@ -119,40 +195,108 @@ function Export:GetFrame()
     frame.Hint:SetJustifyH("LEFT")
     frame.Hint:SetPoint("TOPLEFT", 16, -32)
     frame.Hint:SetPoint("RIGHT", -16, 0)
-    frame.Hint:SetText("Press Ctrl+C to copy, then paste it into a new issue at\n|cff6ec6ffgithub.com/quinn-dougherty/forever-vo/issues/new?template=capture.yml|r\nYour character name has been removed.")
+    frame.Hint:SetText("Edit the note if you need to, then Copy Link and paste it into a browser. The form is Contribute captured lines.\nYour character name has been removed.")
+
+    local function Hide()
+        frame:Hide()
+    end
 
     local scroll = CreateFrame("ScrollFrame", nil, frame, "InputScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", 0, -12)
-    scroll:SetPoint("BOTTOMRIGHT", -30, 16)
     scroll.EditBox:SetMaxLetters(0)
     scroll.EditBox:SetFontObject("GameFontHighlightSmall")
-    scroll.EditBox:SetScript("OnEscapePressed", function() frame:Hide() end)
-    scroll.EditBox:SetScript("OnTextChanged", function(editBox, userInput)
+    scroll.EditBox:SetScript("OnEscapePressed", Hide)
+    scroll.EditBox:SetScript("OnTextChanged", function(_, userInput)
         if userInput then
-            editBox:SetText(frame.exportString or "")
-            editBox:HighlightText()
+            Export:ClearStatus()
         end
     end)
     if scroll.CharCount then
         scroll.CharCount:Hide()
     end
     frame.Scroll = scroll
+    PlaceScroll(frame, 46)
+
+    local link = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
+    link:SetAutoFocus(false)
+    link:SetHeight(22)
+    link:SetFontObject("GameFontHighlightSmall")
+    link:SetMaxLetters(0)
+    link:SetPoint("BOTTOMLEFT", 22, 40)
+    link:SetPoint("BOTTOMRIGHT", -16, 40)
+    link:SetScript("OnEscapePressed", Hide)
+    link:SetScript("OnTextChanged", function(editBox, userInput)
+        if userInput then
+            editBox:SetText(frame.link or "")
+            editBox:HighlightText()
+        end
+    end)
+    link:SetScript("OnEditFocusGained", function(editBox)
+        editBox:HighlightText()
+    end)
+    link:Hide()
+    frame.LinkBox = link
+
+    frame.CopyButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    frame.CopyButton:SetSize(110, 22)
+    frame.CopyButton:SetPoint("BOTTOMRIGHT", -16, 12)
+    frame.CopyButton:SetText("Copy Link")
+    frame.CopyButton:SetScript("OnClick", function()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        Export:CopyLink()
+    end)
+
+    frame.Status = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    frame.Status:SetPoint("RIGHT", frame.CopyButton, "LEFT", -12, 0)
+    frame.Status:SetJustifyH("RIGHT")
+    frame.Status:SetText("")
     return frame
 end
 
+function Export:ClearStatus()
+    local frame = self.frame
+    if not frame then
+        return
+    end
+    frame.Status:SetText("")
+    if frame.LinkBox:IsShown() then
+        frame.LinkBox:Hide()
+        PlaceScroll(frame, 46)
+    end
+end
+
+function Export:CopyLink()
+    local frame = self.frame
+    local body = frame.Scroll.EditBox:GetText() or ""
+    local url, shortened = self:Link(body, frame.count or 0)
+    frame.link = url
+    -- No SetFocus here. A button click that takes keyboard focus is the
+    -- protected call the client reports as UNKNOWN(). Clicking the link is
+    -- what focuses it, and OnEditFocusGained selects the text.
+    PlaceScroll(frame, 70)
+    frame.LinkBox:Show()
+    frame.LinkBox:SetText(url)
+    frame.Status:SetText(shortened and PRESS_COPY_SHORT or PRESS_COPY)
+    frame.Status:SetTextColor(1, 0.82, 0)
+end
+
 function Export:Show()
-    local text, count = self:Encode()
-    if not text then
+    local data = self:Collect()
+    if #data.lines == 0 then
         ns.Print("nothing to export yet: every line seen this session already has audio.")
         return
     end
+    local payload = self:Encode()
     local frame = self:GetFrame()
-    frame.exportString = text
-    frame.Scroll.EditBox:SetText(text)
+    frame.count = #data.lines
+    self:ClearStatus()
+    local editBox = frame.Scroll.EditBox
+    local body = self:Body(data, payload)
+    editBox:SetText(body)
     frame:Show()
-    frame.Scroll.EditBox:SetFocus()
-    frame.Scroll.EditBox:HighlightText()
-    ns.Print(format("%d %s packed into %d characters.", count, Util.Plural(count, "line"), #text))
+    editBox:SetFocus()
+    local at = body:find(NOTE, 1, true)
+    editBox:SetCursorPosition(at and (at + #NOTE - 1) or 0)
+    ns.Print(format("%d %s packed into %d characters.", frame.count, Util.Plural(frame.count, "line"), #payload))
 end
 
 --- Called by Capture after each recorded line; reminds the player once per session.

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `/fvo export` opens the contribution as text, the same way a report does.
+  Edit the note, then Copy Link, and paste the link into a browser. The
+  Contribute captured lines form is filled in, and the export string is under
+  its own heading. A string too long for the link is left for you to paste
+  into the form. Your character name is removed.
 - The bug icon on the talking head, and `/fvo report`, opens the text of a GitHub
   issue about the line that is playing. Edit it, then Copy Link, and paste
   the link into a browser. The title and the description are already filled

@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        In game, type `/fvo export`, press Ctrl+C in the window that opens, and paste the string below. It starts with `FVO1:` and holds only quest and gossip text, the speaking NPC and the zone; your character name is removed before export. The capture keeps between logins and across your characters (since the late September 2026 beta update), so there is no need to export before every logout: once every few play sessions is plenty, and one export carries everything not yet voiced.
+        In game, type `/fvo export` and use Copy Link. Pasting that link opens this form with the box below filled in. If the box is empty, the string was too long for the link: it is in the game window under Export string, and it pastes here. It starts with `FVO1:` and holds only quest and gossip text, the speaking NPC and the zone; your character name is removed before export. The capture keeps between logins and across your characters (since the late September 2026 beta update), so there is no need to export before every logout: once every few play sessions is plenty, and one export carries everything not yet voiced.
   - type: textarea
     id: export
     attributes:

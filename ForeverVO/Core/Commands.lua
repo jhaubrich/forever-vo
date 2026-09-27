@@ -58,7 +58,7 @@ local commands = {
     end },
     narrator = { "Switch to the next narrator voice", NextNarratorVoice },
     status = { "Show loaded packs and capture counts", Status },
-    export = { "Copy the captured unvoiced lines to contribute", function() ns.Export:Show() end },
+    export = { "Copy a link that opens a GitHub issue with the captured lines", function() ns.Export:Show() end },
     report = { "Copy a link that opens a GitHub issue about the line that is playing", function()
         ns.Report:Show(ns.Report:Current())
     end },
