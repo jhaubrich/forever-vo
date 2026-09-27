@@ -1,0 +1,110 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "10666|43217733": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Gordo",
+   "npc": "10666",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Us is busy with important things!",
+   "time": 1790476543,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "10666|5f4181c7": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Gordo",
+   "npc": "10666",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Oh yeah. Us gots it right here.",
+   "time": 1790476539,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "265812|550c4a52": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Eleanor Shackleton",
+   "npc": "265812",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, traveler.",
+   "time": 1790476137,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "3523|02cc6c56": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Bowen Brisboise",
+   "npc": "3523",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Pleased to make your acquaintance. May I help you?",
+   "time": 1790476312,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "10666": {
+   "creatureType": "Undead",
+   "modelFileID": 123961,
+   "name": "Gordo",
+   "sex": 1
+  },
+  "265812": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Eleanor Shackleton",
+   "sex": 3
+  },
+  "3523": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Bowen Brisboise",
+   "sex": 2
+  }
+ },
+ "origin": "issue-213",
+ "quests": {
+  "97953-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Eleanor Shackleton",
+   "npc": "265812",
+   "questID": 97953,
+   "sex": "m",
+   "source": "community",
+   "text": "Enchanters make everything better and are always welcome at any camp out in the wilds.\r\n\r\nI reckon I know someone that can teach you how to craft an Enchanted Lute for your camp. It's so important to find entertainment during your downtime, and this bit of magic can help ensure you are ready to weather all sorts of challenges when you hit the old dusty trail once again.",
+   "time": 1790476141,
+   "title": "Camping 101: Enchanting",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
