@@ -25,6 +25,8 @@ jobs:
           enable-cache: true
       - name: Install (without the GPU stack, ~3 GB that nothing here needs)
         run: uv sync --no-group tts --group dev
+      - name: Install ffmpeg (the flake's dev shell has it; test_refclips concatenates clips with it)
+        run: sudo apt-get install -y --no-install-recommends ffmpeg
       - run: uv run --no-sync ruff check
       - run: uv run --no-sync ruff format --check
       - run: uv run --no-sync pytest
