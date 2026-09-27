@@ -5,6 +5,7 @@ directions in angle brackets, $G gender branches) and adds sentence chunking for
 models that prefer short inputs. Respellings for names the model gets wrong are
 [pronunciations] in forever-vo.toml (config.Pronunciations).
 """
+
 from __future__ import annotations
 
 import re
@@ -32,10 +33,14 @@ from tools.config import Pronunciations, load_config
 # has PlaySoundFile, and the clip would need to exist in each of the ~38 cloned
 # voices to match the line around it.
 REPLACE = {
-    "$b": "\n", "$B": "\n",
-    "$n": "adventurer", "$N": "Adventurer",
-    "$c": "adventurer", "$C": "Adventurer",
-    "$r": "traveler", "$R": "Traveler",
+    "$b": "\n",
+    "$B": "\n",
+    "$n": "adventurer",
+    "$N": "Adventurer",
+    "$c": "adventurer",
+    "$C": "Adventurer",
+    "$r": "traveler",
+    "$R": "Traveler",
 }
 
 _GENDER = re.compile(r"\$[Gg]\s*([^:;]+?)\s*:\s*([^:;]+?)\s*;")
@@ -67,7 +72,11 @@ def _finish(text: str, pronunciations: Pronunciations) -> str:
     return text
 
 
-def clean(text: str, keep_stage_directions: bool = False, pronunciations: Pronunciations | None = None) -> str:
+def clean(
+    text: str,
+    keep_stage_directions: bool = False,
+    pronunciations: Pronunciations | None = None,
+) -> str:
     """The whole line as one reader says it. Stage directions (<the guard spits>)
     are the narrator's, not the speaker's, so they are dropped -- unless the
     narrator reads the whole line anyway, when their text is kept as prose.
@@ -82,7 +91,9 @@ def clean(text: str, keep_stage_directions: bool = False, pronunciations: Pronun
     return _finish(text, pronunciations)
 
 
-def segments(text: str, pronunciations: Pronunciations | None = None) -> list[tuple[str, str]]:
+def segments(
+    text: str, pronunciations: Pronunciations | None = None
+) -> list[tuple[str, str]]:
     """The line in reading order as ("npc", words) and ("narrator", words) pieces,
     each cleaned like clean(): the speaker's own words and, between them, every
     <stage direction> for the narrator. Adjacent pieces of one role are merged.

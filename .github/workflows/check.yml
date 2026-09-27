@@ -1,0 +1,48 @@
+name: Check
+
+# Lint, format-check and test the Python pipeline, and check the addon's Lua,
+# on every pull request. Not on pushes to main: the ingest workflow and the
+# owner's machine commit captures and pack tables there many times a day, and
+# none of those need a run.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0   # exact tag: there is no moving v10; Python only through uv, .python-version picks the interpreter
+        with:
+          enable-cache: true
+      - name: Install (without the GPU stack, ~3 GB that nothing here needs)
+        run: uv sync --no-group tts --group dev
+      - name: Install ffmpeg (the flake's dev shell has it; test_refclips concatenates clips with it)
+        run: sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: uv run --no-sync ruff check
+      - run: uv run --no-sync ruff format --check
+      - run: uv run --no-sync pytest
+
+  addon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install lua 5.1 (what the client runs; 5.4 accepts syntax it does not)
+        run: sudo apt-get install -y --no-install-recommends lua5.1
+      - name: Syntax
+        run: find ForeverVO ForeverVO_Data -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+      - name: Globals the addon calls against the captured Forever API (advisory, never fails)
+        run: uv run --no-project python tools/apicheck.py
+      - name: Text hash parity between Core/Util.lua and tools/textkey.py
+        run: uv run --no-group tts tools/textkey_parity.py

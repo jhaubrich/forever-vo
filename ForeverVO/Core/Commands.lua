@@ -9,7 +9,7 @@ the minimap in modern clients).
 local function Status()
     local packs = ns.Packs:Count()
     local quests, questsMissing, gossip, gossipMissing, sessionSeen = ns.Capture:Summary()
-    ns.Print(format("%d voice %s loaded. Captured: %d quest %s (%d without audio), %d gossip %s (%d without audio); %d %s this session.",
+    ns.Print(format("%d voice %s loaded. Captured: %d quest %s (%d to export), %d gossip %s (%d to export); %d %s this session.",
         packs, ns.Util.Plural(packs, "pack"), quests, ns.Util.Plural(quests, "text"), questsMissing,
         gossip, ns.Util.Plural(gossip, "text"), gossipMissing, sessionSeen, ns.Util.Plural(sessionSeen, "line")))
     if packs == 0 then
@@ -58,7 +58,8 @@ local commands = {
     end },
     narrator = { "Switch to the next narrator voice", NextNarratorVoice },
     status = { "Show loaded packs and capture counts", Status },
-    export = { "Copy a link that opens a GitHub issue with the captured lines", function() ns.Export:Show() end },
+    export = { "Copy a link that opens a GitHub issue with the unvoiced lines heard since your last export", function() ns.Export:Show() end },
+    ["export all"] = { "The same, with every captured unvoiced line, exported before or not", function() ns.Export:Show(true) end },
     report = { "Copy a link that opens a GitHub issue about the line that is playing", function()
         ns.Report:Show(ns.Report:Current())
     end },

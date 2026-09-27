@@ -9,6 +9,7 @@ this is the bulk seed for a voice pack. Lines captured in game override it
 
 Snapshot: https://github.com/vmangos/core/releases/tag/db_latest (SQLite build).
 """
+
 from __future__ import annotations
 
 import io
@@ -46,10 +47,14 @@ def ensure_snapshot() -> Path:
 
 def latest_patch_rows(conn: sqlite3.Connection, table: str, key: str, columns: str):
     """VMaNGOS keeps one row per patch; keep the newest patch for each entry."""
-    rows = conn.execute(f"SELECT {key}, patch, {columns} FROM {table} ORDER BY {key}, patch").fetchall()
+    rows = conn.execute(
+        f"SELECT {key}, patch, {columns} FROM {table} ORDER BY {key}, patch"
+    ).fetchall()
     latest = {}
     for row in rows:
-        latest[row[0]] = row  # rows are ordered by patch ascending, so the last one wins
+        latest[row[0]] = (
+            row  # rows are ordered by patch ascending, so the last one wins
+        )
     return latest
 
 
@@ -59,7 +64,9 @@ def collect_gossip_menus(conn: sqlite3.Connection) -> dict[int, set[int]]:
     for menu, text_id in conn.execute("SELECT entry, text_id FROM gossip_menu"):
         texts_by_menu.setdefault(menu, set()).add(text_id)
     children: dict[int, set[int]] = {}
-    for menu, action in conn.execute("SELECT menu_id, action_menu_id FROM gossip_menu_option WHERE action_menu_id > 0"):
+    for menu, action in conn.execute(
+        "SELECT menu_id, action_menu_id FROM gossip_menu_option WHERE action_menu_id > 0"
+    ):
         children.setdefault(menu, set()).add(action)
 
     resolved: dict[int, set[int]] = {}
@@ -84,15 +91,23 @@ def main() -> int:
     db_path = ensure_snapshot()
     conn = sqlite3.connect(db_path)
 
-    quests = latest_patch_rows(conn, "quest_template", "entry",
-                               "QuestLevel, Title, Details, Objectives, RequestItemsText, OfferRewardText")
-    creatures = latest_patch_rows(conn, "creature_template", "entry", "name, display_id1, gossip_menu_id")
+    quests = latest_patch_rows(
+        conn,
+        "quest_template",
+        "entry",
+        "QuestLevel, Title, Details, Objectives, RequestItemsText, OfferRewardText",
+    )
+    creatures = latest_patch_rows(
+        conn, "creature_template", "entry", "name, display_id1, gossip_menu_id"
+    )
     objects = latest_patch_rows(conn, "gameobject_template", "entry", "name")
     items = latest_patch_rows(conn, "item_template", "entry", "name, start_quest")
 
     def relations(table: str) -> dict[int, int]:
         result: dict[int, int] = {}
-        for giver, quest in conn.execute(f"SELECT id, quest FROM {table} ORDER BY patch_max"):
+        for giver, quest in conn.execute(
+            f"SELECT id, quest FROM {table} ORDER BY patch_max"
+        ):
             result[quest] = giver
         return result
 
@@ -102,7 +117,13 @@ def main() -> int:
     complete_by_object = relations("gameobject_involvedrelation")
     accept_by_item = {row[3]: row[0] for row in items.values() if row[3]}
 
-    out: dict[str, Any] = {"version": 2, "source": "classic", "quests": {}, "gossip": {}, "npcs": {}}
+    out: dict[str, Any] = {
+        "version": 2,
+        "source": "classic",
+        "quests": {},
+        "gossip": {},
+        "npcs": {},
+    }
     npcs: dict[str, dict] = out["npcs"]
 
     def creature_speaker(entry: int) -> str | None:
@@ -112,7 +133,12 @@ def main() -> int:
         key = str(entry)
         if key not in npcs:
             race, sex = display_race_sex(row[3])
-            npcs[key] = {"name": row[2], "displayID": row[3], "raceID": race, "sexID": sex}
+            npcs[key] = {
+                "name": row[2],
+                "displayID": row[3],
+                "raceID": race,
+                "sexID": sex,
+            }
         return key
 
     def object_speaker(entry: int) -> str | None:
@@ -123,14 +149,28 @@ def main() -> int:
         npcs.setdefault(key, {"name": row[2], "isObject": True})
         return key
 
-    def add_quest(quest_id: int, event: str, text: str | None, giver_key: str | None, giver_name: str | None,
-                  title: str, level: int, is_object: bool):
+    def add_quest(
+        quest_id: int,
+        event: str,
+        text: str | None,
+        giver_key: str | None,
+        giver_name: str | None,
+        title: str,
+        level: int,
+        is_object: bool,
+    ):
         if not text or not text.strip():
             return
         out["quests"][f"{quest_id}-{event}"] = {
-            "event": event, "questID": quest_id, "title": title, "text": text,
-            "npc": giver_key, "name": giver_name, "isObject": is_object or None,
-            "level": level, "source": "classic",
+            "event": event,
+            "questID": quest_id,
+            "title": title,
+            "text": text,
+            "npc": giver_key,
+            "name": giver_name,
+            "isObject": is_object or None,
+            "level": level,
+            "source": "classic",
         }
 
     for quest_id, row in quests.items():
@@ -148,7 +188,9 @@ def main() -> int:
         elif quest_id in accept_by_item:
             giver_name = items[accept_by_item[quest_id]][2]
             is_object = True
-        add_quest(quest_id, "accept", details, giver_key, giver_name, title, level, is_object)
+        add_quest(
+            quest_id, "accept", details, giver_key, giver_name, title, level, is_object
+        )
 
         ender_key = ender_name = None
         is_object = False
@@ -159,15 +201,42 @@ def main() -> int:
             ender_key = object_speaker(complete_by_object[quest_id])
             ender_name = ender_key and npcs[ender_key]["name"]
             is_object = True
-        add_quest(quest_id, "complete", offer_reward, ender_key, ender_name, title, level, is_object)
-        add_quest(quest_id, "progress", request_items, ender_key, ender_name, title, level, is_object)
+        add_quest(
+            quest_id,
+            "complete",
+            offer_reward,
+            ender_key,
+            ender_name,
+            title,
+            level,
+            is_object,
+        )
+        add_quest(
+            quest_id,
+            "progress",
+            request_items,
+            ender_key,
+            ender_name,
+            title,
+            level,
+            is_object,
+        )
 
     # Gossip: creature -> menu -> npc_text -> broadcast_text (male/female by the model's sex)
     menus = collect_gossip_menus(conn)
-    npc_texts = {row[0]: row[1:] for row in conn.execute(
-        "SELECT ID, BroadcastTextID0, BroadcastTextID1, BroadcastTextID2, BroadcastTextID3, "
-        "BroadcastTextID4, BroadcastTextID5, BroadcastTextID6, BroadcastTextID7 FROM npc_text")}
-    broadcast = {row[0]: (row[1], row[2]) for row in conn.execute("SELECT entry, male_text, female_text FROM broadcast_text")}
+    npc_texts = {
+        row[0]: row[1:]
+        for row in conn.execute(
+            "SELECT ID, BroadcastTextID0, BroadcastTextID1, BroadcastTextID2, BroadcastTextID3, "
+            "BroadcastTextID4, BroadcastTextID5, BroadcastTextID6, BroadcastTextID7 FROM npc_text"
+        )
+    }
+    broadcast = {
+        row[0]: (row[1], row[2])
+        for row in conn.execute(
+            "SELECT entry, male_text, female_text FROM broadcast_text"
+        )
+    }
 
     gossip_count = 0
     for entry, row in creatures.items():
@@ -190,17 +259,25 @@ def main() -> int:
                 if gossip_key in out["gossip"]:
                     continue
                 out["gossip"][gossip_key] = {
-                    "event": "gossip", "text": text, "npc": key, "name": row[2], "source": "classic",
+                    "event": "gossip",
+                    "text": text,
+                    "npc": key,
+                    "name": row[2],
+                    "source": "classic",
                 }
                 gossip_count += 1
 
     BULK_DIR.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+    OUTPUT.write_text(
+        json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8"
+    )
     accept = sum(1 for k in out["quests"] if k.endswith("-accept"))
     complete = sum(1 for k in out["quests"] if k.endswith("-complete"))
     progress = sum(1 for k in out["quests"] if k.endswith("-progress"))
-    print(f"{OUTPUT}: {len(quests)} quests -> {accept} accept, {complete} complete, {progress} progress texts; "
-          f"{gossip_count} gossip lines; {len(npcs)} speakers")
+    print(
+        f"{OUTPUT}: {len(quests)} quests -> {accept} accept, {complete} complete, {progress} progress texts; "
+        f"{gossip_count} gossip lines; {len(npcs)} speakers"
+    )
     return 0
 
 

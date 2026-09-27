@@ -15,6 +15,7 @@ needed. Every entry in SOURCES must be a name generate.Synth.reference_for or
 species_voice will look for: the pack has no per-race voice variants, so a
 "skyborne-female-civilian.wav" would be written and never read.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -35,18 +36,37 @@ LISTFILE_URL = (
     "202609211740/verified-listfile.csv"
 )
 RAW_DIR = VOICES_DIR / "raw-retail"
-CANDIDATES = 14        # files downloaded per voice before picking
+CANDIDATES = 14  # files downloaded per voice before picking
 TARGET_SECONDS = 20.0
-MIN_CLIP, MAX_CLIP = 2.0, 12.0   # a spoken line, not a grunt or a whole cinematic
+MIN_CLIP, MAX_CLIP = 2.0, 12.0  # a spoken line, not a grunt or a whole cinematic
 
 # A creature's vo_ files are mostly combat: swings, crits, shouts and death cries.
 # Those pass a duration filter happily and then get cloned, which is how a quest
 # giver ends up sounding like she is screaming down a pipe. Several generic
 # npc_-_* voice sets are 100% combat and contain no speech at all, so a source
 # that yields nothing after this filter must be replaced, not re-filtered.
-COMBAT = re.compile(
-    r"_(attack|attackcrit|battleshout|death|aggro|wound|pissed|flee|taunt|jump|"
-    r"fall|gasp|grunt|pain|spell|cast)\w*_?\d*\.ogg$", re.IGNORECASE)
+#
+# The marker is a whole underscore-separated token of the file name, not a
+# substring: `_cast\w*` also matched vo_801_zandalari_lower_caste_01_m and threw
+# out all 144 files of that set, speech included, and the same prefix match
+# rejected every line of the deathguard, deathwing, fleet, fallen, spellblade and
+# *_caster sets - 798 files across retail, none of them combat by their name.
+# "attack" and "wound" never begin a name, so any token starting with them is
+# combat, typos included (attackctitical, attackscrit). The rest are also words
+# (caster, fleet, fallen, Deathwing), so they count only with a combat ending.
+_COMBAT_ALWAYS = re.compile(r"(attack|wound|battleshout)\w*", re.IGNORECASE)
+_COMBAT_WORD = re.compile(
+    r"(death|aggro|pissed|flee|taunt|jump|fall|gasp|grunt|pain|spell|spellcast|cast)"
+    r"(s|ed|ing|crit|critical)?\d*",
+    re.IGNORECASE,
+)
+
+
+def is_combat(file_name: str) -> bool:
+    """True for a swing, shout or death cry by its vo_ file name."""
+    tokens = Path(file_name).stem.split("_")
+    return any(_COMBAT_ALWAYS.fullmatch(t) or _COMBAT_WORD.fullmatch(t) for t in tokens)
+
 
 # voice name -> creature directory under sound/creature/, or (directory, pattern)
 # when one folder holds more than one voice.
@@ -93,7 +113,8 @@ def fdids_for(listfile: Path, source: str | tuple[str, str]) -> tuple[list[int],
     """
     creature_dir, extra = (source, None) if isinstance(source, str) else source
     pattern = re.compile(
-        rf"^(\d+);sound/creature/{re.escape(creature_dir)}/(vo_[^/]*\.ogg)$", re.IGNORECASE
+        rf"^(\d+);sound/creature/{re.escape(creature_dir)}/(vo_[^/]*\.ogg)$",
+        re.IGNORECASE,
     )
     within = re.compile(extra, re.IGNORECASE) if extra else None
     out, rejected = [], 0
@@ -104,7 +125,7 @@ def fdids_for(listfile: Path, source: str | tuple[str, str]) -> tuple[list[int],
                 continue
             if within and not within.search(m.group(2)):
                 continue
-            if COMBAT.search(m.group(2)):
+            if is_combat(m.group(2)):
                 rejected += 1
                 continue
             out.append(int(m.group(1)))
@@ -116,11 +137,17 @@ def fetch(fdid: int, dest: Path) -> Path | None:
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     try:
-        r = requests.get(f"{WAGO_BASE}/api/casc/{fdid}", params={"version": RETAIL_BUILD}, timeout=180)
+        r = requests.get(
+            f"{WAGO_BASE}/api/casc/{fdid}",
+            params={"version": RETAIL_BUILD},
+            timeout=180,
+        )
     except requests.RequestException as e:
         print(f"    fdid {fdid}: {e}")
         return None
-    if r.status_code != 200 or r.headers.get("content-type", "").startswith("application/json"):
+    if r.status_code != 200 or r.headers.get("content-type", "").startswith(
+        "application/json"
+    ):
         return None
     dest.write_bytes(r.content)
     return dest
@@ -128,8 +155,19 @@ def fetch(fdid: int, dest: Path) -> Path | None:
 
 def duration(path: Path) -> float:
     out = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-        capture_output=True, text=True, check=False,   # an unreadable file reads as 0.0 below
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-show_entries",
+            "format=duration",
+            "-of",
+            "csv=p=0",
+            str(path),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,  # an unreadable file reads as 0.0 below
     ).stdout.strip()
     try:
         return float(out)
@@ -144,12 +182,24 @@ def build(label: str, clips: list[Path]) -> Path:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--dry-run", action="store_true", help="resolve FileDataIDs, download nothing")
-    ap.add_argument("--only", action="append", help="build just these labels (prefix match)")
-    ap.add_argument("--candidates", type=int, default=CANDIDATES,
-                    help="files to sample per voice; raise it when a source is mostly short barks")
-    ap.add_argument("--force", action="store_true", help="rebuild even if the wav exists")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "--dry-run", action="store_true", help="resolve FileDataIDs, download nothing"
+    )
+    ap.add_argument(
+        "--only", action="append", help="build just these labels (prefix match)"
+    )
+    ap.add_argument(
+        "--candidates",
+        type=int,
+        default=CANDIDATES,
+        help="files to sample per voice; raise it when a source is mostly short barks",
+    )
+    ap.add_argument(
+        "--force", action="store_true", help="rebuild even if the wav exists"
+    )
     args = ap.parse_args(argv)
 
     listfile = ensure_listfile()
@@ -159,17 +209,21 @@ def main(argv: list[str] | None = None) -> int:
             continue
         fdids, rejected = fdids_for(listfile, creature)
         if not fdids:
-            print(f"{label:28} NO SPEECH for sound/creature/{creature}/ "
-                  f"({rejected} combat lines rejected) - pick another source")
+            print(
+                f"{label:28} NO SPEECH for sound/creature/{creature}/ "
+                f"({rejected} combat lines rejected) - pick another source"
+            )
             continue
-        print(f"{label:28} {len(fdids):5} speech lines ({rejected} combat rejected) ({creature})")
+        print(
+            f"{label:28} {len(fdids):5} speech lines ({rejected} combat rejected) ({creature})"
+        )
         if args.dry_run:
             continue
         if (VOICES_DIR / f"{label}.wav").exists() and not args.force:
             print("    already built")
             continue
         clips: list[tuple[float, Path]] = []
-        for fdid in fdids[:args.candidates]:
+        for fdid in fdids[: args.candidates]:
             p = fetch(fdid, RAW_DIR / label / f"{fdid}.ogg")
             if p:
                 d = duration(p)

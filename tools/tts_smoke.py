@@ -1,7 +1,8 @@
 """Smoke test: does Chatterbox run on the GPU in this environment?
 
-    ./tools/run.sh tools/tts_smoke.py [out.wav]     # default tools/smoke.wav
+./tools/run.sh tools/tts_smoke.py [out.wav]     # default tools/smoke.wav
 """
+
 from __future__ import annotations
 
 import sys
@@ -24,7 +25,9 @@ def main(argv: list[str] | None = None) -> int:
     from chatterbox.tts import ChatterboxTTS
 
     t0 = time.time()
-    model = ChatterboxTTS.from_pretrained(device="cuda" if torch.cuda.is_available() else "cpu")
+    model = ChatterboxTTS.from_pretrained(
+        device="cuda" if torch.cuda.is_available() else "cpu"
+    )
     print(f"model loaded in {time.time() - t0:.1f}s, sample rate {model.sr}")
 
     text = "Greetings, traveler. The winds of Zephras Isle have carried your name to us. Rest here a while before the storm returns."

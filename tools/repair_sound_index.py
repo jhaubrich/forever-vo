@@ -17,6 +17,7 @@ the current text on them. Entries with no line anywhere keep no voice, which
 `wanted()` treats as "do not regenerate": the voice-change check stays blind
 for those files.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -27,7 +28,9 @@ import sys
 from tools import generate
 from tools.config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR
 
-_LINE = re.compile(r"\[\d+/\d+\] (\S+)\.mp3\s+[\d.]+s audio in\s+[\d.]+s\s+\[([^\]]+)\]")
+_LINE = re.compile(
+    r"\[\d+/\d+\] (\S+)\.mp3\s+[\d.]+s audio in\s+[\d.]+s\s+\[([^\]]+)\]"
+)
 UNITS = ("forever-vo-bulk", "forever-vo-daily")
 
 
@@ -36,12 +39,29 @@ def journal_voices(since: str) -> dict[str, str]:
     and in the gitignored tools/data/*.log files older runs wrote (the logs are
     read first, so a newer journal line wins)."""
     voices: dict[str, str] = {}
-    texts = [path.read_text(encoding="utf-8", errors="replace") for path in sorted(DATA_DIR.glob("*.log"))]
+    texts = [
+        path.read_text(encoding="utf-8", errors="replace")
+        for path in sorted(DATA_DIR.glob("*.log"))
+    ]
     for unit in UNITS:
-        texts.append(subprocess.run(
-            ["journalctl", "--user", "-u", unit, "--since", since, "--no-pager", "-o", "cat"],
-            capture_output=True, text=True, check=False,   # a unit with no journal yet just contributes nothing
-        ).stdout)
+        texts.append(
+            subprocess.run(
+                [
+                    "journalctl",
+                    "--user",
+                    "-u",
+                    unit,
+                    "--since",
+                    since,
+                    "--no-pager",
+                    "-o",
+                    "cat",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,  # a unit with no journal yet just contributes nothing
+            ).stdout
+        )
     for out in texts:
         for match in _LINE.finditer(out):
             parts = match.group(1).split("/")
@@ -55,19 +75,26 @@ def journal_voices(since: str) -> dict[str, str]:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--since", default="14 days ago", help="journalctl --since (default: 14 days ago)")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--since",
+        default="14 days ago",
+        help="journalctl --since (default: 14 days ago)",
+    )
     parser.add_argument("--dry-run", action="store_true", help="report without writing")
     args = parser.parse_args(argv)
 
     import json
+
     index = json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
     voices = journal_voices(args.since)
     repaired: dict[str, dict] = {}
     unresolved: list[str] = []
     for key, value in index.items():
         if not isinstance(value, dict) or value.get("v") is not None:
-            continue   # a generator's record, or a legacy bare duration
+            continue  # a generator's record, or a legacy bare duration
         voice = voices.get(key)
         if voice is None:
             unresolved.append(key)
@@ -81,8 +108,10 @@ def main(argv: list[str] | None = None) -> int:
             unresolved.append(key)
             continue
         repaired[key] = {**value, "v": voice}
-    print(f"{len(voices)} generated files in the journal; {len(repaired)} placeholder entries get their voice back, "
-          f"{len(unresolved)} placeholders have no journal line or no file")
+    print(
+        f"{len(voices)} generated files in the journal; {len(repaired)} placeholder entries get their voice back, "
+        f"{len(unresolved)} placeholders have no journal line or no file"
+    )
     if unresolved[:10]:
         print("  unresolved e.g.:", ", ".join(unresolved[:10]))
     if args.dry_run or not repaired:

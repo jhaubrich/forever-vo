@@ -148,7 +148,7 @@ ns.OnInit(function()
     -- Data
     local data = Settings.RegisterVerticalLayoutSubcategory(category, "Voice packs")
     Checkbox(data, "capture", "Record lines that have no audio", "Save every quest and gossip text you see so new voice lines can be generated from them.")
-    Checkbox(data, "notifyUnvoiced", "Say when a line has no voice", "Print a chat line, with the export reminder, whenever a quest or gossip text has no audio yet.")
+    Checkbox(data, "notifyUnvoiced", "Say when a line has no voice", "Print a chat line whenever a quest or gossip text has no audio yet. The line is saved for your next export either way.")
     Checkbox(data, "debug", "Debug messages", "Print matching details to chat.")
 
     Settings.RegisterAddOnCategory(category)

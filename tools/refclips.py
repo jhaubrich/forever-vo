@@ -21,6 +21,7 @@ Numbers are positions in `list`/`reel` for this voice and are stable as long as 
 client build is - the TOML records FileDataIDs, not positions, so a wago update cannot
 silently repoint a pick at different audio.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -68,10 +69,16 @@ class Candidate:
         missing from a list, not a reason to offer none of them.
         """
         try:
-            self.path = fetch_file(self.fdid, RAW_DIR / voice / f"{self.fdid}.ogg", build=self.build)
+            self.path = fetch_file(
+                self.fdid, RAW_DIR / voice / f"{self.fdid}.ogg", build=self.build
+            )
             self.seconds = duration(self.path)
-        except (FileNotFoundError, requests.RequestException, subprocess.CalledProcessError,
-                OSError) as e:
+        except (
+            FileNotFoundError,
+            requests.RequestException,
+            subprocess.CalledProcessError,
+            OSError,
+        ) as e:
             print(f"skip {self.fdid}: {e}", file=sys.stderr)
             return False
         return self.seconds > 0
@@ -105,7 +112,9 @@ def speech_candidates(voice: str) -> list[Candidate]:
                 for fdid in kits.get(int(row.get("SoundID") or 0), []):
                     kind_of[fdid] = name.lower()
         where = "speech" if build == BETA_BUILD else "retail speech"
-        return [Candidate(f"{where} {kind_of.get(f, '')}".strip(), f, build) for f in fdids]
+        return [
+            Candidate(f"{where} {kind_of.get(f, '')}".strip(), f, build) for f in fdids
+        ]
     return []
 
 
@@ -119,10 +128,16 @@ def candidates(voice: str) -> list[Candidate]:
     race_gender = base_voice(voice)
     counts: Counter[int] = sound_set_displays().get(race_gender) or Counter()
     own = re.fullmatch(r".+-s(\d+)", voice)
-    wanted_sets = [(int(own.group(1)), counts.get(int(own.group(1)), 0))] if own else counts.most_common()
+    wanted_sets = (
+        [(int(own.group(1)), counts.get(int(own.group(1)), 0))]
+        if own
+        else counts.most_common()
+    )
     for sound_id, displays in wanted_sets:
         for fdid in set_fdids(sound_id):
-            found.append(Candidate(f"set {sound_id} ({displays} displays)", fdid, BETA_BUILD))
+            found.append(
+                Candidate(f"set {sound_id} ({displays} displays)", fdid, BETA_BUILD)
+            )
     seen: set[int] = set()
     kept = []
     for candidate in found:
@@ -149,13 +164,42 @@ def cmd_labels(args) -> int:
     """Spoken numbers for the reel. Beeps could not be counted and espeak was unintelligible."""
     import perth  # pyright: ignore[reportMissingImports]
     import torchaudio  # pyright: ignore[reportMissingImports]
+
     if getattr(perth, "PerthImplicitWatermarker", None) is None:
         perth.PerthImplicitWatermarker = perth.DummyWatermarker  # ty: ignore[invalid-assignment]
     from chatterbox.tts import ChatterboxTTS  # pyright: ignore[reportMissingImports]
 
-    ones = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"]
-    tens = {2: "twenty", 3: "thirty", 4: "forty", 5: "fifty", 6: "sixty", 7: "seventy",
-            8: "eighty", 9: "ninety"}
+    ones = [
+        "one",
+        "two",
+        "three",
+        "four",
+        "five",
+        "six",
+        "seven",
+        "eight",
+        "nine",
+        "ten",
+        "eleven",
+        "twelve",
+        "thirteen",
+        "fourteen",
+        "fifteen",
+        "sixteen",
+        "seventeen",
+        "eighteen",
+        "nineteen",
+    ]
+    tens = {
+        2: "twenty",
+        3: "thirty",
+        4: "forty",
+        5: "fifty",
+        6: "sixty",
+        7: "seventy",
+        8: "eighty",
+        9: "ninety",
+    }
 
     def spoken(n: int) -> str:
         if n < 20:
@@ -171,8 +215,12 @@ def cmd_labels(args) -> int:
         return 0
     model = ChatterboxTTS.from_pretrained(device=args.device)
     for n in todo:
-        wav = model.generate(f"{spoken(n)}.", exaggeration=0.4, cfg_weight=0.5,
-                             audio_prompt_path=str(VOICES_DIR / f"{LABEL_VOICE}.wav")).cpu()
+        wav = model.generate(
+            f"{spoken(n)}.",
+            exaggeration=0.4,
+            cfg_weight=0.5,
+            audio_prompt_path=str(VOICES_DIR / f"{LABEL_VOICE}.wav"),
+        ).cpu()
         torchaudio.save(str(out / f"{n:03d}.wav"), wav, model.sr)
         print(f"label {n}", flush=True)
     return 0
@@ -181,29 +229,81 @@ def cmd_labels(args) -> int:
 def cmd_reel(args) -> int:
     found = candidates(args.voice)
     labels = Path(args.labels)
-    missing = [i for i in range(1, len(found) + 1) if not (labels / f"{i:03d}.wav").exists()]
+    missing = [
+        i for i in range(1, len(found) + 1) if not (labels / f"{i:03d}.wav").exists()
+    ]
     if missing:
-        print(f"no spoken label for {len(missing)} of {len(found)} clips; "
-              f"run `fvo-refclips labels --count {len(found)}` first")
+        print(
+            f"no spoken label for {len(missing)} of {len(found)} clips; "
+            f"run `fvo-refclips labels --count {len(found)}` first"
+        )
         return 1
     out = Path(args.out or VOICES_DIR / "audition" / f"{args.voice}.mp3")
     out.parent.mkdir(parents=True, exist_ok=True)
     work = out.parent / f".{args.voice}-work"
     work.mkdir(parents=True, exist_ok=True)
     gap = work / "gap.wav"
-    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-t", str(GAP_SECONDS),
-                    "-i", "anullsrc=r=24000:cl=mono", str(gap)], check=True)
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-v",
+            "error",
+            "-f",
+            "lavfi",
+            "-t",
+            str(GAP_SECONDS),
+            "-i",
+            "anullsrc=r=24000:cl=mono",
+            str(gap),
+        ],
+        check=True,
+    )
     lines = []
     for i, c in enumerate(found, 1):
         clip = work / f"{i:03d}.wav"
-        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(c.path), "-ar", "24000",
-                        "-ac", "1", "-af", "loudnorm", str(clip)], check=True)
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-v",
+                "error",
+                "-i",
+                str(c.path),
+                "-ar",
+                "24000",
+                "-ac",
+                "1",
+                "-af",
+                "loudnorm",
+                str(clip),
+            ],
+            check=True,
+        )
         for part in ((labels / f"{i:03d}.wav"), gap, clip, gap):
             lines.append(f"file '{part.resolve()}'\n")
     listing = work / "concat.txt"
     listing.write_text("".join(lines), encoding="utf-8")
-    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0",
-                    "-i", str(listing), "-c:a", "libmp3lame", "-q:a", "4", str(out)], check=True)
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-v",
+            "error",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(listing),
+            "-c:a",
+            "libmp3lame",
+            "-q:a",
+            "4",
+            str(out),
+        ],
+        check=True,
+    )
     cmd_list(args)
     print(f"\nreel: {out}")
     return 0
@@ -219,37 +319,52 @@ def cmd_build(args) -> int:
     build_picked_reference(args.voice, [c.path for c in picks])
     window = 0.0
     for c in picks:
-        mark = "t3" if window < T3_SECONDS else ("s3gen" if window < S3GEN_SECONDS else "averaged only")
+        mark = (
+            "t3"
+            if window < T3_SECONDS
+            else ("s3gen" if window < S3GEN_SECONDS else "averaged only")
+        )
         print(f"  {window:5.1f}s  {c.kind:<28} {c.fdid:>9}  {c.seconds:5.1f}s  {mark}")
         window += c.seconds
-    print(f"\n[voices.sources.{args.voice}]\nclips = [{', '.join(str(c.fdid) for c in picks)}]")
+    print(
+        f"\n[voices.sources.{args.voice}]\nclips = [{', '.join(str(c.fdid) for c in picks)}]"
+    )
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     lister = sub.add_parser("list", help="numbered table of a voice's candidate clips")
     lister.add_argument("voice")
     lister.set_defaults(func=cmd_list)
 
-    labeller = sub.add_parser("labels", help="generate the spoken numbers a reel needs (GPU)")
+    labeller = sub.add_parser(
+        "labels", help="generate the spoken numbers a reel needs (GPU)"
+    )
     labeller.add_argument("--count", type=int, default=60)
     labeller.add_argument("--out", default=str(LABELS_DIR))
     labeller.add_argument("--device", default="cuda")
     labeller.set_defaults(func=cmd_labels)
 
-    reel = sub.add_parser("reel", help="numbered audio of every candidate, to listen through")
+    reel = sub.add_parser(
+        "reel", help="numbered audio of every candidate, to listen through"
+    )
     reel.add_argument("voice")
     reel.add_argument("--out")
     reel.add_argument("--labels", default=str(LABELS_DIR))
     reel.set_defaults(func=cmd_reel)
 
-    build = sub.add_parser("build", help="build the reference from chosen numbers, in that order")
+    build = sub.add_parser(
+        "build", help="build the reference from chosen numbers, in that order"
+    )
     build.add_argument("voice")
-    build.add_argument("clips", help="comma separated positions from `list`, head first")
+    build.add_argument(
+        "clips", help="comma separated positions from `list`, head first"
+    )
     build.set_defaults(func=cmd_build)
 
     args = parser.parse_args(argv if argv is not None else sys.argv[1:])

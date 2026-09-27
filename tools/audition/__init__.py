@@ -25,6 +25,7 @@ the pipeline's bookkeeping:
 Takes land under tools/data/audition/<session>/ (gitignored) and are served
 from there. The page is index.html beside this file: one HTML file, no build.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -91,6 +92,7 @@ SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
 # forever-vo.toml edits (comments survive: tomlkit round-trips the document)
 # ----------------------------------------------------------------------------
 
+
 @contextlib.contextmanager
 def _config_lock(path: Path) -> Iterator[None]:
     """Serialises read-modify-write of the TOML across requests and processes.
@@ -132,22 +134,38 @@ def _validated_write(path: Path, doc: tomlkit.TOMLDocument) -> Config:
     return load_config(path)
 
 
-def write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float, reference: str | None,
-                 tempo: float = 1.0) -> Config:
+def write_tuning(
+    path: Path,
+    voice: str,
+    exaggeration: float,
+    cfg_weight: float,
+    reference: str | None,
+    tempo: float = 1.0,
+) -> Config:
     """Sets [tts.voices.<voice>]; a tuning equal to the defaults with no reference
     removes the entry instead, so the file only lists what differs."""
     with _config_lock(path):
         return _write_tuning(path, voice, exaggeration, cfg_weight, reference, tempo)
 
 
-def _write_tuning(path: Path, voice: str, exaggeration: float, cfg_weight: float, reference: str | None,
-                  tempo: float = 1.0) -> Config:
+def _write_tuning(
+    path: Path,
+    voice: str,
+    exaggeration: float,
+    cfg_weight: float,
+    reference: str | None,
+    tempo: float = 1.0,
+) -> Config:
     doc = tomlkit.parse(path.read_text(encoding="utf-8"))
     tts = doc.get("tts")
     if tts is None:
         tts = tomlkit.table()
         doc["tts"] = tts
-    defaults = (float(tts.get("exaggeration", 0.45)), float(tts.get("cfg_weight", 0.5)), float(tts.get("tempo", 1.0)))
+    defaults = (
+        float(tts.get("exaggeration", 0.45)),
+        float(tts.get("cfg_weight", 0.5)),
+        float(tts.get("tempo", 1.0)),
+    )
     voices = tts.get("voices")
     if voices is None:
         voices = tomlkit.table(is_super_table=True)
@@ -195,7 +213,9 @@ def _write_pronunciation(path: Path, word: str, spoken: str) -> Config:
     return _validated_write(path, doc)
 
 
-def write_voice_sources(path: Path, voice: str, clips: list[int], build: str | None = None) -> Config:
+def write_voice_sources(
+    path: Path, voice: str, clips: list[int], build: str | None = None
+) -> Config:
     """Sets [voices.sources.<voice>].clips, head first; an empty list removes the entry,
     so the file lists only the voices that were picked by ear."""
     with _config_lock(path):
@@ -223,12 +243,14 @@ def write_voice_sources(path: Path, voice: str, clips: list[int], build: str | N
             entry["clips"] = array.multiline(len(clips) > 6)
             if build:
                 entry["build"] = build
-            entry.add(tomlkit.nl())     # a blank line before whatever follows
+            entry.add(tomlkit.nl())  # a blank line before whatever follows
             sources[voice] = entry
         return _validated_write(path, doc)
 
 
-def sources_warnings(config: Config, voice: str) -> list[str]:
+def sources_warnings(
+    config: Config, voice: str, voices_dir: Path = VOICES_DIR
+) -> list[str]:
     """What the owner has to know before picking for this voice, worst first.
 
     Each of these is a way a pick reaches nobody, or reaches far more lines than the
@@ -240,10 +262,11 @@ def sources_warnings(config: Config, voice: str) -> list[str]:
     if tuning and tuning.reference and tuning.reference != voice:
         warnings.append(
             f"[tts.voices.{voice}] clones from {tuning.reference}.wav, so {voice}.wav is not "
-            f"what this voice reads - pick for {tuning.reference}, or drop that reference first")
-    catalog = VoiceCatalog(config)
+            f"what this voice reads - pick for {tuning.reference}, or drop that reference first"
+        )
+    catalog = VoiceCatalog(config, voices_dir)
     borrowers = []
-    for other in _known_voices(config):
+    for other in _known_voices(config, voices_dir):
         if other == voice:
             continue
         resolved = catalog.resolve(other)
@@ -251,14 +274,19 @@ def sources_warnings(config: Config, voice: str) -> list[str]:
             borrowers.append(other)
     if borrowers:
         shown = ", ".join(borrowers[:8]) + ("..." if len(borrowers) > 8 else "")
-        warnings.append(f"{len(borrowers)} other voice(s) read from {voice}.wav: {shown}")
+        warnings.append(
+            f"{len(borrowers)} other voice(s) read from {voice}.wav: {shown}"
+        )
     narrator = config.voices.narrator
     reads_for_narrator = voice == narrator or (
-        not (VOICES_DIR / f"{narrator}.wav").exists()
-        and catalog.resolve(narrator).clip == VOICES_DIR / f"{voice}.wav")
+        not (voices_dir / f"{narrator}.wav").exists()
+        and catalog.resolve(narrator).clip == voices_dir / f"{voice}.wav"
+    )
     if reads_for_narrator:
-        warnings.append("this clip is what the narrator reads: every quest from an object "
-                        "or item, and every <stage direction>")
+        warnings.append(
+            "this clip is what the narrator reads: every quest from an object "
+            "or item, and every <stage direction>"
+        )
     return warnings
 
 
@@ -269,11 +297,15 @@ def named_display_count(display_id: int) -> int:
     rule that mints them (NAMED_MAX_DISPLAYS)."""
     from tools.build_voice_references import NAMED_MAX_DISPLAYS
     from tools.wowdata import display_sound_set, load_db2
+
     sound_id = display_sound_set(display_id)
     if not sound_id:
         return 1
-    shared = sum(1 for row in load_db2("CreatureDisplayInfo").values()
-                 if int(row.get("NPCSoundID") or 0) == sound_id)
+    shared = sum(
+        1
+        for row in load_db2("CreatureDisplayInfo").values()
+        if int(row.get("NPCSoundID") or 0) == sound_id
+    )
     return min(shared, NAMED_MAX_DISPLAYS) or 1
 
 
@@ -288,6 +320,7 @@ def npc_labels() -> dict[int, str]:
     """
     from tools.soundpaths import folders
     from tools.wowdata import display_sound_set
+
     with contextlib.redirect_stdout(io.StringIO()):
         sources = generate.load_sources()
     by_display: dict[int, str] = {}
@@ -310,7 +343,7 @@ def npc_labels() -> dict[int, str]:
 
 
 SOURCE_PICKS = DATA_DIR / "source_picks.json"
-PICK_HISTORY = 20       # per voice; picking is iterative and the last few are what matter
+PICK_HISTORY = 20  # per voice; picking is iterative and the last few are what matter
 
 
 def pick_history(voice: str | None = None) -> dict[str, list[dict[str, Any]]]:
@@ -336,8 +369,9 @@ def seed_recipe_history(voice: str) -> None:
     that list survives the first pick and says which clips it used, in order.
     """
     from tools.refclips import RAW_DIR as CLIP_RAW
+
     if any(row.get("recipe") for row in pick_history(voice).get(voice, [])):
-        return      # already recorded; a voice picked before this existed still needs it
+        return  # already recorded; a voice picked before this existed still needs it
     listing = CLIP_RAW / voice / "concat.txt"
     if not listing.exists():
         return
@@ -352,11 +386,20 @@ def seed_recipe_history(voice: str) -> None:
         history = pick_history()
         rows = [row for row in history.get(voice, []) if row.get("clips") != clips]
         # oldest, not newest: it is what the voice was before anyone picked for it
-        rows.append({"clips": clips, "build": None, "recipe": True, "at": "before picking",
-                     "seconds": round(_concat_seconds(clips, voice), 1)})
+        rows.append(
+            {
+                "clips": clips,
+                "build": None,
+                "recipe": True,
+                "at": "before picking",
+                "seconds": round(_concat_seconds(clips, voice), 1),
+            }
+        )
         history[voice] = rows[:PICK_HISTORY]
         tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
-        tmp.write_text(json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        tmp.write_text(
+            json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+        )
         os.replace(tmp, SOURCE_PICKS)
 
 
@@ -364,6 +407,7 @@ def _concat_seconds(clips: list[int], voice: str) -> float:
     """How long those clips run, for the history line."""
     from tools.build_voice_references import duration
     from tools.refclips import RAW_DIR as CLIP_RAW
+
     total = 0.0
     for fdid in clips:
         path = CLIP_RAW / voice / f"{fdid}.ogg"
@@ -375,22 +419,38 @@ def _concat_seconds(clips: list[int], voice: str) -> float:
     return total
 
 
-def record_pick(voice: str, clips: list[int], build: str | None, seconds: float,
-                recipe: bool = False) -> None:
+def record_pick(
+    voice: str,
+    clips: list[int],
+    build: str | None,
+    seconds: float,
+    recipe: bool = False,
+) -> None:
     """Puts this pick at the head of the voice's history, if it is not already there."""
     with _config_lock(SOURCE_PICKS):
         history = pick_history()
         rows = [row for row in history.get(voice, []) if row.get("clips") != clips]
-        rows.insert(0, {"clips": clips, "build": build, "seconds": round(seconds, 1),
-                        "at": time.strftime("%Y-%m-%d %H:%M"), "recipe": recipe})
+        rows.insert(
+            0,
+            {
+                "clips": clips,
+                "build": build,
+                "seconds": round(seconds, 1),
+                "at": time.strftime("%Y-%m-%d %H:%M"),
+                "recipe": recipe,
+            },
+        )
         history[voice] = rows[:PICK_HISTORY]
         tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
-        tmp.write_text(json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        tmp.write_text(
+            json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+        )
         os.replace(tmp, SOURCE_PICKS)
 
 
 def reference_seconds(path: Path) -> float:
     from tools.build_voice_references import duration
+
     try:
         return round(duration(path), 1)
     except (subprocess.CalledProcessError, OSError):
@@ -406,21 +466,29 @@ def restage_note(voice: str, existed: bool, kept: bool) -> str:
     the restage follows from writing [voices.sources], not from rebuilding the wav.
     """
     if not existed:
-        return (f"{voice}.wav is new. NPCs cast with it resolve to that voice now, so the "
-                f"next generate run restages their lines on its own.")
+        return (
+            f"{voice}.wav is new. NPCs cast with it resolve to that voice now, so the "
+            f"next generate run restages their lines on its own."
+        )
     if kept:
-        return (f"{voice}.wav was re-cut and the picks are saved, so its lines are stale and "
-                f"the nightly run will redo them. To do it now: "
-                f"./tools/run.sh tools/generate.py --voice {voice}")
-    return (f"{voice}.wav was re-cut but the picks were not saved, and a clip's audio is in "
-            f"no fingerprint - nothing restages. Save the picks, or run: "
-            f"./tools/run.sh tools/generate.py --force --voice {voice}")
+        return (
+            f"{voice}.wav was re-cut and the picks are saved, so its lines are stale and "
+            f"the nightly run will redo them. To do it now: "
+            f"./tools/run.sh tools/generate.py --voice {voice}"
+        )
+    return (
+        f"{voice}.wav was re-cut but the picks were not saved, and a clip's audio is in "
+        f"no fingerprint - nothing restages. Save the picks, or run: "
+        f"./tools/run.sh tools/generate.py --force --voice {voice}"
+    )
 
 
-def _known_voices(config: Config) -> list[str]:
+def _known_voices(config: Config, voices_dir: Path = VOICES_DIR) -> list[str]:
     """Voice names worth resolving: the clips on disk plus anything the TOML names."""
-    names = {p.stem for p in VOICES_DIR.glob("*.wav")}
-    names |= set(config.tts.voices) | set(config.voices.fallbacks) | {config.voices.narrator}
+    names = {p.stem for p in voices_dir.glob("*.wav")}
+    names |= (
+        set(config.tts.voices) | set(config.voices.fallbacks) | {config.voices.narrator}
+    )
     names |= set(config.voices.narrator_alternates)
     return sorted(names)
 
@@ -429,15 +497,16 @@ def _known_voices(config: Config) -> list[str]:
 # The corpus, one row per file base name
 # ----------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class LineRow:
-    base: str            # file base name, e.g. 415-accept, m-170-accept, 5688-19cbe7de
-    subfolder: str       # Quests | Gossip
-    title: str           # quest title or gossip speaker
+    base: str  # file base name, e.g. 415-accept, m-170-accept, 5688-19cbe7de
+    subfolder: str  # Quests | Gossip
+    title: str  # quest title or gossip speaker
     speaker: str
     voice: str
-    raw: str             # the text as captured
-    spoken: str          # what the model is asked to say (cleaned, respelled)
+    raw: str  # the text as captured
+    spoken: str  # what the model is asked to say (cleaned, respelled)
     level: int
     source: str
 
@@ -452,12 +521,25 @@ def line_rows(items: list[Item]) -> list[LineRow]:
         speaker = item.entry.get("name") or (item.npc or {}).get("name") or ""
         title = item.entry.get("title") or speaker
         for variant in item.variants():
-            rows.append(LineRow(variant.base, item.subfolder, title, speaker, item.voice, item.raw_text, variant.text,
-                                int(item.entry.get("level") or 0), item.entry.get("source") or "capture"))
+            rows.append(
+                LineRow(
+                    variant.base,
+                    item.subfolder,
+                    title,
+                    speaker,
+                    item.voice,
+                    item.raw_text,
+                    variant.text,
+                    int(item.entry.get("level") or 0),
+                    item.entry.get("source") or "capture",
+                )
+            )
     return rows
 
 
-def random_line(rows: list[LineRow], voice: str, rng: random.Random | None = None) -> LineRow | None:
+def random_line(
+    rows: list[LineRow], voice: str, rng: random.Random | None = None
+) -> LineRow | None:
     """A random line spoken in `voice` (the resolved race-gender or npc voice):
     a quest line when the voice has any, else a gossip line, else None."""
     rng = rng or random.Random()
@@ -474,7 +556,15 @@ def search(rows: list[LineRow], query: str, limit: int = 40) -> list[LineRow]:
         return []
     hits = [row for row in rows if all(w in row.haystack for w in words)]
     q = query.lower().strip()
-    hits.sort(key=lambda r: (r.base.lower() != q, r.title.lower() != q, q not in r.title.lower(), r.level, r.base))
+    hits.sort(
+        key=lambda r: (
+            r.base.lower() != q,
+            r.title.lower() != q,
+            q not in r.title.lower(),
+            r.level,
+            r.base,
+        )
+    )
     return hits[:limit]
 
 
@@ -494,6 +584,7 @@ def lines_in_voice(rows: list[LineRow], voice: str, limit: int = 60) -> list[Lin
 # ----------------------------------------------------------------------------
 # The studio: one model, one corpus, the config file
 # ----------------------------------------------------------------------------
+
 
 class Studio:
     def __init__(self, config_path: Path = CONFIG_TOML, allow_cpu: bool = False):
@@ -524,7 +615,9 @@ class Studio:
             if self._synth is None:
                 self.model_status = "loading"
                 try:
-                    self._synth = Synth(self.catalog(), allow_cpu=self.allow_cpu, allow_hip=True)
+                    self._synth = Synth(
+                        self.catalog(), allow_cpu=self.allow_cpu, allow_hip=True
+                    )
                 except BaseException as e:
                     self.model_status = f"failed: {e}"
                     raise
@@ -536,8 +629,12 @@ class Studio:
             if self._rows is None:
                 self.corpus_status = "loading"
                 catalog = self.catalog()
-                items = load_items(load_sources(), include_progress=True, catalog=catalog)
-                self._by_base = {v.base: (item, v) for item in items for v in item.variants()}
+                items = load_items(
+                    load_sources(), include_progress=True, catalog=catalog
+                )
+                self._by_base = {
+                    v.base: (item, v) for item in items for v in item.variants()
+                }
                 self._rows = line_rows(items)
                 self.corpus_status = f"{len(self._rows)} lines"
             return self._rows
@@ -548,7 +645,7 @@ class Studio:
         Cached beside the corpus it is counted from, because state() is polled every
         15 s and this walks every row.
         """
-        rows = self.rows()      # takes corpus_lock itself; must not be held here
+        rows = self.rows()  # takes corpus_lock itself; must not be held here
         with self.corpus_lock:
             if self._lines_per_voice is None:
                 self._lines_per_voice = Counter(row.voice for row in rows)
@@ -577,15 +674,23 @@ class Studio:
 
     def _load_clips(self, voice: str) -> None:
         from tools import refclips
+
         try:
             found = [
-                {"n": i, "fdid": c.fdid, "kind": c.kind, "seconds": round(c.seconds, 2),
-                 "url": f"/api/clips/audio/{voice}/{c.fdid}.ogg"}
+                {
+                    "n": i,
+                    "fdid": c.fdid,
+                    "kind": c.kind,
+                    "seconds": round(c.seconds, 2),
+                    "url": f"/api/clips/audio/{voice}/{c.fdid}.ogg",
+                }
                 for i, c in enumerate(refclips.candidates(voice), 1)
             ]
-        except Exception as e:      # noqa: BLE001 - the status line is the error report
+        except Exception as e:  # noqa: BLE001 - the status line is the error report
             with self.clips_lock:
-                self.clips_status[voice] = f"failed: {e} (press Load candidates to retry)"
+                self.clips_status[voice] = (
+                    f"failed: {e} (press Load candidates to retry)"
+                )
             return
         with self.clips_lock:
             self._clips[voice] = found
@@ -642,16 +747,31 @@ class Studio:
                 return None
 
         rows: list[dict[str, Any]] = [
-            {"voice": v, "clip": True, "displays": displays.get(v), "archetype": is_archetype(v),
-             "label": label_of(v), "lines": spoken.get(v, 0)}
-            for v in self.voices()]
+            {
+                "voice": v,
+                "clip": True,
+                "displays": displays.get(v),
+                "archetype": is_archetype(v),
+                "label": label_of(v),
+                "lines": spoken.get(v, 0),
+            }
+            for v in self.voices()
+        ]
         for race_gender, sets_of in counts.items():
             names = archetype_names(race_gender)
             for sound_id, counted in sets_of.items():
                 name = names[sound_id]
                 if name not in on_disk:
-                    rows.append({"voice": name, "clip": False, "displays": counted,
-                                 "archetype": True, "label": None, "lines": spoken.get(name, 0)})
+                    rows.append(
+                        {
+                            "voice": name,
+                            "clip": False,
+                            "displays": counted,
+                            "archetype": True,
+                            "label": None,
+                            "lines": spoken.get(name, 0),
+                        }
+                    )
         return sorted(rows, key=lambda r: r["voice"])
 
     def state(self) -> dict[str, Any]:
@@ -660,21 +780,34 @@ class Studio:
         resolved = {}
         for voice in self.voices():
             r = catalog.resolve(voice)
-            resolved[voice] = {"clip": r.clip.name if r.clip else None, "source": r.source,
-                               "exaggeration": r.settings.exaggeration, "cfg_weight": r.settings.cfg_weight,
-                               "tempo": r.settings.tempo, "reference": r.settings.reference,
-                               "tuned": catalog.tuned(voice)}
+            resolved[voice] = {
+                "clip": r.clip.name if r.clip else None,
+                "source": r.source,
+                "exaggeration": r.settings.exaggeration,
+                "cfg_weight": r.settings.cfg_weight,
+                "tempo": r.settings.tempo,
+                "reference": r.settings.reference,
+                "tuned": catalog.tuned(voice),
+            }
         return {
             "config_path": str(self.config_path),
             "voices": self.voices(),
             "pickable": self.pickable(),
             "narrator": config.voices.narrator,
-            "defaults": {"exaggeration": config.tts.exaggeration, "cfg_weight": config.tts.cfg_weight,
-                         "tempo": config.tts.tempo},
-            "overrides": {v: t.model_dump(exclude_none=True) for v, t in config.tts.voices.items()},
+            "defaults": {
+                "exaggeration": config.tts.exaggeration,
+                "cfg_weight": config.tts.cfg_weight,
+                "tempo": config.tts.tempo,
+            },
+            "overrides": {
+                v: t.model_dump(exclude_none=True) for v, t in config.tts.voices.items()
+            },
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
-            "sources": {v: e.model_dump(exclude_none=True) for v, e in config.voices.sources.items()},
+            "sources": {
+                v: e.model_dump(exclude_none=True)
+                for v, e in config.voices.sources.items()
+            },
             "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
             "model": self.model_status,
             "corpus": self.corpus_status,
@@ -684,8 +817,16 @@ class Studio:
 
 def bulk_service_state() -> str:
     try:
-        return subprocess.run(["systemctl", "--user", "is-active", "forever-vo-bulk.service"],
-                              capture_output=True, text=True, check=False, timeout=5).stdout.strip() or "unknown"
+        return (
+            subprocess.run(
+                ["systemctl", "--user", "is-active", "forever-vo-bulk.service"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=5,
+            ).stdout.strip()
+            or "unknown"
+        )
     except (OSError, subprocess.TimeoutExpired):
         return "unknown"
 
@@ -694,10 +835,13 @@ def bulk_service_state() -> str:
 # Requests
 # ----------------------------------------------------------------------------
 
+
 class GenerateRequest(BaseModel):
     text: str = Field(min_length=1)
     voice: str
-    reference: str | None = None                 # a clip stem to clone from instead of the voice's own resolution
+    reference: str | None = (
+        None  # a clip stem to clone from instead of the voice's own resolution
+    )
     exaggeration: list[float] = Field(min_length=1, max_length=6)
     cfg_weight: list[float] = Field(min_length=1, max_length=6)
     tempo: list[float] = Field(default=[1.0], min_length=1, max_length=4)
@@ -723,10 +867,11 @@ class WritePack(BaseModel):
 
 class BuildSources(BaseModel):
     """Build a voice's reference from clips chosen by ear, head first."""
+
     voice: str
     clips: list[int] = Field(min_length=1, max_length=40)
     build: str | None = None
-    keep: bool = True       # also write [voices.sources.<voice>] into forever-vo.toml
+    keep: bool = True  # also write [voices.sources.<voice>] into forever-vo.toml
 
 
 def _safe(name: str) -> str:
@@ -759,8 +904,11 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
 
     def payload(row: LineRow) -> dict[str, Any]:
         exists = sound_path(row.subfolder, row.base).exists()
-        return {**row.__dict__, "exists": exists,
-                "pack_url": f"/api/pack/{row.subfolder}/{row.base}.mp3" if exists else None}
+        return {
+            **row.__dict__,
+            "exists": exists,
+            "pack_url": f"/api/pack/{row.subfolder}/{row.base}.mp3" if exists else None,
+        }
 
     @app.get("/api/lines")
     def lines(q: str = "", voice: str = "") -> dict[str, Any]:
@@ -770,10 +918,20 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
             _safe(voice)
             found = lines_in_voice(rows, voice)
             total = sum(1 for row in rows if row.voice == voice)
-            return {"rows": [payload(row) for row in found], "total": total, "voice": voice}
+            return {
+                "rows": [payload(row) for row in found],
+                "total": total,
+                "voice": voice,
+            }
         if not q:
-            raise HTTPException(400, "give q= words to search for, or voice= to list a voice's lines")
-        return {"rows": [payload(row) for row in search(rows, q)], "total": None, "voice": None}
+            raise HTTPException(
+                400, "give q= words to search for, or voice= to list a voice's lines"
+            )
+        return {
+            "rows": [payload(row) for row in search(rows, q)],
+            "total": None,
+            "voice": None,
+        }
 
     @app.get("/api/random")
     def random_in_voice(voice: str = Query(min_length=1)) -> dict[str, Any]:
@@ -786,11 +944,16 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
     def pack_audio(subfolder: str, name: str) -> FileResponse:
         if subfolder not in ("Quests", "Gossip"):
             raise HTTPException(404, subfolder)
-        return FileResponse(_under(SOUNDS_DIR, f"{subfolder}/{_safe(name)}"), media_type="audio/mpeg")
+        return FileResponse(
+            _under(SOUNDS_DIR, f"{subfolder}/{_safe(name)}"), media_type="audio/mpeg"
+        )
 
     @app.get("/api/audio/{session}/{name}")
     def take_audio(session: str, name: str) -> FileResponse:
-        return FileResponse(_under(AUDITION_DIR, f"{_safe(session)}/{_safe(name)}"), media_type="audio/mpeg")
+        return FileResponse(
+            _under(AUDITION_DIR, f"{_safe(session)}/{_safe(name)}"),
+            media_type="audio/mpeg",
+        )
 
     @app.get("/api/sessions")
     def sessions(limit: int = Query(default=12, ge=1, le=100)) -> list[dict[str, Any]]:
@@ -799,17 +962,26 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         out = []
         if not AUDITION_DIR.exists():
             return out
-        for folder in sorted((p for p in AUDITION_DIR.iterdir() if p.is_dir()), reverse=True)[:limit]:
+        for folder in sorted(
+            (p for p in AUDITION_DIR.iterdir() if p.is_dir()), reverse=True
+        )[:limit]:
             takes = []
             for path in sorted(folder.glob("*.mp3")):
-                recipe = re.match(r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)(?:-t(?P<t>[0-9.]+))?-take(?P<take>\d+)\.mp3$",
-                                  path.name)
-                takes.append({"name": path.name, "url": f"/api/audio/{folder.name}/{path.name}",
-                              "voice": recipe["voice"] if recipe else None,
-                              "exaggeration": float(recipe["e"]) if recipe else None,
-                              "cfg_weight": float(recipe["c"]) if recipe else None,
-                              "tempo": float(recipe["t"]) if recipe and recipe["t"] else 1.0,
-                              "take": int(recipe["take"]) if recipe else None})
+                recipe = re.match(
+                    r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)(?:-t(?P<t>[0-9.]+))?-take(?P<take>\d+)\.mp3$",
+                    path.name,
+                )
+                takes.append(
+                    {
+                        "name": path.name,
+                        "url": f"/api/audio/{folder.name}/{path.name}",
+                        "voice": recipe["voice"] if recipe else None,
+                        "exaggeration": float(recipe["e"]) if recipe else None,
+                        "cfg_weight": float(recipe["c"]) if recipe else None,
+                        "tempo": float(recipe["t"]) if recipe and recipe["t"] else 1.0,
+                        "take": int(recipe["take"]) if recipe else None,
+                    }
+                )
             if takes:
                 out.append({"session": folder.name, "takes": takes})
         return out
@@ -829,35 +1001,62 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         # only report that the connection broke. A tempo of 10 looked like a network
         # error.
         for exaggeration, cfg_weight, tempo in itertools.product(
-                request.exaggeration, request.cfg_weight, request.tempo):
+            request.exaggeration, request.cfg_weight, request.tempo
+        ):
             try:
-                VoiceTuning(reference=request.reference, exaggeration=exaggeration,
-                            cfg_weight=cfg_weight, tempo=tempo)
+                VoiceTuning(
+                    reference=request.reference,
+                    exaggeration=exaggeration,
+                    cfg_weight=cfg_weight,
+                    tempo=tempo,
+                )
             except ValidationError as e:
-                detail = "; ".join(f"{'.'.join(str(p) for p in err['loc'])}: {err['msg']}"
-                                   for err in e.errors())
-                raise HTTPException(400, f"{detail} (you gave exaggeration {exaggeration}, "
-                                         f"cfg_weight {cfg_weight}, tempo {tempo})") from e
+                detail = "; ".join(
+                    f"{'.'.join(str(p) for p in err['loc'])}: {err['msg']}"
+                    for err in e.errors()
+                )
+                raise HTTPException(
+                    400,
+                    f"{detail} (you gave exaggeration {exaggeration}, "
+                    f"cfg_weight {cfg_weight}, tempo {tempo})",
+                ) from e
         session = time.strftime("%Y%m%d-%H%M%S")
         out_dir = AUDITION_DIR / session
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        def variant_config(exaggeration: float, cfg_weight: float, tempo: float) -> Config:
-            tuning = VoiceTuning(reference=request.reference, exaggeration=exaggeration, cfg_weight=cfg_weight,
-                                 tempo=tempo)
-            tts = config.tts.model_copy(update={"voices": {**config.tts.voices, request.voice: tuning}})
+        def variant_config(
+            exaggeration: float, cfg_weight: float, tempo: float
+        ) -> Config:
+            tuning = VoiceTuning(
+                reference=request.reference,
+                exaggeration=exaggeration,
+                cfg_weight=cfg_weight,
+                tempo=tempo,
+            )
+            tts = config.tts.model_copy(
+                update={"voices": {**config.tts.voices, request.voice: tuning}}
+            )
             return config.model_copy(update={"tts": tts})
 
         def stream() -> Iterator[str]:
-            yield json.dumps({"event": "start", "session": session, "spoken": spoken}) + "\n"
+            yield (
+                json.dumps({"event": "start", "session": session, "spoken": spoken})
+                + "\n"
+            )
             try:
                 synth = studio.synth()
-            except (SystemExit, RuntimeError, OSError, ImportError) as e:   # no GPU (SystemExit), CUDA or model load trouble
+            except (
+                SystemExit,
+                RuntimeError,
+                OSError,
+                ImportError,
+            ) as e:  # no GPU (SystemExit), CUDA or model load trouble
                 yield json.dumps({"event": "error", "message": str(e)}) + "\n"
                 return
             n = 0
-            for exaggeration, cfg_weight, tempo in itertools.product(request.exaggeration, request.cfg_weight,
-                                                                     request.tempo):
+            for exaggeration, cfg_weight, tempo in itertools.product(
+                request.exaggeration, request.cfg_weight, request.tempo
+            ):
                 catalog = VoiceCatalog(variant_config(exaggeration, cfg_weight, tempo))
                 resolved = catalog.resolve(request.voice)
                 for take in range(1, request.takes + 1):
@@ -867,13 +1066,26 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
                     with studio.model_lock:
                         synth.catalog = catalog
                         seconds = synth.speak(spoken, request.voice, out_dir / name)
-                    yield json.dumps({
-                        "event": "take", "n": n, "take": take, "name": name, "url": f"/api/audio/{session}/{name}",
-                        "seconds": round(seconds, 1), "elapsed": round(time.time() - t0, 1),
-                        "clip": resolved.clip.name if resolved.clip else None, "source": resolved.source,
-                        "exaggeration": resolved.settings.exaggeration, "cfg_weight": resolved.settings.cfg_weight,
-                        "tempo": resolved.settings.tempo, "reference": request.reference,
-                    }) + "\n"
+                    yield (
+                        json.dumps(
+                            {
+                                "event": "take",
+                                "n": n,
+                                "take": take,
+                                "name": name,
+                                "url": f"/api/audio/{session}/{name}",
+                                "seconds": round(seconds, 1),
+                                "elapsed": round(time.time() - t0, 1),
+                                "clip": resolved.clip.name if resolved.clip else None,
+                                "source": resolved.source,
+                                "exaggeration": resolved.settings.exaggeration,
+                                "cfg_weight": resolved.settings.cfg_weight,
+                                "tempo": resolved.settings.tempo,
+                                "reference": request.reference,
+                            }
+                        )
+                        + "\n"
+                    )
             yield json.dumps({"event": "done", "count": n}) + "\n"
 
         return StreamingResponse(stream(), media_type="application/x-ndjson")
@@ -883,14 +1095,22 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         _safe(request.voice)
         if request.reference:
             _safe(request.reference)
-        write_tuning(studio.config_path, request.voice, request.exaggeration, request.cfg_weight, request.reference,
-                     request.tempo)
+        write_tuning(
+            studio.config_path,
+            request.voice,
+            request.exaggeration,
+            request.cfg_weight,
+            request.reference,
+            request.tempo,
+        )
         studio.forget_corpus()
         return studio.state()
 
     @app.post("/api/keep-pronunciation")
     def keep_pronunciation(request: KeepPronunciation) -> dict[str, Any]:
-        write_pronunciation(studio.config_path, request.word.strip(), request.spoken.strip())
+        write_pronunciation(
+            studio.config_path, request.word.strip(), request.spoken.strip()
+        )
         studio.forget_corpus()
         return studio.state()
 
@@ -902,27 +1122,42 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         catalog = studio.catalog()
         synth = studio.synth()
         if synth.hip:
-            raise HTTPException(400, "This is the ROCm build. Write to pack stays on the CUDA wheel: "
-                                "a file made here would fingerprint as current and the nightly run would ship it. "
-                                "Keep the settings; they are numbers in forever-vo.toml, and the CUDA generator "
-                                "restages the voice from them.")
+            raise HTTPException(
+                400,
+                "This is the ROCm build. Write to pack stays on the CUDA wheel: "
+                "a file made here would fingerprint as current and the nightly run would ship it. "
+                "Keep the settings; they are numbers in forever-vo.toml, and the CUDA generator "
+                "restages the voice from them.",
+            )
         path = sound_path(item.subfolder, variant.base)
         t0 = time.time()
         with studio.model_lock:
             synth.catalog = catalog
             seconds = synth.speak(variant.text, item.voice, path)
-        index = json.loads(SOUND_INDEX.read_text(encoding="utf-8")) if SOUND_INDEX.exists() else {}
+        index = (
+            json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
+            if SOUND_INDEX.exists()
+            else {}
+        )
         fingerprint = catalog.fingerprint(item.voice, variant.text)
         index[variant.base] = {"d": seconds, "v": item.voice, "t": fingerprint}
         generate.save_sound_index(index, {variant.base})
-        return {"base": variant.base, "voice": item.voice, "seconds": round(seconds, 1),
-                "elapsed": round(time.time() - t0, 1), "fingerprint": fingerprint,
-                "pack_url": f"/api/pack/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}"}
+        return {
+            "base": variant.base,
+            "voice": item.voice,
+            "seconds": round(seconds, 1),
+            "elapsed": round(time.time() - t0, 1),
+            "fingerprint": fingerprint,
+            "pack_url": f"/api/pack/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}",
+        }
 
     @app.get("/api/clips/audio/{voice}/{name}")
     def clip_audio(voice: str, name: str) -> FileResponse:
         from tools.refclips import RAW_DIR as CLIP_RAW
-        return FileResponse(_under(CLIP_RAW, f"{_safe(voice)}/{_safe(name)}"), media_type="audio/ogg")
+
+        return FileResponse(
+            _under(CLIP_RAW, f"{_safe(voice)}/{_safe(name)}"), media_type="audio/ogg"
+        )
 
     @app.get("/api/clips/reference/{name}")
     def clip_reference(name: str) -> FileResponse:
@@ -947,13 +1182,17 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
             "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
             "warnings": sources_warnings(config, voice),
             "history": pick_history(voice).get(voice, []),
-            "reference_url": (f"/api/clips/reference/{voice}.wav"
-                              if (VOICES_DIR / f"{voice}.wav").exists() else None),
+            "reference_url": (
+                f"/api/clips/reference/{voice}.wav"
+                if (VOICES_DIR / f"{voice}.wav").exists()
+                else None
+            ),
         }
 
     @app.post("/api/clips/build")
     def build_sources(request: BuildSources) -> dict[str, Any]:
         from tools.refclips import RAW_DIR as CLIP_RAW
+
         voice = _safe(request.voice)
         # The picks can only have come from /api/clips, so they are already downloaded;
         # resolving them through _under keeps this endpoint off the network and guards
@@ -970,10 +1209,15 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
         studio.forget_corpus()
         seconds = reference_seconds(out)
         record_pick(voice, request.clips, request.build, seconds)
-        return {**studio.state(), "built": out.name, "seconds": seconds, "existed": existed,
-                "history": pick_history(voice).get(voice, []),
-                "reference_url": f"/api/clips/reference/{voice}.wav?t={int(time.time())}",
-                "restage": restage_note(voice, existed, request.keep)}
+        return {
+            **studio.state(),
+            "built": out.name,
+            "seconds": seconds,
+            "existed": existed,
+            "history": pick_history(voice).get(voice, []),
+            "reference_url": f"/api/clips/reference/{voice}.wav?t={int(time.time())}",
+            "restage": restage_note(voice, existed, request.keep),
+        }
 
     @app.post("/api/rebuild-tables")
     def rebuild_tables() -> dict[str, Any]:
@@ -988,23 +1232,41 @@ def app_from_env() -> FastAPI:
     its options over through the environment and this factory builds the app."""
     import os
 
-    studio = Studio(config_path=Path(os.environ.get("AUDITION_CONFIG", str(CONFIG_TOML))),
-                    allow_cpu=os.environ.get("AUDITION_CPU") == "1")
+    studio = Studio(
+        config_path=Path(os.environ.get("AUDITION_CONFIG", str(CONFIG_TOML))),
+        allow_cpu=os.environ.get("AUDITION_CPU") == "1",
+    )
     return create_app(studio, dev=os.environ.get("AUDITION_DEV") == "1")
 
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--config", type=Path, default=CONFIG_TOML, help="the TOML to read and write (default: the repo's)")
-    parser.add_argument("--cpu", action="store_true", help="allow generating on the CPU when there is no GPU (very slow)")
-    parser.add_argument("--open", action="store_true", help="open the page in the browser")
-    parser.add_argument("--reload", action="store_true",
-                        help="for working on the page: index.html is re-read on every request, and a change to a "
-                             ".py file under tools/ restarts the server (which reloads the model, ~30 s, and "
-                             "drops a generate in flight)")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=CONFIG_TOML,
+        help="the TOML to read and write (default: the repo's)",
+    )
+    parser.add_argument(
+        "--cpu",
+        action="store_true",
+        help="allow generating on the CPU when there is no GPU (very slow)",
+    )
+    parser.add_argument(
+        "--open", action="store_true", help="open the page in the browser"
+    )
+    parser.add_argument(
+        "--reload",
+        action="store_true",
+        help="for working on the page: index.html is re-read on every request, and a change to a "
+        ".py file under tools/ restarts the server (which reloads the model, ~30 s, and "
+        "drops a generate in flight)",
+    )
     args = parser.parse_args(argv)
 
     import os
@@ -1015,11 +1277,22 @@ def main(argv: list[str] | None = None) -> int:
     os.environ["AUDITION_CPU"] = "1" if args.cpu else "0"
     os.environ["AUDITION_DEV"] = "1" if args.reload else "0"
     url = f"http://{args.host}:{args.port}"
-    print(f"audition: {url}  (config {args.config}{', reloading on edits' if args.reload else ''})")
+    print(
+        f"audition: {url}  (config {args.config}{', reloading on edits' if args.reload else ''})"
+    )
     if args.open:
         threading.Timer(1.0, webbrowser.open, [url]).start()
-    uvicorn.run("tools.audition:app_from_env", factory=True, host=args.host, port=args.port, log_level="warning",
-                reload=args.reload, reload_dirs=[str(Path(__file__).resolve().parent.parent)] if args.reload else None)
+    uvicorn.run(
+        "tools.audition:app_from_env",
+        factory=True,
+        host=args.host,
+        port=args.port,
+        log_level="warning",
+        reload=args.reload,
+        reload_dirs=[str(Path(__file__).resolve().parent.parent)]
+        if args.reload
+        else None,
+    )
     return 0
 
 

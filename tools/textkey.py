@@ -6,6 +6,7 @@ The client resolves $n, $c and $r against whoever is reading before any addon
 sees the text, so captured text says "Myrlin" and "rogue" where the database
 says $n and $c. Both sides drop all three, so a line matches whoever reads it.
 """
+
 from __future__ import annotations
 
 import re
@@ -19,7 +20,9 @@ def _literal(value: str, fold_case: bool) -> str:
     """Mirror of LiteralPattern in Util.lua: with fold_case, ASCII letters match
     in either case; everything else matches exactly."""
     return "".join(
-        "[" + ch.lower() + ch.upper() + "]" if fold_case and ("a" <= ch <= "z" or "A" <= ch <= "Z") else re.escape(ch)
+        "[" + ch.lower() + ch.upper() + "]"
+        if fold_case and ("a" <= ch <= "z" or "A" <= ch <= "Z")
+        else re.escape(ch)
         for ch in value
     )
 
@@ -66,12 +69,12 @@ def tokenize(
     text = put(text, player_name, "$n", False)
     first_name = player_name.split()[0] if player_name and player_name.split() else None
     if first_name and first_name != player_name:
-        text = put(text, first_name, "$n", False)   # $n is the bare first name
+        text = put(text, first_name, "$n", False)  # $n is the bare first name
     text = put(text, class_name, "$c", True)
     text = put(text, race_name, "$r", True)
     last_word = race_name.split()[-1] if race_name and race_name.split() else None
     if short_race and last_word and last_word != race_name:
-        text = put(text, last_word, "$r", True)   # $r renders as the last word alone
+        text = put(text, last_word, "$r", True)  # $r renders as the last word alone
     return text
 
 
@@ -84,9 +87,11 @@ def normalize(
 ) -> str:
     if not text:
         return ""
-    text = (tokenize(text, player_name, class_name, race_name, short_race) or "").lower()
-    text = _GENDER_CODE.sub("", text)   # $g male:female; branch
-    text = _DOLLAR_CODE.sub("", text)   # $n, $c, $r, $b, ...
+    text = (
+        tokenize(text, player_name, class_name, race_name, short_race) or ""
+    ).lower()
+    text = _GENDER_CODE.sub("", text)  # $g male:female; branch
+    text = _DOLLAR_CODE.sub("", text)  # $n, $c, $r, $b, ...
     # Lua strips per byte; encode to UTF-8 so multi-byte characters vanish the same way
     raw = text.encode("utf-8")
     return _NON_ALNUM.sub("", raw.decode("latin-1"))
@@ -112,5 +117,6 @@ def text_key(
 
 if __name__ == "__main__":
     import sys
+
     for arg in sys.argv[1:] or ["Gryphons, eh? Never really cared for the beasts."]:
         print(text_key(arg), arg)
