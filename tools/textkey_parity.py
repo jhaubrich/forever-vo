@@ -10,6 +10,7 @@ The corpus is the real captured text, the tokenised beta quest cache, and a set
 of edge cases (multi-byte characters, $G branches, capitalisation, empty text).
 Needs lua 5.1 on PATH; the dev shell from flake.nix (what run.sh uses) has it.
 """
+
 from __future__ import annotations
 
 import json
@@ -54,11 +55,27 @@ SUBSTRING_CASES = [
 # is ASCII and the one non-ASCII edge case above is non-ASCII *text* read by
 # "Myrlin". These rows go through the key comparison and the tokenize comparison.
 NON_ASCII_CASES = [
-    ("Hello Osel and osel today.".replace("Osel", "\u00d6sel").replace("osel", "\u00f6sel"),
-     "\u00d6sel", "Mage", "Human"),
-    ("Greetings, Zoe. The mage guild awaits.".replace("Zoe", "Zo\u00eb"), "Zo\u00eb", "Mage", "Human"),
+    (
+        "Hello Osel and osel today.".replace("Osel", "\u00d6sel").replace(
+            "osel", "\u00f6sel"
+        ),
+        "\u00d6sel",
+        "Mage",
+        "Human",
+    ),
+    (
+        "Greetings, Zoe. The mage guild awaits.".replace("Zoe", "Zo\u00eb"),
+        "Zo\u00eb",
+        "Mage",
+        "Human",
+    ),
     ("Senor, a word.".replace("Senor", "Se\u00f1or"), "Se\u00f1or", "Rogue", "Human"),
-    ("Elodie, hello.".replace("Elodie", "\u00c9lodie"), "\u00c9lodie", "Priest", "Human"),
+    (
+        "Elodie, hello.".replace("Elodie", "\u00c9lodie"),
+        "\u00c9lodie",
+        "Priest",
+        "Human",
+    ),
 ]
 
 # The name matches case-sensitively, class and race do not. The client always
@@ -67,16 +84,35 @@ NON_ASCII_CASES = [
 # asserted against its expected output in Python and goes through the Lua
 # comparison, so both sides have to agree on the case rule.
 CASE_CASES = [
-    ("It is done. Bring it to It, and it will be well.", "It", "Paladin", "Undead",
-     "$N is done. Bring it to $N, and it will be well."),
-    ("myrlin is not Myrlin, and MYRLIN is neither.", "Myrlin Fixpoint", "Rogue", "Human",
-     "myrlin is not $N, and MYRLIN is neither."),
-    ("A rogue, a Rogue and a ROGUE walk in; a human and a Human follow.", "Myrlin", "Rogue", "Human",
-     "A $c, a $C and a $C walk in; a $r and a $R follow."),
+    (
+        "It is done. Bring it to It, and it will be well.",
+        "It",
+        "Paladin",
+        "Undead",
+        "$N is done. Bring it to $N, and it will be well.",
+    ),
+    (
+        "myrlin is not Myrlin, and MYRLIN is neither.",
+        "Myrlin Fixpoint",
+        "Rogue",
+        "Human",
+        "myrlin is not $N, and MYRLIN is neither.",
+    ),
+    (
+        "A rogue, a Rogue and a ROGUE walk in; a human and a Human follow.",
+        "Myrlin",
+        "Rogue",
+        "Human",
+        "A $c, a $C and a $C walk in; a $r and a $R follow.",
+    ),
     # A multi-word race renders $r as its last word alone (Zamja: "help you, skyborne?")
-    ("Can Zamja help you, skyborne? The Windshaper Skyborne are welcome; windshapers too.",
-     "Pellinore", "Hunter", "Windshaper Skyborne",
-     "Can Zamja help you, $r? The $R are welcome; windshapers too."),
+    (
+        "Can Zamja help you, skyborne? The Windshaper Skyborne are welcome; windshapers too.",
+        "Pellinore",
+        "Hunter",
+        "Windshaper Skyborne",
+        "Can Zamja help you, $r? The $R are welcome; windshapers too.",
+    ),
 ]
 
 
@@ -87,12 +123,16 @@ def check_substrings() -> int:
     for text, player, class_name, race in SUBSTRING_CASES:
         got = tokenize(text, player, class_name, race)
         if got != text:
-            print(f"substring guard FAILED for player {player!r}:\n  {text!r}\n  {got!r}")
+            print(
+                f"substring guard FAILED for player {player!r}:\n  {text!r}\n  {got!r}"
+            )
             failures += 1
     for text, player, class_name, race, want in CASE_CASES:
         got = tokenize(text, player, class_name, race)
         if got != want:
-            print(f"case guard FAILED for player {player!r}:\n  {text!r}\n  want {want!r}\n  got  {got!r}")
+            print(
+                f"case guard FAILED for player {player!r}:\n  {text!r}\n  want {want!r}\n  got  {got!r}"
+            )
             failures += 1
     return failures
 
@@ -113,7 +153,6 @@ end
 """
 
 
-
 def tokenized_hash(text, player, class_name, race) -> str:
     """djb2 over the tokenize output as bytes, so the comparison sees the text
     itself and not just the key. NormalizeText lowercases before stripping $x, so
@@ -130,14 +169,20 @@ def rows() -> list[dict]:
         for section in ("quests", "gossip"):
             for entry in data.get(section, {}).values():
                 if entry.get("text"):
-                    out.append({k: entry.get(k) for k in ("text", "player", "class", "race")})
+                    out.append(
+                        {k: entry.get(k) for k in ("text", "player", "class", "race")}
+                    )
     if QUESTCACHE.exists():
         data = json.loads(QUESTCACHE.read_text(encoding="utf-8"))
         for entry in data.get("quests", {}).values():
             if entry.get("text"):
-                out.append({"text": entry["text"], "player": None, "class": None, "race": None})
+                out.append(
+                    {"text": entry["text"], "player": None, "class": None, "race": None}
+                )
     for text in EDGE_CASES:
-        out.append({"text": text, "player": "Myrlin", "class": "Rogue", "race": "Human"})
+        out.append(
+            {"text": text, "player": "Myrlin", "class": "Rogue", "race": "Human"}
+        )
     for text, player, class_name, race in SUBSTRING_CASES + NON_ASCII_CASES:
         out.append({"text": text, "player": player, "class": class_name, "race": race})
     for text, player, class_name, race, _ in CASE_CASES:
@@ -166,7 +211,10 @@ def lua_string(value: str | None) -> str:
 def main() -> int:
     lua = shutil.which("lua5.1") or shutil.which("lua")
     if not lua:
-        print("lua 5.1 is not on PATH (run through ./tools/run.sh, whose dev shell has it)", file=sys.stderr)
+        print(
+            "lua 5.1 is not on PATH (run through ./tools/run.sh, whose dev shell has it)",
+            file=sys.stderr,
+        )
         return 2
     if check_substrings():
         return 1
@@ -186,7 +234,9 @@ def main() -> int:
         (tmp / "parity.lua").write_text(HARNESS, encoding="utf-8")
         result = subprocess.run(
             [lua, str(tmp / "parity.lua"), str(UTIL_LUA), str(tmp / "corpus.lua")],
-            capture_output=True, text=True, check=False,   # the return code is reported just below
+            capture_output=True,
+            text=True,
+            check=False,  # the return code is reported just below
         )
     if result.returncode != 0:
         print(result.stderr.strip(), file=sys.stderr)
@@ -194,15 +244,26 @@ def main() -> int:
     actual = result.stdout.splitlines()
     expected = [
         text_key(r["text"], r["player"], r["class"], r["race"])
-        + ":" + tokenized_hash(r["text"], r["player"], r["class"], r["race"])
+        + ":"
+        + tokenized_hash(r["text"], r["player"], r["class"], r["race"])
         for r in corpus
     ]
     if len(actual) != len(expected):
-        print(f"lua produced {len(actual)} keys, python {len(expected)}", file=sys.stderr)
+        print(
+            f"lua produced {len(actual)} keys, python {len(expected)}", file=sys.stderr
+        )
         return 1
-    bad = [(i, e, a) for i, (e, a) in enumerate(zip(expected, actual)) for _ in (0,) if e != a]
+    bad = [
+        (i, e, a)
+        for i, (e, a) in enumerate(zip(expected, actual))
+        for _ in (0,)
+        if e != a
+    ]
     for index, want, got in bad[:10]:
-        print(f"row {index}: python {want} != lua {got}\n    {corpus[index]['text'][:120]!r}", file=sys.stderr)
+        print(
+            f"row {index}: python {want} != lua {got}\n    {corpus[index]['text'][:120]!r}",
+            file=sys.stderr,
+        )
     if bad:
         print(f"{len(bad)} of {len(expected)} rows differ", file=sys.stderr)
         return 1

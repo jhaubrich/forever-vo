@@ -3,6 +3,7 @@
 No local CASC extraction is needed: wago.tools indexes the wow_classic_beta
 builds, so we fetch the handful of tables we need and cache them on disk.
 """
+
 from __future__ import annotations
 
 import csv
@@ -63,10 +64,14 @@ def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
     if dest.exists():
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
-    response = requests.get(f"{WAGO_BASE}/api/casc/{fdid}", params={"version": build}, timeout=180)
+    response = requests.get(
+        f"{WAGO_BASE}/api/casc/{fdid}", params={"version": build}, timeout=180
+    )
     response.raise_for_status()
     if response.headers.get("content-type", "").startswith("application/json"):
-        raise FileNotFoundError(f"FileDataID {fdid} not in build {build}: {response.text}")
+        raise FileNotFoundError(
+            f"FileDataID {fdid} not in build {build}: {response.text}"
+        )
     part = dest.with_name(f"{dest.name}.{os.getpid()}.part")
     try:
         part.write_bytes(response.content)
@@ -132,7 +137,9 @@ def species_voice_names(species: str, sex_id: int | None, voices: Voices) -> lis
     # A construct is Gender 2 and so has no sex, but an abomination is not
     # genderless the way a player-race speaker with no sex is: the species already
     # says how it sounds. Prefer the recorded sex, then accept either.
-    sexes = ([sex_id] if sex_id is not None else []) + [s for s in (0, 1) if s != sex_id]
+    sexes = ([sex_id] if sex_id is not None else []) + [
+        s for s in (0, 1) if s != sex_id
+    ]
     stem = species
     while True:
         for s in sexes:
@@ -151,8 +158,13 @@ def species_voice_names(species: str, sex_id: int | None, voices: Voices) -> lis
         stem = trimmed
 
 
-def species_voice(display_id: int | None, sex_id: int | None,
-                  model_file_id: int | None = None, *, voices: Voices) -> str | None:
+def species_voice(
+    display_id: int | None,
+    sex_id: int | None,
+    model_file_id: int | None = None,
+    *,
+    voices: Voices,
+) -> str | None:
     """A voice of the speaker's own kind, where the pack carries one.
 
     Creatures outside the player races have no DisplayRaceID, so they fall through
@@ -171,7 +183,9 @@ def species_voice(display_id: int | None, sex_id: int | None,
     if display_id:
         cdi = load_db2("CreatureDisplayInfo").get(int(display_id))
         model = load_db2("CreatureModelData").get(int((cdi or {}).get("ModelID") or 0))
-        species = _species_by_model_file().get(int((model or {}).get("FileDataID") or 0))
+        species = _species_by_model_file().get(
+            int((model or {}).get("FileDataID") or 0)
+        )
     if not species and model_file_id:
         species = _species_by_model_file().get(int(model_file_id))
     if not species:
@@ -191,7 +205,10 @@ def _race_sex_by_model_file() -> dict[int, Counter]:
     -> CreatureDisplayInfo.ExtendedDisplayInfoID -> CreatureDisplayInfoExtra.
     """
     # Several CreatureModelData rows can share one file, so map by model ID, not by file
-    file_by_model = {mid: int(row["FileDataID"] or 0) for mid, row in load_db2("CreatureModelData").items()}
+    file_by_model = {
+        mid: int(row["FileDataID"] or 0)
+        for mid, row in load_db2("CreatureModelData").items()
+    }
     extras = load_db2("CreatureDisplayInfoExtra")
     result: dict[int, Counter] = {}
     for cdi in load_db2("CreatureDisplayInfo").values():
@@ -200,12 +217,16 @@ def _race_sex_by_model_file() -> dict[int, Counter]:
             continue
         extra = extras.get(int(cdi.get("ExtendedDisplayInfoID") or 0))
         if extra:
-            result.setdefault(fdid, Counter())[(int(extra["DisplayRaceID"]), int(extra["DisplaySexID"]))] += 1
+            result.setdefault(fdid, Counter())[
+                (int(extra["DisplayRaceID"]), int(extra["DisplaySexID"]))
+            ] += 1
     return result
 
 
 def model_race_sex(
-    model_file_id: int | None, sex_id: int | None = None, preferred_races: set[int] | frozenset[int] = frozenset()
+    model_file_id: int | None,
+    sex_id: int | None = None,
+    preferred_races: set[int] | frozenset[int] = frozenset(),
 ) -> tuple[int | None, int | None]:
     """Maps a captured GetModelFileID() to (DisplayRaceID, DisplaySexID).
 
@@ -296,6 +317,7 @@ def archetype_names(voice: str) -> dict[int, str]:
     `s<id>` too, so a name never depends on the map being complete.
     """
     from tools.soundpaths import descriptor
+
     names: dict[int, str] = {}
     taken: set[str] = set()
     for sound_id, _ in (sound_set_displays().get(voice) or Counter()).most_common():
@@ -334,13 +356,18 @@ def archetype_voice(voice: str, display_id: int | None) -> str | None:
     clip, plain = VOICES_DIR / f"{name}.wav", VOICES_DIR / f"{voice}.wav"
     if not clip.exists():
         return None
-    if plain.exists() and clip.stat().st_size == plain.stat().st_size \
-            and clip.read_bytes() == plain.read_bytes():
+    if (
+        plain.exists()
+        and clip.stat().st_size == plain.stat().st_size
+        and clip.read_bytes() == plain.read_bytes()
+    ):
         return None
     return name
 
 
-def voice_for_npc(npc: dict | None, zone: str | None = None, *, voices: Voices | None = None) -> str:
+def voice_for_npc(
+    npc: dict | None, zone: str | None = None, *, voices: Voices | None = None
+) -> str:
     """Picks a `race-gender` voice name for a captured NPC record.
 
     In order: the NPC's own cloned clip (npc-<displayID>.wav), the race and sex of
@@ -361,7 +388,9 @@ def voice_for_npc(npc: dict | None, zone: str | None = None, *, voices: Voices |
     hint = voices.zone_hints.get(zone or npc.get("zone") or "")
     race_id, sex_id = display_race_sex(display_id)
     if race_id is None:
-        hinted = {rid for rid, name in RACE_DICT.items() if name == hint} if hint else set()
+        hinted = (
+            {rid for rid, name in RACE_DICT.items() if name == hint} if hint else set()
+        )
         model_race, model_sex = model_race_sex(npc.get("modelFileID"), unit_sex, hinted)
         race_id = model_race
         # Keep a sex the display record gave us. model_race_sex returns a race and
@@ -409,7 +438,9 @@ def skyborne_voice_lines() -> list[tuple[int, int, int]]:
     for race, kits in kits_by_race.items():
         for entry in entries.values():
             if int(entry["SoundKitID"]) in kits:
-                result.append((race, int(entry["SoundKitID"]), int(entry["FileDataID"])))
+                result.append(
+                    (race, int(entry["SoundKitID"]), int(entry["FileDataID"]))
+                )
     return sorted(set(result))
 
 
@@ -417,6 +448,18 @@ if __name__ == "__main__":
     lines = skyborne_voice_lines()
     print(f"{len(lines)} Skyborne voice files, e.g. {lines[:5]}")
     print("display 3157 ->", display_race_sex(3157))
-    print("model file 997378 ->", model_race_sex(997378), "(scourge; UnitSex male narrows to", model_race_sex(997378, 0), ")")
+    print(
+        "model file 997378 ->",
+        model_race_sex(997378),
+        "(scourge; UnitSex male narrows to",
+        model_race_sex(997378, 0),
+        ")",
+    )
     print("model file 7478487 ->", model_race_sex(7478487), "(skyborne male)")
-    print("model file 1100258 ->", model_race_sex(1100258), "(blood elf model; Zephras Isle hint gives", model_race_sex(1100258, 1, {95, 96}), ")")
+    print(
+        "model file 1100258 ->",
+        model_race_sex(1100258),
+        "(blood elf model; Zephras Isle hint gives",
+        model_race_sex(1100258, 1, {95, 96}),
+        ")",
+    )

@@ -24,6 +24,7 @@ warcry, death) are shouted rather than spoken. What remains - the "what" and
 "yes" acknowledgements - is the unit talking normally, which is what a quest
 giver should sound like.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -36,7 +37,7 @@ from tools.build_voice_references import concat_to_wav
 from tools.config import VOICES_DIR
 
 TARGET_SECONDS = 20.0
-MIN_TOTAL = 2.5      # some units have only a handful of lines; report rather than refuse
+MIN_TOTAL = 2.5  # some units have only a handful of lines; report rather than refuse
 MIN_CLIP, MAX_CLIP = 0.4, 12.0
 
 # A WC3 unit set is what1-4, yes1-4, ready1, warcry1, pissed1-9. The "pissed"
@@ -67,8 +68,20 @@ SPECIES: dict[str, tuple[str, ...]] = {
 
 def duration(path: Path) -> float:
     out = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-        capture_output=True, text=True, check=False).stdout.strip()   # an unreadable file reads as 0.0 below
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-show_entries",
+            "format=duration",
+            "-of",
+            "csv=p=0",
+            str(path),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    ).stdout.strip()  # an unreadable file reads as 0.0 below
     try:
         return float(out)
     except ValueError:
@@ -77,10 +90,18 @@ def duration(path: Path) -> float:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--src", type=Path, default=VOICES_DIR / "raw-wc3" / "units",
-                    help="folder of extracted WC3 units audio (default: what extract_wc3_units.py writes)")
-    ap.add_argument("--only", action="append", help="build just these species (prefix match)")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "--src",
+        type=Path,
+        default=VOICES_DIR / "raw-wc3" / "units",
+        help="folder of extracted WC3 units audio (default: what extract_wc3_units.py writes)",
+    )
+    ap.add_argument(
+        "--only", action="append", help="build just these species (prefix match)"
+    )
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args(argv)
 
@@ -89,7 +110,11 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     by_folder: dict[str, list[Path]] = {}
-    for f in (p for p in args.src.rglob("*") if p.suffix.lower() in (".flac", ".ogg", ".wav", ".mp3")):
+    for f in (
+        p
+        for p in args.src.rglob("*")
+        if p.suffix.lower() in (".flac", ".ogg", ".wav", ".mp3")
+    ):
         by_folder.setdefault(f.parent.name.lower(), []).append(f)
     print(f"{len(by_folder)} unit folders under {args.src}\n")
 
@@ -118,9 +143,13 @@ def main(argv: list[str] | None = None) -> int:
             if total >= TARGET_SECONDS:
                 break
         if total < MIN_TOTAL:
-            print(f"{species:24} only {total:.1f}s usable from {len(pool)} files - skipped")
+            print(
+                f"{species:24} only {total:.1f}s usable from {len(pool)} files - skipped"
+            )
             continue
-        print(f"{species:24} {len(chosen):2} clips, {total:5.1f}s  from {', '.join(sorted({p.parent.name for p in chosen}))}")
+        print(
+            f"{species:24} {len(chosen):2} clips, {total:5.1f}s  from {', '.join(sorted({p.parent.name for p in chosen}))}"
+        )
         if args.dry_run:
             continue
         # Shared so this builder also refuses a concat ffmpeg truncated and called a success

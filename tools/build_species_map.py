@@ -14,6 +14,7 @@ JSON that ships with the tools:
 
 Writes tools/data/species_models.json: {FileDataID: species}.
 """
+
 from __future__ import annotations
 
 import json
@@ -29,7 +30,10 @@ OUT = DATA_DIR / "species_models.json"
 
 def main() -> int:
     if not LISTFILE.exists():
-        print(f"no listfile at {LISTFILE}; fetch it from wowdev/wow-listfile releases", file=sys.stderr)
+        print(
+            f"no listfile at {LISTFILE}; fetch it from wowdev/wow-listfile releases",
+            file=sys.stderr,
+        )
         return 1
 
     # FileDataID -> species, for every model under creature/<species>/
@@ -52,7 +56,9 @@ def main() -> int:
     print(f"of those, used by CreatureModelData: {len(mapping)}")
 
     OUT.write_text(json.dumps(mapping, indent=0, sort_keys=True), encoding="utf-8")
-    print(f"wrote {OUT} ({OUT.stat().st_size / 1024:.0f} KB, {len(set(mapping.values()))} distinct species)")
+    print(
+        f"wrote {OUT} ({OUT.stat().st_size / 1024:.0f} KB, {len(set(mapping.values()))} distinct species)"
+    )
     return 0
 
 

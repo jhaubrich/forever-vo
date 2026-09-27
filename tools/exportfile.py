@@ -8,6 +8,7 @@ dependencies, and the -m form is what puts the repo root on the import path.
     ./tools/run.sh tools/exportfile.py --out captures/issue-12.json < body.txt
     uv run --no-project python -m tools.exportfile --out captures/mine.json "FVO1:eJy..."
 """
+
 from __future__ import annotations
 
 import argparse
@@ -35,7 +36,7 @@ def find_export(text: str) -> str | None:
 def decode(export: str) -> dict:
     if not export.startswith(PREFIX):
         raise ValueError("not a Forever Voiceover export string")
-    raw = base64.b64decode(export[len(PREFIX):])
+    raw = base64.b64decode(export[len(PREFIX) :])
     data = json.loads(zlib.decompress(raw).decode("utf-8"))
     if data.get("v") != 1:
         raise ValueError(f"unsupported export version {data.get('v')}")
@@ -44,9 +45,18 @@ def decode(export: str) -> dict:
 
 def to_capture(data: dict, origin: str) -> dict:
     """Converts the compact export into the capture.json schema used by the tools."""
-    out = {"version": 2, "source": "community", "origin": origin, "quests": {}, "gossip": {}, "npcs": {}}
+    out = {
+        "version": 2,
+        "source": "community",
+        "origin": origin,
+        "quests": {},
+        "gossip": {},
+        "npcs": {},
+    }
     if data.get("addon"):
-        out["addon"] = data["addon"]   # ingest.py gates repairs on the addon that tokenised the text
+        out["addon"] = data[
+            "addon"
+        ]  # ingest.py gates repairs on the addon that tokenised the text
     for line in data.get("lines", []):
         entry = {
             "event": line.get("e"),
@@ -58,9 +68,10 @@ def to_capture(data: dict, origin: str) -> dict:
             "isObject": line.get("o") or None,
             "zone": line.get("z"),
             "mapID": line.get("m"),
-            "sex": line.get("g"),            # "m"/"f", from addon 0.1.4 on
-            "wanted": line.get("w") or None,  # a voiced line the pack asked to hear again
-            "time": line.get("d"),           # when it was heard, from addon 0.1.4 on
+            "sex": line.get("g"),  # "m"/"f", from addon 0.1.4 on
+            "wanted": line.get("w")
+            or None,  # a voiced line the pack asked to hear again
+            "time": line.get("d"),  # when it was heard, from addon 0.1.4 on
             "build": data.get("build"),
             "source": "community",
         }
@@ -71,7 +82,9 @@ def to_capture(data: dict, origin: str) -> dict:
                 continue
             out["quests"][f"{entry['questID']}-{entry['event']}"] = entry
         else:
-            out["gossip"][f"{entry['npc'] or entry['name'] or '?'}|{text_key(entry['text'])}"] = entry
+            out["gossip"][
+                f"{entry['npc'] or entry['name'] or '?'}|{text_key(entry['text'])}"
+            ] = entry
     for key, npc in (data.get("npcs") or {}).items():
         out["npcs"][str(key)] = {k: v for k, v in npc.items() if v is not None}
     return out
@@ -79,11 +92,23 @@ def to_capture(data: dict, origin: str) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("export", nargs="?", help="export string, or a file containing one; stdin if omitted")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "export",
+        nargs="?",
+        help="export string, or a file containing one; stdin if omitted",
+    )
     parser.add_argument("--out", required=True, help="where to write the decoded JSON")
-    parser.add_argument("--origin", default="manual", help="label recorded in the file (e.g. issue-12)")
-    parser.add_argument("--raw", action="store_true", help="write the decoded export as-is instead of capture schema")
+    parser.add_argument(
+        "--origin", default="manual", help="label recorded in the file (e.g. issue-12)"
+    )
+    parser.add_argument(
+        "--raw",
+        action="store_true",
+        help="write the decoded export as-is instead of capture schema",
+    )
     args = parser.parse_args(argv)
 
     if args.export and Path(args.export).exists():
@@ -100,9 +125,14 @@ def main(argv: list[str] | None = None) -> int:
     result = data if args.raw else to_capture(data, args.origin)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(result, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+    out.write_text(
+        json.dumps(result, indent=1, ensure_ascii=False, sort_keys=True),
+        encoding="utf-8",
+    )
     lines = len(data.get("lines", []))
-    print(f"{out}: {lines} lines, {len(data.get('npcs') or {})} speakers, client build {data.get('build')}")
+    print(
+        f"{out}: {lines} lines, {len(data.get('npcs') or {})} speakers, client build {data.get('build')}"
+    )
     return 0
 
 

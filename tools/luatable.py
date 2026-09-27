@@ -3,6 +3,7 @@
 Handles: nested tables, ["key"] = / [123] = / name = forms, positional entries,
 strings with escapes, numbers, booleans, nil, and -- comments.
 """
+
 from __future__ import annotations
 
 import re
@@ -34,7 +35,7 @@ def _unescape(s: str) -> str:
                 j = i + 1
                 while j < len(s) and j < i + 4 and s[j].isdigit():
                     j += 1
-                out.append(int(s[i + 1:j]) & 0xFF)
+                out.append(int(s[i + 1 : j]) & 0xFF)
                 i = j
                 continue
             out += _ESCAPES.get(n, n).encode("utf-8")
@@ -76,7 +77,11 @@ class _Parser:
             if tok.lower().startswith("0x"):
                 return int(tok, 16)
             f = float(tok)
-            return int(f) if f.is_integer() and "." not in tok and "e" not in tok.lower() else f
+            return (
+                int(f)
+                if f.is_integer() and "." not in tok and "e" not in tok.lower()
+                else f
+            )
         if kind == "name":
             if tok == "true":
                 return True
@@ -103,7 +108,11 @@ class _Parser:
                 self.expect("]")
                 self.expect("=")
                 result[key] = self.value()
-            elif kind == "name" and self.pos + 1 < len(self.tokens) and self.tokens[self.pos + 1][1] == "=":
+            elif (
+                kind == "name"
+                and self.pos + 1 < len(self.tokens)
+                and self.tokens[self.pos + 1][1] == "="
+            ):
                 self.next()
                 self.next()
                 result[tok] = self.value()
@@ -114,7 +123,11 @@ class _Parser:
             if tok in (",", ";"):
                 self.next()
         # A pure array becomes a list
-        if result and all(isinstance(k, int) for k in result) and sorted(result) == list(range(1, len(result) + 1)):
+        if (
+            result
+            and all(isinstance(k, int) for k in result)
+            and sorted(result) == list(range(1, len(result) + 1))
+        ):
             return [result[i] for i in range(1, len(result) + 1)]
         return result
 
@@ -134,4 +147,11 @@ def parse_saved_variables(text: str) -> dict[str, Any]:
 
 def lua_string(s: str) -> str:
     """Quotes a Python string as a Lua string literal."""
-    return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n").replace("\r", "\\r") + '"'
+    return (
+        '"'
+        + s.replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        + '"'
+    )
