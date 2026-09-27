@@ -18,7 +18,7 @@ local function NotifyUnvoiced(what, key)
     if key then
         notified[key] = true
     end
-    ns.Print(format("no voice yet for %s. |cffffd100/fvo export|r to contribute it.", what))
+    ns.Print(format("no voice yet for %s; it is saved for your next export.", what))
 end
 
 local currentQuestItem, currentGossipItem

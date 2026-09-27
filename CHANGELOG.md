@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- `/fvo export` packs only what you have heard since your last export, and
+  says so; `/fvo export all` packs everything again, for a string that was
+  copied but never pasted. Until now every export carried the whole capture,
+  and the chat notice on each unvoiced line asked for an export, so exporting
+  after every quest, as it seemed to suggest, sent the same hundred lines a
+  hundred times over. The per-line notice now only says the line is saved,
+  and the welcome text and the export window both say you do not have to do
+  this for each quest.
 - The reminders about lines worth contributing now say what this session
   added and what was already waiting from earlier ones. The beta client keeps
   saved variables between logins again, so the capture accumulates across

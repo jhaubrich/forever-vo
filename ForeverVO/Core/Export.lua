@@ -2,10 +2,16 @@ local _, ns = ...
 local Util = ns.Util
 
 --[[
-"/fvo export": packs the capture's unvoiced lines (everything recorded since
-the last time the DB was cleared, across sessions and characters now that the
-beta reads saved variables back) into a string players can
+"/fvo export": packs the capture's unvoiced lines heard since the last export
+(across sessions and characters now that the beta reads saved variables back)
+into a string players can
 paste into a GitHub issue (see .github/ISSUE_TEMPLATE/capture.yml). The
+export stamps ForeverVOCaptureDB.exportedAt when the string is shown, and
+Capture.Exported skips what an earlier export packed: before that, every
+export carried the whole DB, and a player who exported after each quest, as
+the per-line reminder suggested, sent the same hundred lines a hundred times.
+"/fvo export all" packs everything again, for a string that was shown but
+never pasted; the lines stay in the DB either way. The
 string is JSON, zlib-compressed and base64-encoded with the client's own
 C_EncodingUtil, prefixed with "FVO1:". The character's name, class and race are
 replaced by the $n/$c/$r placeholders (Util.Tokenize) at capture, so nothing
@@ -29,12 +35,13 @@ local NUDGE_AFTER = 10
 local PREFIX = "FVO1:"
 
 --- Builds the export table from ForeverVOCaptureDB: lines without audio, and
---- voiced lines the pack asked to hear again from a reader like this one.
-function Export:Collect()
+--- voiced lines the pack asked to hear again from a reader like this one,
+--- heard since the last export unless `all`.
+function Export:Collect(all)
     local db = ForeverVOCaptureDB or {}
     local lines, npcs, used = {}, {}, {}
     local function add(kind, entry)
-        if not ns.Capture.Contributes(entry) then
+        if not ns.Capture.Contributes(entry) or (not all and ns.Capture.Exported(entry)) then
             return
         end
         table.insert(lines, {
@@ -80,8 +87,8 @@ function Export:Collect()
     }
 end
 
-function Export:Encode()
-    local data = self:Collect()
+function Export:Encode(all)
+    local data = self:Collect(all)
     if #data.lines == 0 then
         return nil, 0
     end
@@ -119,7 +126,7 @@ function Export:GetFrame()
     frame.Hint:SetJustifyH("LEFT")
     frame.Hint:SetPoint("TOPLEFT", 16, -32)
     frame.Hint:SetPoint("RIGHT", -16, 0)
-    frame.Hint:SetText("Press Ctrl+C to copy, then paste it into a new issue at\n|cff6ec6ffgithub.com/quinn-dougherty/forever-vo/issues/new?template=capture.yml|r\nYour character name has been removed.")
+    frame.Hint:SetText("Press Ctrl+C to copy, then paste it into a new issue at\n|cff6ec6ffgithub.com/quinn-dougherty/forever-vo/issues/new?template=capture.yml|r\nYou do not have to do this for each quest: one export packs up everything you have seen since the last one.\nYour character name has been removed.")
 
     local scroll = CreateFrame("ScrollFrame", nil, frame, "InputScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", 0, -12)
@@ -140,10 +147,16 @@ function Export:GetFrame()
     return frame
 end
 
-function Export:Show()
-    local text, count = self:Encode()
+---@param all boolean pack every line, exported before or not
+function Export:Show(all)
+    local db = ForeverVOCaptureDB or {}
+    local text, count = self:Encode(all)
     if not text then
-        ns.Print("nothing to export yet: every line seen this session already has audio.")
+        if not all and db.exportedAt then
+            ns.Print("nothing new since your last export. |cffffd100/fvo export all|r packs everything again.")
+        else
+            ns.Print("nothing to export: every line seen so far already has audio.")
+        end
         return
     end
     local frame = self:GetFrame()
@@ -152,7 +165,10 @@ function Export:Show()
     frame:Show()
     frame.Scroll.EditBox:SetFocus()
     frame.Scroll.EditBox:HighlightText()
-    ns.Print(format("%d %s packed into %d characters.", count, Util.Plural(count, "line"), #text))
+    local since = (not all and db.exportedAt) and " heard since your last export" or ""
+    db.exportedAt = time()
+    ns.Print(format("%d %s%s packed into %d characters. You do not have to do this for each quest.",
+        count, Util.Plural(count, "line"), since, #text))
 end
 
 --- Called by Capture after each recorded line; reminds the player once per session.
@@ -164,7 +180,7 @@ function Export:OnLineCaptured(contributes)
     self.count = (self.count or 0) + 1
     if self.count >= NUDGE_AFTER then
         self.nudged = true
-        ns.Print(format("%d lines seen this session are worth contributing. |cffffd100/fvo export|r to pack them.", self.count))
+        ns.Print(format("%d lines seen this session are worth contributing. |cffffd100/fvo export|r packs them whenever you like; there is no need to do it for each quest.", self.count))
     end
 end
 

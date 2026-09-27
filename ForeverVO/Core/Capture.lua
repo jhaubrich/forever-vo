@@ -165,8 +165,17 @@ function Capture.Contributes(entry)
     return not entry.found or entry.wanted == true
 end
 
---- Counts of lines in the capture and of those an export would carry, over the
---- whole DB and then over what this session recorded:
+--- True when the entry was heard before the last export, which packed it.
+--- Hearing the line again records a fresh time, so it goes out again as the
+--- newer reading. Entries with no time predate 0.1.4 and count as old.
+function Capture.Exported(entry)
+    local at = GetDB().exportedAt
+    return at ~= nil and (entry.time or 0) < at
+end
+
+--- Counts of lines in the capture and of those an export would carry (not
+--- voiced, or wanted, and not packed by an earlier export), over the whole DB
+--- and then over what this session recorded:
 --- quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing.
 function Capture:Summary()
     local db = GetDB()
@@ -174,7 +183,7 @@ function Capture:Summary()
     local sessionSeen, sessionMissing = 0, 0
     for key, entry in pairs(db.quests) do
         quests = quests + 1
-        local contributes = Capture.Contributes(entry)
+        local contributes = Capture.Contributes(entry) and not Capture.Exported(entry)
         if contributes then questsMissing = questsMissing + 1 end
         if session["quests:" .. key] then
             sessionSeen = sessionSeen + 1
@@ -183,7 +192,7 @@ function Capture:Summary()
     end
     for key, entry in pairs(db.gossip) do
         gossip = gossip + 1
-        local contributes = Capture.Contributes(entry)
+        local contributes = Capture.Contributes(entry) and not Capture.Exported(entry)
         if contributes then gossipMissing = gossipMissing + 1 end
         if session["gossip:" .. key] then
             sessionSeen = sessionSeen + 1
