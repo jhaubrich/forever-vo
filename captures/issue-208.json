@@ -1,0 +1,148 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "10721|738b752e": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Novice Warrior",
+   "npc": "10721",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Are you here to prove yourself as well?",
+   "time": 1790468204,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "10721|940ee1b1": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Novice Warrior",
+   "npc": "10721",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "I am ready.",
+   "time": 1790468252,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "10721|a05588c0": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Novice Warrior",
+   "npc": "10721",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "<Novice Warrior gulps.>\r\n\r\nI can do this.",
+   "time": 1790468179,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "npcs": {
+  "10721": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121961,
+   "name": "Novice Warrior",
+   "sex": 3
+  },
+  "2947": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Harken Windtotem",
+   "sex": 2
+  },
+  "2948": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Mull Thunderhorn",
+   "sex": 2
+  },
+  "3063": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Krang Stonehoof",
+   "sex": 2
+  }
+ },
+ "origin": "issue-208",
+ "quests": {
+  "748-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Mull Thunderhorn",
+   "npc": "2948",
+   "questID": 748,
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have the paws and talons, $N?",
+   "time": 1790468069,
+   "title": "Poison Water",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "761-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Harken Windtotem",
+   "npc": "2947",
+   "questID": 761,
+   "sex": "m",
+   "source": "community",
+   "text": "Have you found the swoops, $N.  Do you have their quills?",
+   "time": 1790468571,
+   "title": "Swoop Hunting",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "99108-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Krang Stonehoof",
+   "npc": "3063",
+   "questID": 99108,
+   "sex": "m",
+   "source": "community",
+   "text": "Hail, young $c. Though you are not a warrior and I cannot teach you that path, that does not mean you would not benefit from my tutelage.\r\n\r\nBefore you lies the arena. In it, it matters not who you call mother or whether you wield sword or bow. All are equal, and all learn to sharpen their horns in direct combat.\r\n\r\nWill you enter our space, and learn our ways for yourself? You may face any of these novices, or any other willing adversary. I care not which.",
+   "time": 1790468160,
+   "title": "Sparring Match",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "99108-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Krang Stonehoof",
+   "npc": "3063",
+   "questID": 99108,
+   "sex": "m",
+   "source": "community",
+   "text": "You honor me with your abilities, $c. Perhaps the new generation has hope yet.\r\n\r\nTake these to tend to your wounds, for many more battles await you in this harsh world.",
+   "time": 1790468281,
+   "title": "Sparring Match",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
