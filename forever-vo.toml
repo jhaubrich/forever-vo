@@ -435,6 +435,7 @@ Sharptalon = "Sharp Talon"
 Tirisfal = "Tirrisfal"
 Varimathras = "Vairimathrus"
 Feralas = "fairalass"
+Lordaeron = "Lorderon"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
