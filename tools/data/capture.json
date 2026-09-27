@@ -5011,6 +5011,7 @@
    "build": "70009",
    "class": "Rogue",
    "event": "gossip",
+   "firstSeen": 1790545012,
    "mapID": 2521,
    "name": "Miriaan Mistblade",
    "npc": "254087",
@@ -5905,6 +5906,7 @@
    "build": "70009",
    "class": "Rogue",
    "event": "gossip",
+   "firstSeen": 1790545256,
    "mapID": 2521,
    "name": "Naleeia Tattermend",
    "npc": "257018",
@@ -8361,7 +8363,7 @@
    "zone": "Orgrimmar"
   },
   "3318|ae78a458": {
-   "addon": "0.1.4",
+   "addon": "0.1.5",
    "build": "70009",
    "class": "Paladin",
    "event": "gossip",
@@ -8376,7 +8378,7 @@
    "sex": "m",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790356350,
+   "time": 1790545493,
    "zone": "Orgrimmar"
   },
   "3320|2f8d506f": {
