@@ -1,0 +1,55 @@
+{
+ "addon": "0.1.5",
+ "gossip": {},
+ "npcs": {
+  "1495": {
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Deathguard Linnea",
+   "sex": 3
+  },
+  "251905": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Zerril Softbreeze",
+   "sex": 2
+  }
+ },
+ "origin": "issue-229",
+ "quests": {
+  "92553-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Zerril Softbreeze",
+   "npc": "251905",
+   "questID": 92553,
+   "sex": "m",
+   "source": "community",
+   "text": "Up for a bit of work? I could use a bit of muscle from a strong adventuring-type such as yourself. With how dangerous things are getting around here, no one's had much time to hunt or forage of late, and I need someone to get out there and source me fresh eggs and strider meat to keep this village fed.\r\n\r\nI'd be happy to teach you one of my famous recipes if you can bring me what I need. What do you say?",
+   "time": 1790459134,
+   "title": "Restocking the Larders",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "99156-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Deathguard Linnea",
+   "npc": "1495",
+   "questID": 99156,
+   "sex": "m",
+   "source": "community",
+   "text": "Have you dealt with our little problem?",
+   "time": 1790460542,
+   "title": "Rear Guard Patrol",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
