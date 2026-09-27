@@ -44,9 +44,25 @@ MIN_CLIP, MAX_CLIP = 2.0, 12.0   # a spoken line, not a grunt or a whole cinemat
 # giver ends up sounding like she is screaming down a pipe. Several generic
 # npc_-_* voice sets are 100% combat and contain no speech at all, so a source
 # that yields nothing after this filter must be replaced, not re-filtered.
-COMBAT = re.compile(
-    r"_(attack|attackcrit|battleshout|death|aggro|wound|pissed|flee|taunt|jump|"
-    r"fall|gasp|grunt|pain|spell|cast)\w*_?\d*\.ogg$", re.IGNORECASE)
+#
+# The marker is a whole underscore-separated token of the file name, not a
+# substring: `_cast\w*` also matched vo_801_zandalari_lower_caste_01_m and threw
+# out all 144 files of that set, speech included, and the same prefix match
+# rejected every line of the deathguard, deathwing, fleet, fallen, spellblade and
+# *_caster sets - 798 files across retail, none of them combat by their name.
+# "attack" and "wound" never begin a name, so any token starting with them is
+# combat, typos included (attackctitical, attackscrit). The rest are also words
+# (caster, fleet, fallen, Deathwing), so they count only with a combat ending.
+_COMBAT_ALWAYS = re.compile(r"(attack|wound|battleshout)\w*", re.IGNORECASE)
+_COMBAT_WORD = re.compile(
+    r"(death|aggro|pissed|flee|taunt|jump|fall|gasp|grunt|pain|spell|spellcast|cast)"
+    r"(s|ed|ing|crit|critical)?\d*", re.IGNORECASE)
+
+
+def is_combat(file_name: str) -> bool:
+    """True for a swing, shout or death cry by its vo_ file name."""
+    tokens = Path(file_name).stem.split("_")
+    return any(_COMBAT_ALWAYS.fullmatch(t) or _COMBAT_WORD.fullmatch(t) for t in tokens)
 
 # voice name -> creature directory under sound/creature/, or (directory, pattern)
 # when one folder holds more than one voice.
@@ -104,7 +120,7 @@ def fdids_for(listfile: Path, source: str | tuple[str, str]) -> tuple[list[int],
                 continue
             if within and not within.search(m.group(2)):
                 continue
-            if COMBAT.search(m.group(2)):
+            if is_combat(m.group(2)):
                 rejected += 1
                 continue
             out.append(int(m.group(1)))
