@@ -6,7 +6,7 @@ The talking head: a frame that mirrors Blizzard's own TalkingHeadFrame
 (Blizzard_FrameXML/TalkingHeadUI.xml) in size, atlases, anchors and fade
 animations, so it reads as part of the client. Shows the current queue item
 with the speaker's model, name, title, and the spoken text paged in time with
-the audio. Right-click skips, the X clears the queue. Report copies a link that opens a
+the audio. Right-click skips, the X clears the queue. The bug icon opens a
 GitHub issue about the line.
 ]]
 
@@ -173,6 +173,41 @@ function TalkingHead:CreateFrame()
         PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
         Queue:Clear()
     end)
+
+    -- Blizzard's report-bug icon (HelpIcon-Bug), not the 64px UIPanelBugButton
+    -- it usually sits in. It belongs on the left of the portrait.
+    local bug = CreateFrame("Button", nil, frame)
+    bug:SetSize(22, 22)
+    bug:SetPoint("CENTER", frame, "TOPLEFT", 16, -42)
+    bug:SetFrameLevel(frame:GetFrameLevel() + 30)
+    bug:SetAlpha(0.01)
+    local icon = bug:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(22, 22)
+    icon:SetPoint("CENTER")
+    icon:SetTexture("Interface\\HelpFrame\\HelpIcon-Bug")
+    bug.Icon = icon
+    bug:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
+    bug:GetHighlightTexture():SetSize(22, 22)
+    bug:SetScript("OnMouseDown", function()
+        icon:ClearAllPoints()
+        icon:SetPoint("CENTER", 1, -1)
+    end)
+    bug:SetScript("OnMouseUp", function()
+        icon:ClearAllPoints()
+        icon:SetPoint("CENTER")
+    end)
+    bug:SetScript("OnClick", function()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        ns.Report:Show(self.displayed or Queue:Current())
+    end)
+    bug:SetScript("OnEnter", function(button)
+        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+        GameTooltip:SetText("Report this line")
+        GameTooltip:AddLine("Copy a link that opens a GitHub issue about this line. Your character name is removed.", 1, 0.82, 0, true)
+        GameTooltip:Show()
+    end)
+    bug:SetScript("OnLeave", GameTooltip_Hide)
+    frame.ReportButton = bug
 end
 
 function TalkingHead:CreatePortrait()
@@ -354,18 +389,6 @@ function TalkingHead:CreateControls()
         Queue:TogglePause()
     end)
     frame.PauseButton:SetPoint("RIGHT", frame.SkipButton, "LEFT", -4, 0)
-
-    frame.ReportButton = Button("Report", 78, function()
-        ns.Report:Show(self.displayed or Queue:Current())
-    end)
-    frame.ReportButton:SetPoint("RIGHT", frame.PauseButton, "LEFT", -4, 0)
-    frame.ReportButton:SetScript("OnEnter", function(button)
-        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Report this line")
-        GameTooltip:AddLine("Copy a link that opens a GitHub issue about this line. Your character name is removed.", 1, 0.82, 0, true)
-        GameTooltip:Show()
-    end)
-    frame.ReportButton:SetScript("OnLeave", GameTooltip_Hide)
 end
 
 function TalkingHead:CreateAnimations()
@@ -381,6 +404,7 @@ function TalkingHead:CreateAnimations()
     Alpha(fadeIn, frame.Title, 0, 1, 0.25)
     Alpha(fadeIn, frame.Text, 0, 1, 0.25)
     Alpha(fadeIn, frame.CloseButton, 0, 1, 0.75, 0.75)
+    Alpha(fadeIn, frame.ReportButton, 0, 1, 0.75, 0.75)
     Alpha(fadeIn, frame.GlowTop, 0, 0.7, 0.25, 0.15)
     Scale(fadeIn, frame.GlowTop, 0.25, 1, 1.5, 1, 0.25, 0.15)
     Alpha(fadeIn, frame.GlowTop, 0.7, 0, 0.5, 0.4)
@@ -424,7 +448,7 @@ function TalkingHead:CreateAnimations()
 
     local close = frame:CreateAnimationGroup()
     close:SetToFinalAlpha(true)
-    for _, region in ipairs({ frame.Model, frame.Model.PortraitBg, frame.Portrait, frame.TextBackground, frame.Name, frame.Title, frame.Text, frame.CloseButton }) do
+    for _, region in ipairs({ frame.Model, frame.Model.PortraitBg, frame.Portrait, frame.TextBackground, frame.Name, frame.Title, frame.Text, frame.CloseButton, frame.ReportButton }) do
         Alpha(close, region, 1, 0, 1)
     end
     close:SetScript("OnFinished", function()

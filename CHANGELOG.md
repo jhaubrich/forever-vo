@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Report, on the talking head and `/fvo report`, opens the text of a GitHub
+- The bug icon on the talking head, and `/fvo report`, opens the text of a GitHub
   issue about the line that is playing. Edit it, then Copy Link, and paste
   the link into a browser. The title and the description are already filled
   in. The character name is removed from the text. You still pick what is

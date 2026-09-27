@@ -156,7 +156,7 @@ of a run and `--narrator-only` makes a run of nothing else.
   which voice that is, from whatever the pack carries; `/fvo narrator` cycles.
 - Right-click the talking head to skip; the X clears the queue; "Queue" shows
   what is waiting; drag to move (lockable in options).
-- Report, on the talking head or `/fvo report`, opens the text of a GitHub
+- The bug icon on the talking head, or `/fvo report`, opens the text of a GitHub
   issue about the line that is playing. Edit it if you need to, then Copy
   Link and paste the link into a browser. The title and the description are
   already filled in. Your character name is removed.
