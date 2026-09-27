@@ -224,21 +224,25 @@ local function NarratorSpeaks(item)
     end
 end
 
+local function Section(heading, body)
+    return "## " .. heading .. "\n\n" .. body
+end
+
 local function Tail(item)
-    local lines = {}
+    local sections = {}
     -- The same words as the GitHub "Which line" box. That box is one line, so
     -- a long title looks cut off there; here it wraps.
-    table.insert(lines, "Line: " .. Identity(item))
+    table.insert(sections, Section("Line", Identity(item)))
     local voice = HeardVoice(item)
     if voice then
-        table.insert(lines, "Voice: " .. voice)
+        table.insert(sections, Section("Voice", voice))
     end
     if NarratorSpeaks(item) then
-        table.insert(lines, "Narrator: " .. ns.Packs.NarratorVoiceLabel(ns.Packs:NarratorVoice()))
+        table.insert(sections, Section("Narrator", ns.Packs.NarratorVoiceLabel(ns.Packs:NarratorVoice())))
     end
     local sound = ShortSound(item.path)
     if sound then
-        table.insert(lines, "Sound: " .. sound)
+        table.insert(sections, Section("Sound", sound))
     end
     if item.parts then
         local parts = {}
@@ -249,26 +253,26 @@ local function Tail(item)
             end
         end
         if #parts > 0 then
-            table.insert(lines, "Parts: " .. table.concat(parts, ", "))
+            table.insert(sections, Section("Parts", table.concat(parts, ", ")))
         end
     end
     if item.pack and item.pack.name then
         local version = item.pack.version
-        table.insert(lines, version and format("Pack: %s %s", item.pack.name, version) or ("Pack: " .. item.pack.name))
+        table.insert(sections, Section("Pack", version and format("%s %s", item.pack.name, version) or item.pack.name))
     end
     local sex = ReaderSex()
     if sex then
-        table.insert(lines, "Reader sex: " .. sex)
+        table.insert(sections, Section("Reader sex", sex))
     end
-    return table.concat(lines, "\n")
+    return table.concat(sections, "\n\n")
 end
 
---- The blank line after the prompt is where the cursor starts, so typing
---- stays above the sound and pack lines.
+--- The blank line under this heading is where the cursor starts, so typing
+--- stays above the sound and pack sections.
 local NOTE_MARK = {
-    voices = "Note:\n\n",
-    captures = "What it should be:\n\n",
-    playback = "Note:\n\n",
+    voices = "## Note:\n\n",
+    captures = "## What it should be:\n\n",
+    playback = "## Note:\n\n",
 }
 
 local function BodyFor(choice, item, text)
@@ -277,13 +281,13 @@ local function BodyFor(choice, item, text)
     local mark = NOTE_MARK[choice.key]
     local head
     if choice.key == "captures" then
-        head = format("The talking head showed:\n\n%s\n\n%s\n%s", shown, mark, tail)
+        head = "## The talking head showed:"
     elseif choice.key == "playback" then
-        head = format("While this line was playing: %s\n\n%s\n\n%s\n%s", Identity(item), shown, mark, tail)
+        head = "## While this line was playing:"
     else
-        head = format("Spoken text:\n\n%s\n\n%s\n%s", shown, mark, tail)
+        head = "## Spoken text:"
     end
-    return head
+    return format("%s\n\n%s\n\n%s\n\n%s", head, shown, mark, tail)
 end
 
 --- kind is left unset on the voice and capture forms. It is a required
