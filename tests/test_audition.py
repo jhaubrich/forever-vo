@@ -122,9 +122,12 @@ def test_write_voice_sources_keeps_the_build(toml_copy: Path) -> None:
     assert config.voices.sources["tauren-male"].build is None
 
 
-def test_sources_warnings_names_a_clip_the_voice_does_not_actually_read(toml_copy: Path) -> None:
+def test_sources_warnings_names_a_clip_the_voice_does_not_actually_read(toml_copy: Path, tmp_path: Path) -> None:
+    voices = tmp_path / "voices"
+    voices.mkdir()
+    (voices / "human-male.wav").touch()
     config = write_tuning(toml_copy, "tauren-male", 0.45, 0.5, "npc-3597")
     # a voice whose tuning clones from elsewhere: picking clips for its own wav is moot
-    assert any("npc-3597" in w for w in sources_warnings(config, "tauren-male"))
+    assert any("npc-3597" in w for w in sources_warnings(config, "tauren-male", voices))
     # human-male is the narrator's clip as well as its own
-    assert any("narrator" in w for w in sources_warnings(config, "human-male"))
+    assert any("narrator" in w for w in sources_warnings(config, "human-male", voices))

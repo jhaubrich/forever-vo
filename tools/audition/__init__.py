@@ -228,7 +228,7 @@ def write_voice_sources(path: Path, voice: str, clips: list[int], build: str | N
         return _validated_write(path, doc)
 
 
-def sources_warnings(config: Config, voice: str) -> list[str]:
+def sources_warnings(config: Config, voice: str, voices_dir: Path = VOICES_DIR) -> list[str]:
     """What the owner has to know before picking for this voice, worst first.
 
     Each of these is a way a pick reaches nobody, or reaches far more lines than the
@@ -241,9 +241,9 @@ def sources_warnings(config: Config, voice: str) -> list[str]:
         warnings.append(
             f"[tts.voices.{voice}] clones from {tuning.reference}.wav, so {voice}.wav is not "
             f"what this voice reads - pick for {tuning.reference}, or drop that reference first")
-    catalog = VoiceCatalog(config)
+    catalog = VoiceCatalog(config, voices_dir)
     borrowers = []
-    for other in _known_voices(config):
+    for other in _known_voices(config, voices_dir):
         if other == voice:
             continue
         resolved = catalog.resolve(other)
@@ -254,8 +254,8 @@ def sources_warnings(config: Config, voice: str) -> list[str]:
         warnings.append(f"{len(borrowers)} other voice(s) read from {voice}.wav: {shown}")
     narrator = config.voices.narrator
     reads_for_narrator = voice == narrator or (
-        not (VOICES_DIR / f"{narrator}.wav").exists()
-        and catalog.resolve(narrator).clip == VOICES_DIR / f"{voice}.wav")
+        not (voices_dir / f"{narrator}.wav").exists()
+        and catalog.resolve(narrator).clip == voices_dir / f"{voice}.wav")
     if reads_for_narrator:
         warnings.append("this clip is what the narrator reads: every quest from an object "
                         "or item, and every <stage direction>")
@@ -417,9 +417,9 @@ def restage_note(voice: str, existed: bool, kept: bool) -> str:
             f"./tools/run.sh tools/generate.py --force --voice {voice}")
 
 
-def _known_voices(config: Config) -> list[str]:
+def _known_voices(config: Config, voices_dir: Path = VOICES_DIR) -> list[str]:
     """Voice names worth resolving: the clips on disk plus anything the TOML names."""
-    names = {p.stem for p in VOICES_DIR.glob("*.wav")}
+    names = {p.stem for p in voices_dir.glob("*.wav")}
     names |= set(config.tts.voices) | set(config.voices.fallbacks) | {config.voices.narrator}
     names |= set(config.voices.narrator_alternates)
     return sorted(names)
