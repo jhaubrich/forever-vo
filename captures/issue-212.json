@@ -91,11 +91,29 @@
    "name": "Beldin Steelgrill",
    "sex": 2
   },
+  "1430": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Tomas",
+   "sex": 2
+  },
+  "1651": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Lee Brown",
+   "sex": 2
+  },
   "1965": {
    "creatureType": "Humanoid",
    "modelFileID": 118355,
    "name": "Mountaineer Thalos",
    "sex": 2
+  },
+  "2329": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119563,
+   "name": "Michelle Belle",
+   "sex": 3
   },
   "240": {
    "creatureType": "Humanoid",
@@ -107,6 +125,24 @@
    "creatureType": "Humanoid",
    "modelFileID": 119940,
    "name": "Remy \"Two Times\"",
+   "sex": 2
+  },
+  "246": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119563,
+   "name": "\"Auntie\" Bernice Stonefield",
+   "sex": 3
+  },
+  "247": {
+   "creatureType": "Humanoid",
+   "modelFileID": 124495,
+   "name": "Billy Maclure",
+   "sex": 2
+  },
+  "252": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Tommy Joe Stonefield",
    "sex": 2
   },
   "253": {
@@ -131,6 +167,18 @@
    "creatureType": "Humanoid",
    "modelFileID": 118355,
    "name": "Grund Drokda",
+   "sex": 2
+  },
+  "279": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Morgan Pestle",
+   "sex": 2
+  },
+  "383": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Jason Mathers",
    "sex": 2
   },
   "786": {
@@ -172,6 +220,54 @@
  },
  "origin": "issue-212",
  "quests": {
+  "106-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Tommy Joe Stonefield",
+   "npc": "252",
+   "questID": 106,
+   "sex": "m",
+   "source": "community",
+   "text": "You have what??  Maybell is the light of my dull life.  Hurry, let me see her letter!",
+   "time": 1790478958,
+   "title": "Young Lovers",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "107-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "William Pestle",
+   "npc": "253",
+   "questID": 107,
+   "sex": "m",
+   "source": "community",
+   "text": "You have a note from \"Gramma\" Stonefield, eh?  I haven't seen Mildred in years!  I wonder what she has to say...",
+   "time": 1790481130,
+   "title": "Note to William",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "112-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "William Pestle",
+   "npc": "253",
+   "questID": 112,
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have that crystal kelp?  I'm sure Maybell is anxious to see her beau...",
+   "time": 1790482675,
+   "title": "Collecting Kelp",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
   "18-progress": {
    "build": "70009",
    "event": "progress",
@@ -444,6 +540,22 @@
    "wanted": null,
    "zone": "Elwynn Forest"
   },
+  "61-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Morgan Pestle",
+   "npc": "279",
+   "questID": 61,
+   "sex": "m",
+   "source": "community",
+   "text": "Oh, a shipment from my brother?  Splendid!  Fortune truly shines on me today!",
+   "time": 1790477031,
+   "title": "Shipment to Stormwind",
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
   "62-progress": {
    "build": "70009",
    "event": "progress",
@@ -457,6 +569,54 @@
    "text": "What do you have to report, $N?  Have you been to the Fargodeep Mine?",
    "time": 1790474586,
    "title": "The Fargodeep Mine",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "84-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Billy Maclure",
+   "npc": "247",
+   "questID": 84,
+   "sex": "m",
+   "source": "community",
+   "text": "Ugh... I'm starving!  Do you have that pie for me, $N?",
+   "time": 1790479907,
+   "title": "Back to Billy",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "86-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "\"Auntie\" Bernice Stonefield",
+   "npc": "246",
+   "questID": 86,
+   "sex": "m",
+   "source": "community",
+   "text": "I don't think it's right feeding the boy who stole my necklace in the first place, but if that's what it takes to get back what's mine, then so be it!\n\nDo you have that boar meat?",
+   "time": 1790479842,
+   "title": "Pie for Billy",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "87-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "\"Auntie\" Bernice Stonefield",
+   "npc": "246",
+   "questID": 87,
+   "sex": "m",
+   "source": "community",
+   "text": "Hello, $N.  Have you found my necklace?",
+   "time": 1790480336,
+   "title": "Goldtooth",
    "wanted": null,
    "zone": "Elwynn Forest"
   },
@@ -604,6 +764,22 @@
    "wanted": true,
    "zone": "Elwynn Forest"
   },
+  "96626-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Tomas",
+   "npc": "1430",
+   "questID": 96626,
+   "sex": "m",
+   "source": "community",
+   "text": "With this, you'll be able to set up a camp anywhere out in the wilderness. What you've learned is just the basics, so you won't be able to place too many furnishings around it.\r\n\r\nRaise your cooking skill and you might just be able to learn to make even bigger fires.\r\n\r\nYou can also learn the basics of furnishing your campsites from other tradeskill trainers if you're savvy in their skills.",
+   "time": 1790476170,
+   "title": "Camping 101: Cooking",
+   "wanted": true,
+   "zone": "Elwynn Forest"
+  },
   "96627-complete": {
    "build": "70009",
    "event": "complete",
@@ -652,6 +828,38 @@
    "wanted": null,
    "zone": "Anvilmar"
   },
+  "97919-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Sam Sarsaparilla",
+   "npc": "263399",
+   "questID": 97919,
+   "sex": "m",
+   "source": "community",
+   "text": "So you've taken up First Aid? That's an honorable... and pragmatic pursuit as a $c.\r\n\r\nI reckon I know someone that can teach you how to craft a First Aid Kit for your camp. Injuries are a reality in the world of adventuring and offering some much-needed healing at your camp could even save lives.",
+   "time": 1790476599,
+   "title": "Camping 101: First Aid",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "97919-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Michelle Belle",
+   "npc": "2329",
+   "questID": 97919,
+   "sex": "m",
+   "source": "community",
+   "text": "There you have it, you can now craft your very own First Aid Kit. Most folk don't care much for camps being set up in the center of town, so you'll need to head into the wilderness if you want to test it out.\r\n\r\nOh, and just remember, no camp is complete without a campfire. You'll need one of those before you start up your camp. Most cooks can teach you to make a fire. If you haven't already, you might want to check in with someone who can train you in the culinary arts to learn the basics.",
+   "time": 1790476806,
+   "title": "Camping 101: First Aid",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
   "97923-accept": {
    "build": "70009",
    "event": "accept",
@@ -666,6 +874,118 @@
    "time": 1790474064,
    "title": "Camping 101: Mining",
    "wanted": true,
+   "zone": "Elwynn Forest"
+  },
+  "99127-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99127,
+   "sex": "m",
+   "source": "community",
+   "text": "Any catches to speak of?",
+   "time": 1790482083,
+   "title": "A Net Disaster",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99128-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99128,
+   "sex": "m",
+   "source": "community",
+   "text": "I can hear their warbling from here, it'll be in my nightmares. Well, that should slow them down--although I have no doubt that they'll make up those numbers quickly.",
+   "time": 1790482510,
+   "title": "Slimy Menace",
+   "wanted": true,
+   "zone": "Elwynn Forest"
+  },
+  "99129-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99129,
+   "sex": "m",
+   "source": "community",
+   "text": "Remy mentioned murlocs the other day... I'm pretty sure he hates the little buggers as much as I do. \r\n\r\nHe might have some ideas on how to keep them away from my fish in the future. I'd like to ask you to go chat with him and see if there's anything he can think of.",
+   "time": 1790482512,
+   "title": "A Man About a Murloc",
+   "wanted": true,
+   "zone": "Elwynn Forest"
+  },
+  "99129-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Remy \"Two Times\"",
+   "npc": "241",
+   "questID": 99129,
+   "sex": "m",
+   "source": "community",
+   "text": "I've been warning the guards about the murlocs. They won't listen.\r\n\r\nI have a few ideas on how to get back at those critters. I'll need your help getting what I need for it though.",
+   "time": 1790482824,
+   "title": "A Man About a Murloc",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99130-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Remy \"Two Times\"",
+   "npc": "241",
+   "questID": 99130,
+   "sex": "m",
+   "source": "community",
+   "text": "I've got a few ideas on how to deal with murlocs. And one of those also helps some others in the process.\r\n\r\nThere's a weed often found on farms in the area called duskweed, and in large quantities the petals are toxic to most animals. If we make some murloc bait with the plant, hopefully that can train those creatures to stay away.\r\n\r\nAnd some farmers get their fields cleared in the process. Truly a win-win... truly a win-win.",
+   "time": 1790482825,
+   "title": "An Enticing Offer",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99143-complete": {
+   "build": "70009",
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Lee Brown",
+   "npc": "1651",
+   "questID": 99143,
+   "sex": "m",
+   "source": "community",
+   "text": "An interesting collection. These should work well enough!\r\n\r\nHere's some of my own older supplies. It should help anyone trying to get their footing in fishing.",
+   "time": 1790481831,
+   "title": "Bottles and Baubles",
+   "wanted": true,
+   "zone": "Elwynn Forest"
+  },
+  "99143-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Lee Brown",
+   "npc": "1651",
+   "questID": 99143,
+   "sex": "m",
+   "source": "community",
+   "text": "What did you find? Anything interesting?",
+   "time": 1790481830,
+   "title": "Bottles and Baubles",
+   "wanted": null,
    "zone": "Elwynn Forest"
   }
  },
