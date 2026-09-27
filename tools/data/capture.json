@@ -8251,7 +8251,7 @@
   "3309|2f8d506f": {
    "addon": "0.1.5",
    "build": "70009",
-   "class": "Warlock",
+   "class": "Mage",
    "event": "gossip",
    "firstSeen": 1789924607,
    "found": true,
@@ -8259,12 +8259,12 @@
    "name": "Karus",
    "npc": "3309",
    "pack": "Forever",
-   "player": "Morgause",
-   "race": "Troll",
-   "sex": "f",
+   "player": "Myrlin",
+   "race": "Orc",
+   "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1790539954,
+   "time": 1790545569,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
