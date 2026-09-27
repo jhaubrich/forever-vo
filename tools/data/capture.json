@@ -414,6 +414,24 @@
    "time": 1790370827,
    "zone": "Orgrimmar"
   },
+  "11017|8ad376c5": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Paladin",
+   "event": "gossip",
+   "found": true,
+   "mapID": 1454,
+   "name": "Roxxik",
+   "npc": "11017",
+   "pack": "Forever",
+   "player": "Fixpoint",
+   "race": "Undead",
+   "sex": "m",
+   "subzone": "Valley of Honor",
+   "text": "Nice going! I knew I was right about you, no matter what those other people said. Ha! I'm kidding! Okay, on with your lessons...",
+   "time": 1790531605,
+   "zone": "Orgrimmar"
+  },
   "11028|ea44f66d": {
    "addon": "0.1.2",
    "build": "70009",
@@ -2402,6 +2420,7 @@
    "build": "70009",
    "class": "Paladin",
    "event": "gossip",
+   "firstSeen": 1790531306,
    "mapID": 1456,
    "name": "Alodan the Hopeful",
    "npc": "246344",
@@ -7121,6 +7140,7 @@
    "build": "70009",
    "class": "Paladin",
    "event": "gossip",
+   "firstSeen": 1790531210,
    "found": true,
    "mapID": 1456,
    "name": "Bluffwatcher",
@@ -7171,6 +7191,7 @@
    "build": "70009",
    "class": "Paladin",
    "event": "gossip",
+   "firstSeen": 1790531213,
    "mapID": 1456,
    "name": "Bluffwatcher",
    "npc": "3084",
@@ -8156,9 +8177,9 @@
    "zone": "Orgrimmar"
   },
   "3413|c879b3f9": {
-   "addon": "0.1.4",
+   "addon": "0.1.5",
    "build": "70009",
-   "class": "Hunter",
+   "class": "Paladin",
    "event": "gossip",
    "firstSeen": 1790293541,
    "found": true,
@@ -8166,12 +8187,12 @@
    "name": "Sovik",
    "npc": "3413",
    "pack": "Forever",
-   "player": "Pellinore",
-   "race": "Windshaper Skyborne",
-   "sex": "f",
+   "player": "Fixpoint",
+   "race": "Undead",
+   "sex": "mf",
    "subzone": "Valley of Honor",
    "text": "Hello, $N! If you don't see it in my shop, chances are good I can get it!",
-   "time": 1790293541,
+   "time": 1790531571,
    "zone": "Orgrimmar"
   },
   "3429|4e7d06f7": {
@@ -10831,6 +10852,13 @@
    "creatureType": "Humanoid",
    "modelFileID": 118355,
    "name": "Captain Rugelfuss",
+   "sex": 2
+  },
+  "11017": {
+   "creatureType": "Humanoid",
+   "level": 46,
+   "modelFileID": 119376,
+   "name": "Roxxik",
    "sex": 2
   },
   "11028": {
@@ -18577,6 +18605,26 @@
    "title": "Senir's Observations",
    "wanted": null,
    "zone": "Dun Morogh"
+  },
+  "2842-accept": {
+   "addon": "0.1.5",
+   "build": "70009",
+   "class": "Paladin",
+   "event": "accept",
+   "found": true,
+   "mapID": 1454,
+   "name": "Sovik",
+   "npc": "3413",
+   "pack": "Forever",
+   "player": "Fixpoint",
+   "questID": 2842,
+   "race": "Undead",
+   "sex": "m",
+   "subzone": "Valley of Honor",
+   "text": "As soon as we got word from Kernobee about the new gnomish rig, Scooty and I began work on the Transpolyporter 6000: The fastest and most reliable way to Gnomeregan.\n\nIt's finally ready for passengers to board, $N. If you want to give it a try, go to Booty Bay and talk with Scooty at the wind rider roost. To get to Booty Bay, take the boat from Ratchet.\n\nOf course, you could always try and make the run to Gnomeregan through the dwarf infested mountains of Dun Morogh!",
+   "time": 1790531568,
+   "title": "Chief Engineer Scooty",
+   "zone": "Orgrimmar"
   },
   "287-progress": {
    "addon": "0.1.5",
