@@ -129,7 +129,6 @@ def species_voice_names(species: str, sex_id: int | None, voices: Voices) -> lis
         if name and name not in names:
             names.append(name)
 
-    add(voices.species_aliases.get(species, ""))
     # A construct is Gender 2 and so has no sex, but an abomination is not
     # genderless the way a player-race speaker with no sex is: the species already
     # says how it sounds. Prefer the recorded sex, then accept either.
@@ -143,6 +142,11 @@ def species_voice_names(species: str, sex_id: int | None, voices: Voices) -> lis
             add(f"{carried.group(1)}-{carried.group(2)}")
         trimmed = re.sub(r"[0-9]+$", "", re.sub(r"(_ghost|_skeleton)$", "", stem))
         if trimmed == stem or not trimmed:
+            # Last, not first: an alias lends a species someone else's clip, so it
+            # must never outrank a clip of the speaker's own kind. First, it would
+            # keep the Orcish Orphan on the Kul Tiran child even after an
+            # orcmalekid clip was built for him.
+            add(voices.species_aliases.get(species, ""))
             return names
         stem = trimmed
 
