@@ -9,11 +9,11 @@ the rest). body= fills a blank issue, and this repo's forms would ignore it.
 labels= is a permission the player does not have, and GitHub answers that
 with a 404, so the form file's own labels are left to apply on their own.
 
-The client cannot open a browser. LaunchURL only accepts Blizzard's own sites,
-and CopyToClipboard is protected, so Copy Link tries it and, when the client
-refuses, highlights the link for Ctrl+C instead. The window is not a
-StaticPopup. With the gamepad UI on, every StaticPopup is handed to a
-protected path and the client freezes (#44).
+The client cannot open a browser, and it blocks an addon that calls
+CopyToClipboard (the same class of protected action as #44). Copy Link
+selects the link so Ctrl+C takes it. The window is not a StaticPopup. With
+the gamepad UI on, every StaticPopup is handed to a protected path and the
+client freezes.
 
 The spoken text is tokenised first. The talking head shows the line with the
 character's name, class and race already written in, and those must not leave
@@ -38,9 +38,8 @@ local CHOICES = {
 }
 
 local HINT = "Edit the report if you need to, then Copy Link and paste it into a browser. Choose what is wrong on the GitHub form, and submit.\nYour character name has been removed."
-local COPIED = "Copied"
-local COPIED_SHORT = "Copied. The link was shortened."
 local PRESS_COPY = "Press Ctrl+C"
+local PRESS_COPY_SHORT = "Press Ctrl+C. The link was shortened."
 
 --- Percent-encode one query component. Unreserved characters stay as they
 --- are; everything else, spaces included, is %XX per byte, so a multi-byte
@@ -451,7 +450,7 @@ function Report:GetFrame()
         end
     end)
 
-    -- Shown only when the client will not put the link on the clipboard.
+    -- The link, selected so Ctrl+C copies it. CopyToClipboard is protected.
     local link = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
     link:SetAutoFocus(false)
     link:SetHeight(22)
@@ -562,23 +561,12 @@ function Report:CopyLink()
     local body = frame.Scroll.EditBox:GetText() or ""
     local url, shortened = LinkFromBody(choice, item, body)
     frame.link = url
-    -- Protected. A click from this addon is insecure code, so this usually
-    -- fails and the link is highlighted for Ctrl+C instead.
-    local copied = CopyToClipboard and pcall(CopyToClipboard, url)
-    if copied then
-        if frame.LinkBox:IsShown() then
-            frame.LinkBox:Hide()
-            PlaceScroll(frame, 46)
-        end
-        self:ShowStatus(shortened and COPIED_SHORT or COPIED, 0.2, 0.9, 0.2, false)
-        return
-    end
     PlaceScroll(frame, 70)
     frame.LinkBox:Show()
     frame.LinkBox:SetText(url)
     frame.LinkBox:SetFocus()
     frame.LinkBox:HighlightText()
-    self:ShowStatus(PRESS_COPY, 1, 0.82, 0, true)
+    self:ShowStatus(shortened and PRESS_COPY_SHORT or PRESS_COPY, 1, 0.82, 0, true)
 end
 
 function Report:Show(item)
