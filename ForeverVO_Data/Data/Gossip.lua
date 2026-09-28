@@ -3049,8 +3049,8 @@ pack.gossip = {
 		{ f="3442-ef9d74c5", h="ef9d74c5", t="Director Riddlevox put me in charge of the Union's shredder development program. Few months on the job and I'm already in hot water! I could use your help, $N!", d=9.520, v="goblin-male-gruff" },
 	},
 	[3446] = {
-		{ f="3446-36457281", h="36457281", t="Yes yes yes!  You're just the skyborne I'm looking for!  Sit!  We have much to discuss!!", d=4.800, v="goblin-male" },
-		{ f="3446-36457281", h="36457281", t="Yes yes yes!  You're just the $r I'm looking for!  Sit!  We have much to discuss!!", d=4.800, v="goblin-male" },
+		{ f="3446-36457281", h="36457281", t="Yes yes yes!  You're just the skyborne I'm looking for!  Sit!  We have much to discuss!!", d=5.080, v="goblin-male" },
+		{ f="3446-36457281", h="36457281", t="Yes yes yes!  You're just the $r I'm looking for!  Sit!  We have much to discuss!!", d=5.080, v="goblin-male" },
 	},
 	[3448] = {
 		{ f="3448-dcea3712", h="dcea3712", t="The times we live in are as fickle as the shifting winds, $c.  It is important to remember what is true and lasting in this world, and to preserve that.  Everything else is a waste.", d=14.960, v="tauren-male-shaman" },
