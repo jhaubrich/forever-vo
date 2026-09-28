@@ -388,3 +388,55 @@ function Packs:FindGossip(speakerKey, text)
     end
     return SoundPath(bestPack, "Gossip", base), bestEntry.d, bestPack, nil, bestEntry.v
 end
+
+--- The file base, the voice the queue plays, and the archetype recorded on the
+--- entry (va/vp/vc). The last two differ when a narrator recording is what
+--- plays. `base` is still returned for a quest the packs do not have.
+function Packs:DebugQuest(questID, event)
+    local field = QUEST_FIELD[event]
+    if not questID or not field then
+        return nil
+    end
+    local base = format("%d-%s", questID, event)
+    local _, _, _, _, playing = self:FindQuest(questID, event)
+    local recorded
+    for _, pack in ipairs(self.list) do
+        local entry = pack.quests and pack.quests[questID]
+        if entry and (entry[field] or entry[field .. "P"]) then
+            if entry.g == true or (type(entry.g) == "string" and strfind(entry.g, field, 1, true)) then
+                base = Util.PlayerGenderPrefix() .. base
+            end
+            recorded = entry["v" .. field]
+            break
+        end
+    end
+    return base, playing, recorded
+end
+
+--- Playing voice and the archetype on the matched gossip entry. Same as
+--- FindGossip's voice except when the narrator recording replaced it.
+function Packs:DebugGossip(speakerKey, text)
+    if not speakerKey or not text or text == "" then
+        return nil, nil
+    end
+    local _, _, pack, _, playing = self:FindGossip(speakerKey, text)
+    local recorded = playing
+    if playing == self:NarratorVoice() and pack and pack.gossip and pack.gossip[speakerKey] then
+        local tokenized = Util.Tokenize(text)
+        local hash = Util.TextKey(tokenized)
+        local best, bestScore
+        for _, entry in ipairs(pack.gossip[speakerKey]) do
+            if entry.h == hash then
+                return playing, entry.v
+            end
+            local score = Util.Similarity(tokenized, entry.t or "")
+            if score >= FUZZY_THRESHOLD and (not bestScore or score > bestScore) then
+                best, bestScore = entry, score
+            end
+        end
+        if best then
+            recorded = best.v
+        end
+    end
+    return playing, recorded
+end
