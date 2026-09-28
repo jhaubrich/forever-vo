@@ -217,6 +217,12 @@ ns.OnInit(function()
     Checkbox(data, "capture", "Record lines that have no audio", "Save every quest and gossip text you see so new voice lines can be generated from them.")
     Checkbox(data, "notifyUnvoiced", "Say when a line has no voice", "Print a chat line whenever a quest or gossip text has no audio yet. The line is saved for your next export either way.")
     Checkbox(data, "debug", "Debug messages", "Print matching details to chat.")
+    Checkbox(data, "devOverlay", "Developer overlay",
+        "Show a window attached to the quest or gossip frame with the quest file name, the voice, and the speaker's display and model ids. For people working on the voice pack.",
+        function(value)
+            pcall(C_CVar.SetCVar, "ForeverVO_devOverlay", value and "1" or "0")
+            ns.UI.Debug:Apply()
+        end)
 
     Settings.RegisterAddOnCategory(category)
 end)

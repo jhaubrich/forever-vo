@@ -69,7 +69,7 @@ echo "backlog after this run: $BULK_PENDING files"
 ./tools/run.sh tools/release_pack.py delta --upload --if-changed --min-new 20 --max-age-days 7 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
 
 # Publish the text side of the build so the repository matches this machine
-git add tools/data/capture.json tools/data/sound_index.json tools/data/bulk/questcache.json ForeverVO_Data/Data captures 2>/dev/null || true
+git add tools/data/capture.json tools/data/sound_index.json ForeverVO_Data/Data captures 2>/dev/null || true
 if ! git diff --cached --quiet; then
     # The pull at the start was hours ago and the GitHub bot commits captures
     # meanwhile, so rebase onto them first or the push is refused

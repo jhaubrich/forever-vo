@@ -64,9 +64,13 @@ game's own recordings).
   minimap skin, hence our own minimap button.
 - Quest and gossip **text is not in the client files**. The server sends it.
   Client tables on wago.tools (`QuestV2`, `BroadcastText`) carry no usable
-  text. Text comes only from: in-game capture, the client's own quest cache
-  (`Cache/WDB/enUS/questcache.wdb`, offers only), and the open Classic
-  database snapshot (VMaNGOS, for unchanged Classic content).
+  text. Text comes only from: in-game capture and the open Classic database
+  snapshot (VMaNGOS, for unchanged Classic content). The client's own quest
+  cache (`Cache/WDB/enUS/questcache.wdb`, offers only) was a third source until
+  #317 (2026-09-28): it seeded the pipeline before captures came in, but only
+  ever from the owner's client, and it is gone, `wdbcache.py` and
+  `bulk/questcache.json` with it. Do not bring it back; what it did is done by
+  players re-reading lines (settled placeholders and `differs`, below).
 
 ## Addon conventions
 
@@ -86,8 +90,8 @@ game's own recordings).
   `Util.Tokenize`/`Util.NormalizeText`/`Util.HashText` in `Core/Util.lua` and
   `tools/textkey.py`. If you touch one, touch the other and re-test with
   `./tools/run.sh tools/textkey_parity.py` (the dev shell supplies lua 5.1),
-  which runs both over the real captures, the tokenised quest cache and edge
-  cases.
+  which runs both over the real captures, Classic's raw text (when
+  `bulk/classic.json` is there; CI has none) and edge cases.
 - **The client expands `$n`, `$c` and `$r` before any addon sees the text.** A
   line first heard on a rogue would otherwise be recorded saying "rogue" and
   voiced that way for everyone, and its gossip hash would only match other
@@ -115,8 +119,8 @@ game's own recordings).
   can only have written the name capitalised. The glued check skips the `B`
   of a `$B` line break, or raw text (`$B$B$n`) would read as corruption.
   Tokenize also cannot tell a Mage's expanded `$c` from a literal
-  "mage", so where the raw text is known (`bulk/questcache.json` by quest key,
-  `bulk/classic.json` gossip by speaker, closest line) a capture placeholder
+  "mage", so where the raw text is known (`bulk/classic.json`: quests by key,
+  gossip by speaker, closest line) a capture placeholder
   that aligns to a plain word there is restored to that word, and (since
   2026-09-25) a plain word that aligns to a placeholder there becomes that
   placeholder, whatever got it past Tokenize; the alignment
@@ -126,6 +130,19 @@ game's own recordings).
   `merge_entry` (gossip keys differ by hash, so that only helps quests), and
   there only the placeholder side is corrected, since between two captures the
   placeholder is the suspect (a Mage's "$c of Dalaran").
+- **Forever's own lines have no raw text, so a second reader settles `$c`/`$r`**
+  (#317, 2026-09-28). Where two trusted readings of a line disagree, a
+  placeholder in one and a word in the other, or their readers' known class or
+  race differ, `merge_entry` records `settled` (`c`, `r` or `cr`) on the entry;
+  it is kept whichever reading wins later, `tokenize_entry` leaves a settled
+  trait alone (otherwise the next backfill re-tokenises the fix away whenever
+  the reader who has the trait wins the line), and `needs_of` answers `mf` for
+  a quest line with a `$c` or `$r` that neither Classic's text nor a second
+  reader has settled (`unsettled_traits`). Community readings count as two
+  readers by `origin`. Dropping the quest cache put 109 lines into that ask on
+  2026-09-28 and two back to a placeholder (93951's "skyborne", 95042's
+  "paladin"), which the ask then repairs; a class quest only one class ever
+  reads stays asked, which costs a line in some exports and nothing else.
 - **A multi-word race renders `$r` as its last word alone**: UnitRace says
   "Windshaper Skyborne" and Zamja's `$r` came out "skyborne", so until 0.1.5
   no Skyborne capture ever had `$r` put back (2026-09-25; Mebok Mizzyrix's
@@ -156,7 +173,8 @@ game's own recordings).
   line even though it is voiced, with `wanted` set. That is the general hook
   for any later change in what a capture must carry: make `needs_of` ask and
   players re-supply the line; no hand-built exports, no sharing of
-  `questcache.wdb` (the owner declined both on #29). Gossip stays resolved:
+  `questcache.wdb` (the owner declined both on #29, and dropped the owner's own
+  cache as a source on #317). Gossip stays resolved:
   it is keyed by a hash of the live text. Note that `release_pack.py
   --if-changed` fingerprints sound files only, so new `w*` markers reach
   players with the next delta that carries a new file. `./tools/run.sh
@@ -192,6 +210,17 @@ game's own recordings).
   tokenise it, since a short line ("Help you, skyborne?") never reaches the
   0.9 alignment on one changed word. When designing any capture
   change ask how a line the previous version captured gets replaced. The
+  same goes for a line voiced from wrong source text (Classic's 752-complete
+  is two sentences of three): since addon 0.1.7 (capture version 5, #318) each
+  quest record carries `ha`/`hp`/`hc`, `Util.TextKey` of the text it was voiced
+  from (`"<m>,<f>"` when it branches), and `Packs:QuestTextMatches` compares the
+  live text, keyed with the player's class and race both tokenised and left as
+  words, so a settled literal does not count; a mismatch is captured with
+  `differs` (export field `v`) and exported although it is voiced. Ingest needs
+  no rule for it: a capture beats Classic, the text fingerprint restages the
+  file, and the line moves to the delta. `generate.py` does not skip a
+  `differs` line as covered by another pack. Gossip has no such check yet
+  (its Jaccard fallback plays near matches as found). The
   cost is regeneration, which only happens when the spoken text or voice
   actually changes; the owner accepts it. Checked by `gender_check.py` and
   `tests/test_ingest.py`.
@@ -288,8 +317,7 @@ build artifact, never hand-edited):
    `captures/*.json` into `tools/data/capture.json`.
 2. `classicdb.py` exports the VMaNGOS SQLite snapshot to
    `tools/data/bulk/classic.json` (ignored, 7 MB, regenerable).
-   `wdbcache.py` decodes the beta quest cache to `bulk/questcache.json`
-   (versioned). Precedence when merging: capture > questcache > classic.
+   Precedence when merging: capture > classic.
 3. `generate.py` picks a voice per speaker, synthesises with Chatterbox on the
    GPU, writes mp3s under `ForeverVO_Data/Sounds/`, rebuilds the tables every
    25 files, and records the voice (`v`) and a hash of the spoken text (`t`)
@@ -415,7 +443,7 @@ Three CurseForge projects, three release paths:
   `## X-Curse-Project-ID`; the packager maps Interface 16001 to game version
   "1.60.1" itself, there is no version field to fill.
 - **Delta pack** "Forever Voiceover Data: Forever" (1705094): lines whose
-  source is not `classic` (captures, community, beta cache), priority 200.
+  source is not `classic` (captures, community), priority 200.
   `tools/release_pack.py delta --upload --if-changed` runs at the end of the
   nightly job and uploads a dated beta when the file set changed.
 - **Base packs** "Forever Voiceover Data: Base" (1705100, installs as
@@ -524,10 +552,6 @@ owner's machine picks the files up on the next sync.
   need a client restart, not a `/reload`, before `PlaySoundFile` finds them.
 - The wago.tools CSV export is complete for client tables, but the beta's
   `BroadcastText` really is 12 rows; gossip is server-pushed on this engine.
-- `questcache.wdb` records have a variable fixed part; `wdbcache.py` scans
-  every offset and prefers the candidate with no objectives block. It parses
-  all 258 records of the owner's cache and was validated against Classic
-  titles.
 - `PlayerModel:GetDisplayInfo()` returns 0 until the model loads; the capture
   reads it in `OnModelLoaded`, and the merge ignores zero display IDs. On the
   Forever client it never yields anything at all (0 of 146 captured NPCs), only
@@ -709,9 +733,6 @@ of the 10 s window, then the knobs.
   went: a `reference` pointing elsewhere means the picks are never read. Both
   results are about the reference, which is the rule at the top of this
   section.
-- `--assume-voice` on `generate.py` voices cache-only quests whose giver is
-  unknown (used once for Zephras Isle with `skyborne-male`); the voice-change
-  check fixes them once a capture names the giver.
 - `narrator_alternates` under `[voices]` is the narrator menu: since 2026-09-25
   just orc-male beside the default (human-male's clip), over ~1,040 narrated
   quest and ~336 narrated gossip lines in the full Classic set (1,340 files per

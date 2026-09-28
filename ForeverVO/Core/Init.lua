@@ -50,6 +50,7 @@ ns.defaults = {
     capture = true,
     notifyUnvoiced = true,
     debug = false,
+    devOverlay = false,                  -- quest key and voice on the dialog; a CVar, see UI/Debug.lua
 }
 
 ns.charDefaults = {

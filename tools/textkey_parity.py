@@ -6,8 +6,10 @@ The addon looks gossip lines up by this key, so a drift between the two
 implementations silently stops every gossip line from matching. CLAUDE.md
 requires re-running this after touching either side.
 
-The corpus is the real captured text, the tokenised beta quest cache, and a set
-of edge cases (multi-byte characters, $G branches, capitalisation, empty text).
+The corpus is the real captured text, Classic's raw text where
+tools/data/bulk/classic.json has been exported (it is not in git, so CI runs
+without it), and a set of edge cases (multi-byte characters, $G branches,
+capitalisation, empty text).
 Needs lua 5.1 on PATH; the dev shell from flake.nix (what run.sh uses) has it.
 """
 
@@ -24,7 +26,7 @@ from tools.textkey import hash_text, text_key, tokenize
 
 ROOT = Path(__file__).resolve().parent.parent
 CAPTURE = ROOT / "tools" / "data" / "capture.json"
-QUESTCACHE = ROOT / "tools" / "data" / "bulk" / "questcache.json"
+CLASSIC = ROOT / "tools" / "data" / "bulk" / "classic.json"
 UTIL_LUA = ROOT / "ForeverVO" / "Core" / "Util.lua"
 
 EDGE_CASES = [
@@ -172,8 +174,8 @@ def rows() -> list[dict]:
                     out.append(
                         {k: entry.get(k) for k in ("text", "player", "class", "race")}
                     )
-    if QUESTCACHE.exists():
-        data = json.loads(QUESTCACHE.read_text(encoding="utf-8"))
+    if CLASSIC.exists():
+        data = json.loads(CLASSIC.read_text(encoding="utf-8"))
         for entry in data.get("quests", {}).values():
             if entry.get("text"):
                 out.append(

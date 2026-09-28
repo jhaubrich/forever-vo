@@ -12,6 +12,7 @@ from tools.ingest import (
     SourceTexts,
     flawed,
     gossip_key,
+    merge_entry,
     needs_of,
     reconcile_text,
     repair_entry,
@@ -118,7 +119,7 @@ def test_repair_takes_a_flawed_line_out_of_the_radius_when_the_raw_text_fixes_it
     tmp_path: Path,
 ) -> None:
     raw = "Can Zamja help you, $r? Sit down and tell me what brings you here."
-    (tmp_path / "questcache.json").write_text(
+    (tmp_path / "classic.json").write_text(
         json.dumps({"quests": {"1-accept": {"text": raw}}}), encoding="utf-8"
     )
     sources = SourceTexts(bulk_dir=tmp_path)
@@ -213,3 +214,67 @@ def test_fixed_addon_supersedes_a_flawed_gossip_reading() -> None:
         },
     }
     assert superseded_gossip(gossip, READERS) == {"3399|aaaa", "3400|cccc"}
+
+
+def test_a_reader_of_another_class_and_race_settles_forever_only_placeholders() -> None:
+    # Forever's own line, no raw text anywhere: "skyborne" is literal, "rogue" is $c
+    skyborne = {
+        "text": "Many skyborne love feathers, rogue. Bring me ten.",
+        "player": "Zamja",
+        "class": "Rogue",
+        "race": "Windshaper Skyborne",
+        "addon": "0.1.6",
+        "sex": "m",
+        "time": 2,
+    }
+    human = {
+        "text": "Many skyborne love feathers, mage. Bring me ten.",
+        "player": "Myrla",
+        "class": "Mage",
+        "race": "Human",
+        "addon": "0.1.6",
+        "sex": "f",
+        "time": 1,
+    }
+
+    def repair(entry: dict) -> dict:
+        fixed = repair_entry(entry, "quests", "90001-accept", None, Repairs(), READERS)
+        assert fixed is not None
+        return fixed
+
+    alone = repair(skyborne)
+    assert alone["text"] == "Many $r love feathers, $c. Bring me ten."
+    assert needs_of(alone, "quests", None, READERS) == "mf"
+    store: dict = {}
+    merge_entry(store, "90001-accept", repair(human), READERS)
+    merge_entry(store, "90001-accept", alone, READERS)
+    settled = store["90001-accept"]
+    # the later reading wins, with the literal word the other reader saw
+    assert settled["player"] == "Zamja" and settled["settled"] == "cr"
+    assert settled["text"] == "Many skyborne love feathers, $c. Bring me ten."
+    # and it stays that way through every later backfill
+    again = repair(settled)
+    assert again["text"] == settled["text"] and again.get("needs") is None
+    # the same reader reading it once more does not undo it either
+    merge_entry(store, "90001-accept", repair({**skyborne, "time": 3}), READERS)
+    assert store["90001-accept"]["text"] == settled["text"]
+    assert store["90001-accept"]["settled"] == "cr"
+
+
+def test_raw_text_settles_placeholders_without_a_second_reader(tmp_path: Path) -> None:
+    raw = "Greetings, $c. Many skyborne love feathers."
+    (tmp_path / "classic.json").write_text(
+        json.dumps({"quests": {"1-accept": {"text": raw}}}), encoding="utf-8"
+    )
+    sources = SourceTexts(bulk_dir=tmp_path)
+    entry = {
+        "text": "Greetings, rogue. Many skyborne love feathers.",
+        "player": "Zamja",
+        "class": "Rogue",
+        "race": "Windshaper Skyborne",
+        "addon": "0.1.6",
+        "sex": "m",
+    }
+    fixed = repair_entry(entry, "quests", "1-accept", sources, Repairs(), READERS)
+    assert fixed is not None and fixed["text"] == raw
+    assert fixed.get("needs") is None

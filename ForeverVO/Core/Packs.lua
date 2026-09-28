@@ -24,6 +24,10 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       --    male character has read a line the client resolved a $G branch
       --    out of, "mf" when nobody knows who read it. The addon exports
       --    such a line even though it is voiced (Capture.lua, Export.lua).
+      -- ha/hp/hc: Util.TextKey of the text that event was voiced from, or
+      --    "<male>,<female>" when it has a $G branch. A live text that keys
+      --    differently is exported although it is voiced (QuestTextMatches).
+      --    Absent on packs built before it, which never count as a mismatch.
       -- npc: quest giver speaker key (creature ID, negative for game objects);
       --    absent when an item starts the quest. ender: the turn-in speaker,
       --    only when it differs from the giver. The addon uses them for a text
@@ -289,6 +293,32 @@ function Packs:QuestWanted(pack, questID, event)
     return type(wanted) == "string" and letter ~= nil and strfind(wanted, letter, 1, true) ~= nil
 end
 
+--- False when the pack records which text it voiced an event from (ha/hp/hc)
+--- and the live text is not that text, so the capture is exported to replace
+--- it. The key is tried with the player's class and race tokenised and left as
+--- words, since a pack line may hold either: "the $c" is a class, but the
+--- "skyborne" a Skyborne reads in Forever's own text is the word.
+---@param pack table the pack FindQuest found the event in
+---@param text string the live text, as the client rendered it
+function Packs:QuestTextMatches(pack, questID, event, text)
+    local field = QUEST_FIELD[event]
+    local entry = pack and field and pack.quests[questID]
+    local keys = entry and entry["h" .. field]
+    if type(keys) ~= "string" then
+        return true
+    end
+    local className, raceName = UnitClass("player"), UnitRace("player")
+    for _, class in ipairs({ className or "", "" }) do
+        for _, race in ipairs({ raceName or "", "" }) do
+            local key = Util.TextKey(text, nil, class, race)
+            if strfind("," .. keys .. ",", "," .. key .. ",", 1, true) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 --- Speaker key recorded by any pack for the quest: the giver, or for a
 --- progress or complete text the turn-in speaker where the pack records one.
 function Packs:QuestGiver(questID, event)
@@ -387,4 +417,56 @@ function Packs:FindGossip(speakerKey, text)
         end
     end
     return SoundPath(bestPack, "Gossip", base), bestEntry.d, bestPack, nil, bestEntry.v
+end
+
+--- The file base, the voice the queue plays, and the archetype recorded on the
+--- entry (va/vp/vc). The last two differ when a narrator recording is what
+--- plays. `base` is still returned for a quest the packs do not have.
+function Packs:DebugQuest(questID, event)
+    local field = QUEST_FIELD[event]
+    if not questID or not field then
+        return nil
+    end
+    local base = format("%d-%s", questID, event)
+    local _, _, _, _, playing = self:FindQuest(questID, event)
+    local recorded
+    for _, pack in ipairs(self.list) do
+        local entry = pack.quests and pack.quests[questID]
+        if entry and (entry[field] or entry[field .. "P"]) then
+            if entry.g == true or (type(entry.g) == "string" and strfind(entry.g, field, 1, true)) then
+                base = Util.PlayerGenderPrefix() .. base
+            end
+            recorded = entry["v" .. field]
+            break
+        end
+    end
+    return base, playing, recorded
+end
+
+--- Playing voice and the archetype on the matched gossip entry. Same as
+--- FindGossip's voice except when the narrator recording replaced it.
+function Packs:DebugGossip(speakerKey, text)
+    if not speakerKey or not text or text == "" then
+        return nil, nil
+    end
+    local _, _, pack, _, playing = self:FindGossip(speakerKey, text)
+    local recorded = playing
+    if playing == self:NarratorVoice() and pack and pack.gossip and pack.gossip[speakerKey] then
+        local tokenized = Util.Tokenize(text)
+        local hash = Util.TextKey(tokenized)
+        local best, bestScore
+        for _, entry in ipairs(pack.gossip[speakerKey]) do
+            if entry.h == hash then
+                return playing, entry.v
+            end
+            local score = Util.Similarity(tokenized, entry.t or "")
+            if score >= FUZZY_THRESHOLD and (not bestScore or score > bestScore) then
+                best, bestScore = entry, score
+            end
+        end
+        if best then
+            recorded = best.v
+        end
+    end
+    return playing, recorded
 end
