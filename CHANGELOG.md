@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **First gossip only**, to the right of **Gossip** in What to voice and on
+  by default: an NPC's gossip is read the first time you talk to them, and
+  not every time after. Greetings and quest text are read as before. It greys
+  out when Gossip is off.
+- The first line of a conversation waits a moment before it plays, so the
+  NPC's own greeting can finish instead of being cut off. Later lines in the
+  same window, quests started from an item, and the quest log's Play button
+  do not wait.
 - A quest line the voice pack reads from other text than the one you saw is
   saved and goes out with `/fvo export`, like an unvoiced line. Some of the
   Classic text the packs were made from is cut short or was reworded for
