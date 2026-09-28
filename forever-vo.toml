@@ -265,6 +265,34 @@ clips = [
     552187,
 ]
 
+[voices.sources.troll-male-dark]
+clips = [
+    562868,
+    562871,
+    562880,
+    562876,
+    562879,
+    562883,
+    562874,
+    562881,
+    562875,
+    562869,
+]
+
+[voices.sources.troll-male-standard]
+clips = [
+    562901,
+    562909,
+    562907,
+    562914,
+    562910,
+    562906,
+    562904,
+    562913,
+    562911,
+    562908,
+]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
