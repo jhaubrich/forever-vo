@@ -71,6 +71,10 @@ echo "backlog after this run: $BULK_PENDING files"
 # Publish the text side of the build so the repository matches this machine
 git add tools/data/capture.json tools/data/sound_index.json tools/data/bulk/questcache.json ForeverVO_Data/Data captures 2>/dev/null || true
 if ! git diff --cached --quiet; then
-    git commit -q -m "nightly: $(date +%F) captures and pack tables" && git push -q || echo "git push failed"
+    # The pull at the start was hours ago and the GitHub bot commits captures
+    # meanwhile, so rebase onto them first or the push is refused
+    git commit -q -m "nightly: $(date +%F) captures and pack tables" &&
+        { git pull -q --rebase --autostash origin main || { git rebase --abort 2>/dev/null; false; }; } &&
+        git push -q origin main || echo "git push failed"
 fi
 echo "=== $(date -Is) done ==="
