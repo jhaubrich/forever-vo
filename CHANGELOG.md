@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- A quest line the voice pack reads from other text than the one you saw is
+  saved and goes out with `/fvo export`, like an unvoiced line. Some of the
+  Classic text the packs were made from is cut short or was reworded for
+  Forever (Greatmother Hawkwind's thanks in "A Humble Task" stops after two
+  sentences); your reading replaces it. Packs made before this say nothing
+  about their text, so the check starts with the next voice pack.
+
 ## 0.1.6
 
 - The welcome no longer says a voice pack is coming and that you will hear

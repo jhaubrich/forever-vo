@@ -12,8 +12,8 @@ everything on the maintainer's machine):
                                              folder stays ForeverVO_Data; they
                                              coexist because their pack names
                                              differ from it.)
-  delta         ForeverVO_Data_Forever       lines captured in game, from the
-                                             beta cache or from the community.
+  delta         ForeverVO_Data_Forever       lines captured in game, by the
+                                             owner or by the community.
                                              Small, released often, higher
                                              priority so it overrides the base.
 
@@ -89,26 +89,13 @@ GAME_VERSION_NAME = "1.60.1"
 # was never a factor; 22.05 kHz keeps the most bandwidth per bit.
 SAMPLE_RATE = 22050
 
-CLASSIC_JSON = DATA_DIR / "bulk" / "classic.json"
 
-
-def classic_quest_ids() -> set[int]:
-    if not CLASSIC_JSON.exists():
-        return set()
-    data = json.loads(CLASSIC_JSON.read_text(encoding="utf-8"))
-    return {entry["questID"] for entry in data["quests"].values()}
-
-
-def is_forever_line(entry: dict, classic_ids: set[int]) -> bool:
-    """Delta pack membership: lines players saw in game, or quests Classic never had.
-    Beta-cache text for a quest that exists in Classic stays in the base pack, so the
-    delta does not grow as the bulk run works through Classic."""
+def is_forever_line(entry: dict) -> bool:
+    """Delta pack membership: lines players saw in game. Everything else is Classic's
+    text and stays in the base pack, so the delta does not grow as the bulk run
+    works through Classic."""
     source = entry.get("source", "classic")
-    if entry.get("player") or source in ("capture", "community"):
-        return True
-    if source == "questcache":
-        return entry.get("questID") not in classic_ids
-    return False
+    return bool(entry.get("player")) or source in ("capture", "community")
 
 
 def base_part(entry: dict, split_level: int) -> int:
@@ -129,9 +116,7 @@ class PackSpec:
     pack_name: str  # what the addon shows as the pack's name
     priority: int  # a higher pack's line wins over a lower one's
     notes: str
-    select: Callable[
-        [dict, set[int]], bool
-    ]  # (entry, Classic quest IDs) -> belongs to this pack
+    select: Callable[[dict], bool]  # entry -> belongs to this pack
 
 
 PACK_NAMES = ("base", "base_endgame", "delta")
@@ -146,8 +131,8 @@ def pack_specs(release: Release) -> dict[str, PackSpec]:
             pack_name="Classic",
             priority=100,
             notes=f"Classic-era quests to level {split} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
-            select=lambda entry, classic_ids: (
-                not is_forever_line(entry, classic_ids) and base_part(entry, split) == 1
+            select=lambda entry: (
+                not is_forever_line(entry) and base_part(entry, split) == 1
             ),
         ),
         "base_endgame": PackSpec(
@@ -156,8 +141,8 @@ def pack_specs(release: Release) -> dict[str, PackSpec]:
             pack_name="Classic Endgame",
             priority=100,
             notes=f"Classic-era quests from level {split + 1}, voiced. Install with Forever Voiceover and Base.",
-            select=lambda entry, classic_ids: (
-                not is_forever_line(entry, classic_ids) and base_part(entry, split) == 2
+            select=lambda entry: (
+                not is_forever_line(entry) and base_part(entry, split) == 2
             ),
         ),
         "delta": PackSpec(
@@ -166,7 +151,7 @@ def pack_specs(release: Release) -> dict[str, PackSpec]:
             pack_name="Forever",
             priority=200,
             notes="New and revised Forever lines from player captures. Sits on top of Forever Voiceover Data.",
-            select=lambda entry, classic_ids: is_forever_line(entry, classic_ids),
+            select=is_forever_line,
         ),
     }
 
@@ -246,12 +231,11 @@ def stage_tables(pack: str, version: str, config: Config) -> tuple[Path, dict]:
     """Writes the manifest and tables for the pack; returns (stage dir, stats with the file set)."""
     spec = pack_specs(config.release)[pack]
     sources = load_sources()
-    classic_ids = classic_quest_ids()
     catalog = VoiceCatalog(config)
     items = [
         item
         for item in load_items(sources, include_progress=True, catalog=catalog)
-        if spec.select(item.entry, classic_ids)
+        if spec.select(item.entry)
     ]
     stage = RELEASE_DIR / spec.folder
     if stage.exists():

@@ -85,12 +85,20 @@ def short_race(entry: dict) -> bool:
 
 def tokenize_entry(entry: dict, readers: Readers) -> dict:
     """Puts $n/$c/$r back where the client expanded them. Without this a line
-    first seen on a rogue is voiced as "rogue" for every class that hears it."""
+    first seen on a rogue is voiced as "rogue" for every class that hears it.
+    A trait another reader has settled (`settled`, see merge_entry) is left as
+    it is: the text already says where that word is literal."""
     text = entry.get("text")
     if not text:
         return entry
+    player, class_, race = character_traits(entry, readers)
+    settled = entry.get("settled") or ""
     fixed = tokenize(
-        text, *character_traits(entry, readers), short_race=short_race(entry)
+        text,
+        player,
+        None if "c" in settled else class_,
+        None if "r" in settled else race,
+        short_race=short_race(entry),
     )
     if fixed == text:
         return entry
@@ -244,9 +252,11 @@ def unglue_entry(entry: dict, readers: Readers) -> dict | None:
 # ----------------------------------------------------------------------------
 # Tokenize cannot tell the reader's expanded $c from the same word used
 # literally: a Mage reading "the mage of Dalaran" captures "the $c of Dalaran".
-# Where the raw text is known (the beta quest cache, the Classic database) it
-# still carries the real placeholders, so a capture placeholder that aligns to a
-# literal word there is put back to that word. The capture keeps everything else.
+# Where the raw text is known (the Classic database) it still carries the real
+# placeholders, so a capture placeholder that aligns to a literal word there is
+# put back to that word. The capture keeps everything else. For Forever's own
+# lines there is no raw text, and a second reader does the same job (settled
+# placeholders, below).
 
 _PLACEHOLDER = re.compile(r"\$[NnCcRr]$")
 _PIECES = re.compile(r"\$[NnCcRr]|\$[Bb]|\s+|[A-Za-z0-9]+|[^A-Za-z0-9\s$]+|\$")
@@ -304,6 +314,80 @@ def reconcile_text(text: str, source: str, raw: bool = False) -> tuple[str, int]
 
 
 # ----------------------------------------------------------------------------
+# Settled placeholders: a second reader in place of the raw text (issue #317)
+# ----------------------------------------------------------------------------
+# Only Classic's raw text can say whether a capture's $c or $r is the reader's
+# class or race or the same word used literally ("A Forsaken paladin..." read
+# by an Undead Paladin), and Forever's own lines have none: until 2026-09-28
+# the beta quest cache stood in for 257 accept lines, from the owner's client
+# alone (#317). A reader who does not share the trait settles it instead:
+# where two readings disagree, a placeholder in one and a word in the other,
+# the word is literal; where both hold the placeholder it is real. merge_entry
+# records that as `settled` ("c", "r" or both) on the entry, tokenize_entry
+# then leaves the trait alone (re-tokenising the winner on every backfill would
+# undo the fix whenever the reader who has the trait wins the line), and
+# needs_of asks everyone for a quest line with an unsettled placeholder, so the
+# line is read again until someone of another class or race has read it.
+
+_TRAIT_PLACEHOLDER = re.compile(r"\$([CcRr])(?![A-Za-z0-9])")
+
+
+def _aligned(text: str, other: str) -> bool:
+    return (
+        difflib.SequenceMatcher(
+            None, _pieces(text)[1], _pieces(other)[1], autojunk=False
+        ).ratio()
+        >= RECONCILE_RATIO
+    )
+
+
+def unsettled_traits(entry: dict, source: str | None) -> set[str]:
+    """The traits ("c", "r") whose placeholders in the entry's text neither the
+    raw source text nor a second reader has confirmed."""
+    text = entry.get("text") or ""
+    traits = {m.lower() for m in _TRAIT_PLACEHOLDER.findall(text)}
+    traits -= set(entry.get("settled") or "")
+    if traits and source and _aligned(text, source):
+        return set()  # reconcile_entry has already made it agree with the source
+    return traits
+
+
+def trait_disagreements(text: str, other: str) -> set[str]:
+    """Traits where two aligned readings hold a placeholder on one side and a
+    word on the other, which only happens when their readers differ in it."""
+    tokens, keys = _pieces(text)
+    other_tokens, other_keys = _pieces(other)
+    matcher = difflib.SequenceMatcher(None, keys, other_keys, autojunk=False)
+    if matcher.ratio() < RECONCILE_RATIO:
+        return set()
+    found: set[str] = set()
+    for op, i1, i2, j1, j2 in matcher.get_opcodes():
+        if op != "replace" or i2 - i1 != j2 - j1:
+            continue
+        for i, j in zip(range(i1, i2), range(j1, j2)):
+            for mine, theirs in (
+                (tokens[i], other_tokens[j]),
+                (other_tokens[j], tokens[i]),
+            ):
+                code = _TRAIT_PLACEHOLDER.fullmatch(mine)
+                if code and theirs.isalnum():
+                    found.add(code.group(1).lower())
+    return found
+
+
+def known_differences(entry: dict, other: dict, readers: Readers) -> set[str]:
+    """Traits in which the two readers are known to differ."""
+    mine, theirs = reader_profile(entry, readers), reader_profile(other, readers)
+    return {
+        code
+        for code, field in (("c", "class"), ("r", "race"))
+        if mine[field]
+        and theirs[field]
+        and mine[field].lower() != theirs[field].lower()
+    }
+
+
+# ----------------------------------------------------------------------------
 # Gender branches (issues #28 and #29)
 # ----------------------------------------------------------------------------
 # The client resolves "$g lad : lass;" before any addon sees a quest text, and
@@ -311,9 +395,9 @@ def reconcile_text(text: str, source: str, raw: bool = False) -> tuple[str, int]
 # accepted on a male dwarf is recorded saying "lad" and would say "lad" to
 # everyone. Two ways back, both crowdsourced and both idempotent:
 #
-# - restore_gender: the raw text is known (the beta quest cache, Classic) and
-#   the capture is exactly that text read as one sex, so the source comes back
-#   with its branches (jhaubrich's #28).
+# - restore_gender: the raw text is known (Classic) and the capture is
+#   exactly that text read as one sex, so the source comes back with its
+#   branches (jhaubrich's #28).
 # - rebuild_gender: a male and a female reading of the same line differ only
 #   in short aligned runs, so the runs become branches (merge_gender). Captures
 #   record the reader's sex from addon 0.1.4 on.
@@ -429,7 +513,9 @@ def needs_of(
     branch in it needs nobody, and neither does an untrusted one when Classic
     also names its speaker (`speaker`, from SourceTexts.speakers): everything a
     re-read could show is already in the raw text. Spron's two Sten Stoutarm
-    lines were asked of every player for that reason (2026-09-25)."""
+    lines were asked of every player for that reason (2026-09-25). A $c or $r
+    that neither the raw text nor a second reader has settled asks everyone
+    (unsettled_traits)."""
     text = entry.get("text") or ""
     if kind != "quests" or not text:
         return None
@@ -441,6 +527,8 @@ def needs_of(
             and speaker_agrees(entry, speaker)
         ):
             return None
+        return "mf"
+    if unsettled_traits(entry, source):
         return "mf"
     if has_gender_branch(text):
         return None
@@ -495,7 +583,8 @@ def merge_gender(base: dict, other: dict) -> dict:
 
 
 class SourceTexts:
-    """Raw quest and gossip text from tools/data/bulk/*.json, for reconciliation."""
+    """Raw quest and gossip text from tools/data/bulk/classic.json, for
+    reconciliation. The beta quest cache was a second source until #317."""
 
     def __init__(self, bulk_dir: Path = DATA_DIR / "bulk"):
         self.quests: dict[str, str] = {}
@@ -507,34 +596,30 @@ class SourceTexts:
             str, set[str]
         ] = {}  # quest ID -> creature keys at either end
         self.loaded: list[str] = []
-        # capture > questcache > classic: first source to name a key wins
-        for name in ("questcache", "classic"):
-            path = bulk_dir / f"{name}.json"
-            if not path.exists():
-                shown = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
-                print(
-                    f"note: {shown} missing, placeholders not reconciled against {name}"
+        path = bulk_dir / "classic.json"
+        if not path.exists():
+            shown = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+            print(f"note: {shown} missing, placeholders not reconciled against classic")
+            return
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for key, entry in data.get("quests", {}).items():
+            if entry.get("text"):
+                self.quests[str(key)] = entry["text"]
+            if entry.get("event"):
+                self.speakers[str(key)] = {
+                    f: entry.get(f) for f in ("npc", "name", "isObject")
+                }
+                npc = str(entry.get("npc") or "")
+                if npc and not npc.startswith("-"):
+                    self.quest_creatures.setdefault(
+                        str(entry.get("questID")), set()
+                    ).add(npc)
+        for key, entry in data.get("gossip", {}).items():
+            if entry.get("text"):
+                self.gossip.setdefault(str(key).split("|", 1)[0], []).append(
+                    entry["text"]
                 )
-                continue
-            data = json.loads(path.read_text(encoding="utf-8"))
-            for key, entry in data.get("quests", {}).items():
-                if entry.get("text"):
-                    self.quests.setdefault(str(key), entry["text"])
-                if name == "classic" and entry.get("event"):
-                    self.speakers[str(key)] = {
-                        f: entry.get(f) for f in ("npc", "name", "isObject")
-                    }
-                    npc = str(entry.get("npc") or "")
-                    if npc and not npc.startswith("-"):
-                        self.quest_creatures.setdefault(
-                            str(entry.get("questID")), set()
-                        ).add(npc)
-            for key, entry in data.get("gossip", {}).items():
-                if entry.get("text"):
-                    self.gossip.setdefault(str(key).split("|", 1)[0], []).append(
-                        entry["text"]
-                    )
-            self.loaded.append(name)
+        self.loaded.append("classic")
 
     def quest(self, key: str) -> str | None:
         return self.quests.get(key)
@@ -688,10 +773,20 @@ def fully_tokenised(entry: dict) -> bool:
     )
 
 
-def merge_entry(store: dict, key: str, entry: dict) -> bool:
+def _reader(entry: dict) -> str | None:
+    """Who read it: the character, or for a community export the issue comment."""
+    return entry.get("player") or entry.get("origin")
+
+
+def merge_entry(
+    store: dict, key: str, entry: dict, readers: Readers | None = None
+) -> bool:
     """The higher-ranked capture wins the line (capture_rank: newer addon first,
     then later reading), but the other reading still teaches it what a single
-    reader cannot see: a class or race word, and a gender branch."""
+    reader cannot see: a class or race word, and a gender branch. What a reader
+    of another class or race settled stays settled (`settled`, see
+    unsettled_traits), whichever reading wins."""
+    readers = readers or load_config().readers
     old = store.get(key)
     if old is None:
         store[key] = entry
@@ -700,16 +795,27 @@ def merge_entry(store: dict, key: str, entry: dict) -> bool:
     base, other = (dict(entry), old) if newer else (dict(old), entry)
     if newer:
         base["firstSeen"] = old.get("firstSeen", old.get("time"))
-    if (
-        base.get("player") != other.get("player")
-        and base.get("text")
-        and other.get("text")
-        and fully_tokenised(base)
-        and fully_tokenised(other)
-    ):
-        # Two readers of different class or race: a placeholder only one of
-        # them saw is that reader's own class or race used as a plain word
-        base["text"], _ = reconcile_text(base["text"], other["text"])
+    text, other_text = base.get("text"), other.get("text")
+    settled = set(base.get("settled") or "")
+    if text and other_text and _aligned(text, other_text):
+        if (
+            _reader(base) != _reader(other)
+            and fully_tokenised(base)
+            and fully_tokenised(other)
+        ):
+            # Two readers of different class or race: a placeholder only one of
+            # them saw is that reader's own class or race used as a plain word
+            if not (flawed(base, readers) or flawed(other, readers)):
+                settled |= trait_disagreements(text, other_text)
+                settled |= known_differences(base, other, readers)
+            base["text"], _ = reconcile_text(text, other_text)
+        elif other.get("settled"):
+            # The same reader again, or one we know too little about: the
+            # settled reading still says which of its words are literal
+            base["text"], _ = reconcile_text(text, other_text)
+        settled |= set(other.get("settled") or "")
+    if settled:
+        base["settled"] = "".join(sorted(settled))
     base = merge_gender(base, other)
     changed = base != old
     store[key] = base
@@ -746,7 +852,7 @@ def ingest_file(
             readers,
         )
         if entry is not None:
-            quests += merge_entry(capture["quests"], str(key), entry)
+            quests += merge_entry(capture["quests"], str(key), entry, readers)
     for key, entry in (db.get("gossip") or {}).items():
         entry = repair_entry(
             {**entry, **stamp} if stamp else entry,
@@ -758,7 +864,7 @@ def ingest_file(
         )
         if entry is not None:
             gossip += merge_entry(
-                capture["gossip"], gossip_key(key, entry, readers), entry
+                capture["gossip"], gossip_key(key, entry, readers), entry, readers
             )
     for key, npc in (db.get("npcs") or {}).items():
         old = capture["npcs"].get(str(key), {})

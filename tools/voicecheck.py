@@ -58,7 +58,6 @@ def load_texts(alternates: list[str]) -> dict[str, str]:
 
     files = [
         DATA_DIR / "bulk" / "classic.json",
-        DATA_DIR / "bulk" / "questcache.json",
         CAPTURE_JSON,
     ]
     for path in files:

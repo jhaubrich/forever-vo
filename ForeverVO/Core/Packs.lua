@@ -24,6 +24,10 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       --    male character has read a line the client resolved a $G branch
       --    out of, "mf" when nobody knows who read it. The addon exports
       --    such a line even though it is voiced (Capture.lua, Export.lua).
+      -- ha/hp/hc: Util.TextKey of the text that event was voiced from, or
+      --    "<male>,<female>" when it has a $G branch. A live text that keys
+      --    differently is exported although it is voiced (QuestTextMatches).
+      --    Absent on packs built before it, which never count as a mismatch.
       -- npc: quest giver speaker key (creature ID, negative for game objects);
       --    absent when an item starts the quest. ender: the turn-in speaker,
       --    only when it differs from the giver. The addon uses them for a text
@@ -287,6 +291,32 @@ function Packs:QuestWanted(pack, questID, event)
     local wanted = entry and entry["w" .. field]
     local letter = Util.PlayerSexLetter()
     return type(wanted) == "string" and letter ~= nil and strfind(wanted, letter, 1, true) ~= nil
+end
+
+--- False when the pack records which text it voiced an event from (ha/hp/hc)
+--- and the live text is not that text, so the capture is exported to replace
+--- it. The key is tried with the player's class and race tokenised and left as
+--- words, since a pack line may hold either: "the $c" is a class, but the
+--- "skyborne" a Skyborne reads in Forever's own text is the word.
+---@param pack table the pack FindQuest found the event in
+---@param text string the live text, as the client rendered it
+function Packs:QuestTextMatches(pack, questID, event, text)
+    local field = QUEST_FIELD[event]
+    local entry = pack and field and pack.quests[questID]
+    local keys = entry and entry["h" .. field]
+    if type(keys) ~= "string" then
+        return true
+    end
+    local className, raceName = UnitClass("player"), UnitRace("player")
+    for _, class in ipairs({ className or "", "" }) do
+        for _, race in ipairs({ raceName or "", "" }) do
+            local key = Util.TextKey(text, nil, class, race)
+            if strfind("," .. keys .. ",", "," .. key .. ",", 1, true) then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 --- Speaker key recorded by any pack for the quest: the giver, or for a

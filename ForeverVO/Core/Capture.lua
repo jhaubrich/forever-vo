@@ -28,7 +28,9 @@ local function GetDB()
     -- 3: text is tokenised ($n/$c/$r) and class/race recorded
     -- 4: the reader's sex is recorded, and a voiced line the pack wants read
     --    again (Packs:QuestWanted) is captured with `wanted` set
-    db.version = 4
+    -- 5: a voiced quest line whose live text is not the one the pack voiced
+    --    (Packs:QuestTextMatches) is captured with `differs` set
+    db.version = 5
     db.quests = db.quests or {}
     db.gossip = db.gossip or {}
     db.npcs = db.npcs or {}
@@ -117,6 +119,10 @@ function Capture:Record(line)
     -- exported even though it played.
     local wanted = line.found and line.kind == "quest"
         and ns.Packs:QuestWanted(line.pack, line.questID, line.event) or nil
+    -- A pack voiced this line from other text (Classic's is sometimes cut
+    -- short, and Forever rewords): export it so the pipeline replaces it.
+    local differs = line.found and line.kind == "quest"
+        and not ns.Packs:QuestTextMatches(line.pack, line.questID, line.event, line.text) or nil
     local entry = {
         event = line.event,
         questID = line.questID,
@@ -127,6 +133,7 @@ function Capture:Record(line)
         isObject = line.speaker.isObject or nil,
         found = line.found or nil,
         wanted = wanted,
+        differs = differs,
         pack = line.pack and line.pack.name or nil,
         player = UnitName("player"),
         class = UnitClass("player"),
@@ -159,10 +166,10 @@ function Capture:Record(line)
     end
 end
 
---- True when an export should carry the entry: no pack voiced it, or the pack
---- that did asked for this reader's version of it.
+--- True when an export should carry the entry: no pack voiced it, the pack
+--- that did asked for this reader's version of it, or voiced other text.
 function Capture.Contributes(entry)
-    return not entry.found or entry.wanted == true
+    return not entry.found or entry.wanted == true or entry.differs == true
 end
 
 --- True when the entry was heard before the last export, which packed it.
