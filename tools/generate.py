@@ -374,11 +374,7 @@ def parse_narrator_voices(spec: str | None, alternates: list[str]) -> list[str]:
     return chosen
 
 
-SOURCE_ORDER = [
-    "classic",
-    "questcache",
-    "capture",
-]  # later sources override earlier ones
+SOURCE_ORDER = ["classic", "capture"]  # later sources override earlier ones
 
 
 def load_sources() -> dict:
@@ -910,6 +906,13 @@ def rebuild_tables(
             # exports the line again for such a reader although it is voiced.
             if item.entry.get("needs"):
                 record["w" + letter] = item.entry["needs"]
+            # ha/hp/hc: the text key (Util.TextKey) of the text this event was
+            # voiced from, "<male>,<female>" when it branches, since the live
+            # text holds the resolved word. The addon exports a voiced line whose
+            # live text keys differently, so wrong source text (Classic's
+            # truncated 752-complete, #318) is captured again and replaced.
+            male, female = (text_key(t) for t in split_gender(item.raw_text))
+            record["h" + letter] = male if male == female else f"{male},{female}"
             # npc is the giver, which the addon shows for an accept text the
             # client leaves unattributed (an item-started or shared quest);
             # ender the turn-in speaker, for a progress or complete text at a
@@ -1094,16 +1097,6 @@ def main(argv: list[str] | None = None) -> int:
         help="only lines captured in game (not bulk sources)",
     )
     parser.add_argument(
-        "--zone",
-        type=int,
-        action="append",
-        help="only quests with this QuestSortID / AreaTable ID (from the client cache)",
-    )
-    parser.add_argument(
-        "--assume-voice",
-        help="voice for quests whose speaker is unknown, e.g. skyborne-male (default: skip them)",
-    )
-    parser.add_argument(
         "--narrator-voices",
         default="all",
         metavar="SPEC",
@@ -1133,7 +1126,7 @@ def main(argv: list[str] | None = None) -> int:
 
     capture = load_sources()
     if not capture["quests"] and not capture["gossip"]:
-        print("nothing to voice: run ingest.py, classicdb.py or wdbcache.py first")
+        print("nothing to voice: run ingest.py or classicdb.py first")
         return 1
     sound_index = (
         json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
@@ -1169,7 +1162,7 @@ def main(argv: list[str] | None = None) -> int:
             stale.add(target.key)
             return True
         previous_voice = recorded.get("v") if isinstance(recorded, dict) else None
-        if previous_voice == target.voice or target.voice == args.assume_voice:
+        if previous_voice == target.voice:
             return False
         if previous_voice is None:
             # A placeholder probed by a table rebuild, or a record the merge
@@ -1203,14 +1196,13 @@ def main(argv: list[str] | None = None) -> int:
             continue
         if args.captured and not item.entry.get("player"):
             continue
-        if args.zone and item.entry.get("sortID") not in args.zone:
-            continue
         if args.quest and (
             item.kind != "quests" or int(item.entry["questID"]) not in args.quest
         ):
             continue
         if (
             item.entry.get("found")
+            and not item.entry.get("differs")  # the pack voiced other text (#318)
             and not args.all
             and item.entry.get("pack") != "Forever"
         ):
@@ -1226,14 +1218,12 @@ def main(argv: list[str] | None = None) -> int:
             and item.speaker_key is None
             and not item.entry.get("isObject")
         ):
-            # Cache-only quest whose giver we have not met: wait for a capture so it gets the right
-            # voice, unless the caller vouches for a voice (e.g. a single-race starting zone)
-            if not args.assume_voice:
-                skipped["speaker unknown (play it to capture)"] = (
-                    skipped.get("speaker unknown (play it to capture)", 0) + 1
-                )
-                continue
-            item.voice = args.assume_voice
+            # A quest whose giver we have not met: wait for a capture that names
+            # them, so the line gets the right voice
+            skipped["speaker unknown (play it to capture)"] = (
+                skipped.get("speaker unknown (play it to capture)", 0) + 1
+            )
+            continue
         for variant in item.variants():
             base, text = variant.base, variant.text
             candidates: list[Target] = []

@@ -71,6 +71,8 @@ def to_capture(data: dict, origin: str) -> dict:
             "sex": line.get("g"),  # "m"/"f", from addon 0.1.4 on
             "wanted": line.get("w")
             or None,  # a voiced line the pack asked to hear again
+            "differs": line.get("v")
+            or None,  # a voiced line whose live text is not the pack's (#318)
             "time": line.get("d"),  # when it was heard, from addon 0.1.4 on
             "build": data.get("build"),
             "source": "community",

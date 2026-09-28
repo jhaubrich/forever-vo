@@ -3,7 +3,7 @@ into tools/data/bulk/classic.json (same schema as capture.json).
 
 WoW Forever reuses Classic's quest IDs and, for most quests, the exact text, so
 this is the bulk seed for a voice pack. Lines captured in game override it
-(generate.py merges sources with capture > questcache > classic).
+(generate.py merges sources with capture > classic).
 
     ./tools/run.sh tools/classicdb.py            # downloads the snapshot if needed
 
