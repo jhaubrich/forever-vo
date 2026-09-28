@@ -2,8 +2,9 @@
 # Installs two systemd user units:
 #   forever-vo-ingest.path   sync (pull, ingest, push) the moment the client writes
 #                            ForeverVO.lua (on /reload and logout), so no session is lost
-#   forever-vo-daily.timer   nightly at 04:00: voice captured lines, continue
-#                            the bulk backlog, rebuild the pack tables
+#   forever-vo-daily.timer   nightly from 02:30, done by 07:00 (daily.sh): voice
+#                            captured lines, continue the bulk backlog, rebuild
+#                            the pack tables
 # Re-run to update. Set WOW_DIR if the game lives elsewhere.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -31,9 +32,8 @@ cat >"$UNIT_DIR/forever-vo-daily.timer" <<UNIT
 Description=Forever Voiceover nightly generation
 
 [Timer]
-OnCalendar=*-*-* 04:00:00
+OnCalendar=*-*-* 02:30:00
 Persistent=true
-RandomizedDelaySec=10m
 
 [Install]
 WantedBy=timers.target

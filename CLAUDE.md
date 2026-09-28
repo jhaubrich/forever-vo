@@ -383,13 +383,17 @@ Installed by `tools/install-timer.sh`:
 
 - `forever-vo-ingest.path` — fires on every write of the saved-variables
   file; runs `tools/ingest.sh` = pull, ingest, push `capture.json`.
-- `forever-vo-daily.timer` — 04:00 nightly: sync, voice captured lines,
-  work the bulk backlog for 2 h, rebuild tables, commit and push.
+- `forever-vo-daily.timer` — 02:30 nightly, done by 07:00 (since 2026-09-28;
+  04:00 with a 2 h bulk pass before): sync, voice captured lines, work the bulk
+  backlog until 45 minutes before 07:00 (`FOREVER_VO_END_AT`,
+  `FOREVER_VO_TAIL_MINUTES`, optional cap `FOREVER_VO_BULK_HOURS`), rebuild
+  tables, upload the delta, commit and push. A catch-up start after the window
+  (`Persistent=true` after the machine was off) generates for 2 h.
 - `forever-vo-bulk.service` — the long bulk run, `Restart=on-failure` so a
   CUDA context lost to suspend just resumes (existing files are skipped).
   `WantedBy=default.target` (since 2026-09-21), so a reboot resumes it on its
   own; `Restart=on-failure` only covers a crash while running, not a reboot.
-  Because it is then normally up at 04:00, `daily.sh` stops it for the duration
+  Because it is then normally up at 02:30, `daily.sh` stops it for the duration
   of the nightly run and restarts it from an `EXIT` trap — it used to just
   bail out, which would have skipped the captured pass, the table rebuild and
   the delta upload for as long as bulk stayed up. The service exits 0 once its
