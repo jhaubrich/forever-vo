@@ -1,0 +1,228 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "262558|165bbe08": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Palah Thunderhoof",
+   "npc": "262558",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "What has brought you to the Earthen Ring?",
+   "time": 1790603885,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "276171|1e85fa3a": {
+   "build": "70009",
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Oura Stormspinner",
+   "npc": "276171",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "We shen'dorei have need of additional cloth to replenish our supplies. Any donations you make would be put to good use, and surely raise your esteem with the Windshapers.",
+   "time": 1790603919,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "2988|00c35128": {
+   "build": "70009",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Morin Cloudstalker",
+   "npc": "2988",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "The Outrunners' duty is to ensure the safety of those who travel across the plains of Mulgore. Those that would threaten the safety of the $r homeland risk punishment at our hands.",
+   "time": 1790426998,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "npcs": {
+  "-61934": {
+   "isObject": true,
+   "name": "Brazier of the Dormant Flame"
+  },
+  "262558": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Palah Thunderhoof",
+   "sex": 2
+  },
+  "276171": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Oura Stormspinner",
+   "sex": 3
+  },
+  "2987": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Eyahn Eagletalon",
+   "sex": 2
+  },
+  "2988": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Morin Cloudstalker",
+   "sex": 2
+  },
+  "5900": {
+   "creatureType": "Humanoid",
+   "modelFileID": 122560,
+   "name": "Telf Joolam",
+   "sex": 2
+  },
+  "5907": {
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Kranal Fiss",
+   "sex": 2
+  }
+ },
+ "origin": "issue-316",
+ "quests": {
+  "1524-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Telf Joolam",
+   "npc": "5900",
+   "questID": 1524,
+   "sex": "m",
+   "source": "community",
+   "text": "Greetin's, $N. You've found yourself at the Shrine of the Dormant Flame. Only those knowledgeable enough in the shamanistic arts will ever learn the secrets of this place and the power it holds. I'm sorry you made the trip all this way, only to be turned back now--the journey up here is far from safe after all--but I am the keeper of the shrine, and I cannot allow just anyone to wander around here.",
+   "time": 1790427753,
+   "title": "Call of Fire",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "1525-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Telf Joolam",
+   "npc": "5900",
+   "questID": 1525,
+   "sex": "m",
+   "source": "community",
+   "text": "I have enough ingredients for a sapta of fire if you can find the reagent pouch and some fire tar. The Burning Blade fanatics carry the proper components for most of their spells in those pouches, and usually have enough of the items I need that we will not have to search much farther for anything else.\n\nThe saptas are always made from ingredients that are closely tied to their respective elements. It makes our work easier because of the warlocks' ties to fire.",
+   "time": 1790430052,
+   "title": "Call of Fire",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "1526-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1411,
+   "name": "Brazier of the Dormant Flame",
+   "npc": "-61934",
+   "questID": 1526,
+   "sex": "m",
+   "source": "community",
+   "text": "The brazier stands about a third your height, and looks normal, save for the inscriptions along its smooth metal rails. The metal shows no signs of wear from the weather, and the bowl seated at the top of it feels cool to the touch.",
+   "time": 1790430188,
+   "title": "Call of Fire",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "1527-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Kranal Fiss",
+   "npc": "5907",
+   "questID": 1527,
+   "sex": "m",
+   "source": "community",
+   "text": "Yes, $N? What do you have there?",
+   "time": 1790430384,
+   "title": "Call of Fire",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "744-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Eyahn Eagletalon",
+   "npc": "2987",
+   "questID": 744,
+   "sex": "m",
+   "source": "community",
+   "text": "This headdress will certainly be a wonderful gift for my brother.",
+   "time": 1790539069,
+   "title": "Preparation for Ceremony",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "765-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Morin Cloudstalker",
+   "npc": "2988",
+   "questID": 765,
+   "sex": "m",
+   "source": "community",
+   "text": "I seethe with anger at the thought of the atrocities the Venture Co. is willing to perpetrate against us in the name of profit.",
+   "time": 1790426999,
+   "title": "Supervisor Fizsprocket",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "98424-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": true,
+   "mapID": 1413,
+   "name": "Unknown",
+   "npc": null,
+   "questID": 98424,
+   "sex": "m",
+   "source": "community",
+   "text": "Some particularly worn papers are held separately, folded in Fizsprocket's inside breast pocket.\r\n\r\nThey seem to detail important information that could be used against the Venture Co. and its operations in the region. It would be prudent to look for more before returning to Morin Cloudstalker.",
+   "time": 1790427441,
+   "title": "Fizsprocket's Notes",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "99196-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Oura Stormspinner",
+   "npc": "276171",
+   "questID": 99196,
+   "sex": "m",
+   "source": "community",
+   "text": "The Windshapers are currently accepting donations for wool cloth.\r\n\r\nA donation of sixty pieces of wool cloth will net you full recognition by the Windshapers for your generosity. \n\nIf you have the sixty pieces of wool cloth on you and are ready to donate them, I'm able to take them from you now.",
+   "time": 1790603921,
+   "title": "A Donation of Wool",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
