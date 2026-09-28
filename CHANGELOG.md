@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.6
 
 - The welcome no longer says a voice pack is coming and that you will hear
   nothing; the packs have been on CurseForge since September 22.
