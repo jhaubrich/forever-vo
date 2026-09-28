@@ -1,0 +1,126 @@
+{
+ "addon": "0.1.5",
+ "gossip": {
+  "1646|1d2a2e75": {
+   "build": "70009",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Baros Alexston",
+   "npc": "1646",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, I am Baros Alexston, City Architect of Stormwind.",
+   "time": 1790571149,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "234|eba492ed": {
+   "build": "70009",
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Gryan Stoutmantle",
+   "npc": "234",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "A foul corruption has crept into Westfall.  While I was upholding my duty on the battlefields of Lordaeron these honest farms were overrun and made into hide-outs for thugs and murderers. The People's Militia needs your help.",
+   "time": 1790564826,
+   "title": null,
+   "wanted": null,
+   "zone": "Sentinel Tower"
+  }
+ },
+ "npcs": {
+  "1646": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Baros Alexston",
+   "sex": 2
+  },
+  "234": {
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Gryan Stoutmantle",
+   "sex": 2
+  },
+  "239": {
+   "creatureType": "Humanoid",
+   "modelFileID": 118355,
+   "name": "Grimbooze Thunderbrew",
+   "sex": 2
+  }
+ },
+ "origin": "issue-306",
+ "quests": {
+  "117-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Grimbooze Thunderbrew",
+   "npc": "239",
+   "questID": 117,
+   "sex": "m",
+   "source": "community",
+   "text": "Hurry, my friend, move with haste \nIn order for our rich lager to taste\nMore like beer and less like stew,\nHops are needed to make the brew.",
+   "time": 1790565272,
+   "title": "Thunderbrew",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "142-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Gryan Stoutmantle",
+   "npc": "234",
+   "questID": 142,
+   "sex": "m",
+   "source": "community",
+   "text": "$N, were you able to gather any information?  Did you locate the messenger?",
+   "time": 1790563434,
+   "title": "The Defias Brotherhood",
+   "wanted": null,
+   "zone": "Sentinel Tower"
+  },
+  "399-progress": {
+   "build": "70009",
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Baros Alexston",
+   "npc": "1646",
+   "questID": 399,
+   "sex": "m",
+   "source": "community",
+   "text": "$N! Did you have any luck?",
+   "time": 1790571150,
+   "title": "Humble Beginnings",
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "79008-accept": {
+   "build": "70009",
+   "event": "accept",
+   "isObject": true,
+   "mapID": 1436,
+   "name": "Unknown",
+   "npc": null,
+   "questID": 79008,
+   "sex": "m",
+   "source": "community",
+   "text": "<The faint radiance of the embers darkening, you stumble across the remnants of a recent fire.\r\n\r\nAmidst the scattered provisions, you discover a blistered note.>\r\n\r\n\"Not all that burns is lost. Find the twin land, find the place.\"",
+   "time": 1790570546,
+   "title": "... and that note you found",
+   "wanted": true,
+   "zone": "Westfall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
