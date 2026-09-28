@@ -85,7 +85,7 @@ end
 -- Quest events
 -- ---------------------------------------------------------------------------
 
-local BARK_DELAY = 0.75 -- the game's own greeting bark, on the Dialog channel, is usually under a second
+local BARK_DELAY = 1.2 -- the game's own greeting bark, on the Dialog channel, is usually under a second
 local barkHeard       -- speaker we already waited for during this open dialog
 
 --- Cleared once neither dialog is open. A quest picked from gossip closes one
