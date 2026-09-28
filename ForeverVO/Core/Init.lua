@@ -25,6 +25,7 @@ ns.defaults = {
     playComplete = true,
     playGreeting = true,
     playGossip = true,
+    gossipOnce = true,                   -- an NPC's gossip is read once per session
     gossipFrequency = "oncePerQuestNPC", -- always | oncePerQuestNPC | oncePerNPC | never
 
     -- Audio
@@ -54,6 +55,7 @@ ns.defaults = {
 ns.charDefaults = {
     paused = false,
     seenGossip = {},
+    seenGossipOnce = {},
 }
 
 local function ApplyDefaults(target, defaults)

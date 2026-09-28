@@ -85,6 +85,34 @@ end
 -- Quest events
 -- ---------------------------------------------------------------------------
 
+local BARK_DELAY = 0.75 -- the game's own greeting bark, on the Dialog channel, is usually under a second
+local barkHeard       -- speaker we already waited for during this open dialog
+
+--- Cleared once neither dialog is open. A quest picked from gossip closes one
+--- frame and opens the other; the bark already played, so that handoff must
+--- not wait again.
+local function ClearBarkIfIdle()
+    local questOpen = QuestFrame and QuestFrame:IsShown()
+    local gossipOpen = GossipFrame and GossipFrame:IsShown()
+    if not questOpen and not gossipOpen then
+        barkHeard = nil
+    end
+end
+
+--- The first voiced line of a dialog waits so the NPC's bark can finish.
+--- Audio.Play mutes the Dialog channel, which would cut the bark off.
+local function MaybeLeadIn(item, speaker, fromItem)
+    if fromItem then
+        return
+    end
+    local key = speaker.guid or speaker.name
+    if not key or barkHeard == key then
+        return
+    end
+    barkHeard = key
+    item.leadIn = BARK_DELAY
+end
+
 local function QueueQuest(event, text, startItemID)
     local questID = GetQuestID()
     local title = Util.Plain(GetTitleText())
@@ -116,6 +144,7 @@ local function QueueQuest(event, text, startItemID)
         name = speaker.name, speakerKey = speaker.speakerKey, guid = speaker.guid, isObject = speaker.isObject,
         path = path, duration = duration, pack = pack, parts = parts, voice = voice,
     }
+    MaybeLeadIn(item, speaker, startItemID)
     if Queue:Add(item) then
         currentQuestItem = item
     end
@@ -143,6 +172,7 @@ function Events.QUEST_FINISHED()
     end
     currentQuestItem = nil
     dialogGUID = nil
+    C_Timer.After(0, ClearBarkIfIdle)
 end
 
 -- ---------------------------------------------------------------------------
@@ -192,6 +222,10 @@ local function QueueGossip(event, text)
     if (event == "greeting" and not ns.db.playGreeting) or (event == "gossip" and not ns.db.playGossip) then
         return
     end
+    local onceKey = speaker.guid or speaker.name
+    if event == "gossip" and ns.db.gossipOnce and onceKey and ns.char.seenGossipOnce[onceKey] then
+        return
+    end
     local play, npcKey = ShouldPlayGossip(speaker)
     if not play then
         return
@@ -203,9 +237,13 @@ local function QueueGossip(event, text)
         name = speaker.name, speakerKey = speakerKey, guid = speaker.guid, isObject = speaker.isObject,
         path = path, duration = duration, pack = pack, parts = parts, voice = voice,
     }
+    MaybeLeadIn(item, speaker)
     if Queue:Add(item) then
         currentGossipItem = item
         ns.char.seenGossip[npcKey] = true
+        if event == "gossip" and onceKey then
+            ns.char.seenGossipOnce[onceKey] = true
+        end
     end
 end
 
@@ -226,6 +264,7 @@ function Events.GOSSIP_CLOSED()
     currentGossipItem = nil
     selectedGossipOption = nil
     dialogGUID = nil
+    C_Timer.After(0, ClearBarkIfIdle)
 end
 
 -- ---------------------------------------------------------------------------

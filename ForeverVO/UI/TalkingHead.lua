@@ -551,7 +551,7 @@ function TalkingHead:ShowPagedText(item)
     end
     local elapsed = #pages[1]
     for i = 2, #pages do
-        local at = item.duration * (elapsed / total)
+        local at = (item.leadIn or 0) + item.duration * (elapsed / total)
         local page = pages[i]
         table.insert(self.pageTimers, C_Timer.NewTimer(at, function()
             if self.displayed == item then
