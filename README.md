@@ -76,6 +76,15 @@ under different reference clips and Chatterbox settings side by side, keeping
 the winner in `forever-vo.toml`, and writing a single regenerated file into the
 pack.
 
+It plays each line's current file from the repo's `ForeverVO_Data`, falling
+back to the voice packs installed in your client. It finds them from `WOW_DIR`
+(the folder holding `_classic_beta_`; the default is a Faugus install), so set
+that if your game lives elsewhere, or pass `--addons <Interface/AddOns>`:
+
+```sh
+WOW_DIR="$HOME/Games/World of Warcraft" ./tools/run.sh audition
+```
+
 ### Audition on an AMD GPU
 
 The default `tts` group is the CUDA wheel. On AMD, audition uses the

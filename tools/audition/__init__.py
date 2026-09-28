@@ -62,8 +62,10 @@ from tools.build_voice_references import (
     build_picked_reference,
 )
 from tools.config import (
+    BETA_DIR,
     CONFIG_TOML,
     DATA_DIR,
+    PACK_NAME,
     SOUND_INDEX,
     SOUNDS_DIR,
     VOICES_DIR,
@@ -85,6 +87,7 @@ from tools.textclean import clean
 from tools.wowdata import archetype_names, is_archetype, sound_set_displays
 
 AUDITION_DIR = DATA_DIR / "audition"
+ADDONS_DIR = BETA_DIR / "Interface" / "AddOns"
 SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
@@ -586,6 +589,50 @@ def lines_in_voice(rows: list[LineRow], voice: str, limit: int = 60) -> list[Lin
 # ----------------------------------------------------------------------------
 
 
+@dataclass(frozen=True)
+class SoundPack:
+    """A folder of pack audio the page can play: the working folder or an installed pack."""
+
+    key: str  # the folder name, which the /api/pack URLs carry
+    label: str  # what the page shows: "working folder", or the manifest's name
+    priority: int
+    sounds: Path
+
+
+PACK_FIELD = re.compile(r'^\s*(name|priority)\s*=\s*"?([^",]+)"?', re.MULTILINE)
+
+
+def sound_packs(
+    addons: Path | None = ADDONS_DIR, working: Path = SOUNDS_DIR
+) -> list[SoundPack]:
+    """Where a line's "in the pack now" comes from: the working folder first, since
+    it is what "Write to pack" writes and what the owner's machine holds complete,
+    then each pack installed in the client, in the order the addon consults them
+    (Packs.lua: higher priority first, then name). A contributor's working folder
+    holds a few hundred files and the rest of their audio is in the CurseForge packs,
+    so without those every line read "no file in the pack yet". The owner links the
+    working folder into the client as ForeverVO_Data_Local; that link is skipped,
+    since it is the working folder again."""
+    installed: list[SoundPack] = []
+    for folder in sorted(addons.glob("ForeverVO_Data*")) if addons else []:
+        sounds = folder / "Sounds"
+        if not sounds.is_dir() or sounds.resolve() == working.resolve():
+            continue
+        fields: dict[str, str] = {}
+        with contextlib.suppress(OSError):
+            manifest = (folder / "Data" / "Pack.lua").read_text(encoding="utf-8")
+            for key, value in PACK_FIELD.findall(manifest):
+                fields.setdefault(key, value.strip())
+        priority = 0
+        with contextlib.suppress(ValueError):
+            priority = int(fields.get("priority", 0))
+        installed.append(
+            SoundPack(folder.name, fields.get("name", folder.name), priority, sounds)
+        )
+    installed.sort(key=lambda pack: (-pack.priority, pack.label))
+    return [SoundPack(PACK_NAME, "working folder", 0, working), *installed]
+
+
 class Studio:
     def __init__(self, config_path: Path = CONFIG_TOML, allow_cpu: bool = False):
         self.config_path = config_path
@@ -887,7 +934,9 @@ def _under(root: Path, relative: str) -> Path:
     return path
 
 
-def create_app(studio: Studio, dev: bool = False) -> FastAPI:
+def create_app(
+    studio: Studio, dev: bool = False, addons: Path | None = ADDONS_DIR
+) -> FastAPI:
     """`dev` re-reads index.html on every request, so page edits show on a browser
     refresh; Python edits still need a restart (main's --reload does that)."""
     app = FastAPI(title="Forever Voiceover audition")
@@ -902,12 +951,25 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
     def state() -> dict[str, Any]:
         return studio.state()
 
+    packs = sound_packs(addons)
+    packs_by_key = {pack.key: pack for pack in packs}
+
     def payload(row: LineRow) -> dict[str, Any]:
-        exists = sound_path(row.subfolder, row.base).exists()
+        found = next(
+            (
+                pack
+                for pack in packs
+                if sound_path(row.subfolder, row.base, sounds_dir=pack.sounds).exists()
+            ),
+            None,
+        )
         return {
             **row.__dict__,
-            "exists": exists,
-            "pack_url": f"/api/pack/{row.subfolder}/{row.base}.mp3" if exists else None,
+            "exists": found is not None,
+            "pack": found.label if found else None,
+            "pack_url": f"/api/pack/{found.key}/{row.subfolder}/{row.base}.mp3"
+            if found
+            else None,
         }
 
     @app.get("/api/lines")
@@ -940,12 +1002,15 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
             raise HTTPException(404, f"no lines are spoken in {voice}")
         return payload(row)
 
-    @app.get("/api/pack/{subfolder}/{name}")
-    def pack_audio(subfolder: str, name: str) -> FileResponse:
+    @app.get("/api/pack/{pack}/{subfolder}/{name}")
+    def pack_audio(pack: str, subfolder: str, name: str) -> FileResponse:
+        if pack not in packs_by_key:
+            raise HTTPException(404, pack)
         if subfolder not in ("Quests", "Gossip"):
             raise HTTPException(404, subfolder)
         return FileResponse(
-            _under(SOUNDS_DIR, f"{subfolder}/{_safe(name)}"), media_type="audio/mpeg"
+            _under(packs_by_key[pack].sounds, f"{subfolder}/{_safe(name)}"),
+            media_type="audio/mpeg",
         )
 
     @app.get("/api/audio/{session}/{name}")
@@ -1148,7 +1213,8 @@ def create_app(studio: Studio, dev: bool = False) -> FastAPI:
             "seconds": round(seconds, 1),
             "elapsed": round(time.time() - t0, 1),
             "fingerprint": fingerprint,
-            "pack_url": f"/api/pack/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}",
+            "pack": "working folder",
+            "pack_url": f"/api/pack/{PACK_NAME}/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}",
         }
 
     @app.get("/api/clips/audio/{voice}/{name}")
@@ -1236,7 +1302,12 @@ def app_from_env() -> FastAPI:
         config_path=Path(os.environ.get("AUDITION_CONFIG", str(CONFIG_TOML))),
         allow_cpu=os.environ.get("AUDITION_CPU") == "1",
     )
-    return create_app(studio, dev=os.environ.get("AUDITION_DEV") == "1")
+    addons = os.environ.get("AUDITION_ADDONS")
+    return create_app(
+        studio,
+        dev=os.environ.get("AUDITION_DEV") == "1",
+        addons=Path(addons) if addons else ADDONS_DIR,
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1258,6 +1329,13 @@ def main(argv: list[str] | None = None) -> int:
         help="allow generating on the CPU when there is no GPU (very slow)",
     )
     parser.add_argument(
+        "--addons",
+        type=Path,
+        default=ADDONS_DIR,
+        help="the client's Interface/AddOns, whose installed ForeverVO_Data* packs are "
+        "played beside the working folder (default: from WOW_DIR)",
+    )
+    parser.add_argument(
         "--open", action="store_true", help="open the page in the browser"
     )
     parser.add_argument(
@@ -1276,6 +1354,9 @@ def main(argv: list[str] | None = None) -> int:
     os.environ["AUDITION_CONFIG"] = str(args.config)
     os.environ["AUDITION_CPU"] = "1" if args.cpu else "0"
     os.environ["AUDITION_DEV"] = "1" if args.reload else "0"
+    os.environ["AUDITION_ADDONS"] = str(args.addons)
+    if not args.addons.is_dir():
+        print(f"audition: no {args.addons}, so only the working folder's audio plays")
     url = f"http://{args.host}:{args.port}"
     print(
         f"audition: {url}  (config {args.config}{', reloading on edits' if args.reload else ''})"

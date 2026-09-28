@@ -14,6 +14,7 @@ from tools.audition import (
     LineRow,
     random_line,
     search,
+    sound_packs,
     sources_warnings,
     write_pronunciation,
     write_tuning,
@@ -219,3 +220,47 @@ def test_sources_warnings_names_a_clip_the_voice_does_not_actually_read(
     assert any("npc-3597" in w for w in sources_warnings(config, "tauren-male", voices))
     # human-male is the narrator's clip as well as its own
     assert any("narrator" in w for w in sources_warnings(config, "human-male", voices))
+
+
+def _pack(addons: Path, folder: str, name: str, priority: int) -> Path:
+    (addons / folder / "Data").mkdir(parents=True)
+    (addons / folder / "Data" / "Pack.lua").write_text(
+        f'{folder}Pack = {{\n    name = "{name}",\n    priority = {priority},\n}}\n',
+        encoding="utf-8",
+    )
+    sounds = addons / folder / "Sounds"
+    (sounds / "Quests").mkdir(parents=True)
+    return sounds
+
+
+def test_sound_packs_put_the_working_folder_first_then_follow_the_addon_order(
+    tmp_path: Path,
+) -> None:
+    working = tmp_path / "repo" / "Sounds"
+    (working / "Quests").mkdir(parents=True)
+    addons = tmp_path / "AddOns"
+    _pack(addons, "ForeverVO_Data_Base", "Classic", 100)
+    _pack(addons, "ForeverVO_Data_Forever", "Forever", 200)
+    (addons / "ForeverVO_Data_Local" / "Data").mkdir(parents=True)
+    (addons / "ForeverVO_Data_Local" / "Data" / "Pack.lua").write_text(
+        'ForeverVO_DataPack = {\n    name = "Local",\n    priority = 300,\n}\n',
+        encoding="utf-8",
+    )
+    (addons / "ForeverVO_Data_Local" / "Sounds").symlink_to(working)
+    (addons / "ForeverVO_Data_Old").mkdir()  # no Sounds: not a pack
+
+    packs = sound_packs(addons, working)
+
+    assert [(p.key, p.label, p.priority) for p in packs] == [
+        ("ForeverVO_Data", "working folder", 0),
+        ("ForeverVO_Data_Forever", "Forever", 200),
+        ("ForeverVO_Data_Base", "Classic", 100),
+    ]
+    assert packs[0].sounds == working
+
+
+def test_sound_packs_without_a_client_is_just_the_working_folder(
+    tmp_path: Path,
+) -> None:
+    packs = sound_packs(tmp_path / "missing", tmp_path)
+    assert [(p.key, p.label) for p in packs] == [("ForeverVO_Data", "working folder")]
