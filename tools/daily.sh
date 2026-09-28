@@ -9,7 +9,12 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$ROOT/tools/data/daily.log"
 LOCK="$ROOT/tools/data/daily.lock"
-BULK_HOURS="${FOREVER_VO_BULK_HOURS:-2}"   # how long the daily run may spend on the bulk backlog
+# The run starts at 02:30 (install-timer.sh) and must be done by END_AT. The
+# tail after generation (table rebuild, dry run, delta upload, push) took 6 to
+# 27 minutes in September 2026 and grows with the delta, hence TAIL_MINUTES.
+END_AT="${FOREVER_VO_END_AT:-07:00}"
+TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-45}"
+BULK_HOURS="${FOREVER_VO_BULK_HOURS:-}"   # optional cap on the bulk pass; unset, it fills the window
 
 mkdir -p "$ROOT/tools/data"
 exec >>"$LOG" 2>&1
@@ -22,6 +27,26 @@ if ! flock -n 9; then
     exit 0
 fi
 cd "$ROOT"
+# Generation stops TAIL_MINUTES before END_AT. A run that starts too late for
+# that (the timer's catch-up after the machine was off at 02:30) gets two hours,
+# the old fixed bound, so a daytime catch-up does not hold the GPU all day.
+GEN_UNTIL="$(date -d "today $END_AT $TAIL_MINUTES minutes ago" +%s)"
+if [ "$GEN_UNTIL" -le "$(date +%s)" ]; then
+    GEN_UNTIL="$(date -d "now 2 hours" +%s)"
+    echo "started after the window; generating until $(date -d "@$GEN_UNTIL" +%H:%M)"
+fi
+if [ -n "$BULK_HOURS" ]; then
+    CAP="$(date -d "now $BULK_HOURS hours" +%s)"
+    if [ "$CAP" -lt "$GEN_UNTIL" ]; then
+        GEN_UNTIL="$CAP"
+    fi
+fi
+# Seconds of generation left before GEN_UNTIL, at least 1: `timeout 0` means
+# no limit at all
+remaining() {
+    local left=$((GEN_UNTIL - $(date +%s)))
+    echo $((left > 1 ? left : 1))
+}
 # Sync with GitHub (pull, ingest, push) whatever else is going on
 ./tools/ingest.sh || true
 
@@ -38,7 +63,7 @@ fi
 # The bulk service exits 0 once its todo list is empty and only a login starts
 # it again, so work that appears later (a rebuilt reference clip, a voice
 # change, a merged pipeline branch) would otherwise get only this job's
-# BULK_HOURS a night. Restart it when it was running before, or when a backlog
+# window a night. Restart it when it was running before, or when a backlog
 # is still there at the end of this run.
 BULK_PENDING=0
 restore_bulk() {
@@ -54,10 +79,13 @@ if pgrep -f 'tools/generate.py' >/dev/null; then
     echo "a manual generate.py is running; leaving generation to it"
     exit 0
 fi
-./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
-
-# Then continue the bulk backlog for a while (timeout returns 124 when it cuts the run short)
-timeout "${BULK_HOURS}h" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+# Captured lines first, then the bulk backlog until GEN_UNTIL (timeout returns
+# 124 when it cuts a pass short; files already written are kept)
+echo "generating until $(date -d "@$GEN_UNTIL" +%H:%M)"
+timeout "$(remaining)" ./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+if [ "$(remaining)" -gt 60 ]; then
+    timeout "$(remaining)" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+fi
 ./tools/run.sh tools/generate.py --tables-only 2>&1 | tail -1 || true
 # What the timed run left behind, from the same todo list it walked (a dry run
 # takes a few seconds). The EXIT trap hands it to the bulk service.
