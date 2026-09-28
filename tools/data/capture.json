@@ -9524,9 +9524,9 @@
    "zone": "Durotar"
   },
   "3309|2f8d506f": {
-   "addon": "0.1.5",
+   "addon": "0.1.6",
    "build": "70009",
-   "class": "Mage",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789924607,
    "found": true,
@@ -9534,16 +9534,17 @@
    "name": "Karus",
    "npc": "3309",
    "pack": "Forever",
-   "player": "Myrlin",
-   "race": "Orc",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
+   "settled": "cr",
    "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.",
-   "time": 1790545569,
+   "time": 1790637727,
    "zone": "Orgrimmar"
   },
   "3309|6b36598f": {
-   "addon": "0.1.5",
+   "addon": "0.1.6",
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
@@ -9558,7 +9559,7 @@
    "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "I guarantee this bank's security with my own blood, is that good enough for you?",
-   "time": 1790394760,
+   "time": 1790637716,
    "zone": "Orgrimmar"
   },
   "3309|ae78a458": {
@@ -9638,9 +9639,9 @@
    "zone": "Orgrimmar"
   },
   "3318|ae78a458": {
-   "addon": "0.1.5",
+   "addon": "0.1.6",
    "build": "70009",
-   "class": "Paladin",
+   "class": "Hunter",
    "event": "gossip",
    "firstSeen": 1789924612,
    "found": true,
@@ -9648,12 +9649,13 @@
    "name": "Koma",
    "npc": "3318",
    "pack": "Forever",
-   "player": "Fixpoint",
-   "race": "Undead",
-   "sex": "m",
+   "player": "Pellinore",
+   "race": "Windshaper Skyborne",
+   "settled": "cr",
+   "sex": "mf",
    "subzone": "Valley of Strength",
    "text": "Would you rather trust your goods with a goblin?",
-   "time": 1790545493,
+   "time": 1790637499,
    "zone": "Orgrimmar"
   },
   "3320|2f8d506f": {
@@ -9976,7 +9978,7 @@
    "zone": "Orgrimmar"
   },
   "3365|0443423e": {
-   "addon": "0.1.5",
+   "addon": "0.1.6",
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
@@ -9991,7 +9993,7 @@
    "sex": "f",
    "subzone": "The Drag",
    "text": "The twists and turns of Orgrimmar are designed to thwart invaders. Can you imagine how quickly one of those puny gnomes would get lost in here? Ha! If it was lucky, I'd track it down and keep it as a pet.",
-   "time": 1790395744,
+   "time": 1790637670,
    "zone": "Orgrimmar"
   },
   "3365|b90e9588": {
@@ -10014,7 +10016,7 @@
    "zone": "Orgrimmar"
   },
   "3368|5a0b913d": {
-   "addon": "0.1.5",
+   "addon": "0.1.6",
    "build": "70009",
    "class": "Hunter",
    "event": "gossip",
@@ -10029,7 +10031,7 @@
    "sex": "f",
    "subzone": "The Drag",
    "text": "I have the finest meats in Orgrimmar.",
-   "time": 1790371053,
+   "time": 1790637630,
    "zone": "Orgrimmar"
   },
   "3370|7e0ec160": {
