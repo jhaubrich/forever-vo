@@ -269,7 +269,12 @@ pack file under the *saved* configuration only and records the fingerprint
 it is disabled until the row's recipe is the saved one. On the ROCm build
 that button is refused; keeping a voice's settings in the TOML still works,
 and the CUDA generator restages the voice from them. Takes go to
-`tools/data/audition/<session>/` (gitignored). One model instance, loaded on
+`tools/data/audition/<session>/` (gitignored). A row's "in the pack now"
+plays the working folder's file, else the first installed `ForeverVO_Data*`
+pack under `WOW_DIR`'s `Interface/AddOns` that has it, in the addon's priority
+order (`sound_packs`; `--addons` names another folder): a contributor's working
+folder is mostly empty, and before 2026-09-28 every line read "no file in the
+pack yet" for them. One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
 we need are plain HTML, and the addon's own rule of no libraries and a native
