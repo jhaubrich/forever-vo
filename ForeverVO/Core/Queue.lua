@@ -65,7 +65,7 @@ function Queue:IsPlaying()
     return current ~= nil and current.timer ~= nil
 end
 
-local function StartPlayback(self, item)
+local function PlayItem(self, item)
     local parts = item.parts
     if parts and #parts > 0 then
         -- One file after another; the item's duration is their sum, which is
@@ -91,6 +91,24 @@ local function StartPlayback(self, item)
         end)
     end
     self:TriggerEvent("OnPlay", item)
+end
+
+local function StartPlayback(self, item)
+    local lead = item.leadIn
+    if lead and lead > 0 then
+        -- The NPC's own bark is still on the Dialog channel. Muting that
+        -- channel, which Audio.Play does, waits until this timer fires.
+        item.timer = C_Timer.NewTimer(lead, function()
+            item.timer = nil
+            item.leadIn = nil
+            if self:Current() ~= item or self:IsPaused() then
+                return
+            end
+            PlayItem(self, item)
+        end)
+        return
+    end
+    PlayItem(self, item)
 end
 
 local function StopPlayback(item)

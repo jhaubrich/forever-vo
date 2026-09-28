@@ -118,7 +118,74 @@ ns.OnInit(function()
     Checkbox(voiced, "playComplete", "Quest turn-ins", "Read the reward text when handing in a quest.")
     Checkbox(voiced, "playProgress", "Quest progress", "Read the 'not yet complete' text when returning early. Usually best left off.")
     Checkbox(voiced, "playGreeting", "Greetings", "Read the greeting of NPCs that offer quests.")
-    Checkbox(voiced, "playGossip", "Gossip", "Read NPC conversation text.")
+    local gossip = Checkbox(voiced, "playGossip", "Gossip", "Read NPC conversation text.")
+    -- Not its own row: it sits to the right of Gossip, and greys out when that box is clear.
+    local gossipOnce = Settings.RegisterAddOnSetting(voiced, "FVO_gossipOnce", "gossipOnce", ns.db, Settings.VarType.Boolean, "First gossip only", ns.defaults.gossipOnce)
+    local gossipOnceTip = "Read an NPC's gossip the first time you talk to them this session, and not again. Greetings and quest text are unchanged."
+    local gossipRow
+    local function ApplyGossipOnce(row)
+        local enabled = gossip:GetValue() and true or false
+        row.FirstGossip:SetEnabled(enabled)
+        row.FirstGossip:SetChecked(gossipOnce:GetValue() and true or false)
+        local color = enabled and NORMAL_FONT_COLOR or GRAY_FONT_COLOR
+        row.FirstGossipLabel:SetTextColor(color:GetRGB())
+    end
+    local function ShowGossipOnce(row)
+        if not row.FirstGossip then
+            local label = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            label:SetText("First gossip only")
+            label:SetPoint("LEFT", row.Checkbox, "RIGHT", 28, 0)
+            local box = CreateFrame("CheckButton", nil, row, "SettingsCheckboxTemplate")
+            box:SetPoint("LEFT", label, "RIGHT", 4, 0)
+            box:SetScript("OnClick", function(self)
+                if not self:IsEnabled() then
+                    self:SetChecked(gossipOnce:GetValue() and true or false)
+                    return
+                end
+                gossipOnce:SetValue(self:GetChecked() and true or false)
+                PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+            end)
+            box:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetText("First gossip only", 1, 0.82, 0)
+                GameTooltip:AddLine(gossipOnceTip, 1, 1, 1, true)
+                GameTooltip:Show()
+            end)
+            box:SetScript("OnLeave", GameTooltip_Hide)
+            row.FirstGossip = box
+            row.FirstGossipLabel = label
+            row.Checkbox:HookScript("OnClick", function()
+                if row.FirstGossip:IsShown() then
+                    ApplyGossipOnce(row)
+                end
+            end)
+        end
+        row.FirstGossip:Show()
+        row.FirstGossipLabel:Show()
+        ApplyGossipOnce(row)
+    end
+    hooksecurefunc(SettingsCheckboxControlMixin, "Init", function(self, initializer)
+        if initializer:GetSetting() == gossip then
+            gossipRow = self
+            ShowGossipOnce(self)
+        elseif self.FirstGossip then
+            self.FirstGossip:Hide()
+            self.FirstGossipLabel:Hide()
+            if gossipRow == self then
+                gossipRow = nil
+            end
+        end
+    end)
+    gossip:SetValueChangedCallback(function()
+        if gossipRow and gossipRow.FirstGossip and gossipRow.FirstGossip:IsShown() then
+            ApplyGossipOnce(gossipRow)
+        end
+    end)
+    gossipOnce:SetValueChangedCallback(function(_, value)
+        if gossipRow and gossipRow.FirstGossip:IsShown() then
+            gossipRow.FirstGossip:SetChecked(value and true or false)
+        end
+    end)
     Dropdown(voiced, "gossipFrequency", "Repeat gossip", "How often the same NPC's gossip is read again.", GOSSIP_FREQUENCIES)
 
     -- Audio
