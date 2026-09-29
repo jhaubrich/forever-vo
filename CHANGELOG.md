@@ -16,6 +16,14 @@
   Forever (Greatmother Hawkwind's thanks in "A Humble Task" stops after two
   sentences); your reading replaces it. Packs made before this say nothing
   about their text, so the check starts with the next voice pack.
+- An NPC's looks are read more carefully. Talking to one NPC right after
+  another could record the first one's model for the second, and the voice
+  packs pick a Forever NPC's voice from it: Fizzlefuse, a goblin, was voiced
+  as an orc. When the NPC you see is not the one the pack cast the voice
+  from, `/fvo export` sends that NPC along, so the pack can fix the voice.
+- `/fvo export` now includes your character's class and race with each line,
+  so the pack can tell where a quest says your class ("Greetings, mage")
+  from where it means the word. Your character name is still removed.
 
 ## 0.1.6
 

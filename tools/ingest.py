@@ -822,6 +822,54 @@ def merge_entry(
     return changed
 
 
+# From this addon version the capture reads each speaker's model on a frame no
+# other NPC's model is loading into. Before it one frame was shared, and a model
+# that finished loading late was written onto the next speaker: Fizzlefuse, a
+# goblin, came out a tauren in one reader's export and an orc in another's (#352).
+MODEL_TRUSTED_SINCE = (0, 1, 7)
+
+
+def merge_npc(old: dict, npc: dict, source: str, addon: str | None) -> dict:
+    """Merges one file's record of an NPC into capture.json's.
+
+    Everything but the model is taken as it comes, the newer file winning as it
+    always has. The model is the speaker's race for Forever's own NPCs, so it is
+    kept from readers of MODEL_TRUSTED_SINCE on (`addon` on the record, which a
+    saved-variables file carries per NPC, else the export's), one reading per
+    `source` (the export's origin, or "local" for the owner's saved variables),
+    in `modelReads`; the model is the one most of them saw, so an NPC that wears
+    more than one never flips back and forth, and a tie keeps what was there.
+    An older reading is only used while no trusted one exists."""
+    model = npc.get("modelFileID")
+    merged = {
+        **old,
+        **{
+            k: v
+            for k, v in npc.items()
+            if v is not None and k not in ("modelFileID", "addon", "recast")
+        },
+    }
+    if not model:
+        return merged
+    trusted = addon_version({"addon": npc.get("addon") or addon}) >= MODEL_TRUSTED_SINCE
+    if trusted:
+        reads = {**(old.get("modelReads") or {}), source: model}
+        merged["modelReads"] = reads
+        votes: dict[int, int] = {}
+        for read in reads.values():
+            votes[read] = votes.get(read, 0) + 1
+        best = max(votes.values())
+        current = old.get("modelFileID")
+        merged["modelFileID"] = (
+            current
+            if votes.get(current) == best
+            else min(m for m, n in votes.items() if n == best)
+        )
+    elif not old.get("modelReads"):
+        merged["modelFileID"] = model
+    return merged
+
+
 def ingest_file(
     capture: dict,
     path: Path,
@@ -868,7 +916,7 @@ def ingest_file(
             )
     for key, npc in (db.get("npcs") or {}).items():
         old = capture["npcs"].get(str(key), {})
-        merged = {**old, **{k: v for k, v in npc.items() if v is not None}}
+        merged = merge_npc(old, npc, db.get("origin") or "local", db.get("addon"))
         if merged != old:
             npcs += 1
         capture["npcs"][str(key)] = merged

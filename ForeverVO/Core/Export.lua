@@ -16,9 +16,12 @@ all" packs everything again, for a string that was shown but never pasted;
 the lines stay in the DB either way. The string is JSON, zlib-compressed and
 base64-encoded with the client's own
 C_EncodingUtil, prefixed with "FVO1:". The character's name, class and race are
-replaced by the $n/$c/$r placeholders (Util.Tokenize) at capture, so nothing
-identifying leaves the client and no line is voiced for one class only. The
-character's sex (one letter) does go along: the client resolves a "$g lad:lass;"
+replaced by the $n/$c/$r placeholders (Util.Tokenize) at capture, so no line is
+voiced for one class only, and the name never leaves the client. The class and
+race do go along beside each line ("c", "r", since 0.1.7): the pipeline can
+only tell a Mage's own "mage" from a literal one by comparing two readers it
+knows to differ, and without them every community reader was a stranger. The
+character's sex (one letter) goes along too: the client resolves a "$g lad:lass;"
 branch before the addon sees a quest text, and the pipeline can only put the
 branch back by comparing a male and a female reading, so a voiced line whose
 pack still wants this sex's reading (Capture.Contributes) is packed too, as is
@@ -26,6 +29,8 @@ pack still wants this sex's reading (Capture.Contributes) is packed too, as is
 line carries when it was heard ("d", a timestamp) and the file carries the addon
 version that heard it, so the pipeline can rank readings of the same line: a
 newer addon's capture wins over an older one's, and among equals the more recent.
+An NPC record goes along with its lines, and on its own when its model is not
+the one the pack cast its voice from (`recast`, see Capture.lua).
 tools/exportfile.py decodes it.
 ]]
 
@@ -88,6 +93,8 @@ function Export:Collect(all)
             z = entry.zone,
             m = entry.mapID,
             g = entry.sex,
+            c = entry.class,
+            r = entry.race,
             w = entry.wanted,
             v = entry.differs,
             d = entry.time,
@@ -102,12 +109,19 @@ function Export:Collect(all)
     for _, entry in pairs(db.gossip or {}) do
         add("gossip", entry)
     end
+    local at = db.exportedAt
+    for key, npc in pairs(db.npcs or {}) do
+        if npc.recast and (all or at == nil or npc.recast >= at) then
+            used[key] = true
+        end
+    end
     for key in pairs(used) do
         local npc = (db.npcs or {})[key]
         if npc then
             npcs[key] = {
                 name = npc.name, sex = npc.sex, displayID = npc.displayID,
                 modelFileID = npc.modelFileID, creatureType = npc.creatureType, isObject = npc.isObject,
+                addon = npc.addon,
             }
         end
     end

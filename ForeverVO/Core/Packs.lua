@@ -47,6 +47,10 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       },
     },
     npcs = { [speakerKey] = "Name" },
+    models = { [speakerKey] = 119376 },
+      -- the model file a speaker's voice was cast from, for speakers the
+      -- pipeline knows only by model (Forever's own NPCs have no display ID);
+      -- a player who sees another model exports the NPC record (Capture.lua)
     narratorVoices = { "human-female", "dwarf-male" },
     narrator = {
       [questID] = { [1] = { a = 5.4, c = 3.3, cP = { [2] = 1.2 } }, [2] = { a = 5.1 } },
@@ -95,6 +99,7 @@ function ns.RegisterPack(pack)
     pack.quests = pack.quests or {}
     pack.gossip = pack.gossip or {}
     pack.npcs = pack.npcs or {}
+    pack.models = pack.models or {}
     pack.narrator = pack.narrator or {}
     pack.narratorVoices = pack.narratorVoices or {}
     Packs.voices = nil -- the menu is the union over packs; rebuild it on demand
@@ -114,6 +119,22 @@ function ns.RegisterPack(pack)
     if ns.Queue then
         ns.Queue:TriggerEvent("OnPacksChanged")
     end
+end
+
+--- The model file the highest-priority pack that says cast this speaker's
+--- voice from, or nil when no pack was cast by model (or predates recording it).
+function Packs:SpeakerModel(key)
+    key = tonumber(key)
+    if not key then
+        return nil
+    end
+    for _, pack in ipairs(self.list) do
+        local model = pack.models[key]
+        if model then
+            return model
+        end
+    end
+    return nil
 end
 
 function Packs:Count()
