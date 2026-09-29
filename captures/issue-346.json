@@ -1,0 +1,34 @@
+{
+ "addon": "0.1.6",
+ "gossip": {},
+ "npcs": {
+  "3065": {
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Yaw Sharpmane",
+   "sex": 2
+  }
+ },
+ "origin": "issue-346",
+ "quests": {
+  "96130-progress": {
+   "build": "70009",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Yaw Sharpmane",
+   "npc": "3065",
+   "questID": 96130,
+   "sex": "m",
+   "source": "community",
+   "text": "Have you found the big wolf?",
+   "time": 1790688367,
+   "title": "Chakuyak",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
