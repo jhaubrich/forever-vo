@@ -710,7 +710,10 @@ of the 10 s window, then the knobs.
   keyed by the set's own folder, then a `--folders` run; never by name matching
   (`anduin`, `anduin_lothar`, `anduinwrynn` are two people). Sylvanas's `sylvanas`
   and `lady_sylvanas_windrunner` (Legion on, mostly real audio) are there,
-  commented out.
+  commented out. Every `wowdata.fetch_file` download lands once per build in
+  `tools/data/casc/<build>/<fdid>.<ext>` (gitignored) and is hard-linked where it
+  is asked for, so the probe, each display's candidates and the reference
+  builders share one copy.
 - Species voices (PR #21, 2026-09-23): a speaker with no player race resolves
   through its model file (`tools/data/species_models.json`, keyed by
   `CreatureModelData.FileDataID`, which is also what `GetModelFileID()`

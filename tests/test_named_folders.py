@@ -5,6 +5,7 @@ from __future__ import annotations
 import shutil
 from collections.abc import Iterator
 from pathlib import Path
+from typing import ClassVar
 
 import pytest
 
@@ -129,6 +130,68 @@ def test_a_pick_keeps_the_named_folders(toml_copy: Path) -> None:
         1,
     )
     toml_copy.write_text(text, encoding="utf-8")
+    before = load_config(toml_copy).voices.named_folders
+    load_config.cache_clear()
     config = write_voice_sources(toml_copy, "npc-11657", [561286, 561297])
-    assert config.voices.named_folders == {"sylvanaswindrunner": ["sylvanas"]}
+    assert config.voices.named_folders["sylvanaswindrunner"] == ["sylvanas"]
+    assert config.voices.named_folders == before
     assert config.voices.sources["npc-11657"].clips == [561286, 561297]
+
+
+def test_fetch_file_downloads_once_per_build(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The folder probe and every voice's candidates share one download."""
+    import requests
+
+    from tools import wowdata
+
+    calls: list[tuple[str, dict]] = []
+
+    class Response:
+        headers: ClassVar[dict[str, str]] = {"content-type": "application/octet-stream"}
+        content = b"OggS audio"
+        text = ""
+
+        def raise_for_status(self) -> None:
+            pass
+
+    def get(url: str, params: dict, timeout: int) -> Response:
+        calls.append((url, params))
+        return Response()
+
+    monkeypatch.setattr(wowdata, "CASC_DIR", tmp_path / "casc")
+    monkeypatch.setattr(requests, "get", get)
+    first = wowdata.fetch_file(561297, tmp_path / "npc-11657" / "561297.ogg")
+    second = wowdata.fetch_file(561297, tmp_path / "npc-15325" / "561297.ogg")
+    assert len(calls) == 1
+    assert first.read_bytes() == second.read_bytes() == b"OggS audio"
+    assert first.stat().st_ino == second.stat().st_ino  # one copy on disk
+    first.unlink()  # the probe deletes its own link; the cache keeps the file
+    wowdata.fetch_file(561297, tmp_path / "probe" / "561297.ogg")
+    assert len(calls) == 1
+    # another build is another file
+    wowdata.fetch_file(561297, tmp_path / "retail" / "561297.ogg", build="12.1.0.1")
+    assert [p["version"] for _, p in calls] == [wowdata.BETA_BUILD, "12.1.0.1"]
+
+
+def test_fetch_file_caches_nothing_it_could_not_get(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import requests
+
+    from tools import wowdata
+
+    class Missing:
+        headers: ClassVar[dict[str, str]] = {"content-type": "application/json"}
+        text = '{"error": "not found"}'
+
+        def raise_for_status(self) -> None:
+            pass
+
+    monkeypatch.setattr(wowdata, "CASC_DIR", tmp_path / "casc")
+    monkeypatch.setattr(requests, "get", lambda url, params, timeout: Missing())
+    with pytest.raises(FileNotFoundError):
+        wowdata.fetch_file(1, tmp_path / "v" / "1.ogg")
+    assert not (tmp_path / "v" / "1.ogg").exists()
+    assert not list((tmp_path / "casc").rglob("*.ogg"))

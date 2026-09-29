@@ -68,6 +68,9 @@ orcfemalekid = "humanfemalekid-female"
 # different people. lady_sylvanas_windrunner is Legion to Dragonflight.
 [voices.named_folders]
 # sylvanaswindrunner = ["sylvanas", "lady_sylvanas_windrunner"]
+jainaproudmoore = ["lady_jaina_proudmoore"]  # Legion on
+tyrandewhisperwind = ["tyrande_whisperwind"]  # Legion on
+voljin = ["warchief_voljin"]  # Legion and Battle for Azeroth, long speeches
 
 [voices.sources.bloodelf-female]
 clips = [539351, 539211, 539423]

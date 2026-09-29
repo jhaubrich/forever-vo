@@ -32,6 +32,7 @@ ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = ROOT / "tools"
 DATA_DIR = TOOLS_DIR / "data"
 DB2_DIR = DATA_DIR / "db2"
+CASC_DIR = DATA_DIR / "casc"  # files by build and FileDataID, see wowdata.fetch_file
 VOICES_DIR = TOOLS_DIR / "voices"
 CAPTURE_JSON = DATA_DIR / "capture.json"
 SOUND_INDEX = DATA_DIR / "sound_index.json"

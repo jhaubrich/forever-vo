@@ -3,6 +3,7 @@
 .venv-rocm/
 __pycache__/
 tools/data/db2/
+tools/data/casc/
 tools/data/capture.json.bak
 tools/voices/*.wav
 tools/voices/raw/
