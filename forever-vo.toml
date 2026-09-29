@@ -275,6 +275,9 @@ clips = [
     552187,
 ]
 
+[voices.sources.npc-11657]
+clips = [561338, 561337, 561336, 561335, 561334, 561333]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
@@ -436,6 +439,10 @@ tempo = 1.1
 exaggeration = 0.5
 cfg_weight = 0.6
 tempo = 1.05
+
+[tts.voices.npc-11657]
+exaggeration = 0.7
+cfg_weight = 0.4
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
@@ -446,6 +453,7 @@ Tirisfal = "Tirrisfal"
 Varimathras = "Vairimathrus"
 Feralas = "fairalass"
 Lordaeron = "Lorderon"
+"Eldre'Thalas" = "Eldra thelass"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
