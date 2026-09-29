@@ -140,6 +140,10 @@ class VoiceSources(Strict):
     )
 
 
+_SPEAKER_KEY = re.compile(r"-?[1-9][0-9]*")
+_VOICE_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+
+
 class Voices(Strict):
     """[voices]: which clip a speaker is cloned from when it has none of its own."""
 
@@ -162,6 +166,25 @@ class Voices(Strict):
     speakers: dict[
         str, str
     ] = {}  # speaker key -> voice, for the few whose captured model is wrong
+
+    @field_validator("speakers")
+    @classmethod
+    def _speaker_voices(cls, value: dict[str, str]) -> dict[str, str]:
+        """Keys as the pack writes them (a creature ID, negative for a game object),
+        values shaped like a voice name. Whether the voice has a clip is the
+        generator's to say: the clips are not in git, so CI could not check it."""
+        for key, voice in value.items():
+            if not _SPEAKER_KEY.fullmatch(key):
+                raise ValueError(
+                    f"[voices.speakers] key {key!r} is not a speaker key "
+                    "(a creature ID, negative for a game object)"
+                )
+            if not _VOICE_NAME.fullmatch(voice):
+                raise ValueError(
+                    f"[voices.speakers] {key} = {voice!r} is not a voice name "
+                    '(lowercase words joined by "-", like "goblin-male")'
+                )
+        return value
 
     @property
     def narrator_voices(self) -> list[str]:

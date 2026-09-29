@@ -720,6 +720,17 @@ def speaker_int(key: str | None) -> int | None:
         return None
 
 
+def unclipped_speakers(catalog: VoiceCatalog) -> dict[str, str]:
+    """The [voices.speakers] entries whose voice would borrow another's clip: a
+    typo, or a voice not built yet. An archetype falling back to its own race
+    is fine, since that is how every other speaker of it is read."""
+    return {
+        speaker: voice
+        for speaker, voice in catalog.config.voices.speakers.items()
+        if catalog.resolve(voice).source not in (voice, base_voice(voice))
+    }
+
+
 def model_cast(item: Item) -> int | None:
     """The model file the item's voice was chosen from, when that is how it was
     chosen: a speaker with no display ID (Forever's own NPCs) and no voice pinned
@@ -1148,6 +1159,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config = load_config()
     catalog = VoiceCatalog(config)
+    for speaker, voice in unclipped_speakers(catalog).items():
+        print(
+            f"warning: [voices.speakers] {speaker} = {voice!r} has no clip of its "
+            f"own; it is read in {catalog.resolve(voice).source}"
+        )
     narrator = config.voices.narrator
     alternate_voices = parse_narrator_voices(
         args.narrator_voices, config.voices.narrator_alternates

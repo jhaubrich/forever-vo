@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import pytest
+from pydantic import ValidationError
+
 from tools.config import Voices, load_config
 from tools.wowdata import voice_for_npc
 
@@ -22,3 +25,17 @@ def test_an_unlisted_speaker_resolves_as_before() -> None:
 
 def test_the_repository_file_lists_fizzlefuse() -> None:
     assert load_config().voices.speakers["248200"] == "goblin-male"
+
+
+@pytest.mark.parametrize(
+    "speakers",
+    [{"Fizzlefuse": "goblin-male"}, {"0": "goblin-male"}, {"248200": "Goblin Male"}],
+)
+def test_a_key_or_voice_of_the_wrong_shape_is_refused(speakers: dict) -> None:
+    with pytest.raises(ValidationError):
+        Voices(speakers=speakers)
+
+
+def test_a_game_object_and_an_archetype_are_accepted() -> None:
+    voices = Voices(speakers={"-1234": "narrator", "2991": "tauren-female-young"})
+    assert voices.speakers["-1234"] == "narrator"

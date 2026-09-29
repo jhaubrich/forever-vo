@@ -59,12 +59,14 @@ dracthyr = "bloodelf"
 orcmalekid = "humanmalekid-male"
 orcfemalekid = "humanfemalekid-female"
 
-# A speaker whose captured model names the wrong race, keyed like the pack's
-# gossip (creature ID, negative for game objects). Fizzlefuse (#352) is a
-# goblin whose only model readings came out tauren and orc: the capture's
-# shared model frame could write a previous NPC's late-loading model onto the
-# next one. Keep this for the stuck cases; a later addon re-reads the model
-# where the pack's recorded one disagrees.
+# One speaker always in one voice, ahead of everything the capture says
+# (#319). Keyed like the pack's gossip (creature ID, negative for game
+# objects); any voice name the generator resolves (race, archetype, species,
+# npc-<displayID>). Changing an entry restages exactly that speaker's files.
+# Per speaker, never per line, and for the cases the data cannot fix: pin from
+# the audition page ("Always read ... in"), and generate.py warns about a
+# voice with no clip of its own. Fizzlefuse (#352) is a goblin whose only
+# model readings came out tauren and orc, read before 0.1.7 fixed the capture.
 [voices.speakers]
 "248200" = "goblin-male"
 

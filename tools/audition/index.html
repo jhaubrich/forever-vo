@@ -255,6 +255,7 @@ function applyState(s) {
   else { voice.value = keepVoice; ref.value = keepRef; }
   if (first) loadVoiceSettings();
   showResolved();
+  showSpeakerPin();
 }
 
 // Grouped, because the list runs to a few hundred: the race voices first, then every
@@ -389,13 +390,55 @@ function pick(row, li) {
   $("current").innerHTML = `<b>${esc(row.title)}</b> <span class="badge">${row.base}</span> <span class="badge">${row.subfolder}</span> <span class="badge">${row.source}</span>` +
     `<div class="m">${esc(row.speaker || "")} · voice ${row.voice}` +
     (row.pack_url ? ` · in the pack now${row.pack ? ` (${esc(row.pack)})` : ""}: <audio controls preload="none" src="${row.pack_url}"></audio>` : ` · <span class="warn">no file in the pack yet</span>`) +
-    `</div><div class="m">Raw: ${esc(row.raw)}</div>`;
+    `</div><div class="m">Raw: ${esc(row.raw)}</div><div id="speaker-pin" class="row"></div>`;
+  showSpeakerPin();
   showResolved();
+}
+
+// [voices.speakers]: one NPC always in one voice, whatever the capture says its
+// race is (#319). The voice-change check restages exactly that speaker's files.
+function showSpeakerPin() {
+  const box = $("speaker-pin");
+  if (!box) return;
+  box.innerHTML = "";
+  if (!current || !current.speaker_key) return;
+  const who = current.speaker || `speaker ${current.speaker_key}`;
+  const pinned = state && state.speakers[current.speaker_key];
+  const voice = $("voice").value;
+  const note = document.createElement("span"); note.className = "m";
+  note.textContent = pinned ? `${who} is pinned to ${pinned}.` : `${who} is read in whatever the capture resolves to.`;
+  box.appendChild(note);
+  const save = async (value, button) => {
+    busy(button, true);
+    try {
+      applyState(await api("/api/keep-speaker-voice", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ speaker: current.speaker_key, voice: value }) }));
+      toast(value ? `${who} pinned to ${value}. The next generate run restages their files.`
+                  : `${who} unpinned. The next generate run restages their files if the voice changes.`, "ok");
+    } catch (e) { toast(e.message, "warn"); }
+    busy(button, false);
+    showSpeakerPin();
+  };
+  if (pinned !== voice) {
+    const pin = document.createElement("button"); pin.textContent = `Always read ${who} in ${voice}`;
+    pin.title = `Write [voices.speakers] "${current.speaker_key}" = "${voice}" into forever-vo.toml.\n\n` +
+      `It wins over everything the capture says (display, model, zone), so use it for a speaker whose ` +
+      `captured race is wrong. Every line this speaker has is restaged by the next generate run.`;
+    pin.addEventListener("click", () => save(voice, pin));
+    box.appendChild(pin);
+  }
+  if (pinned) {
+    const unpin = document.createElement("button"); unpin.textContent = "Unpin";
+    unpin.title = "Remove the [voices.speakers] entry; the speaker goes back to the voice their capture resolves to.";
+    unpin.addEventListener("click", () => save("", unpin));
+    box.appendChild(unpin);
+  }
 }
 
 $("voice").addEventListener("change", () => {
   loadVoiceSettings();
   showResolved();
+  showSpeakerPin();
   if (clipsVoice && $("voice").value !== clipsVoice) {
     clipsRows = []; picks = []; clipsVoice = null;
     $("clips-body").innerHTML = ""; $("clips-status").textContent = ""; $("clips-warn").textContent = "";
