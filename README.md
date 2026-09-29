@@ -79,10 +79,20 @@ pack.
 It plays each line's current file from the repo's `ForeverVO_Data`, falling
 back to the voice packs installed in your client. It finds them from `WOW_DIR`
 (the folder holding `_classic_beta_`; the default is a Faugus install), so set
-that if your game lives elsewhere, or pass `--addons <Interface/AddOns>`:
+that if your game lives elsewhere, or pass `--addons <Interface/AddOns>`.
+That default is unchanged. A checkout with no client can instead set
+`AUDITION_ADDONS` to a directory of `ForeverVO_Data*` folders. `fvo-fetch-packs`
+downloads the three CurseForge packs into `./addons` (gitignored) and does
+nothing until you run it. The page does not read that folder unless the
+variable or `--addons` points at it.
 
 ```sh
+# unchanged: the client's packs
 WOW_DIR="$HOME/Games/World of Warcraft" ./tools/run.sh audition
+
+# no client, optional
+./tools/run.sh fvo-fetch-packs
+AUDITION_ADDONS="$PWD/addons" ./tools/run.sh audition
 ```
 
 ### Audition on an AMD GPU

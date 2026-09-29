@@ -91,6 +91,17 @@ ADDONS_DIR = BETA_DIR / "Interface" / "AddOns"
 SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
+def addons_from_env() -> Path:
+    """Where installed ForeverVO_Data* packs are read from.
+
+    Unset, this is the client's AddOns folder from WOW_DIR, as before.
+    AUDITION_ADDONS names another directory of those folders, for a checkout
+    with no client. fvo-fetch-packs can fill ./addons; nothing reads it until
+    the variable or --addons points there."""
+    override = os.environ.get("AUDITION_ADDONS")
+    return Path(override) if override else ADDONS_DIR
+
+
 # ----------------------------------------------------------------------------
 # forever-vo.toml edits (comments survive: tomlkit round-trips the document)
 # ----------------------------------------------------------------------------
@@ -1331,9 +1342,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--addons",
         type=Path,
-        default=ADDONS_DIR,
-        help="the client's Interface/AddOns, whose installed ForeverVO_Data* packs are "
-        "played beside the working folder (default: from WOW_DIR)",
+        default=addons_from_env(),
+        help="directory of ForeverVO_Data* packs played beside the working folder "
+        "(default: AUDITION_ADDONS, else the client's AddOns from WOW_DIR)",
     )
     parser.add_argument(
         "--open", action="store_true", help="open the page in the browser"

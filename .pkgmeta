@@ -8,6 +8,7 @@ move-folders:
 
 ignore:
   - ForeverVO_Data
+  - addons
   - tools
   - captures
   - docs
