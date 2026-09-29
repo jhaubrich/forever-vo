@@ -33,7 +33,8 @@ local function GetDB()
     --    (Packs:QuestTextMatches) is captured with `differs` set
     -- 6: an NPC's model is read on a frame of its own and carries the addon
     --    that read it; `recast` marks one that differs from the model its
-    --    voice was cast from (Packs:SpeakerModel)
+    --    voice was cast from (Packs:SpeakerModel); `sexes` lists every sex
+    --    the creature was met as
     db.version = 6
     db.quests = db.quests or {}
     db.gossip = db.gossip or {}
@@ -120,6 +121,13 @@ local function DescribeSpeaker(db, speaker)
     end
     if unit then
         npc.sex = Util.Plain(UnitSex(unit))
+        -- One creature ID can be either sex (Peacekeepers, city guards), and
+        -- `sex` is only the last one met. `sexes` keeps every one, so the
+        -- pipeline voices such a speaker's lines in both (#304).
+        local letter = Util.SexLetter(npc.sex)
+        if letter and not strfind(npc.sexes or "", letter, 1, true) then
+            npc.sexes = (npc.sexes or "") .. letter
+        end
         npc.creatureType = Util.Plain(UnitCreatureType(unit))
         npc.level = Util.Plain(UnitLevel(unit))
         if not npc.displayID or npc.displayID == 0 then

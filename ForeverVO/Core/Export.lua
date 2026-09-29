@@ -121,7 +121,7 @@ function Export:Collect(all)
             npcs[key] = {
                 name = npc.name, sex = npc.sex, displayID = npc.displayID,
                 modelFileID = npc.modelFileID, creatureType = npc.creatureType, isObject = npc.isObject,
-                addon = npc.addon,
+                addon = npc.addon, sexes = npc.sexes,
             }
         end
     end

@@ -222,14 +222,18 @@ end
 -- ---------------------------------------------------------------------------
 
 --- "m" or "f" for the character, nil when the client does not say.
-function Util.PlayerSexLetter()
-    local sex = UnitSex("player")
+--- "m" or "f" for a UnitSex value (2 male, 3 female), else nil.
+function Util.SexLetter(sex)
     if sex == 2 then
         return "m"
     elseif sex == 3 then
         return "f"
     end
     return nil
+end
+
+function Util.PlayerSexLetter()
+    return Util.SexLetter(UnitSex("player"))
 end
 
 function Util.PlayerGenderPrefix()

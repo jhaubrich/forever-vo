@@ -589,6 +589,22 @@ owner's machine picks the files up on the next sync.
   (`isObjectOrItem`) and a patch whose anchor text had drifted never applied.
   After editing with search-and-replace, grep for the new text; do not trust
   "patched".
+- **One creature ID can be either sex** (#304, 2026-09-29): Peacekeepers
+  (253474), city guards, grunts. `sex` on an NPC record is only the last one
+  met, so all 17 Peacekeeper lines were once voiced female. The addon keeps
+  every sex met in `sexes` ("mf"; capture version 6, exported), ingest
+  unions it (`merge_npc`, and `gather_sexes` over every export on every run,
+  since exports merged before the field existed are never merged again), and
+  `generate.Item.sex_alternate` gives a speaker met as both the whole line in
+  the other sex too, under `Sounds/<Quests|Gossip>/Sex/<m|f>/<base>` (index key
+  `Sex/<m|f>/<base>`, tables `sa`/`sp`/`sc` and gossip `s`, release
+  `sexFiles`). The other sex is the same race's plain voice (or its
+  `[voices.fallbacks]` race's), never a last-resort clip, and not for a pinned
+  speaker, a named `npc-*` clip or the narrator. The addon's `Events.SpeakerSex`
+  reads the dialog unit's sex (through `Util.Plain`, only when the unit is the
+  speaker) and `FindQuest`/`FindGossip` play the other file when it matches.
+  Parts are not doubled: a mixed line with stage directions plays in the
+  recorded sex. The `$g` m-/f- prefix in a base name stays the player's sex.
 - Sound file names: quests are `<questID>-<event>`, gossip `<speaker>-<hash>`.
   Tell them apart by the last segment (`generate.sound_folder`), not by
   whether the first segment is numeric, since speaker keys are numeric too.

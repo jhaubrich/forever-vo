@@ -21,6 +21,11 @@
   packs pick a Forever NPC's voice from it: Fizzlefuse, a goblin, was voiced
   as an orc. When the NPC you see is not the one the pack cast the voice
   from, `/fvo export` sends that NPC along, so the pack can fix the voice.
+- NPCs that share one name but come as men and women, such as the
+  Peacekeepers on Zephras Isle or city guards, speak in the voice of the one
+  in front of you. The voice packs carry both once someone has met both
+  (starting with the next voice pack), and the addon remembers every sex it
+  has seen an NPC as, so `/fvo export` fills in the rest.
 - `/fvo export` now includes your character's class and race with each line,
   so the pack can tell where a quest says your class ("Greetings, mage")
   from where it means the word. Your character name is still removed.
