@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
-# Installs two systemd user units:
-#   forever-vo-ingest.path   sync (pull, ingest, push) the moment the client writes
-#                            ForeverVO.lua (on /reload and logout), so no session is lost
-#   forever-vo-daily.timer   nightly from 02:30, done by 07:00 (daily.sh): voice
-#                            captured lines, continue the bulk backlog, rebuild
-#                            the pack tables
-# Re-run to update. Set WOW_DIR if the game lives elsewhere.
+# Installs systemd user units:
+#   forever-vo-daily.timer   nightly from 02:30, done by 07:00 (daily.sh): sync
+#                            (pull, ingest, push), voice captured lines, continue
+#                            the bulk backlog, rebuild the pack tables
+#   forever-vo-ingest.service the sync alone, started by hand when wanted
+#   forever-vo-bulk.service  the resumable bulk run
+# Until 2026-09-29 a path unit also synced on every write of ForeverVO.lua,
+# because this beta did not read saved variables back and each logout
+# overwrote the last session. They persist now and the capture DB only grows,
+# so the nightly sync loses nothing; a re-run removes the old watcher.
+# Re-run to update.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 UNIT_DIR="$HOME/.config/systemd/user"
-WOW_DIR="${WOW_DIR:-$HOME/Faugus/battlenet/drive_c/Program Files (x86)/World of Warcraft}"
-ACCOUNTS="$WOW_DIR/_classic_beta_/WTF/Account"
 UNIT_PATH="/run/wrappers/bin:$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
 mkdir -p "$UNIT_DIR"
 
@@ -80,30 +82,16 @@ Nice=10
 WantedBy=default.target
 UNIT
 
-{
-    echo "[Unit]"
-    echo "Description=Forever Voiceover: watch saved variables for writes"
-    echo
-    echo "[Path]"
-    for account in "$ACCOUNTS"/*/; do
-        # account folders look like 123456789#1; skip the account-wide SavedVariables dir itself
-        [ -d "${account}SavedVariables" ] || continue
-        echo "PathModified=${account}SavedVariables/ForeverVO.lua"
-    done
-    echo "Unit=forever-vo-ingest.service"
-    echo
-    echo "[Install]"
-    echo "WantedBy=default.target"
-} >"$UNIT_DIR/forever-vo-ingest.path"
+if [ -e "$UNIT_DIR/forever-vo-ingest.path" ]; then
+    systemctl --user disable --now forever-vo-ingest.path || true
+    rm -f "$UNIT_DIR/forever-vo-ingest.path"
+fi
 
 systemctl --user daemon-reload
 systemctl --user enable --now forever-vo-daily.timer
-systemctl --user enable --now forever-vo-ingest.path
 # Enabled but not started here: a reboot then resumes the bulk backlog on its
 # own (the run is resumable and skips files that already exist).
 systemctl --user enable forever-vo-bulk.service
 systemctl --user list-timers forever-vo-daily.timer --no-pager
-echo "watching:"
-grep PathModified "$UNIT_DIR/forever-vo-ingest.path"
-echo "logs: tools/data/ingest.log and tools/data/daily.log; run the nightly job now with: systemctl --user start forever-vo-daily.service"
+echo "logs: tools/data/ingest.log and tools/data/daily.log; run the nightly job now with: systemctl --user start forever-vo-daily.service; sync alone: systemctl --user start forever-vo-ingest.service"
 echo "bulk generation: systemctl --user start forever-vo-bulk.service ; progress: journalctl --user -u forever-vo-bulk -f"

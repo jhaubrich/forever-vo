@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 import tomlkit
+from fastapi import HTTPException
 
 from tools.audition import (
     LineRow,
@@ -17,6 +18,7 @@ from tools.audition import (
     sound_packs,
     sources_warnings,
     write_pronunciation,
+    write_speaker_voice,
     write_tuning,
     write_voice_sources,
 )
@@ -69,6 +71,31 @@ def test_write_pronunciation_round_trips_and_removes(toml_copy: Path) -> None:
     assert config.pronunciations.root["Gnomeregan"] == "Nomer-gahn"
     config = write_pronunciation(toml_copy, "Ironforge", "")
     assert "Ironforge" not in config.pronunciations.root
+
+
+def test_write_speaker_voice_pins_and_unpins_and_keeps_comments(
+    toml_copy: Path,
+) -> None:
+    config = write_speaker_voice(toml_copy, "2991", "tauren-female")
+    assert config.voices.speakers["2991"] == "tauren-female"
+    assert config.voices.speakers["248200"] == "goblin-male"  # untouched
+    text = toml_copy.read_text(encoding="utf-8")
+    assert "# One speaker always in one voice" in text
+    config = write_speaker_voice(toml_copy, "2991", "")
+    assert "2991" not in config.voices.speakers
+    # the last entry takes the table with it
+    config = write_speaker_voice(toml_copy, "248200", "")
+    assert config.voices.speakers == {}
+    assert "[voices.speakers]" not in toml_copy.read_text(encoding="utf-8")
+
+
+def test_write_speaker_voice_refuses_what_is_not_a_voice_name(
+    toml_copy: Path,
+) -> None:
+    before = toml_copy.read_text(encoding="utf-8")
+    with pytest.raises(HTTPException):
+        write_speaker_voice(toml_copy, "2991", "Tauren Female")
+    assert toml_copy.read_text(encoding="utf-8") == before
 
 
 def test_search_needs_every_word_and_ranks_exact_hits_first() -> None:

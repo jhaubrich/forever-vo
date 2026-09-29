@@ -822,6 +822,92 @@ def merge_entry(
     return changed
 
 
+# From this addon version the capture reads each speaker's model on a frame no
+# other NPC's model is loading into. Before it one frame was shared, and a model
+# that finished loading late was written onto the next speaker: Fizzlefuse, a
+# goblin, came out a tauren in one reader's export and an orc in another's (#352).
+MODEL_TRUSTED_SINCE = (0, 1, 7)
+
+
+SEX_LETTERS = {2: "m", 3: "f"}  # UnitSex
+
+
+def sexes_of(*records: dict) -> str:
+    """Every sex these NPC records saw the creature as, "m", "f", "mf" or "":
+    each one's `sexes` and its last `sex`."""
+    seen: set[str] = set()
+    for record in records:
+        seen |= set(record.get("sexes") or "")
+        if record.get("sex") in SEX_LETTERS:
+            seen.add(SEX_LETTERS[record["sex"]])
+    return "".join(letter for letter in "mf" if letter in seen)
+
+
+def merge_npc(old: dict, npc: dict, source: str, addon: str | None) -> dict:
+    """Merges one file's record of an NPC into capture.json's.
+
+    Everything but the model is taken as it comes, the newer file winning as it
+    always has. The model is the speaker's race for Forever's own NPCs, so it is
+    kept from readers of MODEL_TRUSTED_SINCE on (`addon` on the record, which a
+    saved-variables file carries per NPC, else the export's), one reading per
+    `source` (the export's origin, or "local" for the owner's saved variables),
+    in `modelReads`; the model is the one most of them saw, so an NPC that wears
+    more than one never flips back and forth, and a tie keeps what was there.
+    An older reading is only used while no trusted one exists.
+
+    `sexes` gathers every sex the creature was seen as ("m", "f", "mf"), from
+    `sex` (one reading, the last) and the addon's own `sexes` (every reading on
+    that client, since 0.1.7): one creature ID can be either sex, a Peacekeeper
+    or a city guard, and a line is then voiced in both (#304)."""
+    model = npc.get("modelFileID")
+    merged = {
+        **old,
+        **{
+            k: v
+            for k, v in npc.items()
+            if v is not None and k not in ("modelFileID", "addon", "recast", "sexes")
+        },
+    }
+    sexes = sexes_of(old, npc)
+    if sexes:
+        merged["sexes"] = sexes
+    if not model:
+        return merged
+    trusted = addon_version({"addon": npc.get("addon") or addon}) >= MODEL_TRUSTED_SINCE
+    if trusted:
+        reads = {**(old.get("modelReads") or {}), source: model}
+        merged["modelReads"] = reads
+        votes: dict[int, int] = {}
+        for read in reads.values():
+            votes[read] = votes.get(read, 0) + 1
+        best = max(votes.values())
+        current = old.get("modelFileID")
+        merged["modelFileID"] = (
+            current
+            if votes.get(current) == best
+            else min(m for m, n in votes.items() if n == best)
+        )
+    elif not old.get("modelReads"):
+        merged["modelFileID"] = model
+    return merged
+
+
+def gather_sexes(capture: dict, db: dict) -> None:
+    """Folds every sex an export saw each NPC as into capture.json's `sexes`.
+
+    merge_npc does this for a file as it is ingested, but the exports ingested
+    before `sexes` existed (#304) are never merged again, and their readings are
+    how a Peacekeeper is known to be both. Cheap and idempotent, so every run
+    does it for every export rather than a one-off backfill."""
+    for key, npc in (db.get("npcs") or {}).items():
+        record = capture["npcs"].get(str(key))
+        if record is None:
+            continue
+        sexes = sexes_of(record, npc)
+        if sexes:
+            record["sexes"] = sexes
+
+
 def ingest_file(
     capture: dict,
     path: Path,
@@ -868,7 +954,7 @@ def ingest_file(
             )
     for key, npc in (db.get("npcs") or {}).items():
         old = capture["npcs"].get(str(key), {})
-        merged = {**old, **{k: v for k, v in npc.items() if v is not None}}
+        merged = merge_npc(old, npc, db.get("origin") or "local", db.get("addon"))
         if merged != old:
             npcs += 1
         capture["npcs"][str(key)] = merged
@@ -977,6 +1063,8 @@ def main(argv: list[str] | None = None) -> int:
         stat = path.stat()
         if seen and seen["mtime"] == stat.st_mtime and seen["size"] == stat.st_size:
             print(f"unchanged  {path}")
+            if path.suffix == ".json":
+                gather_sexes(capture, json.loads(path.read_text(encoding="utf-8")))
             continue
         quests, gossip, npcs = ingest_file(capture, path, sources, stats, readers)
         print(f"ingested   {path}: {quests} quest, {gossip} gossip, {npcs} npc changes")

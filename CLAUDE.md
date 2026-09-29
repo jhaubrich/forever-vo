@@ -290,7 +290,8 @@ no front-end framework, on port 8765) is the page for ear tests: pick a line
 from the corpus or type one, a voice, optionally a clip to clone from, a grid
 of exaggeration and cfg_weight values and a number of takes, and get a player
 per take with the resolved recipe beside it. "Keep these settings" writes
-`[tts.voices.<voice>]` (or a `[pronunciations]` entry from the sidebar) into
+`[tts.voices.<voice>]` (or a `[pronunciations]` entry from the sidebar, or
+for a picked line's speaker a `[voices.speakers]` pin, "Always read ... in") into
 `forever-vo.toml` through tomlkit, so the comments survive, validated by the
 models before the file is replaced. "Write to pack" regenerates one line's
 pack file under the *saved* configuration only and records the fingerprint
@@ -383,8 +384,11 @@ generator still running probes any file it finds under `Sounds/`.
 
 Installed by `tools/install-timer.sh`:
 
-- `forever-vo-ingest.path` — fires on every write of the saved-variables
-  file; runs `tools/ingest.sh` = pull, ingest, push `capture.json`.
+- `forever-vo-ingest.service` — `tools/ingest.sh` = pull, ingest, push
+  `capture.json`; the nightly run calls the script first, otherwise started
+  by hand. A `forever-vo-ingest.path` fired it on every write of the
+  saved-variables file until 2026-09-29, when saved variables persisting made
+  once a day enough (the capture DB only grows); `install-timer.sh` removes it.
 - `forever-vo-daily.timer` — 02:30 nightly, done by 07:00 (since 2026-09-28;
   04:00 with a 2 h bulk pass before): sync, voice captured lines, work the bulk
   backlog until 45 minutes before 07:00 (`FOREVER_VO_END_AT`,
@@ -505,7 +509,9 @@ storefront logo.
 ## Crowdsourcing
 
 `/fvo export` packs a session's unvoiced lines (character name replaced by
-`$n`), plus voiced lines the pack asked to hear again from a reader of the
+`$n`; since 0.1.7 each line carries the reader's class and race, `c`/`r`, so
+community readers settle `$c`/`$r` like known ones and `[readers.community]`
+is only for older exports), plus voiced lines the pack asked to hear again from a reader of the
 player's sex (`wanted`), via `C_EncodingUtil` into an `FVO1:` string. Players
 paste it into the "Contribute captured lines" issue form
 (`.github/ISSUE_TEMPLATE/capture.yml`, label `capture`, one issue per export,
@@ -558,6 +564,22 @@ owner's machine picks the files up on the next sync.
   need a client restart, not a `/reload`, before `PlaySoundFile` finds them.
 - The wago.tools CSV export is complete for client tables, but the beta's
   `BroadcastText` really is 12 rows; gossip is server-pushed on this engine.
+- **A captured model can belong to the previous NPC** (#352, 2026-09-29).
+  Until 0.1.7 one shared model frame read every speaker, and a model that
+  finished loading after the player moved on was written onto the next one:
+  Fizzlefuse (248200), a goblin (119376), came out tauren in one reader's
+  exports and orc in another's, and was voiced orc-male. Rare (0 wrong races
+  in 4,493 readings checked against Classic), but for a Forever-only NPC the
+  model *is* the race. Now each request gets its own frame; the NPC record
+  carries `addon`, and `merge_npc` in `ingest.py` keeps readings from
+  `MODEL_TRUSTED_SINCE` on in `modelReads`, one per source, taking the
+  majority, and uses an older reading only while no trusted one exists. The
+  pack records the model it cast each such speaker from (`pack.models` in
+  `NPCs.lua`, `generate.model_cast`); a player who sees another marks the NPC
+  `recast` and the export sends the record even with no line of its own.
+  `[voices.speakers]` in `forever-vo.toml` pins a speaker's voice outright
+  for a record that cannot heal (Fizzlefuse: his one line is voiced, so no
+  export would have carried him again before this).
 - `PlayerModel:GetDisplayInfo()` returns 0 until the model loads; the capture
   reads it in `OnModelLoaded`, and the merge ignores zero display IDs. On the
   Forever client it never yields anything at all (0 of 146 captured NPCs), only
@@ -569,6 +591,22 @@ owner's machine picks the files up on the next sync.
   (`isObjectOrItem`) and a patch whose anchor text had drifted never applied.
   After editing with search-and-replace, grep for the new text; do not trust
   "patched".
+- **One creature ID can be either sex** (#304, 2026-09-29): Peacekeepers
+  (253474), city guards, grunts. `sex` on an NPC record is only the last one
+  met, so all 17 Peacekeeper lines were once voiced female. The addon keeps
+  every sex met in `sexes` ("mf"; capture version 6, exported), ingest
+  unions it (`merge_npc`, and `gather_sexes` over every export on every run,
+  since exports merged before the field existed are never merged again), and
+  `generate.Item.sex_alternate` gives a speaker met as both the whole line in
+  the other sex too, under `Sounds/<Quests|Gossip>/Sex/<m|f>/<base>` (index key
+  `Sex/<m|f>/<base>`, tables `sa`/`sp`/`sc` and gossip `s`, release
+  `sexFiles`). The other sex is the same race's plain voice (or its
+  `[voices.fallbacks]` race's), never a last-resort clip, and not for a pinned
+  speaker, a named `npc-*` clip or the narrator. The addon's `Events.SpeakerSex`
+  reads the dialog unit's sex (through `Util.Plain`, only when the unit is the
+  speaker) and `FindQuest`/`FindGossip` play the other file when it matches.
+  Parts are not doubled: a mixed line with stage directions plays in the
+  recorded sex. The `$g` m-/f- prefix in a base name stays the player's sex.
 - Sound file names: quests are `<questID>-<event>`, gossip `<speaker>-<hash>`.
   Tell them apart by the last segment (`generate.sound_folder`), not by
   whether the first segment is numeric, since speaker keys are numeric too.
@@ -726,6 +764,12 @@ of the 10 s window, then the knobs.
   dire troll and naga clips. The two child voices come from retail's
   `kul_tiran_kid` via `build_retail_references.py`. Built 2026-09-23; the
   voice-change check then regenerated ~514 lines.
+- `[voices.speakers]` pins one speaker (creature ID, negative for a game
+  object) to any voice name, ahead of everything in `voice_for_npc` (#319,
+  2026-09-29). Per speaker, never per line, for a speaker the data cannot
+  fix; `config.Voices` checks the shape of key and name, and `generate.py`
+  warns at start about a pinned voice with no clip of its own
+  (`unclipped_speakers`), since the clips are not in git for CI to check.
 - `[voices.fallbacks]` and `[voices.zone_hints]` in `forever-vo.toml` cover races
   without a clip and speakers without display data (Zephras Isle -> skyborne);
   `[voices.species_aliases]` sends a model folder with no clip of its own to a

@@ -24,6 +24,10 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       --    male character has read a line the client resolved a $G branch
       --    out of, "mf" when nobody knows who read it. The addon exports
       --    such a line even though it is voiced (Capture.lua, Export.lua).
+      -- sa/sp/sc: { m = 2.1 } or { f = 2.1 }, the event read in the speaker's
+      --    other sex, for a creature ID met as both (Peacekeepers, guards).
+      --    File Sounds\Quests\Sex\<m|f>\<base>.mp3; played when the unit
+      --    in the dialog is that sex. Parts are not doubled.
       -- ha/hp/hc: Util.TextKey of the text that event was voiced from, or
       --    "<male>,<female>" when it has a $G branch. A live text that keys
       --    differently is exported although it is voiced (QuestTextMatches).
@@ -42,11 +46,16 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       [speakerKey] = {
         { f = "288-1a2b3c4d", h = "1a2b3c4d", t = "original text", d = 4.5, v = "human-male", g = true,
           n = { [1] = 4.7 },      -- duration per alternate narrator voice
+          s = { f = 4.2 },        -- the speaker's other sex, as sa above, under Gossip\Sex\f
           P = { { d = 2.0 }, { d = 1.1, n = true } },   -- parts, as aP above; files <f>-p<i> with
           nP = { [1] = { [2] = 1.2 } } },               -- the speaker before the hash: 288-p2-1a2b3c4d
       },
     },
     npcs = { [speakerKey] = "Name" },
+    models = { [speakerKey] = 119376 },
+      -- the model file a speaker's voice was cast from, for speakers the
+      -- pipeline knows only by model (Forever's own NPCs have no display ID);
+      -- a player who sees another model exports the NPC record (Capture.lua)
     narratorVoices = { "human-female", "dwarf-male" },
     narrator = {
       [questID] = { [1] = { a = 5.4, c = 3.3, cP = { [2] = 1.2 } }, [2] = { a = 5.1 } },
@@ -95,6 +104,7 @@ function ns.RegisterPack(pack)
     pack.quests = pack.quests or {}
     pack.gossip = pack.gossip or {}
     pack.npcs = pack.npcs or {}
+    pack.models = pack.models or {}
     pack.narrator = pack.narrator or {}
     pack.narratorVoices = pack.narratorVoices or {}
     Packs.voices = nil -- the menu is the union over packs; rebuild it on demand
@@ -114,6 +124,22 @@ function ns.RegisterPack(pack)
     if ns.Queue then
         ns.Queue:TriggerEvent("OnPacksChanged")
     end
+end
+
+--- The model file the highest-priority pack that says cast this speaker's
+--- voice from, or nil when no pack was cast by model (or predates recording it).
+function Packs:SpeakerModel(key)
+    key = tonumber(key)
+    if not key then
+        return nil
+    end
+    for _, pack in ipairs(self.list) do
+        local model = pack.models[key]
+        if model then
+            return model
+        end
+    end
+    return nil
 end
 
 function Packs:Count()
@@ -240,14 +266,31 @@ local function ResolveParts(pack, subfolder, base, parts, alternates, voice)
     return resolved, total
 end
 
+--- The recording of a line in the speaker's other sex, when the pack has one
+--- (`other`: { m|f = duration }) and the speaker in front of the player is
+--- that sex: path, duration and the voice it was read in. The voice is the
+--- recorded one's race with the other gender, which is how the pipeline picks
+--- it (generate.Item.sex_alternate).
+local function OtherSex(pack, subfolder, base, other, sex, recorded)
+    local seconds = sex and type(other) == "table" and other[sex]
+    if not seconds then
+        return nil
+    end
+    local race = type(recorded) == "string" and recorded:match("^([^%-]+)%-") or nil
+    local voice = race and format("%s-%s", race, sex == "m" and "male" or "female") or nil
+    return SoundPath(pack, subfolder .. "\\Sex\\" .. sex, base), seconds, voice
+end
+
 --- Finds the audio for a quest event. Returns path, duration, pack, parts,
 --- voice or nil. `voice` is the archetype that rendered the file (va/vp/vc),
 --- or the narrator voice when that recording is the one playing. `parts` is
 --- set for a line the queue plays as a sequence (see ResolveParts); `path`
 --- then names the whole-line file where one exists, or the first part.
+--- `sex` ("m"/"f", optional) is the speaker's, from the unit in the dialog: a
+--- creature met as both sexes has the line in each (sa/sp/sc).
 ---@param questID number
 ---@param event "accept"|"progress"|"complete"
-function Packs:FindQuest(questID, event)
+function Packs:FindQuest(questID, event, sex)
     local field = QUEST_FIELD[event]
     if not questID or not field then
         return nil
@@ -274,6 +317,10 @@ function Packs:FindQuest(questID, event)
             end
             if alternate and alternate[field] then
                 return SoundPath(pack, "Quests\\Narrator\\" .. voice, base), alternate[field], pack, nil, voice
+            end
+            local otherPath, otherSeconds, otherVoice = OtherSex(pack, "Quests", base, entry["s" .. field], sex, recorded)
+            if otherPath then
+                return otherPath, otherSeconds, pack, nil, otherVoice
             end
             return SoundPath(pack, "Quests", base), entry[field], pack, nil, recorded
         end
@@ -359,10 +406,10 @@ end
 --- Finds gossip/greeting audio for a speaker. Exact hash match first, then the
 --- most similar text above the fuzzy threshold. Returns path, duration, pack,
 --- parts, voice. `voice` is the archetype on the entry, or the narrator voice
---- when that recording is the one playing.
+--- when that recording is the one playing. `sex` as for FindQuest.
 ---@param speakerKey number
 ---@param text string
-function Packs:FindGossip(speakerKey, text)
+function Packs:FindGossip(speakerKey, text, sex)
     if not speakerKey or not text then
         return nil
     end
@@ -415,6 +462,10 @@ function Packs:FindGossip(speakerKey, text)
         if seconds then
             return SoundPath(bestPack, "Gossip\\Narrator\\" .. voice, base), seconds, bestPack, nil, voice
         end
+    end
+    local otherPath, otherSeconds, otherVoice = OtherSex(bestPack, "Gossip", base, bestEntry.s, sex, bestEntry.v)
+    if otherPath then
+        return otherPath, otherSeconds, bestPack, nil, otherVoice
     end
     return SoundPath(bestPack, "Gossip", base), bestEntry.d, bestPack, nil, bestEntry.v
 end
