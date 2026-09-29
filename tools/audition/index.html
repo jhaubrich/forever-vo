@@ -124,7 +124,9 @@
     <textarea id="text">Aye, a stack o' letters came through the pass today, and I dinnae have the time to send them along.</textarea>
 
     <div class="row">
-      <div><label for="voice">Voice</label><select id="voice"></select></div>
+      <div><label for="voice">Voice</label>
+        <input id="voice-search" type="search" placeholder="search voices: sylv, vari, dwarf guard…" autocomplete="off" style="width:100%;margin-bottom:4px">
+        <select id="voice"></select></div>
       <div><label for="reference">Clone from</label><select id="reference"></select></div>
       <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
     </div>
@@ -266,20 +268,34 @@ function applyState(s) {
 // its file exists.
 function voiceOptions(s) {
   const rows = s.pickable || s.voices.map(v => ({ voice: v, clip: true, displays: null }));
+  const option = r => {
+    const star = s.resolved[r.voice] && s.resolved[r.voice].tuned ? " ★" : "";
+    const who = r.label ? ` — ${esc(r.label)}` : "";
+    // what the voice is worth picking for: how many creature displays it answers
+    // for, and how many lines it actually speaks
+    const bits = [];
+    if (r.displays) bits.push(`${r.displays} display${r.displays === 1 ? "" : "s"}`);
+    if (r.lines) bits.push(`${r.lines} line${r.lines === 1 ? "" : "s"}`);
+    if (!r.clip) bits.unshift("no clip yet");
+    const note = bits.length ? ` — ${bits.join(", ")}` : "";
+    return `<option value="${r.voice}">${r.voice}${who}${star}${note}</option>`;
+  };
   const group = (label, list) => list.length
-    ? `<optgroup label="${label}">` + list.map(r => {
-        const star = s.resolved[r.voice] && s.resolved[r.voice].tuned ? " ★" : "";
-        const who = r.label ? ` — ${esc(r.label)}` : "";
-        // what the voice is worth picking for: how many creature displays it answers
-        // for, and how many lines it actually speaks
-        const bits = [];
-        if (r.displays) bits.push(`${r.displays} display${r.displays === 1 ? "" : "s"}`);
-        if (r.lines) bits.push(`${r.lines} line${r.lines === 1 ? "" : "s"}`);
-        if (!r.clip) bits.unshift("no clip yet");
-        const note = bits.length ? ` — ${bits.join(", ")}` : "";
-        return `<option value="${r.voice}">${r.voice}${who}${star}${note}</option>`;
-      }).join("") + "</optgroup>"
+    ? `<optgroup label="${label}">` + list.map(option).join("") + "</optgroup>"
     : "";
+  // While the search box has text, one list best match first instead of the groups.
+  // The voice in use stays at the top, so narrowing the list never changes the voice
+  // behind the page's back (a select whose value vanishes silently takes its first).
+  const query = $("voice-search").value.trim();
+  if (query) {
+    const current = $("voice").value;
+    const hits = rows.map(r => ({ r, score: fuzzyScore(query, `${r.voice} ${r.label || ""}`) }))
+      .filter(h => h.score > 0 && h.r.voice !== current)
+      .sort((a, b) => b.score - a.score).map(h => h.r);
+    const mine = rows.filter(r => r.voice === current);
+    return group("In use", mine) + (hits.length ? group(`Matches (${hits.length})`, hits)
+      : `<optgroup label="No matches for “${esc(query)}”"></optgroup>`);
+  }
   const isArch = r => r.archetype;
   const isNpc = r => r.voice.startsWith("npc-");
   return group("Race voices", rows.filter(r => !isArch(r) && !isNpc(r)))
@@ -287,6 +303,42 @@ function voiceOptions(s) {
        + group("Archetypes — not built yet", rows.filter(r => isArch(r) && !r.clip))
        + group("Named NPCs", rows.filter(isNpc));
 }
+
+// Every character of the query in order, anywhere in the text; 0 when they are not
+// all there. Runs of consecutive letters and letters that start a word score higher,
+// so "vari" ranks Varimathras over a voice that merely has v, a, r and i in it, and
+// "dwarf guard" finds dwarf-male-guard.
+function fuzzyScore(query, text) {
+  const q = query.toLowerCase().replace(/\s+/g, ""), t = text.toLowerCase();
+  let score = 0, run = 0, from = 0;
+  for (const ch of q) {
+    const at = t.indexOf(ch, from);
+    if (at < 0) return 0;
+    run = at === from ? run + 1 : 1;
+    score += run * 2 + (at === 0 || /[\s\-—_]/.test(t[at - 1]) ? 3 : 0) - Math.min(at - from, 5) * 0.2;
+    from = at + 1;
+  }
+  if (t.includes(query.toLowerCase().trim())) score += q.length * 2;  // a plain substring wins
+  return Math.max(score, 0.01);
+}
+
+function refreshVoiceList() {
+  if (!state) return;
+  const voice = $("voice"), keep = voice.value;
+  voice.innerHTML = voiceOptions(state);
+  voice.value = keep;
+}
+$("voice-search").addEventListener("input", refreshVoiceList);
+// Enter takes the best match; Escape clears the search and shows the groups again
+$("voice-search").addEventListener("keydown", ev => {
+  if (ev.key === "Escape") { $("voice-search").value = ""; refreshVoiceList(); return; }
+  if (ev.key !== "Enter") return;
+  const best = $("voice").querySelector('optgroup[label^="Matches"] option');
+  if (!best) return;
+  $("voice").value = best.value;
+  $("voice").dispatchEvent(new Event("change"));
+  $("voice-search").value = ""; refreshVoiceList();
+});
 
 // The three boxes keep whatever was typed last, and "Keep these settings" writes them:
 // switch to a voice someone tuned by ear and press it, and 0.75 / 0.3 is replaced by
