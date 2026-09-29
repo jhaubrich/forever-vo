@@ -355,6 +355,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "hypothesis" },
     { name = "pytest" },
     { name = "ruff" },
@@ -388,6 +389,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "hypothesis", specifier = ">=6.168.1" },
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "ruff", specifier = ">=0.16.8" },
