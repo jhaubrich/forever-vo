@@ -81,6 +81,21 @@ def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
     return dest
 
 
+def display_model_file(display_id: int | None) -> int | None:
+    """The model file a creature display draws, which is what a capture records
+    (`modelFileID`, from GetModelFileID): CreatureDisplayInfo.ModelID ->
+    CreatureModelData.FileDataID."""
+    if not display_id:
+        return None
+    row = load_db2("CreatureDisplayInfo").get(int(display_id))
+    if not row:
+        return None
+    model = load_db2("CreatureModelData").get(int(row.get("ModelID") or 0))
+    if not model:
+        return None
+    return int(model.get("FileDataID") or 0) or None
+
+
 def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:
     """Maps a CreatureDisplayInfo ID to (DisplayRaceID, DisplaySexID).
 

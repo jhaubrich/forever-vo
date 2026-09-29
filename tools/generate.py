@@ -46,6 +46,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any, NamedTuple
 
@@ -70,7 +71,7 @@ from tools.textclean import (
     split_gender,
 )
 from tools.textkey import text_key
-from tools.wowdata import base_voice, is_archetype, voice_for_npc
+from tools.wowdata import base_voice, display_model_file, is_archetype, voice_for_npc
 
 QUEST_EVENTS = {"accept": "a", "progress": "p", "complete": "c"}
 
@@ -437,6 +438,7 @@ SOURCE_ORDER = ["classic", "capture"]  # later sources override earlier ones
 def load_sources() -> dict:
     """Merges tools/data/bulk/*.json and capture.json field by field, capture winning."""
     merged = {"quests": {}, "gossip": {}, "npcs": {}}
+    displays: dict[str, int] = {}
     files = {p.stem: p for p in (DATA_DIR / "bulk").glob("*.json")}
     if CAPTURE_JSON.exists():
         files["capture"] = CAPTURE_JSON
@@ -456,10 +458,43 @@ def load_sources() -> dict:
                     ):
                         continue
                     target[field] = value
+        displays.update(data.get("displays", {}))
         print(
             f"source {name}: {len(data.get('quests', {}))} quest, {len(data.get('gossip', {}))} gossip, {len(data.get('npcs', {}))} npc entries"
         )
+    filled = fill_displays(merged["npcs"], displays, display_model_file)
+    if filled:
+        print(f"display IDs from Classic, model checked: {len(filled)} captured npcs")
     return merged
+
+
+def fill_displays(
+    npcs: dict[str, dict],
+    displays: dict[str, int],
+    model_file: Callable[[int], int | None],
+) -> list[str]:
+    """Gives a captured NPC its Classic display when the models agree.
+
+    A Forever capture records the model file an NPC draws and never its display ID,
+    so a speaker Classic never lets talk has no display at all: Vol'jin's two lines
+    were read as plain troll-male beside his own npc-10357 clip. classicdb's
+    `displays` has every creature; one is taken only when its model file is the one
+    the capture saw, since Forever remodels some (Quarrymaster Thesten, Morhan
+    Coppertongue and Malorne Bladeleaf wear other models there and keep their voice).
+    Marked `displayVia: "model"`, so model_cast still reports the model and the
+    addon's recast check (#352) still covers the NPC.
+    """
+    filled = []
+    for key, npc in npcs.items():
+        model = npc.get("modelFileID")
+        display = displays.get(key)
+        if npc.get("displayID") or npc.get("isObject") or not model or not display:
+            continue
+        if model_file(int(display)) == int(model):
+            npc["displayID"] = int(display)
+            npc["displayVia"] = "model"
+            filled.append(key)
+    return filled
 
 
 def load_items(
@@ -788,14 +823,15 @@ def unclipped_speakers(catalog: VoiceCatalog) -> dict[str, str]:
 
 def model_cast(item: Item) -> int | None:
     """The model file the item's voice was chosen from, when that is how it was
-    chosen: a speaker with no display ID (Forever's own NPCs) and no voice pinned
-    in [voices.speakers]. The addon compares it with the model a player sees and
+    chosen: a speaker with no display ID of its own (Forever's own NPCs; one
+    fill_displays matched to its model still counts) and no voice pinned in
+    [voices.speakers]. The addon compares it with the model a player sees and
     exports the NPC record when they differ (Packs:SpeakerModel, #352)."""
     npc = item.npc or {}
     model = npc.get("modelFileID")
     if (
         not model
-        or npc.get("displayID")
+        or (npc.get("displayID") and npc.get("displayVia") != "model")
         or npc.get("isObject")
         or str(item.speaker_key) in item.config.voices.speakers
     ):
