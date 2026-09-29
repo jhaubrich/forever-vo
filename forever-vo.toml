@@ -287,6 +287,24 @@ clips = [1686476, 1686475]
 [voices.sources.npc-10006]
 clips = [543354, 543358, 543359, 543366, 543369, 543357]
 
+[voices.sources.npc-4527]
+clips = [902161, 3050309]
+
+[voices.sources.npc-2970]
+clips = [2737069, 552771]
+
+[voices.sources.npc-10357]
+clips = [563883]
+
+[voices.sources.npc-7274]
+clips = [1524582]
+
+[voices.sources.npc-7052]
+clips = [6180634, 6183896]
+
+[voices.sources.npc-126478]
+clips = [6180634, 6183896]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
