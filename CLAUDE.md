@@ -290,7 +290,8 @@ no front-end framework, on port 8765) is the page for ear tests: pick a line
 from the corpus or type one, a voice, optionally a clip to clone from, a grid
 of exaggeration and cfg_weight values and a number of takes, and get a player
 per take with the resolved recipe beside it. "Keep these settings" writes
-`[tts.voices.<voice>]` (or a `[pronunciations]` entry from the sidebar) into
+`[tts.voices.<voice>]` (or a `[pronunciations]` entry from the sidebar, or
+for a picked line's speaker a `[voices.speakers]` pin, "Always read ... in") into
 `forever-vo.toml` through tomlkit, so the comments survive, validated by the
 models before the file is replaced. "Write to pack" regenerates one line's
 pack file under the *saved* configuration only and records the fingerprint
@@ -721,6 +722,12 @@ of the 10 s window, then the knobs.
   dire troll and naga clips. The two child voices come from retail's
   `kul_tiran_kid` via `build_retail_references.py`. Built 2026-09-23; the
   voice-change check then regenerated ~514 lines.
+- `[voices.speakers]` pins one speaker (creature ID, negative for a game
+  object) to any voice name, ahead of everything in `voice_for_npc` (#319,
+  2026-09-29). Per speaker, never per line, for a speaker the data cannot
+  fix; `config.Voices` checks the shape of key and name, and `generate.py`
+  warns at start about a pinned voice with no clip of its own
+  (`unclipped_speakers`), since the clips are not in git for CI to check.
 - `[voices.fallbacks]` and `[voices.zone_hints]` in `forever-vo.toml` cover races
   without a clip and speakers without display data (Zephras Isle -> skyborne);
   `[voices.species_aliases]` sends a model folder with no clip of its own to a

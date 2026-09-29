@@ -15,7 +15,8 @@ as current, and the CUDA nightly would ship it.
 One model instance, loaded on the first take and kept. Nothing here goes around
 the pipeline's bookkeeping:
 
-- "keep" writes [tts.voices.<voice>] or a [pronunciations] entry into
+- "keep" writes [tts.voices.<voice>], a [pronunciations] entry or a
+  [voices.speakers] entry (one NPC always in one voice) into
   forever-vo.toml through tomlkit, so the comments survive, and the file is
   validated by the same models before the old one is replaced;
 - "write to pack" regenerates a pack file only under the configuration as
@@ -225,6 +226,28 @@ def _write_pronunciation(path: Path, word: str, spoken: str) -> Config:
     elif word in table:
         del table[word]
     return _validated_write(path, doc)
+
+
+def write_speaker_voice(path: Path, speaker: str, voice: str) -> Config:
+    """Sets [voices.speakers].<speaker>; an empty voice removes the entry, and the
+    table with its last one, so the speaker goes back to what the capture says."""
+    with _config_lock(path):
+        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+        voices = doc.get("voices")
+        if voices is None:
+            voices = tomlkit.table()
+            doc["voices"] = voices
+        speakers = voices.get("speakers")
+        if speakers is None:
+            speakers = tomlkit.table()
+            voices["speakers"] = speakers
+        if voice:
+            speakers[speaker] = voice
+        elif speaker in speakers:
+            del speakers[speaker]
+        if not speakers:
+            del voices["speakers"]
+        return _validated_write(path, doc)
 
 
 def write_voice_sources(
@@ -523,6 +546,7 @@ class LineRow:
     spoken: str  # what the model is asked to say (cleaned, respelled)
     level: int
     source: str
+    speaker_key: str = ""  # "288", "-123" for a game object, "" for an item
 
     @property
     def haystack(self) -> str:
@@ -546,6 +570,7 @@ def line_rows(items: list[Item]) -> list[LineRow]:
                     variant.text,
                     int(item.entry.get("level") or 0),
                     item.entry.get("source") or "capture",
+                    item.speaker_key or "",
                 )
             )
     return rows
@@ -862,6 +887,7 @@ class Studio:
             },
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
+            "speakers": config.voices.speakers,
             "sources": {
                 v: e.model_dump(exclude_none=True)
                 for v, e in config.voices.sources.items()
@@ -917,6 +943,11 @@ class KeepTuning(BaseModel):
 class KeepPronunciation(BaseModel):
     word: str = Field(min_length=1)
     spoken: str = ""
+
+
+class KeepSpeakerVoice(BaseModel):
+    speaker: str = Field(pattern=r"^-?[1-9][0-9]*$")
+    voice: str = ""  # empty: back to the voice the capture resolves to
 
 
 class WritePack(BaseModel):
@@ -1187,6 +1218,18 @@ def create_app(
         write_pronunciation(
             studio.config_path, request.word.strip(), request.spoken.strip()
         )
+        studio.forget_corpus()
+        return studio.state()
+
+    @app.post("/api/keep-speaker-voice")
+    def keep_speaker_voice(request: KeepSpeakerVoice) -> dict[str, Any]:
+        """Pins one speaker to a voice; the voice-change check in generate.py then
+        restages exactly that speaker's files."""
+        if request.voice:
+            _safe(request.voice)
+            if request.voice not in studio.voices():
+                raise HTTPException(400, f"no voice named {request.voice}")
+        write_speaker_voice(studio.config_path, request.speaker, request.voice)
         studio.forget_corpus()
         return studio.state()
 
