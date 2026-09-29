@@ -142,3 +142,16 @@ def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
         VoiceCatalog(faster, voices_dir=tmp_path).fingerprint("human-male", "Well met.")
         == text_key("Well met.") + "+tempo=1.1"
     )
+
+
+def test_pitch_joins_the_fingerprint_only_when_set() -> None:
+    from tools.config import Tts, VoiceTuning
+    from tools.generate import encode_filters
+
+    tts = Tts(voices={"npc-11658": VoiceTuning(pitch=-4.0)})
+    assert "pitch" not in tts.differences(tts.settings_for("human-male"))
+    assert tts.differences(tts.settings_for("npc-11658"))["pitch"] == -4.0
+    # tempo alone encodes exactly as it did before pitch existed
+    assert encode_filters(1.1, 0.0) == ["atempo=1.1"]
+    assert encode_filters() == []
+    assert encode_filters(1.0, -12.0) == ["rubberband=pitch=0.500000"]

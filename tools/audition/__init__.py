@@ -155,11 +155,14 @@ def write_tuning(
     cfg_weight: float,
     reference: str | None,
     tempo: float = 1.0,
+    pitch: float = 0.0,
 ) -> Config:
     """Sets [tts.voices.<voice>]; a tuning equal to the defaults with no reference
     removes the entry instead, so the file only lists what differs."""
     with _config_lock(path):
-        return _write_tuning(path, voice, exaggeration, cfg_weight, reference, tempo)
+        return _write_tuning(
+            path, voice, exaggeration, cfg_weight, reference, tempo, pitch
+        )
 
 
 def _write_tuning(
@@ -169,6 +172,7 @@ def _write_tuning(
     cfg_weight: float,
     reference: str | None,
     tempo: float = 1.0,
+    pitch: float = 0.0,
 ) -> Config:
     doc = tomlkit.parse(path.read_text(encoding="utf-8"))
     tts = doc.get("tts")
@@ -179,6 +183,7 @@ def _write_tuning(
         float(tts.get("exaggeration", 0.45)),
         float(tts.get("cfg_weight", 0.5)),
         float(tts.get("tempo", 1.0)),
+        float(tts.get("pitch", 0.0)),
     )
     voices = tts.get("voices")
     if voices is None:
@@ -193,7 +198,7 @@ def _write_tuning(
         # existing reference is carried over; clearing one is a TOML edit.
         current = load_config(path).tts.voices.get(voice)
         reference = current.reference if current else None
-    if (exaggeration, cfg_weight, tempo) == defaults and not reference:
+    if (exaggeration, cfg_weight, tempo, pitch) == defaults and not reference:
         if voice in voices:
             del voices[voice]
     else:
@@ -204,6 +209,8 @@ def _write_tuning(
         entry["cfg_weight"] = cfg_weight
         if tempo != defaults[2]:
             entry["tempo"] = tempo
+        if pitch != defaults[3]:
+            entry["pitch"] = pitch
         voices[voice] = entry
     return _validated_write(path, doc)
 
@@ -875,6 +882,7 @@ class Studio:
                 "exaggeration": r.settings.exaggeration,
                 "cfg_weight": r.settings.cfg_weight,
                 "tempo": r.settings.tempo,
+                "pitch": r.settings.pitch,
                 "reference": r.settings.reference,
                 "tuned": catalog.tuned(voice),
             }
@@ -887,6 +895,7 @@ class Studio:
                 "exaggeration": config.tts.exaggeration,
                 "cfg_weight": config.tts.cfg_weight,
                 "tempo": config.tts.tempo,
+                "pitch": config.tts.pitch,
             },
             "overrides": {
                 v: t.model_dump(exclude_none=True) for v, t in config.tts.voices.items()
@@ -934,6 +943,7 @@ class GenerateRequest(BaseModel):
     exaggeration: list[float] = Field(min_length=1, max_length=6)
     cfg_weight: list[float] = Field(min_length=1, max_length=6)
     tempo: list[float] = Field(default=[1.0], min_length=1, max_length=4)
+    pitch: list[float] = Field(default=[0.0], min_length=1, max_length=4)
     takes: int = Field(default=1, ge=1, le=5)
 
 
@@ -942,6 +952,7 @@ class KeepTuning(BaseModel):
     exaggeration: float
     cfg_weight: float
     tempo: float = 1.0
+    pitch: float = 0.0
     reference: str | None = None
 
 
@@ -1075,7 +1086,8 @@ def create_app(
             takes = []
             for path in sorted(folder.glob("*.mp3")):
                 recipe = re.match(
-                    r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)(?:-t(?P<t>[0-9.]+))?-take(?P<take>\d+)\.mp3$",
+                    r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)(?:-t(?P<t>[0-9.]+))?"
+                    r"(?:-p(?P<p>-?[0-9.]+))?-take(?P<take>\d+)\.mp3$",
                     path.name,
                 )
                 takes.append(
@@ -1086,6 +1098,7 @@ def create_app(
                         "exaggeration": float(recipe["e"]) if recipe else None,
                         "cfg_weight": float(recipe["c"]) if recipe else None,
                         "tempo": float(recipe["t"]) if recipe and recipe["t"] else 1.0,
+                        "pitch": float(recipe["p"]) if recipe and recipe["p"] else 0.0,
                         "take": int(recipe["take"]) if recipe else None,
                     }
                 )
@@ -1107,8 +1120,8 @@ def create_app(
         # to raise inside the generator, after 200 had been sent, and the page could
         # only report that the connection broke. A tempo of 10 looked like a network
         # error.
-        for exaggeration, cfg_weight, tempo in itertools.product(
-            request.exaggeration, request.cfg_weight, request.tempo
+        for exaggeration, cfg_weight, tempo, pitch in itertools.product(
+            request.exaggeration, request.cfg_weight, request.tempo, request.pitch
         ):
             try:
                 VoiceTuning(
@@ -1116,6 +1129,7 @@ def create_app(
                     exaggeration=exaggeration,
                     cfg_weight=cfg_weight,
                     tempo=tempo,
+                    pitch=pitch,
                 )
             except ValidationError as e:
                 detail = "; ".join(
@@ -1125,20 +1139,24 @@ def create_app(
                 raise HTTPException(
                     400,
                     f"{detail} (you gave exaggeration {exaggeration}, "
-                    f"cfg_weight {cfg_weight}, tempo {tempo})",
+                    f"cfg_weight {cfg_weight}, tempo {tempo}, pitch {pitch})",
                 ) from e
         session = time.strftime("%Y%m%d-%H%M%S")
         out_dir = AUDITION_DIR / session
         out_dir.mkdir(parents=True, exist_ok=True)
 
         def variant_config(
-            exaggeration: float, cfg_weight: float, tempo: float
+            exaggeration: float,
+            cfg_weight: float,
+            tempo: float = 1.0,
+            pitch: float = 0.0,
         ) -> Config:
             tuning = VoiceTuning(
                 reference=request.reference,
                 exaggeration=exaggeration,
                 cfg_weight=cfg_weight,
                 tempo=tempo,
+                pitch=pitch,
             )
             tts = config.tts.model_copy(
                 update={"voices": {**config.tts.voices, request.voice: tuning}}
@@ -1169,43 +1187,62 @@ def create_app(
                 yield json.dumps({"event": "error", "message": str(e)}) + "\n"
                 return
             n = 0
-            for exaggeration, cfg_weight, tempo in itertools.product(
-                request.exaggeration, request.cfg_weight, request.tempo
+            # The model runs once per take of each exaggeration and cfg_weight; every
+            # tempo and pitch is then encoded from that same audio, so a sweep over
+            # them compares one delivery, not several different takes.
+            for exaggeration, cfg_weight in itertools.product(
+                request.exaggeration, request.cfg_weight
             ):
-                catalog = VoiceCatalog(variant_config(exaggeration, cfg_weight, tempo))
-                resolved = catalog.resolve(request.voice)
+                catalog = VoiceCatalog(variant_config(exaggeration, cfg_weight))
                 for take in range(1, request.takes + 1):
                     # between takes only: Chatterbox's generate() has no way to be
                     # interrupted, so the take in progress always finishes
                     if stop.is_set():
                         yield json.dumps({"event": "stopped", "count": n}) + "\n"
                         return
-                    n += 1
-                    name = f"{request.voice}-e{exaggeration}-c{cfg_weight}-t{tempo}-take{take}.mp3"
                     t0 = time.time()
                     with studio.model_lock:
                         synth.catalog = catalog
-                        seconds = synth.speak(spoken, request.voice, out_dir / name)
-                    yield (
-                        json.dumps(
-                            {
-                                "event": "take",
-                                "n": n,
-                                "take": take,
-                                "name": name,
-                                "url": f"/api/audio/{session}/{name}",
-                                "seconds": round(seconds, 1),
-                                "elapsed": round(time.time() - t0, 1),
-                                "clip": resolved.clip.name if resolved.clip else None,
-                                "source": resolved.source,
-                                "exaggeration": resolved.settings.exaggeration,
-                                "cfg_weight": resolved.settings.cfg_weight,
-                                "tempo": resolved.settings.tempo,
-                                "reference": request.reference,
-                            }
+                        audio = synth.render(spoken, request.voice)
+                    for tempo, pitch in itertools.product(request.tempo, request.pitch):
+                        resolved = VoiceCatalog(
+                            variant_config(exaggeration, cfg_weight, tempo, pitch)
+                        ).resolve(request.voice)
+                        settings = resolved.settings
+                        n += 1
+                        name = (
+                            f"{request.voice}-e{exaggeration}-c{cfg_weight}"
+                            f"-t{tempo}-p{pitch}-take{take}.mp3"
                         )
-                        + "\n"
-                    )
+                        seconds = synth.encode(
+                            audio, out_dir / name, settings.tempo, settings.pitch
+                        )
+                        yield (
+                            json.dumps(
+                                {
+                                    "event": "take",
+                                    "n": n,
+                                    "take": take,
+                                    "name": name,
+                                    "url": f"/api/audio/{session}/{name}",
+                                    "seconds": round(seconds, 1),
+                                    "elapsed": round(time.time() - t0, 1),
+                                    "clip": resolved.clip.name
+                                    if resolved.clip
+                                    else None,
+                                    "source": resolved.source,
+                                    "exaggeration": settings.exaggeration,
+                                    "cfg_weight": settings.cfg_weight,
+                                    "tempo": settings.tempo,
+                                    "pitch": settings.pitch,
+                                    "reference": request.reference,
+                                }
+                            )
+                            + "\n"
+                        )
+                        t0 = (
+                            time.time()
+                        )  # later shifts of the take cost the encode only
             yield json.dumps({"event": "done", "count": n}) + "\n"
 
         return StreamingResponse(stream(), media_type="application/x-ndjson")
@@ -1230,6 +1267,7 @@ def create_app(
             request.cfg_weight,
             request.reference,
             request.tempo,
+            request.pitch,
         )
         studio.forget_corpus()
         return studio.state()

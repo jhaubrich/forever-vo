@@ -179,6 +179,9 @@ class VoiceTuning(Strict):
     tempo: float | None = Field(
         default=None, ge=0.5, le=2.0
     )  # time stretch at encode time, pitch kept; 1.0 is as generated
+    pitch: float | None = Field(
+        default=None, ge=-12.0, le=12.0
+    )  # semitones at encode time, length kept; 0 is as generated, down is negative
 
 
 class TtsSettings(Strict):
@@ -187,6 +190,7 @@ class TtsSettings(Strict):
     exaggeration: float
     cfg_weight: float
     tempo: float = 1.0
+    pitch: float = 0.0
     reference: str | None = None
 
 
@@ -196,12 +200,16 @@ class Tts(Strict):
     exaggeration: float = 0.45
     cfg_weight: float = 0.5
     tempo: float = Field(default=1.0, ge=0.5, le=2.0)
+    pitch: float = Field(default=0.0, ge=-12.0, le=12.0)
     voices: dict[str, VoiceTuning] = {}
 
     @property
     def defaults(self) -> TtsSettings:
         return TtsSettings(
-            exaggeration=self.exaggeration, cfg_weight=self.cfg_weight, tempo=self.tempo
+            exaggeration=self.exaggeration,
+            cfg_weight=self.cfg_weight,
+            tempo=self.tempo,
+            pitch=self.pitch,
         )
 
     def settings_for(self, voice: str) -> TtsSettings:
@@ -217,6 +225,7 @@ class Tts(Strict):
             if tuning.cfg_weight is None
             else tuning.cfg_weight,
             tempo=self.tempo if tuning.tempo is None else tuning.tempo,
+            pitch=self.pitch if tuning.pitch is None else tuning.pitch,
             reference=tuning.reference,
         )
 

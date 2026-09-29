@@ -137,6 +137,7 @@ class VoiceCatalog:
                     exaggeration=borrowed.exaggeration,
                     cfg_weight=borrowed.cfg_weight,
                     tempo=borrowed.tempo,
+                    pitch=borrowed.pitch,
                 )
                 resolved = ResolvedVoice(own, voice, settings)
                 self._resolved[voice] = resolved
@@ -482,6 +483,17 @@ class Synth:
         self.catalog = catalog
 
     def speak(self, text: str, voice: str, out_mp3: Path) -> float:
+        settings = self.catalog.resolve(voice).settings
+        return self.encode(
+            self.render(text, voice), out_mp3, settings.tempo, settings.pitch
+        )
+
+    def render(self, text: str, voice: str):
+        """The model's audio for `text` in `voice`, before tempo and pitch.
+
+        Apart from encode so the audition page can hear one take several ways: tempo
+        and pitch are applied afterwards, so a sweep over them needs no second take.
+        """
         resolved = self.catalog.resolve(voice)
         settings = resolved.settings
         pieces = []
@@ -511,7 +523,12 @@ class Synth:
                 )
             pieces.append(best)
             pieces.append(silence)
-        audio = self.torch.cat(pieces[:-1], dim=-1)
+        return self.torch.cat(pieces[:-1], dim=-1)
+
+    def encode(
+        self, audio, out_mp3: Path, tempo: float = 1.0, pitch: float = 0.0
+    ) -> float:
+        """Writes `audio` from render() as the pack's mp3; returns its length."""
         duration = audio.shape[-1] / self.sr
 
         import torchaudio
@@ -523,11 +540,8 @@ class Synth:
         # final name, which every later run skips as done. The partial file has no
         # .mp3 suffix so the table rebuild's glob cannot pick it up either.
         out_part = out_mp3.with_suffix(f".{os.getpid()}.part")
-        # Pace is not a model knob (Chatterbox generate() has none), so a voice's
-        # tempo is a pitch-preserving time stretch applied here, at encode time.
-        tempo_args = (
-            ["-af", f"atempo={settings.tempo}"] if settings.tempo != 1.0 else []
-        )
+        filters = encode_filters(tempo, pitch)
+        filter_args = ["-af", ",".join(filters)] if filters else []
         try:
             torchaudio.save(str(tmp_path), audio, self.sr)
             out_mp3.parent.mkdir(parents=True, exist_ok=True)
@@ -543,7 +557,7 @@ class Synth:
                     "1",
                     "-ar",
                     "44100",
-                    *tempo_args,
+                    *filter_args,
                     "-codec:a",
                     "libmp3lame",
                     "-q:a",
@@ -554,7 +568,7 @@ class Synth:
                 ],
                 check=True,
             )
-            if tempo_args:
+            if filter_args:
                 duration = probe_duration(
                     out_part
                 )  # the stretched length is what the addon pages text against
@@ -638,6 +652,24 @@ def write_table(
 def sound_folder(base: str) -> str:
     """Quests are <questID>-<event>, gossip is <speaker>-<hash>."""
     return "Quests" if base.rsplit("-", 1)[-1] in QUEST_EVENTS else "Gossip"
+
+
+def encode_filters(tempo: float = 1.0, pitch: float = 0.0) -> list[str]:
+    """The ffmpeg filters for a voice's tempo and pitch, none when both are neutral.
+
+    Neither is a model knob. Pace: Chatterbox's generate() has none, so tempo is a
+    pitch-preserving time stretch. Pitch: Chatterbox pulls every clone toward its own
+    mid-range voice, and Varimathras came out at 153 Hz against his recordings' 86 to
+    89 Hz (#341), so pitch is a shift in semitones that keeps the length, down being
+    negative. atempo stays for tempo alone, so a voice tuned before pitch existed
+    encodes exactly as it did.
+    """
+    filters = []
+    if tempo != 1.0:
+        filters.append(f"atempo={tempo}")
+    if pitch != 0.0:
+        filters.append(f"rubberband=pitch={2 ** (pitch / 12):.6f}")
+    return filters
 
 
 def probe_duration(path: Path) -> float:

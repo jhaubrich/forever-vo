@@ -729,11 +729,19 @@ of the 10 s window, then the knobs.
   close one (orc children to the human child clips).
 - **Chatterbox conditioning is `[tts]` in `forever-vo.toml`**, with per-voice
   overrides under `[tts.voices.<voice>]` that may also name a different clip to
-  clone from (`reference`). The knobs are `exaggeration`, `cfg_weight` and
-  `tempo`; the last is not a model parameter (Chatterbox's `generate()` has no
-  pace control) but a pitch-preserving `atempo` stretch applied by
-  `Synth.speak` at encode time, with the stretched length recorded as the
-  duration. Only knobs that differ from the `[tts]` defaults join the
+  clone from (`reference`). The knobs are `exaggeration`, `cfg_weight`,
+  `tempo` and `pitch`; the last two are not model parameters (Chatterbox's
+  `generate()` has no pace control) but ffmpeg filters applied by
+  `Synth.encode` after `Synth.render` (`generate.encode_filters`): tempo a
+  pitch-preserving `atempo` stretch, with the stretched length recorded as the
+  duration, and pitch (since 2026-09-29, #341) a length-keeping `rubberband`
+  shift in semitones. Chatterbox pulls every clone toward its own mid-range
+  voice: Varimathras's takes measured 153 Hz against his recordings' 86-89 Hz
+  on every pick of clips tried, and -3 to -5 semitones sounded right where
+  matching the number (-9) did not. That is a pitch correction after the
+  model, not the knobs-for-accent argument the section below warns against;
+  accent still comes from the reference. The audition page renders a take
+  once and encodes every tempo and pitch of its sweep from that audio. Only knobs that differ from the `[tts]` defaults join the
   fingerprint (`Tts.differences`), so adding a knob later never restages what
   was already stamped. `generate.VoiceCatalog` resolves a voice to the
   clip it actually uses (its own, else its fallback race's, else the narrator's,
