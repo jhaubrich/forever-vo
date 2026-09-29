@@ -1,0 +1,103 @@
+{
+ "addon": "0.1.6",
+ "gossip": {},
+ "npcs": {
+  "1428": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Rema Schneider",
+   "sex": 3
+  },
+  "1429": {
+   "creatureType": "Humanoid",
+   "modelFileID": 124495,
+   "name": "Thurman Schneider",
+   "sex": 2
+  },
+  "1431": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Suzetta Gallina",
+   "sex": 3
+  },
+  "263399": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Sam Sarsaparilla",
+   "sex": 2
+  }
+ },
+ "origin": "issue-338",
+ "quests": {
+  "332-progress": {
+   "build": "70009",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Suzetta Gallina",
+   "npc": "1431",
+   "questID": 332,
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings and welcome, master.  Have you yet tried one of our fine wines?",
+   "time": 1790654421,
+   "title": "Wine Shop Advert",
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "333-progress": {
+   "build": "70009",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Rema Schneider",
+   "npc": "1428",
+   "questID": 333,
+   "sex": "m",
+   "source": "community",
+   "text": "You bring word from Mr. Bagley?",
+   "time": 1790654704,
+   "title": "Harlan Needs a Resupply",
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "334-progress": {
+   "build": "70009",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Thurman Schneider",
+   "npc": "1429",
+   "questID": 334,
+   "sex": "m",
+   "source": "community",
+   "text": "Are you here to buy clothes?",
+   "time": 1790654834,
+   "title": "Package for Thurman",
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "97925-accept": {
+   "build": "70009",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Sam Sarsaparilla",
+   "npc": "263399",
+   "questID": 97925,
+   "sex": "m",
+   "source": "community",
+   "text": "Tailoring is a surprisingly potent tradeskill to invest in, and I'm sure it'll serve you well.\r\n\r\nI know someone that can teach you how to craft a Faction Banner for your camp, provided you have the skill for it. Inspiration and morale are a key part of success on any battlefield, and an inspirational banner can go a long way to keeping you energized.",
+   "time": 1790655082,
+   "title": "Camping 101: Tailoring",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
