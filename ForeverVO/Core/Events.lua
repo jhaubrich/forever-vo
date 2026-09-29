@@ -113,6 +113,18 @@ local function MaybeLeadIn(item, speaker, fromItem)
     item.leadIn = BARK_DELAY
 end
 
+--- "m"/"f" for the unit the player is talking to, when that unit is the speaker
+--- and its sex is not secret: a creature ID met as both sexes has its lines in
+--- each (#304), and this picks the one in front of the player. Otherwise nil,
+--- and the pack plays the recording in the sex it was captured as.
+local function SpeakerSex(speaker)
+    local unit = Util.DialogUnit()
+    if not unit or not speaker.guid or Util.Plain(UnitGUID(unit)) ~= speaker.guid then
+        return nil
+    end
+    return Util.SexLetter(Util.Plain(UnitSex(unit)))
+end
+
 local function QueueQuest(event, text, startItemID)
     local questID = GetQuestID()
     local title = Util.Plain(GetTitleText())
@@ -122,7 +134,7 @@ local function QueueQuest(event, text, startItemID)
     end
     local speaker = startItemID and ItemSpeaker(startItemID) or CurrentSpeaker(true)
     speaker = ResolveQuestSpeaker(speaker, questID, event)
-    local path, duration, pack, parts, voice = Packs:FindQuest(questID, event)
+    local path, duration, pack, parts, voice = Packs:FindQuest(questID, event, SpeakerSex(speaker))
 
     ns.Capture:Record({
         kind = "quest", event = event, questID = questID, title = title, text = text,
@@ -208,7 +220,7 @@ local function QueueGossip(event, text)
         return -- dialog opened while a menu was up; nothing to attribute it to
     end
     local speakerKey = speaker.speakerKey or Packs:SpeakerKeyByName(speaker.name)
-    local path, duration, pack, parts, voice = Packs:FindGossip(speakerKey, text)
+    local path, duration, pack, parts, voice = Packs:FindGossip(speakerKey, text, SpeakerSex(speaker))
 
     ns.Capture:Record({
         kind = "gossip", event = event, text = text, title = selectedGossipOption,

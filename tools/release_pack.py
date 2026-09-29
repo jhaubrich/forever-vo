@@ -266,10 +266,13 @@ def package(
         )
         for base in sorted(stats["files"])
     ]
-    # Alternate narrator voices carry their folder in the name (Quests/Narrator/<voice>/<base>)
+    # Alternate narrator voices carry their folder in the name (Quests/Narrator/<voice>/<base>),
+    # and so does a speaker's other sex (Gossip/Sex/<m|f>/<base>, #304)
     jobs += [
         (SOUNDS_DIR / f"{relative}.mp3", stage / "Sounds" / f"{relative}.mp3")
-        for relative in sorted(stats.get("narratorFiles", ()))
+        for relative in sorted(
+            set(stats.get("narratorFiles", ())) | set(stats.get("sexFiles", ()))
+        )
     ]
     with ThreadPoolExecutor(max_workers=release.transcode_workers) as pool:
         for n, _ in enumerate(
@@ -287,9 +290,11 @@ def package(
                 zf.write(path, str(Path(spec.folder) / path.relative_to(stage)))
     size_mb = zip_path.stat().st_size / 1e6
     narrator_files = len(stats.get("narratorFiles", ()))
+    sex_files = len(stats.get("sexFiles", ()))
     print(
         f"{zip_path.name}: {stats['quests']} quests, {stats['gossip']} gossip lines, "
-        f"{len(stats['files']) + narrator_files} files ({narrator_files} alternate narrator), {size_mb:.0f} MB"
+        f"{len(stats['files']) + narrator_files + sex_files} files ({narrator_files} alternate "
+        f"narrator, {sex_files} in a speaker's other sex), {size_mb:.0f} MB"
     )
     return zip_path
 
@@ -407,6 +412,11 @@ def content_tag(stats: dict, index_path: Path = SOUND_INDEX) -> str:
     )
 
     def stamp(name: str) -> str:
+        # A speaker's other sex is listed as Gossip/Sex/f/<base> and indexed as
+        # Sex/f/<base>. (Narrator files have the same mismatch and stamp "?";
+        # left alone, since changing it would re-release every pack once.)
+        if "/Sex/" in name:
+            name = name.split("/", 1)[1]
         entry = index.get(name)
         if not isinstance(entry, dict):
             return "?"
@@ -414,7 +424,11 @@ def content_tag(stats: dict, index_path: Path = SOUND_INDEX) -> str:
             f"{entry.get('t') or '?'}:{entry.get('v') or '?'}:{entry.get('d') or '?'}"
         )
 
-    names = sorted(stats["files"]) + sorted(stats.get("narratorFiles", ()))
+    names = (
+        sorted(stats["files"])
+        + sorted(stats.get("narratorFiles", ()))
+        + sorted(stats.get("sexFiles", ()))
+    )
     joined = "\n".join(f"{name}={stamp(name)}" for name in names)
     return hashlib.blake2b(joined.encode("utf-8"), digest_size=8).hexdigest()
 
@@ -468,7 +482,11 @@ def main(argv: list[str] | None = None) -> int:
     stage, stats = stage_tables(args.pack, version, config)
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
-    fingerprint = sorted(stats["files"]) + sorted(stats.get("narratorFiles", ()))
+    fingerprint = (
+        sorted(stats["files"])
+        + sorted(stats.get("narratorFiles", ()))
+        + sorted(stats.get("sexFiles", ()))
+    )
     content = content_tag(stats)
     if args.if_changed:
         last = state.get(args.pack, {})
