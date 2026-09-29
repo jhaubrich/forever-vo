@@ -381,8 +381,11 @@ generator still running probes any file it finds under `Sounds/`.
 
 Installed by `tools/install-timer.sh`:
 
-- `forever-vo-ingest.path` — fires on every write of the saved-variables
-  file; runs `tools/ingest.sh` = pull, ingest, push `capture.json`.
+- `forever-vo-ingest.service` — `tools/ingest.sh` = pull, ingest, push
+  `capture.json`; the nightly run calls the script first, otherwise started
+  by hand. A `forever-vo-ingest.path` fired it on every write of the
+  saved-variables file until 2026-09-29, when saved variables persisting made
+  once a day enough (the capture DB only grows); `install-timer.sh` removes it.
 - `forever-vo-daily.timer` — 02:30 nightly, done by 07:00 (since 2026-09-28;
   04:00 with a 2 h bulk pass before): sync, voice captured lines, work the bulk
   backlog until 45 minutes before 07:00 (`FOREVER_VO_END_AT`,

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Sync step: pull what the GitHub bot committed, ingest the client's saved
 # variables and any community captures into tools/data/capture.json, and push
-# the result. Runs under a lock so the on-write watcher, the periodic timer
-# and the nightly job never overlap.
+# the result. Runs under a lock so a manual sync and the nightly job never
+# overlap.
 #
-# Triggered by forever-vo-ingest.path (client wrote ForeverVO.lua) and by
-# daily.sh before the nightly generation.
+# Run by daily.sh before the nightly generation, or by hand
+# (systemctl --user start forever-vo-ingest.service).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$ROOT/tools/data/ingest.log"
@@ -13,7 +13,7 @@ LOCK="$ROOT/tools/data/ingest.lock"
 mkdir -p "$ROOT/tools/data"
 exec >>"$LOG" 2>&1
 
-# The client may still be writing when the watcher fires; let it finish
+# The client may still be writing if it just logged out; let it finish
 sleep "${FOREVER_VO_INGEST_DELAY:-3}"
 
 exec 9>"$LOCK"
