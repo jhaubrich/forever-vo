@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.6",
+ "gossip": {},
+ "npcs": {
+  "1265": {
+   "creatureType": "Humanoid",
+   "modelFileID": 118135,
+   "name": "Rudra Amberstill",
+   "sex": 3
+  },
+  "264936": {
+   "creatureType": "Humanoid",
+   "modelFileID": 118355,
+   "name": "Earthseer Farsen",
+   "sex": 2
+  }
+ },
+ "origin": "issue-348",
+ "quests": {
+  "314-progress": {
+   "build": "70009",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Rudra Amberstill",
+   "npc": "1265",
+   "questID": 314,
+   "sex": "m",
+   "source": "community",
+   "text": "Vagash still terrorizes the herd!  Please help us by killing the wretched beast.",
+   "time": 1790693634,
+   "title": "Protecting the Herd",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "96391-progress": {
+   "build": "70009",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Earthseer Farsen",
+   "npc": "264936",
+   "questID": 96391,
+   "sex": "m",
+   "source": "community",
+   "text": "Oh what's this, then?",
+   "time": 1790693400,
+   "title": "Underground Map",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
