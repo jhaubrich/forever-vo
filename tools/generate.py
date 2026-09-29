@@ -720,6 +720,23 @@ def speaker_int(key: str | None) -> int | None:
         return None
 
 
+def model_cast(item: Item) -> int | None:
+    """The model file the item's voice was chosen from, when that is how it was
+    chosen: a speaker with no display ID (Forever's own NPCs) and no voice pinned
+    in [voices.speakers]. The addon compares it with the model a player sees and
+    exports the NPC record when they differ (Packs:SpeakerModel, #352)."""
+    npc = item.npc or {}
+    model = npc.get("modelFileID")
+    if (
+        not model
+        or npc.get("displayID")
+        or npc.get("isObject")
+        or str(item.speaker_key) in item.config.voices.speakers
+    ):
+        return None
+    return int(model)
+
+
 def rebuild_tables(
     items: list[Item],
     sound_index: dict[str, Any],
@@ -799,6 +816,7 @@ def rebuild_tables(
     quests: dict[int, dict] = {}
     gossip: dict[int, list[dict]] = {}
     npcs: dict[int, str] = {}
+    models: dict[int, int] = {}  # speaker -> the model file its voice was cast from
     narrator: dict[int, dict[str, dict]] = {}
     used: set[str] = set()
     narrator_used: set[str] = set()
@@ -828,6 +846,9 @@ def rebuild_tables(
         name = item.entry.get("name") or (item.npc or {}).get("name")
         if speaker is not None and name:
             npcs[speaker] = name
+        cast_model = model_cast(item)
+        if speaker is not None and cast_model:
+            models[speaker] = cast_model
 
         # The same line in the alternate narrator voices, each with its own
         # duration: voices differ in pace, and the text is paged against it.
@@ -997,7 +1018,17 @@ def rebuild_tables(
 
     write_table("Quests.lua", "quests", quest_lines, data_dir, pack_global)
     write_table("Gossip.lua", "gossip", gossip_lines, data_dir, pack_global)
-    write_table("NPCs.lua", "npcs", npc_lines, data_dir, pack_global)
+    model_list = "".join(
+        f"\t[{key}] = {model},\n" for key, model in sorted(models.items())
+    )
+    write_table(
+        "NPCs.lua",
+        "npcs",
+        npc_lines,
+        data_dir,
+        pack_global,
+        prelude=f"pack.models = {{\n{model_list}}}\n",
+    )
     write_table(
         "Narrator.lua",
         "narrator",

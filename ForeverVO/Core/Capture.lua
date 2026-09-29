@@ -16,7 +16,8 @@ reminders can tell what this session added from what was already waiting.
 local Capture = {}
 ns.Capture = Capture
 
-local modelFrame
+local idleModelFrames = {} -- model frames whose one load has been read
+local modelAsked = {}       -- speaker keys whose model this session has asked for
 local session = {}   -- "quests:<key>" / "gossip:<key>" recorded since login
 
 local function GetDB()
@@ -30,50 +31,75 @@ local function GetDB()
     --    again (Packs:QuestWanted) is captured with `wanted` set
     -- 5: a voiced quest line whose live text is not the one the pack voiced
     --    (Packs:QuestTextMatches) is captured with `differs` set
-    db.version = 5
+    -- 6: an NPC's model is read on a frame of its own and carries the addon
+    --    that read it; `recast` marks one that differs from the model its
+    --    voice was cast from (Packs:SpeakerModel)
+    db.version = 6
     db.quests = db.quests or {}
     db.gossip = db.gossip or {}
     db.npcs = db.npcs or {}
     return db
 end
 
---- Reads the creature display ID through an invisible PlayerModel; the pipeline
---- maps it to a race and gender to choose a voice. The model loads
---- asynchronously, so the value is written into the NPC record when it arrives.
-local function GetModelFrame()
-    if not modelFrame then
-        modelFrame = CreateFrame("PlayerModel", nil, UIParent)
-        modelFrame:SetSize(1, 1)
-        modelFrame:SetPoint("TOPLEFT")
-        modelFrame:SetAlpha(0)
-        modelFrame:EnableMouse(false)
-        modelFrame:SetScript("OnModelLoaded", function(self)
-            local npc = self.pendingNPC
-            if not npc then
-                return
-            end
-            local ok, displayID = pcall(self.GetDisplayInfo, self)
-            if ok and displayID and displayID ~= 0 then
-                npc.displayID = displayID
-            end
-            local okFile, fileID = pcall(self.GetModelFileID, self)
-            if okFile and fileID and fileID ~= 0 then
-                npc.modelFileID = fileID
-            end
-        end)
+--- Keeps what a model frame read for the NPC record. A pack that cast this
+--- speaker's voice from a model file records which (Packs:SpeakerModel); a
+--- different one here means the voice may be another race's (Fizzlefuse, a
+--- goblin, was voiced as an orc from a model an older release misread: #352),
+--- so the record goes out with the next export even when its lines do not.
+local function KeepModel(key, npc, displayID, fileID)
+    if displayID and displayID ~= 0 then
+        npc.displayID = displayID
     end
-    return modelFrame
+    if not fileID or fileID == 0 then
+        return
+    end
+    npc.modelFileID = fileID
+    npc.addon = ns.version
+    local cast = ns.Packs:SpeakerModel(key)
+    npc.recast = (cast and cast ~= fileID) and time() or nil
 end
 
-local function RequestDisplayInfo(unit, npc)
+local function OnModelLoaded(self)
+    local request = self.request
+    if not request then
+        return
+    end
+    self.request = nil
+    local ok, displayID = pcall(self.GetDisplayInfo, self)
+    local okFile, fileID = pcall(self.GetModelFileID, self)
+    KeepModel(request.key, request.npc, ok and displayID, okFile and fileID)
+    self:ClearModel()
+    table.insert(idleModelFrames, self)
+end
+
+--- Reads the creature display and model file through an invisible PlayerModel;
+--- the pipeline maps them to a race and gender to choose a voice. Each request
+--- gets a frame no other NPC's model is loading into: releases before 0.1.7
+--- shared one, and a model that finished loading after the player had moved on
+--- was written onto the next speaker (a tauren's and an orc's onto Fizzlefuse).
+--- A frame goes back to the pool only once its own load has been read; one
+--- whose model was cached answers at once and may never fire, so it is left
+--- alone rather than risk that load landing on someone else.
+local function RequestModel(key, unit, npc)
+    if modelAsked[key] then
+        return
+    end
+    modelAsked[key] = true
     pcall(function()
-        local frame = GetModelFrame()
-        frame.pendingNPC = npc
+        local frame = table.remove(idleModelFrames)
+        if not frame then
+            frame = CreateFrame("PlayerModel", nil, UIParent)
+            frame:SetSize(1, 1)
+            frame:SetPoint("TOPLEFT")
+            frame:SetAlpha(0)
+            frame:EnableMouse(false)
+            frame:SetScript("OnModelLoaded", OnModelLoaded)
+        end
+        frame.request = { key = key, npc = npc }
         frame:SetUnit(unit)
-        -- If the model was already cached the callback may not fire; read now too
-        local displayID = frame:GetDisplayInfo()
-        if displayID and displayID ~= 0 then
-            npc.displayID = displayID
+        local fileID = frame:GetModelFileID()
+        if fileID and fileID ~= 0 then
+            KeepModel(key, npc, frame:GetDisplayInfo(), fileID)
         end
     end)
 end
@@ -97,7 +123,7 @@ local function DescribeSpeaker(db, speaker)
         npc.creatureType = Util.Plain(UnitCreatureType(unit))
         npc.level = Util.Plain(UnitLevel(unit))
         if not npc.displayID or npc.displayID == 0 then
-            RequestDisplayInfo(unit, npc)
+            RequestModel(key, unit, npc)
         end
     end
     db.npcs[key] = npc

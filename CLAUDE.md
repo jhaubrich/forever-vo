@@ -506,7 +506,9 @@ storefront logo.
 ## Crowdsourcing
 
 `/fvo export` packs a session's unvoiced lines (character name replaced by
-`$n`), plus voiced lines the pack asked to hear again from a reader of the
+`$n`; since 0.1.7 each line carries the reader's class and race, `c`/`r`, so
+community readers settle `$c`/`$r` like known ones and `[readers.community]`
+is only for older exports), plus voiced lines the pack asked to hear again from a reader of the
 player's sex (`wanted`), via `C_EncodingUtil` into an `FVO1:` string. Players
 paste it into the "Contribute captured lines" issue form
 (`.github/ISSUE_TEMPLATE/capture.yml`, label `capture`, one issue per export,
@@ -559,6 +561,22 @@ owner's machine picks the files up on the next sync.
   need a client restart, not a `/reload`, before `PlaySoundFile` finds them.
 - The wago.tools CSV export is complete for client tables, but the beta's
   `BroadcastText` really is 12 rows; gossip is server-pushed on this engine.
+- **A captured model can belong to the previous NPC** (#352, 2026-09-29).
+  Until 0.1.7 one shared model frame read every speaker, and a model that
+  finished loading after the player moved on was written onto the next one:
+  Fizzlefuse (248200), a goblin (119376), came out tauren in one reader's
+  exports and orc in another's, and was voiced orc-male. Rare (0 wrong races
+  in 4,493 readings checked against Classic), but for a Forever-only NPC the
+  model *is* the race. Now each request gets its own frame; the NPC record
+  carries `addon`, and `merge_npc` in `ingest.py` keeps readings from
+  `MODEL_TRUSTED_SINCE` on in `modelReads`, one per source, taking the
+  majority, and uses an older reading only while no trusted one exists. The
+  pack records the model it cast each such speaker from (`pack.models` in
+  `NPCs.lua`, `generate.model_cast`); a player who sees another marks the NPC
+  `recast` and the export sends the record even with no line of its own.
+  `[voices.speakers]` in `forever-vo.toml` pins a speaker's voice outright
+  for a record that cannot heal (Fizzlefuse: his one line is voiced, so no
+  export would have carried him again before this).
 - `PlayerModel:GetDisplayInfo()` returns 0 until the model loads; the capture
   reads it in `OnModelLoaded`, and the merge ignores zero display IDs. On the
   Forever client it never yields anything at all (0 of 146 captured NPCs), only

@@ -69,6 +69,8 @@ def to_capture(data: dict, origin: str) -> dict:
             "zone": line.get("z"),
             "mapID": line.get("m"),
             "sex": line.get("g"),  # "m"/"f", from addon 0.1.4 on
+            "class": line.get("c"),  # the reader's class and race as the client
+            "race": line.get("r"),  # renders them, from addon 0.1.7 on
             "wanted": line.get("w")
             or None,  # a voiced line the pack asked to hear again
             "differs": line.get("v")
