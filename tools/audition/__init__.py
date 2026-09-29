@@ -304,6 +304,31 @@ def sources_warnings(
     return warnings
 
 
+def unlisted_folders(config: Config) -> list[str]:
+    """[voices.named_folders] entries that named_folders.json does not have yet: a new
+    folder is offered only once `fvo-soundpaths --folders` has probed it."""
+    from tools.soundpaths import named_folder_files
+
+    listed = named_folder_files()
+    missing = sorted(
+        {
+            folder
+            for extras in config.voices.named_folders.values()
+            for folder in extras
+            if folder.lower() not in listed
+        }
+    )
+    if not missing:
+        return []
+    return [
+        (
+            f"[voices.named_folders] names {', '.join(missing)}, which "
+            "tools/data/named_folders.json does not list yet: run "
+            "./tools/run.sh fvo-soundpaths --folders"
+        )
+    ]
+
+
 @functools.cache
 @functools.cache
 def named_display_count(display_id: int) -> int:
@@ -659,6 +684,8 @@ class Studio:
         self.clips_lock = threading.Lock()
         self._clips: dict[str, list[dict[str, Any]]] = {}
         self.clips_status: dict[str, str] = {}
+        # session -> set by the page's Stop button; a run checks it between takes
+        self.stops: dict[str, threading.Event] = {}
         threading.Thread(target=self.rows, daemon=True).start()
 
     def config(self) -> Config:
@@ -739,10 +766,14 @@ class Studio:
                     "n": i,
                     "fdid": c.fdid,
                     "kind": c.kind,
+                    "group": c.group,
                     "seconds": round(c.seconds, 2),
                     "url": f"/api/clips/audio/{voice}/{c.fdid}.ogg",
                 }
-                for i, c in enumerate(refclips.candidates(voice), 1)
+                # the page's config, not the repository's: --config may name another
+                for i, c in enumerate(
+                    refclips.candidates(voice, self.config().voices), 1
+                )
             ]
         except Exception as e:  # noqa: BLE001 - the status line is the error report
             with self.clips_lock:
@@ -1114,7 +1145,15 @@ def create_app(
             )
             return config.model_copy(update={"tts": tts})
 
+        stop = studio.stops.setdefault(session, threading.Event())
+
         def stream() -> Iterator[str]:
+            try:
+                yield from takes()
+            finally:  # also when the page goes away mid-run
+                studio.stops.pop(session, None)
+
+        def takes() -> Iterator[str]:
             yield (
                 json.dumps({"event": "start", "session": session, "spoken": spoken})
                 + "\n"
@@ -1136,6 +1175,11 @@ def create_app(
                 catalog = VoiceCatalog(variant_config(exaggeration, cfg_weight, tempo))
                 resolved = catalog.resolve(request.voice)
                 for take in range(1, request.takes + 1):
+                    # between takes only: Chatterbox's generate() has no way to be
+                    # interrupted, so the take in progress always finishes
+                    if stop.is_set():
+                        yield json.dumps({"event": "stopped", "count": n}) + "\n"
+                        return
                     n += 1
                     name = f"{request.voice}-e{exaggeration}-c{cfg_weight}-t{tempo}-take{take}.mp3"
                     t0 = time.time()
@@ -1165,6 +1209,14 @@ def create_app(
             yield json.dumps({"event": "done", "count": n}) + "\n"
 
         return StreamingResponse(stream(), media_type="application/x-ndjson")
+
+    @app.post("/api/generate/{session}/stop")
+    def stop_takes(session: str) -> dict[str, bool]:
+        """Ends a run after the take in progress. False when it has already finished."""
+        stop = studio.stops.get(session)
+        if stop:
+            stop.set()
+        return {"stopping": stop is not None}
 
     @app.post("/api/keep-tuning")
     def keep_tuning(request: KeepTuning) -> dict[str, Any]:
@@ -1254,10 +1306,13 @@ def create_app(
             "voice": voice,
             "status": studio.clips_status.get(voice, "not loaded"),
             "clips": found or [],
+            # in first-seen order, for the page's folder select
+            "groups": list(dict.fromkeys(c["group"] for c in found or [])),
             "picked": picked.clips if picked else [],
             "build": picked.build if picked else None,
             "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
-            "warnings": sources_warnings(config, voice),
+            "warnings": sources_warnings(config, voice)
+            + (unlisted_folders(config) if voice.startswith("npc-") else []),
             "history": pick_history(voice).get(voice, []),
             "reference_url": (
                 f"/api/clips/reference/{voice}.wav"

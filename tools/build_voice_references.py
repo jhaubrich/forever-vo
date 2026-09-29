@@ -255,6 +255,22 @@ NAMED_MAX_DISPLAYS = (
 )
 
 
+def named_sets() -> dict[int, list[int]]:
+    """NPCSounds row -> its creature displays, for the sets few enough models share
+    that they belong to one character. Each display is a voice, npc-<displayID>."""
+    npc_sounds = load_db2("NPCSounds")
+    displays_by_sound: dict[int, list[int]] = defaultdict(list)
+    for display_id, row in load_db2("CreatureDisplayInfo").items():
+        sound_id = int(row.get("NPCSoundID") or 0)
+        if sound_id and sound_id in npc_sounds:
+            displays_by_sound[sound_id].append(display_id)
+    return {
+        sound_id: displays
+        for sound_id, displays in displays_by_sound.items()
+        if len(displays) <= NAMED_MAX_DISPLAYS
+    }
+
+
 def named_npc_fdids() -> dict[str, list[int]]:
     """voice name npc-<displayID> -> greeting FileDataIDs for NPCs with their own recorded lines
     (Varimathras, Thrall, Sylvanas, ...). Race voices come from kits shared by many models.
@@ -267,15 +283,8 @@ def named_npc_fdids() -> dict[str, list[int]]:
     """
     kits = files_by_kit()
     npc_sounds = load_db2("NPCSounds")
-    displays_by_sound: dict[int, list[int]] = defaultdict(list)
-    for display_id, row in load_db2("CreatureDisplayInfo").items():
-        sound_id = int(row.get("NPCSoundID") or 0)
-        if sound_id and sound_id in npc_sounds:
-            displays_by_sound[sound_id].append(display_id)
     voices: dict[str, list[int]] = {}
-    for sound_id, displays in displays_by_sound.items():
-        if len(displays) > NAMED_MAX_DISPLAYS:
-            continue
+    for sound_id, displays in named_sets().items():
         fdids: list[int] = []
         for col in ("SoundID_0", "SoundID_1"):  # hello, goodbye; _2 is "pissed", _3 ack
             for fdid in kits.get(int(npc_sounds[sound_id].get(col) or 0), []):

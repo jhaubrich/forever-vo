@@ -264,3 +264,50 @@ def test_sound_packs_without_a_client_is_just_the_working_folder(
 ) -> None:
     packs = sound_packs(tmp_path / "missing", tmp_path)
     assert [(p.key, p.label) for p in packs] == [("ForeverVO_Data", "working folder")]
+
+
+def test_stop_ends_a_run_after_the_take_in_progress(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+    import threading
+
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    monkeypatch.setattr(audition, "AUDITION_DIR", tmp_path)
+    # a Studio without its corpus thread or a model: only what /api/generate touches
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio.model_lock = threading.Lock()
+    studio.stops = {}
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    class FakeSynth:
+        catalog = None
+
+        def speak(self, text: str, voice: str, out: Path) -> float:
+            out.write_bytes(b"")
+            # the page presses Stop while the first take is being made
+            (session,) = studio.stops
+            assert client.post(f"/api/generate/{session}/stop").json() == {
+                "stopping": True
+            }
+            return 1.0
+
+    monkeypatch.setattr(studio, "synth", lambda: FakeSynth(), raising=False)
+    response = client.post(
+        "/api/generate",
+        json={
+            "text": "Hello there.",
+            "voice": "human-male",
+            "exaggeration": [0.45],
+            "cfg_weight": [0.5],
+            "takes": 3,
+        },
+    )
+    events = [json.loads(line)["event"] for line in response.text.splitlines()]
+    assert events == ["start", "take", "stopped"]
+    assert studio.stops == {}  # a finished run leaves nothing to stop
+    assert client.post("/api/generate/nope/stop").json() == {"stopping": False}

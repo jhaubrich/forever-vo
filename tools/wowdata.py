@@ -8,9 +8,11 @@ from __future__ import annotations
 
 import csv
 import functools
+import hashlib
 import json
 import os
 import re
+import threading
 from collections import Counter
 from pathlib import Path
 
@@ -72,13 +74,31 @@ def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
         raise FileNotFoundError(
             f"FileDataID {fdid} not in build {build}: {response.text}"
         )
-    part = dest.with_name(f"{dest.name}.{os.getpid()}.part")
+    # the thread too: the folder probe in soundpaths fetches from a pool in one process
+    part = dest.with_name(f"{dest.name}.{os.getpid()}.{threading.get_ident()}.part")
     try:
         part.write_bytes(response.content)
         os.replace(part, dest)
     finally:
         part.unlink(missing_ok=True)
     return dest
+
+
+# The shapes wago serves for a FileDataID the listfile names but this build cannot
+# play: an empty file (every vo_1127_* line); the same length of zero bytes where the
+# file is encrypted with a key wago does not have (vo_111_gazlowe_*); and one 3,447-byte,
+# 0.0003 s Ogg that is byte-identical wherever it stands in (later-expansion lines of
+# Sylvanas and Thrall). Tested by content, not by length: real barks run to 0.1 s.
+DUD_SIZE = 3447
+DUD_MD5 = "de6135861a6cacfe176830f18f597c3e"
+
+
+def is_dud(path: Path) -> bool:
+    """True for a file that stands in for audio this client does not have."""
+    data = path.read_bytes()
+    if not data.strip(b"\0"):  # empty, or zeroed
+        return True
+    return len(data) == DUD_SIZE and hashlib.md5(data).hexdigest() == DUD_MD5
 
 
 def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:

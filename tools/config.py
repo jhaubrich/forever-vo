@@ -156,6 +156,9 @@ class Voices(Strict):
     species_aliases: dict[
         str, str
     ] = {}  # model folder -> voice name, where a close clip exists
+    named_folders: dict[
+        str, list[str]
+    ] = {}  # a named set's sound folder -> more folders its character's lines are in
     sources: dict[
         str, VoiceSources
     ] = {}  # voice -> clips picked by ear, overriding the recipes

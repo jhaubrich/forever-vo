@@ -303,7 +303,9 @@ plays the working folder's file, else the first installed `ForeverVO_Data*`
 pack under `WOW_DIR`'s `Interface/AddOns` that has it, in the addon's priority
 order (`sound_packs`; `--addons` names another folder): a contributor's working
 folder is mostly empty, and before 2026-09-28 every line read "no file in the
-pack yet" for them. One model instance, loaded on
+pack yet" for them. Stop, beside Generate, ends a run after the take in
+progress: Chatterbox's `generate()` cannot be interrupted, so the check is
+between takes (`Studio.stops`, `/api/generate/<session>/stop`). One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
 we need are plain HTML, and the addon's own rule of no libraries and a native
@@ -687,7 +689,28 @@ of the 10 s window, then the knobs.
   Source clips panel, or with `fvo-refclips`.
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
-  just two greetings, so his clone is rougher.
+  just two greetings, so his clone is rougher. The automatic build uses the kit
+  alone, but the kit is not all the client has: Sylvanas's set links four
+  greetings and her folder `sound/creature/sylvanaswindrunner/` holds ~90 more
+  lines this build ships (Wrath Gate, HoR), linked from no beta kit. So since
+  2026-09-29 a named voice's audition candidates are the kit plus every file in
+  its set's folder, one group per folder in the Source clips panel's select, and
+  a pick in `[voices.sources.npc-*]` is how those reach a reference.
+  `fvo-soundpaths --folders` (kept apart from `--refresh`, so it never renames an
+  archetype) streams the community listfile - the pinned verified one lacks real
+  lines, `vo_920_sylvanas_*` - keeps `.ogg` only (wago answers a `.ogg.meta` with
+  400), fetches each file once and commits the real ones with their lengths to
+  `tools/data/named_folders.json`. Every named set's folder is listed, stock and
+  Warcraft III ones (`dwarfmalegrimnpc`, `peon`) included, on the owner's call.
+  What a listed file can be instead of audio (`wowdata.is_dud`): empty
+  (`vo_1127_*`), zero bytes where it is encrypted (`vo_111_gazlowe_*`), or one
+  byte-identical 3,447-byte 0.0003 s Ogg. Test by content, never by a length
+  floor: real barks run to 0.1 s and a 0.286 s one is a saved pick. A character
+  filed under more than one folder gets the others from `[voices.named_folders]`,
+  keyed by the set's own folder, then a `--folders` run; never by name matching
+  (`anduin`, `anduin_lothar`, `anduinwrynn` are two people). Sylvanas's `sylvanas`
+  and `lady_sylvanas_windrunner` (Legion on, mostly real audio) are there,
+  commented out.
 - Species voices (PR #21, 2026-09-23): a speaker with no player race resolves
   through its model file (`tools/data/species_models.json`, keyed by
   `CreatureModelData.FileDataID`, which is also what `GetModelFileID()`

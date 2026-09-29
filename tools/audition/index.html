@@ -63,6 +63,7 @@
   #clips-body tr:hover { background: var(--panel); }
   #clips-body tr.picked { background: var(--panel); }
   #clips-body td.pos { color: var(--gold); font-weight: 600; width: 3em; }
+  #clips-body td.kind { max-width: 22em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   #clips-body td.at { font-family: ui-monospace, monospace; font-size: 12px; }
   #clips-wrap { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
   .pill { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px; border: 1px solid var(--line); margin-left: 6px; }
@@ -133,6 +134,7 @@
       <div><label for="tempo">Tempo values (0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept)</label><input id="tempo" value="1.0"></div>
       <button id="knobs-help-toggle" class="help" title="What these three do">?</button>
       <button id="go" class="primary">Generate</button>
+      <button id="stop" hidden title="Stop after the take in progress; the model cannot be interrupted mid-take">Stop</button>
     </div>
     <div id="knobs-help" hidden>
       <h4>What these three do</h4>
@@ -175,6 +177,7 @@
       <summary>Source clips &mdash; what this voice's reference is cut from</summary>
       <div class="row" style="margin-top:8px">
         <button id="clips-load">Load candidates</button>
+        <select id="clips-group" hidden title="Which folder's clips the table shows; picks from every folder stay listed"></select>
         <button id="clips-reset">Clear picks</button>
         <button id="clips-build" class="primary">Build and keep</button>
         <audio id="clips-ref" controls preload="none" style="flex:0 0 auto"></audio>
@@ -398,6 +401,7 @@ $("voice").addEventListener("change", () => {
   showResolved();
   if (clipsVoice && $("voice").value !== clipsVoice) {
     clipsRows = []; picks = []; clipsVoice = null;
+    $("clips-group").hidden = true; $("clips-group").innerHTML = "";
     $("clips-body").innerHTML = ""; $("clips-status").textContent = ""; $("clips-warn").textContent = "";
     $("clips-budget").textContent = ""; $("clips-ref").removeAttribute("src");
   }
@@ -428,7 +432,7 @@ $("go").addEventListener("click", async () => {
              tempo: numbers($("tempo").value, "tempo"),
              takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
-  busy($("go"), true); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
+  busy($("go"), true); runSession = null; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
   try {
     const response = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
@@ -439,11 +443,23 @@ $("go").addEventListener("click", async () => {
       let nl; while ((nl = buffer.indexOf("\n")) >= 0) { const line = buffer.slice(0, nl); buffer = buffer.slice(nl + 1); if (line.trim()) onEvent(JSON.parse(line)); }
     }
   } catch (e) { toast(e.message, "warn"); }
-  busy($("go"), false); refresh(); loadSessions();
+  busy($("go"), false); $("stop").hidden = true; runSession = null; refresh(); loadSessions();
+});
+
+// the session comes with the run's first event; until then there is nothing to stop
+let runSession = null;
+$("stop").addEventListener("click", async () => {
+  if (!runSession) { toast("the run has not started yet; try again in a moment", "warn"); return; }
+  busy($("stop"), true);
+  try {
+    const r = await api(`/api/generate/${encodeURIComponent(runSession)}/stop`, { method: "POST" });
+    $("progress").textContent += r.stopping ? " · stopping after the take in progress…" : "";
+  } catch (e) { toast(e.message, "warn"); busy($("stop"), false); }
 });
 
 function onEvent(ev) {
-  if (ev.event === "start") { $("progress").textContent = `spoken as: “${ev.spoken}”`; return; }
+  if (ev.event === "start") { runSession = ev.session; $("progress").textContent = `spoken as: “${ev.spoken}”`; return; }
+  if (ev.event === "stopped") { $("progress").textContent = `stopped · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   if (ev.event === "error") { toast(ev.message, "warn"); $("progress").textContent = ev.message; return; }
   if (ev.event === "done") { $("progress").textContent += ` · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   const tr = document.createElement("tr");
@@ -554,12 +570,15 @@ function renderClips() {
   if (!clipsRows.length) { body.innerHTML = ""; $("clips-budget").textContent = ""; return; }
   let at = 0; const offsets = new Map();
   picks.forEach(f => { offsets.set(f, at); at += clipsSeconds(f); });
-  body.innerHTML = clipsRows.map(c => {
+  // the folder select narrows the table, never the picks: a picked row from another
+  // folder stays listed, so the order and the budget always show the whole reference
+  const group = $("clips-group").hidden ? "" : $("clips-group").value;  // "" is all
+  body.innerHTML = clipsRows.filter(c => !group || c.group === group || picks.includes(c.fdid)).map(c => {
     const i = picks.indexOf(c.fdid);
     const off = offsets.get(c.fdid);
     const band = off === undefined ? "" : off < clipsWindows.t3 ? "t3" : off < clipsWindows.s3gen ? "s3" : "out";
     return `<tr data-f="${c.fdid}" class="${i >= 0 ? "picked" : ""}">` +
-      `<td class="pos">${i >= 0 ? i + 1 : ""}</td><td>${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
+      `<td class="pos">${i >= 0 ? i + 1 : ""}</td><td class="kind" title="${esc(c.group)}: ${esc(c.kind)}">${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
       `<td class="n">${c.seconds.toFixed(1)}s</td>` +
       `<td class="at">${off === undefined ? "" : off.toFixed(1) + "s"}` +
       `${band ? `<span class="pill ${band}">${band === "t3" ? "t3" : band === "s3" ? "s3gen" : "averaged"}</span>` : ""}</td>` +
@@ -619,6 +638,13 @@ async function loadClips(refresh) {
     renderHistory(d.history, picks);
     if (d.clips.length) {
       clipsRows = d.clips;
+      const sel = $("clips-group"), keep = sel.value;
+      sel.innerHTML = `<option value="">all (${d.clips.length})</option>` + d.groups.map(g => {
+        const n = d.clips.filter(c => c.group === g).length;
+        return `<option value="${esc(g)}">${esc(g)} (${n})</option>`;
+      }).join("");
+      sel.hidden = d.groups.length < 2;
+      sel.value = d.groups.includes(keep) ? keep : "";
       if (refresh !== false || !picks.length) picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
@@ -626,8 +652,12 @@ async function loadClips(refresh) {
       renderHistory(d.history, picks);   // again, now that picks are seeded
       if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
       busy($("clips-load"), false);
-    } else if (d.status === "loading" && !clipsPoll) {
-      clipsPoll = setInterval(() => loadClips(false), 3000);
+    } else if (d.status === "loading") {
+      if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 3000);
+    } else {
+      // finished with nothing to offer ("0 clips"): stop polling, or the button spins for good
+      if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
+      busy($("clips-load"), false);
     }
   } catch (e) { toast(e.message, "warn"); busy($("clips-load"), false); }
 }
@@ -639,6 +669,7 @@ $("clips-load").addEventListener("click", () => {
   loadClips(true);
 });
 $("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
+$("clips-group").addEventListener("change", renderClips);
 $("clips-help-toggle").addEventListener("click", () => { $("clips-help").hidden = !$("clips-help").hidden; });
 $("knobs-help-toggle").addEventListener("click", () => { $("knobs-help").hidden = !$("knobs-help").hidden; });
 $("clips-build").addEventListener("click", async () => {

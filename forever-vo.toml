@@ -59,6 +59,16 @@ dracthyr = "bloodelf"
 orcmalekid = "humanmalekid-male"
 orcfemalekid = "humanfemalekid-female"
 
+# A named NPC (npc-<displayID>) is offered its greeting kit and every line in its
+# sound set's folder under sound/creature/ as source clips. Some characters were
+# filed under more than one folder over the expansions; list the others here, keyed
+# by the set's own folder (tools/data/sound_sets.json), and run
+# `./tools/run.sh fvo-soundpaths --folders` so tools/data/named_folders.json has them.
+# Folders are never matched by name: anduin, anduin_lothar and anduinwrynn are two
+# different people. lady_sylvanas_windrunner is Legion to Dragonflight.
+[voices.named_folders]
+# sylvanaswindrunner = ["sylvanas", "lady_sylvanas_windrunner"]
+
 [voices.sources.bloodelf-female]
 clips = [539351, 539211, 539423]
 
