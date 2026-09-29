@@ -385,7 +385,7 @@ def upload(
     )
 
 
-def content_tag(stats: dict) -> str:
+def content_tag(stats: dict, index_path: Path = SOUND_INDEX) -> str:
     """A digest of what the pack's files *say*, not just which files there are.
 
     The release fingerprint was the list of names, so a release was due only when a
@@ -395,10 +395,14 @@ def content_tag(stats: dict) -> str:
     nothing had happened. sound_index already carries the fingerprint generate.py
     computes per file, which covers all three, so this is a hash of that rather than
     of thousands of mp3s.
+
+    The duration joins it for the fourth: a take re-rolled because it came out
+    wrong (Kargal Battlescar's 842-accept jumped an octave on "Sergra Darkthorn",
+    #333) keeps its text and voice, so only its length says it is a new file.
     """
     index = (
-        json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
-        if SOUND_INDEX.exists()
+        json.loads(index_path.read_text(encoding="utf-8"))
+        if index_path.exists()
         else {}
     )
 
@@ -406,7 +410,9 @@ def content_tag(stats: dict) -> str:
         entry = index.get(name)
         if not isinstance(entry, dict):
             return "?"
-        return f"{entry.get('t') or '?'}:{entry.get('v') or '?'}"
+        return (
+            f"{entry.get('t') or '?'}:{entry.get('v') or '?'}:{entry.get('d') or '?'}"
+        )
 
     names = sorted(stats["files"]) + sorted(stats.get("narratorFiles", ()))
     joined = "\n".join(f"{name}={stamp(name)}" for name in names)
