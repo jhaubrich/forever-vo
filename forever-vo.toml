@@ -288,7 +288,7 @@ clips = [1686476, 1686475]
 clips = [543354, 543358, 543359, 543366, 543369, 543357]
 
 [voices.sources.npc-4527]
-clips = [902161, 3050309]
+clips = [5723108, 5758116]
 
 [voices.sources.npc-2970]
 clips = [2737069, 552771]
@@ -482,6 +482,11 @@ exaggeration = 0.5
 cfg_weight = 0.5
 tempo = 0.9
 pitch = -2.5
+
+[tts.voices.npc-4527]
+exaggeration = 0.45
+cfg_weight = 0.5
+pitch = -1.0
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
