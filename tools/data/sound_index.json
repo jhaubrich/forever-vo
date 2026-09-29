@@ -1214,6 +1214,11 @@
   "t": "43b3b34d+exaggeration=0.7",
   "v": "orc-female-shaman"
  },
+ "1062-progress": {
+  "d": 8.96,
+  "t": "a55ec40a+exaggeration=0.7",
+  "v": "orc-female-shaman"
+ },
  "1063-accept": {
   "d": 31.63,
   "t": "c7b0a40c+exaggeration=0.7",
@@ -2673,6 +2678,11 @@
   "d": 9.04,
   "t": "565bdc6e+clips=da067863",
   "v": "nightelf-male"
+ },
+ "11083-53d41aed": {
+  "d": 16.68,
+  "t": "53d41aed+cfg_weight=0.3,exaggeration=0.6",
+  "v": "nightelf-female-sentinel"
  },
  "11083-74fbc2b7": {
   "d": 12.08,
@@ -6138,6 +6148,11 @@
   "d": 14.2,
   "t": "9d20cd2d",
   "v": "troll-male"
+ },
+ "1241-4a926ca6": {
+  "d": 3.72,
+  "t": "4a926ca6+exaggeration=0.1",
+  "v": "dwarf-male-guard"
  },
  "1241-91b167bf": {
   "d": 8.88,
@@ -10598,6 +10613,11 @@
   "d": 14.28,
   "t": "72bd5f55+clips=264d8895",
   "v": "dwarf-male"
+ },
+ "1466-f7f23ddc": {
+  "d": 4.24746,
+  "t": "180a24fc+cfg_weight=0.7,exaggeration=0.6,tempo=1.2",
+  "v": "gnome-female-standard"
  },
  "1467-accept": {
   "d": 16.91,
@@ -16979,6 +16999,11 @@
   "t": "2506da1a+cfg_weight=0.7,clips=712b1142,exaggeration=0.3",
   "v": "dwarf-male-standard"
  },
+ "1681-5f140eed": {
+  "d": 6.6,
+  "t": "5f140eed+cfg_weight=0.7,clips=712b1142,exaggeration=0.3",
+  "v": "dwarf-male-standard"
+ },
  "1681-accept": {
   "d": 36.11,
   "t": "d6869bea+cfg_weight=0.7,clips=712b1142,exaggeration=0.3",
@@ -19168,6 +19193,11 @@
   "d": 26.255646,
   "t": "1de1c831+cfg_weight=0.9,clips=a89c7784,exaggeration=0.1,tempo=1.05",
   "v": "human-male-official"
+ },
+ "17804-3955e9f1": {
+  "d": 5.39068,
+  "t": "3955e9f1+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "human-male"
  },
  "1781-accept": {
   "d": 29.436145,
@@ -23465,17 +23495,17 @@
   "v": "tauren-female"
  },
  "248415-72040e11": {
-  "d": 3.88,
+  "d": 4.84,
   "t": "f2b9d131+clips=264d8895",
   "v": "dwarf-male"
  },
  "248415-a665cdb8": {
-  "d": 2.28,
+  "d": 1.8,
   "t": "a665cdb8+clips=264d8895",
   "v": "dwarf-male"
  },
  "248415-bdfaa98c": {
-  "d": 3.4,
+  "d": 3.52,
   "t": "bdfaa98c+clips=264d8895",
   "v": "dwarf-male"
  },
@@ -24260,9 +24290,9 @@
   "v": "skyborne-female"
  },
  "253092-e0247c5d": {
-  "d": 13.020476,
-  "t": "e0247c5d+cfg_weight=0.3,clips=2a9f3a90,exaggeration=0.7,tempo=1.1",
-  "v": "human-female"
+  "d": 18.56,
+  "t": "e0247c5d+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
  },
  "253372-p1-4b6a69db": {
   "d": 9.574218,
@@ -24270,94 +24300,94 @@
   "v": "narrator"
  },
  "253474-00bdfcec": {
-  "d": 5.64,
+  "d": 6.6,
   "t": "00bdfcec",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-08807185": {
-  "d": 7.72,
+  "d": 7.68,
   "t": "08807185",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-28030f47": {
-  "d": 5.28,
+  "d": 5.32,
   "t": "28030f47",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-37e215b2": {
-  "d": 2.52,
+  "d": 3.28,
   "t": "37e215b2",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-404ff1f4": {
-  "d": 5.52,
+  "d": 5.44,
   "t": "404ff1f4",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-4d63cc9b": {
-  "d": 4.56,
+  "d": 4.64,
   "t": "4d63cc9b",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-6d6f2083": {
-  "d": 1.52,
+  "d": 2.92,
   "t": "6d6f2083",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-7fc1d917": {
-  "d": 2.68,
+  "d": 3.6,
   "t": "7fc1d917",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-80396915": {
-  "d": 6.64,
+  "d": 6.56,
   "t": "80396915",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-823817d9": {
-  "d": 29.07,
+  "d": 29.19,
   "t": "823817d9",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-8957496f": {
-  "d": 11.2,
+  "d": 11.88,
   "t": "8957496f",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-8b1fd97e": {
-  "d": 2.32,
+  "d": 2.76,
   "t": "8b1fd97e",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-96433e66": {
-  "d": 6.6,
+  "d": 6.88,
   "t": "96433e66",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-9d79190e": {
-  "d": 5.36,
+  "d": 5.92,
   "t": "9d79190e",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-aa6ba0a9": {
-  "d": 2.84,
+  "d": 3.2,
   "t": "aa6ba0a9",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-db018659": {
-  "d": 5.68,
+  "d": 6.08,
   "t": "db018659",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-ef767f20": {
-  "d": 1.52,
+  "d": 1.56,
   "t": "ef767f20",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253474-ff26e6d3": {
-  "d": 6.44,
+  "d": 7.36,
   "t": "8a610273",
-  "v": "skyborne-male"
+  "v": "skyborne-female"
  },
  "253576-82c78bf7": {
   "d": 22.75,
@@ -24844,6 +24874,11 @@
   "t": "c65683ed",
   "v": "skyborne-female"
  },
+ "257019-d62b45b0": {
+  "d": 5.68,
+  "t": "d62b45b0",
+  "v": "skyborne-female"
+ },
  "257020-7ce0aa5e": {
   "d": 7.32,
   "t": "7ce0aa5e",
@@ -24889,10 +24924,20 @@
   "t": "8206da58+clips=264d8895",
   "v": "dwarf-male"
  },
+ "257446-3123e450": {
+  "d": 8.08,
+  "t": "3123e450+clips=264d8895",
+  "v": "dwarf-male"
+ },
  "257554-p1-41088e5c": {
   "d": 6.45356,
   "t": "41088e5c+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
   "v": "narrator"
+ },
+ "257597-879e41ad": {
+  "d": 2.68,
+  "t": "879e41ad+clips=264d8895",
+  "v": "dwarf-male"
  },
  "257655-p1-9f0fb116": {
   "d": 8.042562,
@@ -24915,9 +24960,14 @@
   "v": "human-male-standard"
  },
  "258043-c6710551": {
-  "d": 8.810227,
-  "t": "c405a3f1+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 7.36,
+  "t": "c405a3f1+clips=264d8895",
+  "v": "dwarf-male"
+ },
+ "258098-1605f087": {
+  "d": 3.92,
+  "t": "1605f087+clips=264d8895",
+  "v": "dwarf-male"
  },
  "2581-accept": {
   "d": 29.99,
@@ -24928,6 +24978,11 @@
   "d": 16.4,
   "t": "e3b80550+clips=80efdb01",
   "v": "bloodelf-male"
+ },
+ "258113-1605f087": {
+  "d": 4.12,
+  "t": "1605f087+cfg_weight=0.3,clips=16e7fa8f,exaggeration=0.75",
+  "v": "dwarf-female"
  },
  "258130-c2f6629b": {
   "d": 12.583764,
@@ -25249,6 +25304,11 @@
   "t": "a7fc18c4+cfg_weight=0.8,clips=0a3bacfb,exaggeration=0.9",
   "v": "goblin-male"
  },
+ "262558-165bbe08": {
+  "d": 2.415805,
+  "t": "165bbe08+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "human-male"
+ },
  "2627-08d0d148": {
   "d": 4.4,
   "t": "08d0d148+cfg_weight=0.8,clips=0a3bacfb,exaggeration=0.9",
@@ -25335,9 +25395,9 @@
   "v": "goblin-female"
  },
  "264936-6ba63b30": {
-  "d": 8.013061,
-  "t": "6ba63b30+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 7.28,
+  "t": "6ba63b30+clips=264d8895",
+  "v": "dwarf-male"
  },
  "265-accept": {
   "d": 15.345057,
@@ -25364,8 +25424,13 @@
   "t": "550c4a52+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
+ "265810-550c4a52": {
+  "d": 1.68,
+  "t": "550c4a52",
+  "v": "tauren-female"
+ },
  "265811-550c4a52": {
-  "d": 2.32,
+  "d": 2.4,
   "t": "550c4a52+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -25474,6 +25539,21 @@
   "t": "4705531a+cfg_weight=0.4,clips=8f29e329,exaggeration=0.4",
   "v": "scourge-male"
  },
+ "267321-83e0509a": {
+  "d": 21.19,
+  "t": "4ae85bfa+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
+ "267321-b3334d4d": {
+  "d": 12.6,
+  "t": "b3334d4d+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
+ "267321-e9b56518": {
+  "d": 4.08,
+  "t": "e9b56518+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
  "267324-d8b814ea": {
   "d": 8.28,
   "t": "d8b814ea+cfg_weight=0.6,exaggeration=0.3",
@@ -25489,6 +25569,16 @@
   "t": "3f01eec2+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
+ "267330-d8b814ea": {
+  "d": 8.68,
+  "t": "d8b814ea",
+  "v": "tauren-female"
+ },
+ "267333-0371bf6f": {
+  "d": 4.96,
+  "t": "0371bf6f+clips=da067863",
+  "v": "nightelf-male"
+ },
  "267336-0371bf6f": {
   "d": 5.96,
   "t": "0371bf6f+cfg_weight=0.3,clips=16e7fa8f,exaggeration=0.75",
@@ -25502,6 +25592,16 @@
  "267354-ac69d40c": {
   "d": 3.496213,
   "t": "ac69d40c+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "narrator"
+ },
+ "267687-14707f63": {
+  "d": 11.099229,
+  "t": "14707f63+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "narrator"
+ },
+ "267688-ad18a6ee": {
+  "d": 10.301837,
+  "t": "ad18a6ee+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
   "v": "narrator"
  },
  "268-accept": {
@@ -25603,6 +25703,11 @@
   "d": 13.4,
   "t": "c1b93d62+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
+ },
+ "270582-e6b98502": {
+  "d": 12.2,
+  "t": "c1b93d62+clips=0675346a,exaggeration=0.6",
+  "v": "troll-female"
  },
  "271-accept": {
   "d": 30.79,
@@ -26088,6 +26193,11 @@
   "d": 21.318141,
   "t": "6675c16f+cfg_weight=0.7,clips=e2d69420,exaggeration=0.6,tempo=1.3",
   "v": "gnome-male-standard"
+ },
+ "276731-p1-7627e1d7": {
+  "d": 6.229977,
+  "t": "7627e1d7+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "narrator"
  },
  "2768-accept": {
   "d": 25.99,
@@ -27802,6 +27912,11 @@
  "2988-00c35128": {
   "d": 11.107891,
   "t": "004b27ad+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
+  "v": "tauren-male-warrior"
+ },
+ "2988-2e223ff7": {
+  "d": 10.515306,
+  "t": "2e223ff7+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
   "v": "tauren-male-warrior"
  },
  "2988-accept": {
@@ -32889,6 +33004,11 @@
   "t": "e2ff6310+exaggeration=0.7",
   "v": "orc-female-shaman"
  },
+ "3339-f187c760": {
+  "d": 3.32,
+  "t": "f187c760+clips=80efdb01",
+  "v": "bloodelf-male"
+ },
  "334-accept": {
   "d": 25.270975,
   "t": "07e3011c+cfg_weight=0.3,exaggeration=0.7,tempo=1.1",
@@ -33283,6 +33403,11 @@
   "d": 2.40322,
   "t": "44e7734c+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
   "v": "narrator"
+ },
+ "3373-1355f2b7": {
+  "d": 7.32,
+  "t": "d37edb40+cfg_weight=0.6,exaggeration=0.3",
+  "v": "orc-male-standard"
  },
  "3373-6043e59b": {
   "d": 8.0,
@@ -33825,8 +33950,8 @@
   "v": "goblin-male"
  },
  "3446-36457281": {
-  "d": 5.08,
-  "t": "b4590e46+cfg_weight=0.8,clips=0a3bacfb,exaggeration=0.9",
+  "d": 4.44,
+  "t": "08f69d8e+cfg_weight=0.8,clips=0a3bacfb,exaggeration=0.9",
   "v": "goblin-male"
  },
  "3446-accept": {
@@ -34353,6 +34478,16 @@
   "d": 9.48,
   "t": "4cd3f66b+cfg_weight=0.3,exaggeration=0.6",
   "v": "nightelf-female-sentinel"
+ },
+ "3519-f7f9ee95": {
+  "d": 6.56,
+  "t": "f7f9ee95+cfg_weight=0.3,exaggeration=0.6",
+  "v": "nightelf-female-sentinel"
+ },
+ "352-035b100d": {
+  "d": 6.943084,
+  "t": "035b100d+cfg_weight=0.9,clips=a89c7784,exaggeration=0.1,tempo=1.05",
+  "v": "human-male-official"
  },
  "352-4946c28b": {
   "d": 6.59356,
@@ -35199,6 +35334,11 @@
   "t": "220a9200+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
+ "3605-c7a4e3ad": {
+  "d": 9.08,
+  "t": "cfadd78d+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
+ },
  "3606-0ca1ed12": {
   "d": 6.6,
   "t": "0ca1ed12+cfg_weight=0.3,exaggeration=0.6",
@@ -35230,7 +35370,7 @@
   "v": "nightelf-male-standard"
  },
  "3608-58405dcd": {
-  "d": 1.52,
+  "d": 1.8,
   "t": "58405dcd+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -42575,12 +42715,12 @@
   "v": "dwarf-male"
  },
  "490-accept": {
-  "d": 34.55,
+  "d": 35.31,
   "t": "29f8de2d+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "490-complete": {
-  "d": 6.64,
+  "d": 6.8,
   "t": "ca9c1b7f+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -43045,9 +43185,9 @@
   "v": "orc-male-guard"
  },
  "49808-54d44412": {
-  "d": 1.353673,
-  "t": "54d44412+cfg_weight=0.3,clips=2a9f3a90,exaggeration=0.7,tempo=1.1",
-  "v": "human-female"
+  "d": 1.68,
+  "t": "54d44412+cfg_weight=0.3,clips=16e7fa8f,exaggeration=0.75",
+  "v": "dwarf-female"
  },
  "4981-accept": {
   "d": 34.31,
@@ -44268,6 +44408,11 @@
   "d": 2.24,
   "t": "a665cdb8+cfg_weight=0.7,clips=712b1142,exaggeration=0.3",
   "v": "dwarf-male-standard"
+ },
+ "5118-15aa7691": {
+  "d": 6.56,
+  "t": "15aa7691+exaggeration=0.1",
+  "v": "dwarf-male-guard"
  },
  "5118-9fdabcfe": {
   "d": 6.72,
@@ -46692,6 +46837,11 @@
  "5498-544e5c2b": {
   "d": 10.52,
   "t": "a633430b+clips=66f6a592",
+  "v": "bloodelf-female"
+ },
+ "5498-8fca8484": {
+  "d": 15.92,
+  "t": "8fca8484+clips=66f6a592",
   "v": "bloodelf-female"
  },
  "5498-c036be65": {
@@ -52394,6 +52544,11 @@
   "t": "0b719f6c+cfg_weight=0.3,clips=16e7fa8f,exaggeration=0.75",
   "v": "dwarf-female"
  },
+ "6301-021e8521": {
+  "d": 7.44,
+  "t": "021e8521+clips=264d8895",
+  "v": "dwarf-male"
+ },
  "6301-accept": {
   "d": 29.51,
   "t": "90e27afb",
@@ -52602,6 +52757,11 @@
  "6365-complete": {
   "d": 8.846848,
   "t": "7793f961+cfg_weight=0.6,exaggeration=0.5,tempo=1.05",
+  "v": "orc-male-guard"
+ },
+ "6365-progress": {
+  "d": 4.525102,
+  "t": "d88ccd31+cfg_weight=0.6,exaggeration=0.5,tempo=1.05",
   "v": "orc-male-guard"
  },
  "637-accept": {
@@ -60294,6 +60454,11 @@
   "t": "cf08dbcf+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
   "v": "tauren-male-warrior"
  },
+ "743-progress": {
+  "d": 6.239252,
+  "t": "a99252fa+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
+  "v": "tauren-male-warrior"
+ },
  "744-accept": {
   "d": 35.99,
   "t": "59c12f47",
@@ -60337,6 +60502,11 @@
  "746-complete": {
   "d": 11.68,
   "t": "0f9a1168+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
+ "746-progress": {
+  "d": 10.52,
+  "t": "7cbd2ad5+clips=e2eaae3d",
   "v": "tauren-male"
  },
  "7461-complete": {
@@ -60839,6 +61009,11 @@
   "t": "4e04bd62+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
   "v": "tauren-male-warrior"
  },
+ "751-progress": {
+  "d": 11.730045,
+  "t": "465dff4e+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
+  "v": "tauren-male-warrior"
+ },
  "752-accept": {
   "d": 25.91,
   "t": "6782cdc7+clips=e2eaae3d",
@@ -61102,6 +61277,11 @@
  "761-complete": {
   "d": 11.276168,
   "t": "39e0017b+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
+  "v": "tauren-male-warrior"
+ },
+ "761-progress": {
+  "d": 3.5961,
+  "t": "b38ad4f8+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
   "v": "tauren-male-warrior"
  },
  "762-accept": {
@@ -61534,6 +61714,11 @@
   "t": "9f587d89",
   "v": "tauren-male-shaman"
  },
+ "766-progress": {
+  "d": 22.56,
+  "t": "dacafeb5",
+  "v": "tauren-male-shaman"
+ },
  "7660-complete": {
   "d": 18.48,
   "t": "529deae9+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
@@ -61752,6 +61937,11 @@
  "771-complete": {
   "d": 9.32,
   "t": "64a5e69e+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
+ "771-progress": {
+  "d": 9.16,
+  "t": "375d8c58+clips=e2eaae3d",
   "v": "tauren-male"
  },
  "7714-03ca5480": {
@@ -64487,6 +64677,11 @@
  "7907-complete": {
   "d": 18.011814,
   "t": "ac1ea249+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "human-male"
+ },
+ "79092-complete": {
+  "d": 9.796984,
+  "t": "406bf638+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
   "v": "human-male"
  },
  "79093-complete": {
@@ -70154,6 +70349,11 @@
   "t": "531b06a7+clips=f2415ebc",
   "v": "gnome-female"
  },
+ "86576-accept": {
+  "d": 30.35,
+  "t": "ad8c6720+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
  "8658-accept": {
   "d": 28.871769,
   "t": "8cf69789+cfg_weight=0.9,clips=a89c7784,exaggeration=0.1,tempo=1.05",
@@ -70275,14 +70475,14 @@
   "v": "nightelf-female"
  },
  "86667-accept": {
-  "d": 25.343719,
-  "t": "1de4b276+cfg_weight=0.3,clips=2a9f3a90,exaggeration=0.7,tempo=1.1",
-  "v": "human-female"
+  "d": 32.19,
+  "t": "1de4b276+cfg_weight=0.3,clips=16e7fa8f,exaggeration=0.75",
+  "v": "dwarf-female"
  },
  "86667-complete": {
-  "d": 14.844127,
-  "t": "32cd4a0b+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 16.72,
+  "t": "32cd4a0b+clips=264d8895",
+  "v": "dwarf-male"
  },
  "8667-accept": {
   "d": 30.15,
@@ -70855,12 +71055,12 @@
   "v": "gnome-male-zany"
  },
  "87288-accept": {
-  "d": 32.87,
+  "d": 37.63,
   "t": "1d9ffec9+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "87288-complete": {
-  "d": 19.28,
+  "d": 21.56,
   "t": "9fd0fb61+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -75765,12 +75965,12 @@
   "v": "human-male"
  },
  "91725-accept": {
-  "d": 19.71,
+  "d": 19.67,
   "t": "be1211bc+clips=f2415ebc",
   "v": "gnome-female"
  },
  "91725-complete": {
-  "d": 5.28,
+  "d": 5.0,
   "t": "cfc1a562+clips=f2415ebc",
   "v": "gnome-female"
  },
@@ -75849,18 +76049,28 @@
   "t": "f8743e20+cfg_weight=0.9,clips=a89c7784,exaggeration=0.1,tempo=1.05",
   "v": "human-male-official"
  },
+ "91753-accept": {
+  "d": 24.432925,
+  "t": "bf0855da+cfg_weight=0.3,exaggeration=0.7,tempo=1.1",
+  "v": "human-female-official"
+ },
+ "91753-complete": {
+  "d": 4.945465,
+  "t": "fb012e0e+cfg_weight=0.3,exaggeration=0.7,tempo=1.1",
+  "v": "human-female-official"
+ },
  "91758-accept": {
   "d": 20.88288,
   "t": "56a5a2ca+cfg_weight=0.9,clips=a89c7784,exaggeration=0.1,tempo=1.05",
   "v": "human-male-official"
  },
  "91758-complete": {
-  "d": 4.0,
+  "d": 4.48,
   "t": "5212c1ed+clips=264d8895",
   "v": "dwarf-male"
  },
  "91772-accept": {
-  "d": 16.2,
+  "d": 16.4,
   "t": "e3c9138f+clips=264d8895",
   "v": "dwarf-male"
  },
@@ -76997,8 +77207,8 @@
   "v": "skyborne-female"
  },
  "92474-complete": {
-  "d": 26.07,
-  "t": "681edabe",
+  "d": 27.79,
+  "t": "0c742906",
   "v": "skyborne-male"
  },
  "92479-accept": {
@@ -77827,19 +78037,19 @@
   "v": "skyborne-female"
  },
  "92742-accept": {
-  "d": 13.216893,
-  "t": "bb635d55+cfg_weight=0.3,clips=2a9f3a90,exaggeration=0.7,tempo=1.1",
-  "v": "human-female"
+  "d": 16.32,
+  "t": "bb635d55+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
  },
  "92742-complete": {
-  "d": 2.338594,
-  "t": "c61368ac+cfg_weight=0.3,clips=2a9f3a90,exaggeration=0.7,tempo=1.1",
-  "v": "human-female"
+  "d": 2.8,
+  "t": "c61368ac+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
  },
  "92744-accept": {
-  "d": 20.751179,
-  "t": "7bb2a2fc+cfg_weight=0.3,clips=2a9f3a90,exaggeration=0.7,tempo=1.1",
-  "v": "human-female"
+  "d": 26.67,
+  "t": "7bb2a2fc+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
  },
  "92750-complete": {
   "d": 3.360544,
@@ -79241,6 +79451,26 @@
   "t": "62f6d4aa+clips=264d8895",
   "v": "dwarf-male"
  },
+ "94374-accept": {
+  "d": 24.15,
+  "t": "42cbf203+clips=264d8895",
+  "v": "dwarf-male"
+ },
+ "94374-complete": {
+  "d": 25.417098,
+  "t": "44cca4f9+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "narrator"
+ },
+ "94375-accept": {
+  "d": 29.787143,
+  "t": "38d0cab8+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "narrator"
+ },
+ "94375-complete": {
+  "d": 21.51,
+  "t": "1fb5611b+clips=264d8895",
+  "v": "dwarf-male"
+ },
  "944-08830bac": {
   "d": 15.861134,
   "t": "08830bac+clips=7df52147,exaggeration=0.6,tempo=1.2",
@@ -79320,6 +79550,16 @@
   "d": 13.2,
   "t": "b894c1de+cfg_weight=0.4,clips=8f29e329,exaggeration=0.4",
   "v": "scourge-male"
+ },
+ "94449-accept": {
+  "d": 25.39,
+  "t": "5eca4554+cfg_weight=0.3,clips=16e7fa8f,exaggeration=0.75",
+  "v": "dwarf-female"
+ },
+ "94472-complete": {
+  "d": 2.88,
+  "t": "e503d40f+clips=264d8895",
+  "v": "dwarf-male"
  },
  "94484-accept": {
   "d": 25.35,
@@ -80047,8 +80287,8 @@
   "v": "gnome-female-happy"
  },
  "95042-accept": {
-  "d": 34.19,
-  "t": "4272d029+cfg_weight=0.4,clips=8f29e329,exaggeration=0.4",
+  "d": 35.15,
+  "t": "c5ac8b17+cfg_weight=0.4,clips=8f29e329,exaggeration=0.4",
   "v": "scourge-male"
  },
  "95042-complete": {
@@ -80245,6 +80485,16 @@
   "d": 10.88,
   "t": "f692f8f7+cfg_weight=0.4,exaggeration=0.4",
   "v": "scourge-male-standard"
+ },
+ "95217-accept": {
+  "d": 13.52,
+  "t": "64502a93+clips=264d8895",
+  "v": "dwarf-male"
+ },
+ "95217-complete": {
+  "d": 5.8,
+  "t": "1f256522+clips=264d8895",
+  "v": "dwarf-male"
  },
  "9528-05a7fc0d": {
   "d": 15.16,
@@ -80546,6 +80796,16 @@
   "t": "4a8afc2e",
   "v": "npc-11657"
  },
+ "95805-accept": {
+  "d": 40.35,
+  "t": "efb8d30a",
+  "v": "tauren-male-shaman"
+ },
+ "95805-complete": {
+  "d": 8.83771,
+  "t": "94203741+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "narrator"
+ },
  "9584-fd111c9e": {
   "d": 5.463379,
   "t": "fd111c9e+cfg_weight=0.3,exaggeration=0.7,tempo=1.1",
@@ -80610,6 +80870,16 @@
   "d": 18.95356,
   "t": "da616c94+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
   "v": "narrator"
+ },
+ "96031-accept": {
+  "d": 15.96,
+  "t": "481fcb1e+clips=264d8895",
+  "v": "dwarf-male"
+ },
+ "96031-complete": {
+  "d": 23.360181,
+  "t": "257e4ba5+cfg_weight=0.7,exaggeration=0.6,tempo=1.2",
+  "v": "gnome-female-standard"
  },
  "96047-accept": {
   "d": 18.31,
@@ -80736,6 +81006,11 @@
   "t": "f6599527",
   "v": "skyborne-female"
  },
+ "963-287add49": {
+  "d": 15.046508,
+  "t": "0f597ca9+cfg_weight=0.9,clips=a89c7784,exaggeration=0.1,tempo=1.05",
+  "v": "human-male-official"
+ },
  "963-accept": {
   "d": 28.11,
   "t": "abcc65f2",
@@ -80752,14 +81027,14 @@
   "v": "human-male-official"
  },
  "96390-accept": {
-  "d": 16.480794,
-  "t": "84d6bf4e+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 14.08,
+  "t": "84d6bf4e+clips=264d8895",
+  "v": "dwarf-male"
  },
  "96390-complete": {
-  "d": 16.667188,
-  "t": "b7be8075+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 14.68,
+  "t": "b7be8075+clips=264d8895",
+  "v": "dwarf-male"
  },
  "96391-accept": {
   "d": 29.920476,
@@ -80767,24 +81042,24 @@
   "v": "narrator"
  },
  "96391-complete": {
-  "d": 19.422925,
-  "t": "3da90797+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 16.51,
+  "t": "3da90797+clips=264d8895",
+  "v": "dwarf-male"
  },
  "96392-accept": {
-  "d": 19.93068,
-  "t": "a6531e31+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 19.04,
+  "t": "a6531e31+clips=264d8895",
+  "v": "dwarf-male"
  },
  "96392-complete": {
-  "d": 10.809751,
-  "t": "cf786c10+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 10.6,
+  "t": "cf786c10+clips=264d8895",
+  "v": "dwarf-male"
  },
  "96393-accept": {
-  "d": 27.312812,
-  "t": "7cf90ff1+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 25.95,
+  "t": "7cf90ff1+clips=264d8895",
+  "v": "dwarf-male"
  },
  "96393-complete": {
   "d": 38.5,
@@ -80827,9 +81102,9 @@
   "v": "dwarf-male"
  },
  "96408-complete": {
-  "d": 2.922562,
-  "t": "d5b6c1c5+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
-  "v": "human-male"
+  "d": 2.44,
+  "t": "d5b6c1c5+clips=264d8895",
+  "v": "dwarf-male"
  },
  "965-accept": {
   "d": 32.99,
@@ -80862,12 +81137,12 @@
   "v": "orc-male"
  },
  "96606-accept": {
-  "d": 29.71,
+  "d": 31.71,
   "t": "25c4d879+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "96606-complete": {
-  "d": 13.64,
+  "d": 11.72,
   "t": "a3f9df71+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -80937,12 +81212,12 @@
   "v": "narrator"
  },
  "96630-complete": {
-  "d": 12.28,
+  "d": 12.4,
   "t": "19f4ebdc+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "96634-accept": {
-  "d": 17.6,
+  "d": 18.48,
   "t": "d369dccd+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -81036,6 +81311,11 @@
   "t": "128e6f79+cfg_weight=0.4,clips=8f29e329,exaggeration=0.4",
   "v": "scourge-male"
  },
+ "96659-accept": {
+  "d": 18.6,
+  "t": "0f1d2a1c+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
  "96661-complete": {
   "d": 21.206145,
   "t": "128e6f79+cfg_weight=0.7,exaggeration=0.3,tempo=1.15",
@@ -81110,6 +81390,16 @@
   "d": 2.6,
   "t": "a0444bd2+cfg_weight=0.6,exaggeration=0.3",
   "v": "orc-male-standard"
+ },
+ "96873-accept": {
+  "d": 27.55,
+  "t": "44d55c57+clips=0675346a,exaggeration=0.6",
+  "v": "troll-female"
+ },
+ "96873-complete": {
+  "d": 8.16,
+  "t": "305e386e+clips=0675346a,exaggeration=0.6",
+  "v": "troll-female"
  },
  "96874-accept": {
   "d": 23.67,
@@ -81345,6 +81635,16 @@
   "d": 30.02,
   "t": "e5b0baf2+cfg_weight=0.8,exaggeration=0.9",
   "v": "goblin-male-gruff"
+ },
+ "97263-accept": {
+  "d": 12.041383,
+  "t": "6a8869a6+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "narrator"
+ },
+ "97263-complete": {
+  "d": 25.95,
+  "t": "58ce3c6f+clips=264d8895",
+  "v": "dwarf-male"
  },
  "97275-accept": {
   "d": 35.87,
@@ -81621,6 +81921,11 @@
   "t": "32682155+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
+ "97904-complete": {
+  "d": 32.67,
+  "t": "397ae9eb",
+  "v": "troll-male-standard"
+ },
  "97905-accept": {
   "d": 31.39,
   "t": "22cb0a2c+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
@@ -81636,10 +81941,25 @@
   "t": "c8f366ae+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
+ "97907-complete": {
+  "d": 36.99,
+  "t": "2db9ca6f+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
  "97908-accept": {
   "d": 36.99,
   "t": "cb457c5c+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
+ },
+ "97908-complete": {
+  "d": 35.91,
+  "t": "0586ac6a+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
+ "97914-accept": {
+  "d": 40.51,
+  "t": "8815d165",
+  "v": "nightelf-male-official"
  },
  "97914-p1-complete": {
   "d": 4.376553,
@@ -81716,6 +82036,11 @@
   "t": "0586ac6a+cfg_weight=0.3,clips=2a9f3a90,exaggeration=0.7,tempo=1.1",
   "v": "human-female"
  },
+ "97925-accept": {
+  "d": 23.523855,
+  "t": "577cc33b+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "human-male"
+ },
  "97926-accept": {
   "d": 22.031088,
   "t": "f8be7adc+cfg_weight=0.3,exaggeration=0.5,tempo=1.1",
@@ -81727,7 +82052,7 @@
   "v": "nightelf-male-official"
  },
  "97938-accept": {
-  "d": 19.8,
+  "d": 19.92,
   "t": "d9959354+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -81737,7 +82062,7 @@
   "v": "nightelf-female-priestess"
  },
  "97942-accept": {
-  "d": 23.23,
+  "d": 22.63,
   "t": "96135970+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -81746,14 +82071,39 @@
   "t": "cfd0d420+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
+ "97943-accept": {
+  "d": 26.35,
+  "t": "32682155+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
+ },
+ "97943-complete": {
+  "d": 32.43,
+  "t": "49fa2bc0+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
+ },
  "97944-accept": {
-  "d": 28.43,
+  "d": 26.39,
   "t": "22cb0a2c+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "97944-complete": {
-  "d": 26.19,
-  "t": "984e1f2e+clips=da067863",
+  "d": 27.378798,
+  "t": "984e1f2e+cfg_weight=0.3,clips=8d721fa3,exaggeration=0.5,tempo=1.1",
+  "v": "human-male"
+ },
+ "97946-accept": {
+  "d": 20.68,
+  "t": "481fcb1e+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
+ },
+ "97949-accept": {
+  "d": 32.03,
+  "t": "cb457c5c+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
+ },
+ "97949-complete": {
+  "d": 25.35,
+  "t": "0586ac6a+clips=da067863",
   "v": "nightelf-male"
  },
  "97951-accept": {
@@ -81874,6 +82224,11 @@
  "97971-complete": {
   "d": 27.91,
   "t": "0586ac6a",
+  "v": "skyborne-male"
+ },
+ "97973-accept": {
+  "d": 24.03,
+  "t": "577cc33b",
   "v": "skyborne-male"
  },
  "97977-accept": {
@@ -82007,12 +82362,12 @@
   "v": "npc-7274"
  },
  "98067-accept": {
-  "d": 37.27,
+  "d": 38.03,
   "t": "caef204d+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "98067-complete": {
-  "d": 9.04,
+  "d": 9.96,
   "t": "01dd270b+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -82427,17 +82782,17 @@
   "v": "nightelf-female-sentinel"
  },
  "99046-accept": {
-  "d": 36.39,
+  "d": 35.91,
   "t": "d9e00932+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "99046-complete": {
-  "d": 4.92,
+  "d": 5.16,
   "t": "7858b962+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
  "99047-accept": {
-  "d": 12.44,
+  "d": 17.4,
   "t": "ac113a55+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -82447,7 +82802,7 @@
   "v": "nightelf-female"
  },
  "99047-p1-accept": {
-  "d": 10.04,
+  "d": 9.32,
   "t": "ec7addf6+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -82457,7 +82812,7 @@
   "v": "narrator"
  },
  "99047-p3-accept": {
-  "d": 6.12,
+  "d": 5.68,
   "t": "04bf4d44+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
   "v": "nightelf-female"
  },
@@ -82506,6 +82861,11 @@
   "t": "2479352b+cfg_weight=0.6,exaggeration=0.3",
   "v": "orc-male-shady"
  },
+ "99051-progress": {
+  "d": 3.36,
+  "t": "7c8c79e2+cfg_weight=0.6,exaggeration=0.3",
+  "v": "orc-male-shady"
+ },
  "99052-accept": {
   "d": 20.43,
   "t": "b75ae2bf+cfg_weight=0.6,exaggeration=0.3",
@@ -82520,6 +82880,11 @@
   "d": 2.2,
   "t": "45d7135f+cfg_weight=0.6,exaggeration=0.3",
   "v": "orc-male-shady"
+ },
+ "99053-complete": {
+  "d": 16.0,
+  "t": "2ac6e4bf+cfg_weight=0.3,clips=ac26026c,exaggeration=0.6",
+  "v": "nightelf-female"
  },
  "99073-accept": {
   "d": 17.88,
@@ -82549,6 +82914,11 @@
  "99080-complete": {
   "d": 25.63,
   "t": "fae16fc4+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
+ "99080-progress": {
+  "d": 1.64,
+  "t": "9b03507a+clips=e2eaae3d",
   "v": "tauren-male"
  },
  "99081-accept": {
@@ -82599,6 +82969,11 @@
  "99101-p2-complete": {
   "d": 5.4,
   "t": "2c2dcc95+clips=e2eaae3d",
+  "v": "tauren-male"
+ },
+ "99101-progress": {
+  "d": 2.84,
+  "t": "4d9a0573+clips=e2eaae3d",
   "v": "tauren-male"
  },
  "99108-accept": {
@@ -104240,6 +104615,16 @@
   "t": "ac69d40c+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
+ "Narrator/orc-male/267687-14707f63": {
+  "d": 13.16,
+  "t": "14707f63+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
+ "Narrator/orc-male/267688-ad18a6ee": {
+  "d": 12.84,
+  "t": "ad18a6ee+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
  "Narrator/orc-male/269-p1-complete": {
   "d": 4.04,
   "t": "3718d99f+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
@@ -104348,6 +104733,11 @@
  "Narrator/orc-male/2767-accept": {
   "d": 42.39,
   "t": "b2303f5e+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
+ "Narrator/orc-male/276731-p1-7627e1d7": {
+  "d": 8.48,
+  "t": "7627e1d7+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
  "Narrator/orc-male/277-accept": {
@@ -109515,6 +109905,16 @@
   "t": "feda3a12+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
+ "Narrator/orc-male/94374-complete": {
+  "d": 31.87,
+  "t": "44cca4f9+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
+ "Narrator/orc-male/94375-accept": {
+  "d": 35.87,
+  "t": "38d0cab8+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
  "Narrator/orc-male/944-accept": {
   "d": 35.79,
   "t": "6da0bf33+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
@@ -109680,6 +110080,11 @@
   "t": "2f616df0+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
+ "Narrator/orc-male/95805-complete": {
+  "d": 10.84,
+  "t": "94203741+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
  "Narrator/orc-male/95883-accept": {
   "d": 22.08,
   "t": "30458c48+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
@@ -109738,6 +110143,11 @@
  "Narrator/orc-male/97236-accept": {
   "d": 12.76,
   "t": "c9827d4a+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
+  "v": "orc-male"
+ },
+ "Narrator/orc-male/97263-accept": {
+  "d": 17.24,
+  "t": "6a8869a6+cfg_weight=0.6,clips=e8326d21,exaggeration=0.3",
   "v": "orc-male"
  },
  "Narrator/orc-male/97288-accept": {
