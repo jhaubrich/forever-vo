@@ -366,19 +366,26 @@ def archetype_voice(voice: str, display_id: int | None) -> str | None:
 
 
 def voice_for_npc(
-    npc: dict | None, zone: str | None = None, *, voices: Voices | None = None
+    npc: dict | None,
+    zone: str | None = None,
+    *,
+    voices: Voices | None = None,
+    speaker: str | None = None,
 ) -> str:
     """Picks a `race-gender` voice name for a captured NPC record.
 
-    In order: the NPC's own cloned clip (npc-<displayID>.wav), the race and sex of
-    its displayID, the same via its modelFileID (the Forever client provides the
-    model file but never the display ID; the Classic export supplies display IDs for
-    unchanged NPCs), the zone hint, then human. Sex falls back to the in-game UnitSex
-    (2 male, 3 female); game objects, items and genderless units go to the narrator.
+    In order: `[voices.speakers]` for this `speaker` key, the NPC's own cloned clip
+    (npc-<displayID>.wav), the race and sex of its displayID, the same via its
+    modelFileID (the Forever client provides the model file but never the display
+    ID; the Classic export supplies display IDs for unchanged NPCs), the zone hint,
+    then human. Sex falls back to the in-game UnitSex (2 male, 3 female); game
+    objects, items and genderless units go to the narrator.
     `voices` ([voices] in forever-vo.toml) defaults to the repository's.
     """
     if voices is None:
         voices = load_config().voices
+    if speaker is not None and str(speaker) in voices.speakers:
+        return voices.speakers[str(speaker)]
     if not npc or npc.get("isObject") or npc.get("isObjectOrItem"):
         return voices.narrator
     display_id = npc.get("displayID")

@@ -159,6 +159,9 @@ class Voices(Strict):
     sources: dict[
         str, VoiceSources
     ] = {}  # voice -> clips picked by ear, overriding the recipes
+    speakers: dict[
+        str, str
+    ] = {}  # speaker key -> voice, for the few whose captured model is wrong
 
     @property
     def narrator_voices(self) -> list[str]:

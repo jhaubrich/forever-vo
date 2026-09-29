@@ -213,7 +213,9 @@ class Item:
         self.npc = npc
         self.catalog = catalog
         self.config = catalog.config
-        self.voice = voice_for_npc(npc, entry.get("zone"), voices=self.config.voices)
+        self.voice = voice_for_npc(
+            npc, entry.get("zone"), voices=self.config.voices, speaker=entry.get("npc")
+        )
         self.raw_text = entry.get("text") or ""
         self.event = entry.get("event") or "gossip"
         self.speaker_key = entry.get("npc")  # "288" or "-123" (game object)

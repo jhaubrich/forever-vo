@@ -59,6 +59,15 @@ dracthyr = "bloodelf"
 orcmalekid = "humanmalekid-male"
 orcfemalekid = "humanfemalekid-female"
 
+# A speaker whose captured model names the wrong race, keyed like the pack's
+# gossip (creature ID, negative for game objects). Fizzlefuse (#352) is a
+# goblin whose only model readings came out tauren and orc: the capture's
+# shared model frame could write a previous NPC's late-loading model onto the
+# next one. Keep this for the stuck cases; a later addon re-reads the model
+# where the pack's recorded one disagrees.
+[voices.speakers]
+"248200" = "goblin-male"
+
 [voices.sources.bloodelf-female]
 clips = [539351, 539211, 539423]
 
