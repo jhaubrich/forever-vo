@@ -1,0 +1,121 @@
+{
+ "addon": "0.1.6",
+ "gossip": {
+  "257008|1a6886aa": {
+   "build": "70058",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Baelann Swiftcurrent",
+   "npc": "257008",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, hello. You look as though you have a question for me.",
+   "time": 1790690545,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "257008|d62b45b0": {
+   "build": "70058",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Baelann Swiftcurrent",
+   "npc": "257008",
+   "questID": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Gales greetings, friend. Is there something I can help you with?",
+   "time": 1790690552,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "14726": {
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Rashona Straglash",
+   "sex": 3
+  },
+  "14728": {
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Rumstag Proudstrider",
+   "sex": 2
+  },
+  "257008": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Baelann Swiftcurrent",
+   "sex": 2
+  },
+  "3368": {
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Borstan",
+   "sex": 2
+  }
+ },
+ "origin": "issue-350",
+ "quests": {
+  "7820-progress": {
+   "build": "70058",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Rumstag Proudstrider",
+   "npc": "14728",
+   "questID": 7820,
+   "sex": "m",
+   "source": "community",
+   "text": "We are currently accepting donations for wool cloth.  A donation of sixty pieces of wool cloth will net you full recognition by Thunder Bluff for your generous actions.  Our stores are such on wool that we would only need sixty pieces from you total; we should be able to acquire enough from others in the realm to support our drive.\n\nIf you have the sixty pieces of wool cloth on you and are ready to donate them, I'm able to take them from you now.",
+   "time": 1790701427,
+   "title": "A Donation of Wool",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "7826-progress": {
+   "build": "70058",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Rashona Straglash",
+   "npc": "14726",
+   "questID": 7826,
+   "sex": "m",
+   "source": "community",
+   "text": "We are currently accepting donations for wool cloth.  A donation of sixty pieces of wool cloth will net you full recognition by Orgrimmar for your generous actions.  Our stores are such on wool that we would only need sixty pieces from you total; we should be able to acquire enough from others in the realm to support our drive.\n\nIf you have the sixty pieces of wool cloth on you and are ready to donate them, I'm able to take them from you now.",
+   "time": 1790688195,
+   "title": "A Donation of Wool",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  },
+  "97249-accept": {
+   "build": "70058",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Borstan",
+   "npc": "3368",
+   "questID": 97249,
+   "sex": "m",
+   "source": "community",
+   "text": "Now that I know his parents worry about how much he's actually filling that belly, I've got an idea. \r\n\r\nThey made me promise not to pack the same meal every day, so Migi grows a taste for more than one thing. Still, whenever the smoker's full and we're making sweetglazed hog belly sandwiches, he always shows up for lunch. We've started crumbling the leftover crispy glazed bits as a topping--something we can add daily. \r\n\r\nTake this to him. Maybe he'll start showing up early and bringing friends!",
+   "time": 1790687915,
+   "title": "Favorite Food",
+   "wanted": true,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
