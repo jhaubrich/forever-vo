@@ -447,6 +447,12 @@ tempo = 1.05
 exaggeration = 0.7
 cfg_weight = 0.4
 tempo = 0.9
+
+[tts.voices.npc-11658]
+exaggeration = 1.1
+cfg_weight = 0.2
+tempo = 0.9
+pitch = -4.0
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
