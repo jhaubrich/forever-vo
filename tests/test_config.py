@@ -155,3 +155,17 @@ def test_pitch_joins_the_fingerprint_only_when_set() -> None:
     assert encode_filters(1.1, 0.0) == ["atempo=1.1"]
     assert encode_filters() == []
     assert encode_filters(1.0, -12.0) == ["rubberband=pitch=0.500000"]
+
+
+def test_generate_refuses_an_ffmpeg_without_the_pitch_filter(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from tools import generate
+    from tools.config import Config, Tts, VoiceTuning
+
+    config = Config(tts=Tts(voices={"npc-11658": VoiceTuning(pitch=-3.0)}))
+    assert generate.tuning_filters(config) == ["rubberband=pitch=0.840896"]
+    monkeypatch.setattr(generate, "ffmpeg_filters", lambda: frozenset({"atempo"}))
+    with pytest.raises(SystemExit, match="rubberband"):
+        generate.require_filters(generate.tuning_filters(config))
+    generate.require_filters(generate.tuning_filters(Config()))  # nothing asks for it

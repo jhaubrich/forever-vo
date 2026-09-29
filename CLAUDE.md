@@ -738,7 +738,10 @@ of the 10 s window, then the knobs.
   `Synth.encode` after `Synth.render` (`generate.encode_filters`): tempo a
   pitch-preserving `atempo` stretch, with the stretched length recorded as the
   duration, and pitch (since 2026-09-29, #341) a length-keeping `rubberband`
-  shift in semitones. Chatterbox pulls every clone toward its own mid-range
+  shift in semitones, which is why the flake installs `ffmpeg-full` (nixpkgs
+  builds rubberband into the full variant only); `generate.py` checks for the
+  filter before loading the model (`require_filters`) rather than failing at the
+  first pitched line of a night's run. Chatterbox pulls every clone toward its own mid-range
   voice: Varimathras's takes measured 153 Hz against his recordings' 86-89 Hz
   on every pick of clips tried, and -3 to -5 semitones sounded right where
   matching the number (-9) did not. That is a pitch correction after the

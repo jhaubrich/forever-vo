@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import functools
 import hashlib
 import json
 import os
@@ -541,6 +542,7 @@ class Synth:
         # .mp3 suffix so the table rebuild's glob cannot pick it up either.
         out_part = out_mp3.with_suffix(f".{os.getpid()}.part")
         filters = encode_filters(tempo, pitch)
+        require_filters(filters)
         filter_args = ["-af", ",".join(filters)] if filters else []
         try:
             torchaudio.save(str(tmp_path), audio, self.sr)
@@ -670,6 +672,50 @@ def encode_filters(tempo: float = 1.0, pitch: float = 0.0) -> list[str]:
     if pitch != 0.0:
         filters.append(f"rubberband=pitch={2 ** (pitch / 12):.6f}")
     return filters
+
+
+@functools.cache
+def ffmpeg_filters() -> frozenset[str]:
+    """The audio and video filters this ffmpeg was built with."""
+    out = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-filters"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    return frozenset(
+        parts[1]
+        for parts in (line.split() for line in out.splitlines())
+        if len(parts) >= 3 and "->" in parts[2]
+    )
+
+
+def require_filters(filters: list[str]) -> None:
+    """Stops before a take is wasted when ffmpeg lacks a filter a voice's tuning needs.
+
+    rubberband (pitch) is only in nixpkgs' ffmpeg-full: the "small" ffmpeg the flake
+    shipped until 2026-09-29 has none, so Varimathras's first line would have failed
+    mid-run, and daily.sh's `|| true` would have hidden the stopped night.
+    """
+    missing = sorted({f.split("=", 1)[0] for f in filters} - ffmpeg_filters())
+    if missing:
+        raise SystemExit(
+            f"this ffmpeg has no {', '.join(missing)} filter, which a voice's tuning needs "
+            "(pitch is rubberband). flake.nix installs ffmpeg-full for it; off nix, "
+            "install an ffmpeg built with librubberband."
+        )
+
+
+def tuning_filters(config: Config) -> list[str]:
+    """Every encode filter some voice's saved tuning asks for."""
+    settings = [config.tts.settings_for(v) for v in config.tts.voices]
+    return sorted(
+        {
+            f
+            for s in [config.tts.defaults, *settings]
+            for f in encode_filters(s.tempo, s.pitch)
+        }
+    )
 
 
 def probe_duration(path: Path) -> float:
@@ -1376,6 +1422,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if todo and not args.tables_only:
+        # before the model loads: a missing filter would otherwise stop the run at
+        # the first line of the voice that needs it, hours into a night
+        require_filters(tuning_filters(config))
         synth = Synth(catalog, allow_cpu=args.cpu)
         started = time.time()
         for n, target in enumerate(todo, 1):
