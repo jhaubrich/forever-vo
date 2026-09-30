@@ -242,3 +242,23 @@ function Capture:Summary()
     end
     return quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing
 end
+
+--- What an export would carry, counted the way a player thinks of it: distinct
+--- quests (an offer and its turn-in are one quest) and gossip lines.
+function Capture:Pending()
+    local db = GetDB()
+    local quests, questCount, gossip = {}, 0, 0
+    for _, entry in pairs(db.quests) do
+        if Capture.Contributes(entry) and not Capture.Exported(entry) and entry.questID
+            and not quests[entry.questID] then
+            quests[entry.questID] = true
+            questCount = questCount + 1
+        end
+    end
+    for _, entry in pairs(db.gossip) do
+        if Capture.Contributes(entry) and not Capture.Exported(entry) then
+            gossip = gossip + 1
+        end
+    end
+    return questCount, gossip
+end

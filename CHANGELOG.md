@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The login window now offers to send what you have seen. After the first
+  login it comes back only when you have quests or NPC lines the voice pack
+  does not have yet, and says how many (sending them needs a free
+  GitHub account). **Send Quests to Project** opens the
+  `/fvo export` window; **Later** closes it. Tick "Don't Show This Again" to stop it
+  appearing; clear **Opt out of crowdsourcing** on the
+  Forever Voiceover page in Options to be asked again.
 - **First gossip only**, to the right of **Gossip** in What to voice and on
   by default: an NPC's gossip is read the first time you talk to them, and
   not every time after. Greetings and quest text are read as before. It greys
