@@ -115,65 +115,76 @@ local function PackLines()
     return packs
 end
 
---- Report Bug, then the addon's version and each voice pack's, pinned to the
---- bottom of the settings list rather than placed in it: the list has no way to
---- push an item to the bottom of the window. Built from the bottom up, so a
---- longer pack list grows upwards. Shown with the page, like the header button.
-local function CreateVersionsPanel()
-    local list = _G.SettingsPanel:GetSettingsList()
-    local panel = CreateFrame("Frame", nil, list)
-    panel:SetFrameLevel(list.ScrollBox:GetFrameLevel() + 10)
-    -- Left with the list's rows; right with the header's Defaults button (-36)
-    panel:SetPoint("BOTTOMLEFT", list.ScrollBox, "BOTTOMLEFT", 7, 12)
-    panel:SetPoint("TOPRIGHT", list, "TOPRIGHT", -36, 0)
-    panel:Hide()
+-- Report Bug's size, and its right edge in a list row: rows end 20 px in from
+-- the list's right edge (the ScrollBox's anchor), Defaults 36 px in
+local REPORT_WIDTH, REPORT_HEIGHT = 160, 32
+local REPORT_RIGHT = -16
+local ROW_PAD = 10
 
-    local function Text(font)
-        local text = panel:CreateFontString(nil, "OVERLAY", font)
-        text:SetJustifyH("LEFT")
-        text:SetSpacing(VERSION_LINE_HEIGHT - 12)
-        return text
+--- A list row after the page's settings: Report Bug on the right, then a
+--- "Versions" title, the addon's version, a "Voice packs" subtitle and one
+--- line per pack. It is a section header with no name, drawing its own title
+--- below the button. The header frame is pooled with every other header in the
+--- Settings list, so all of it is hidden again when the frame is reused.
+local function VersionsInitializer()
+    local initializer = CreateSettingsListSectionHeaderInitializer("")
+    local titleTop = ROW_PAD + REPORT_HEIGHT + VERSION_GAP
+    function initializer:GetExtent()
+        return titleTop + 2 * VERSION_GAP + (3 + #PackLines()) * VERSION_LINE_HEIGHT + ROW_PAD
     end
-    local packs = Text("GameFontHighlight")
-    packs:SetPoint("BOTTOMLEFT")
-    local subtitle = Text("GameFontNormal")
-    subtitle:SetText("Voice packs")
-    subtitle:SetPoint("BOTTOMLEFT", packs, "TOPLEFT", 0, VERSION_LINE_HEIGHT - 12)
-    local addon = Text("GameFontHighlight")
-    addon:SetPoint("BOTTOMLEFT", subtitle, "TOPLEFT", 0, VERSION_GAP)
-    local title = Text("GameFontHighlightLarge")
-    title:SetText("Versions")
-    title:SetPoint("BOTTOMLEFT", addon, "TOPLEFT", 0, VERSION_GAP)
-
-    local report = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    report:SetSize(160, 32)
-    report:SetNormalFontObject("GameFontNormalLarge")
-    report:SetHighlightFontObject("GameFontHighlightLarge")
-    report:SetText("Report Bug")
-    report:SetScript("OnClick", function()
-        _G.SettingsPanel:Close(true)
-        ns.Report:ShowGeneral()
-    end)
-
-    panel:SetScript("OnShow", function()
-        addon:SetText("Forever Voiceover " .. (ns.version or "dev"))
-        packs:SetText(table.concat(PackLines(), "\n"))
-        -- Above the title, at the right edge: one anchor cannot take its x from
-        -- the panel and its y from the title, so the column's height is added up
-        local column = packs:GetStringHeight() + subtitle:GetStringHeight() + addon:GetStringHeight()
-            + title:GetStringHeight() + (VERSION_LINE_HEIGHT - 12) + 2 * VERSION_GAP
-        report:ClearAllPoints()
-        report:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, column + 2 * VERSION_GAP)
-    end)
-    return panel
+    local baseInit = initializer.InitFrame
+    function initializer:InitFrame(frame)
+        baseInit(self, frame)
+        if not frame.FVOVersions then
+            local function Text(font, anchor)
+                local text = frame:CreateFontString(nil, "OVERLAY", font)
+                text:SetJustifyH("LEFT")
+                text:SetSpacing(VERSION_LINE_HEIGHT - 12)
+                if anchor then
+                    text:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -VERSION_GAP)
+                end
+                return text
+            end
+            local report = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+            report:SetSize(REPORT_WIDTH, REPORT_HEIGHT)
+            report:SetPoint("TOPRIGHT", REPORT_RIGHT, -ROW_PAD)
+            report:SetNormalFontObject("GameFontNormalLarge")
+            report:SetHighlightFontObject("GameFontHighlightLarge")
+            report:SetText("Report Bug")
+            report:SetScript("OnClick", function()
+                _G.SettingsPanel:Close(true)
+                ns.Report:ShowGeneral()
+            end)
+            local title = Text("GameFontHighlightLarge")
+            title:SetPoint("TOPLEFT", 7, -titleTop)
+            title:SetText("Versions")
+            local addon = Text("GameFontHighlight", title)
+            local subtitle = Text("GameFontNormal", addon)
+            subtitle:SetText("Voice packs")
+            local packs = Text("GameFontHighlight", subtitle)
+            packs:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -(VERSION_LINE_HEIGHT - 12))
+            frame.FVOVersions = { report = report, title = title, addon = addon, subtitle = subtitle, packs = packs }
+            hooksecurefunc(frame, "Init", function(header, other)
+                for _, part in pairs(header.FVOVersions) do
+                    part:SetShown(other == initializer)
+                end
+            end)
+        end
+        local parts = frame.FVOVersions
+        parts.addon:SetText("Forever Voiceover " .. (ns.version or "dev"))
+        parts.packs:SetText(table.concat(PackLines(), "\n"))
+        for _, part in pairs(parts) do
+            part:Show()
+        end
+    end
+    return initializer
 end
 
---- "Send Quests to Project" beside the Defaults button in the page header, and
---- the versions panel, shown only while this addon's main page is. The header
---- and the list belong to the Settings panel and are shared by every page, so
---- both follow the layout the panel displays (a search result is a layout of
---- its own).
-local function AddPageFrames(layout)
+--- "Send Quests to Project" beside the Defaults button in the page header,
+--- shown only while this addon's main page is. The header belongs to the
+--- Settings panel and is shared by every page, so the button follows the
+--- layout the panel displays (a search result is a layout of its own).
+local function AddHeaderButton(layout)
     local header = _G.SettingsPanel:GetSettingsList().Header
     local button = CreateFrame("Button", nil, header, "UIPanelButtonTemplate")
     button:SetSize(180, 22)
@@ -191,10 +202,8 @@ local function AddPageFrames(layout)
         GameTooltip:Show()
     end)
     button:SetScript("OnLeave", GameTooltip_Hide)
-    local versions = CreateVersionsPanel()
     hooksecurefunc(_G.SettingsPanel, "DisplayLayout", function(_, shown)
         button:SetShown(shown == layout)
-        versions:SetShown(shown == layout)
     end)
 end
 
@@ -215,7 +224,8 @@ ns.OnInit(function()
 
     -- On the addon's own page, where a player looking to opt back in lands first
     Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
-    AddPageFrames(layout)
+    AddHeaderButton(layout)
+    layout:AddInitializer(VersionsInitializer())
 
     -- What to voice
     local voiced = Settings.RegisterVerticalLayoutSubcategory(category, "What to voice")
