@@ -78,6 +78,13 @@ function Welcome:GetFrame()
     send:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT)
     send:SetPoint("TOPRIGHT", frame.Text, "BOTTOM", -BUTTON_GAP / 2, -PADDING)
     send:SetText("Send Quests to Project")
+    -- Blue like "Send" in the text above it. A font object, not a colour code
+    -- in the text, so the disabled button still greys out.
+    local blue = CreateFont("ForeverVOWelcomeSendFont")
+    blue:CopyFontObject(GameFontNormal)
+    blue:SetTextColor(0.4, 0.733, 1)
+    send:SetNormalFontObject(blue)
+    send:SetHighlightFontObject(blue)
     send:SetScript("OnClick", function()
         frame:Hide()
         ns.Export:Show(false)
