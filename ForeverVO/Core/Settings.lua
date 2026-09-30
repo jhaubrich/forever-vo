@@ -104,6 +104,9 @@ end
 
 local VERSION_LINE_HEIGHT = 18
 local VERSION_GAP = 10
+-- A header initializer has no extent of its own; the list falls back to the
+-- height of SettingsListSectionHeaderTemplate, which is this
+local HEADER_EXTENT = 45
 
 --- The installed voice packs by their full titles, or a note that there are
 --- none. Read when the page is shown: the packs register after this panel.
@@ -122,9 +125,8 @@ end
 local function VersionsInitializer()
     local initializer = CreateSettingsListSectionHeaderInitializer("Versions",
         "Quote these when reporting a bug.")
-    local baseExtent = initializer.GetExtent
     function initializer:GetExtent()
-        return baseExtent(self) + 2 * VERSION_GAP + (2 + #PackLines()) * VERSION_LINE_HEIGHT
+        return HEADER_EXTENT + 2 * VERSION_GAP + (2 + #PackLines()) * VERSION_LINE_HEIGHT
     end
     local baseInit = initializer.InitFrame
     function initializer:InitFrame(frame)
