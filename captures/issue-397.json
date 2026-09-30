@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "3338": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Sergra Darkthorn",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "5878": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Thun'grim Firegaze",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-397",
+ "quests": {
+  "1503-progress": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Thun'grim Firegaze",
+   "npc": "5878",
+   "questID": 1503,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have my steel bars?",
+   "time": 1790789573,
+   "title": "Forged Steel",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "844-progress": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sergra Darkthorn",
+   "npc": "3338",
+   "questID": 844,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you collected the plainstrider beaks?",
+   "time": 1790789865,
+   "title": "Plainstrider Menace",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
