@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.7
 
 - The login window now offers to send what you have seen. After the first
   login it comes back only when you have quests or NPC lines the voice pack
@@ -36,6 +36,16 @@
 - `/fvo export` now includes your character's class and race with each line,
   so the pack can tell where a quest says your class ("Greetings, mage")
   from where it means the word. Your character name is still removed.
+- NPC greetings no longer go quiet after a `/reload` or logout in the middle
+  of a voiced line. The addon turns the game's dialog sound down while a line
+  plays, and a reload at that moment left it off for good, since the client
+  saves that setting; it is now turned back on at the next login. Pausing
+  the queue also lets the game's own dialog through again.
+- **Developer overlay**, under Voice packs in Options and off by default:
+  a small window beside the quest or gossip frame with the sound file, the
+  voice that plays, and the NPC's display and model IDs. It is meant for
+  people working on the voice packs, and useful in a report about a wrong
+  voice.
 
 ## 0.1.6
 
