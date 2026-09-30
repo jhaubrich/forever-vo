@@ -151,13 +151,10 @@ function Packs:Iterate()
 end
 
 --- "<name> <version>" for each installed pack, highest priority first.
----@param titled boolean use the pack addon's own title ("Forever Voiceover
---- Data: Base") rather than the short name the pack registers ("Classic")
-function Packs:Versions(titled)
+function Packs:Versions()
     local names = {}
     for _, pack in self:Iterate() do
-        local name = titled and C_AddOns.GetAddOnMetadata(pack.folder, "Title") or pack.name
-        table.insert(names, pack.version and format("%s %s", name, pack.version) or name)
+        table.insert(names, pack.version and format("%s %s", pack.name, pack.version) or pack.name)
     end
     return names
 end

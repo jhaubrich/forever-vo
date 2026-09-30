@@ -102,97 +102,94 @@ local function Slider(category, key, name, tooltip, minValue, maxValue, step, fo
     return setting
 end
 
-local VERSION_LINE_HEIGHT = 18
-local VERSION_GAP = 10
+-- The Versions section is a table under a native section header: label left in
+-- the settings' gold, version right in white. The labels start where every
+-- settings row's label does; the versions line up a gap past the longest
+-- label, because a pack's full title is too long for Blizzard's control column
+-- (80 px left of the row's centre) and would run under it.
+local HEADER_HEIGHT = 45     -- SettingsListSectionHeaderTemplate
+local VERSION_LEFT = 37      -- SettingsListElementMixin's label inset
+local VERSION_TOP = 7        -- first row as far below the title as a setting's
+local VERSION_ROW = 20
+local VERSION_GAP = 24
+local VERSION_BOTTOM = 4
 
---- The installed voice packs by their full titles, or a note that there are
---- none. Read when the page is shown: the packs register after this panel.
-local function PackLines()
-    local packs = ns.Packs:Versions(true)
-    if #packs == 0 then
-        return { "None installed" }
+--- { label, version } for the addon, then each installed voice pack by its
+--- full title. Read when the page is shown: the packs register after this panel.
+local function VersionRows()
+    local rows = { { "Forever Voiceover", ns.version or "dev" } }
+    for _, pack in ns.Packs:Iterate() do
+        local title = C_AddOns.GetAddOnMetadata(pack.folder, "Title") or pack.name
+        table.insert(rows, { title, pack.version or "" })
     end
-    return packs
+    if #rows == 1 then
+        table.insert(rows, { "Voice packs", "None installed" })
+    end
+    return rows
 end
 
--- The buttons' size (wide enough for "Send Quests to Project" in the large
--- font), and their right edge in a list row: rows end 20 px in from the list's
--- right edge (the ScrollBox's anchor), Defaults 36 px in
-local BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_GAP = 230, 32, 8
-local BUTTON_RIGHT = -16
-local ROW_PAD = 10
-
---- A list row after the page's settings: Send Quests to Project and Report Bug
---- on the right, one above the other, then a
---- "Versions" title, the addon's version, a "Voice packs" subtitle and one
---- line per pack. It is a section header with no name, drawing its own title
---- below the button. The header frame is pooled with every other header in the
---- Settings list, so all of it is hidden again when the frame is reused.
+--- The "Versions" header with the table drawn on its own frame, so the section
+--- scrolls and reflows as one list row. Header frames are pooled with every
+--- other header in the Settings list, so the table is hidden again whenever the
+--- frame is reused for another one.
 local function VersionsInitializer()
-    local initializer = CreateSettingsListSectionHeaderInitializer("")
-    local titleTop = ROW_PAD + 2 * BUTTON_HEIGHT + BUTTON_GAP + VERSION_GAP
+    local initializer = CreateSettingsListSectionHeaderInitializer("Versions")
     function initializer:GetExtent()
-        return titleTop + 2 * VERSION_GAP + (3 + #PackLines()) * VERSION_LINE_HEIGHT + ROW_PAD
+        return HEADER_HEIGHT + VERSION_TOP + #VersionRows() * VERSION_ROW + VERSION_BOTTOM
     end
     local baseInit = initializer.InitFrame
     function initializer:InitFrame(frame)
-        baseInit(self, frame)
         if not frame.FVOVersions then
-            local function Text(font, anchor)
-                local text = frame:CreateFontString(nil, "OVERLAY", font)
-                text:SetJustifyH("LEFT")
-                text:SetSpacing(VERSION_LINE_HEIGHT - 12)
-                if anchor then
-                    text:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -VERSION_GAP)
-                end
-                return text
-            end
-            local function Button(text, onClick)
-                local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-                button:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                button:SetNormalFontObject("GameFontNormalLarge")
-                button:SetHighlightFontObject("GameFontHighlightLarge")
-                button:SetText(text)
-                button:SetScript("OnClick", function()
-                    _G.SettingsPanel:Close(true)
-                    onClick()
-                end)
-                return button
-            end
-            local send = Button("Send Quests to Project", function() ns.Export:Show(false) end)
-            send:SetPoint("TOPRIGHT", BUTTON_RIGHT, -ROW_PAD)
-            send:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                GameTooltip:SetText("Send Quests to Project", 1, 0.82, 0)
-                GameTooltip:AddLine("Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.", 1, 1, 1, true)
-                GameTooltip:Show()
-            end)
-            send:SetScript("OnLeave", GameTooltip_Hide)
-            local report = Button("Report Bug", function() ns.Report:ShowGeneral() end)
-            report:SetPoint("TOPRIGHT", send, "BOTTOMRIGHT", 0, -BUTTON_GAP)
-            local title = Text("GameFontHighlightLarge")
-            title:SetPoint("TOPLEFT", 7, -titleTop)
-            title:SetText("Versions")
-            local addon = Text("GameFontHighlight", title)
-            local subtitle = Text("GameFontNormal", addon)
-            subtitle:SetText("Voice packs")
-            local packs = Text("GameFontHighlight", subtitle)
-            packs:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -(VERSION_LINE_HEIGHT - 12))
-            frame.FVOVersions = { send = send, report = report, title = title, addon = addon, subtitle = subtitle, packs = packs }
+            frame.FVOVersions = { labels = {}, values = {} }
             hooksecurefunc(frame, "Init", function(header, other)
-                for _, part in pairs(header.FVOVersions) do
-                    part:SetShown(other == initializer)
+                local parts = header.FVOVersions
+                for i = 1, #parts.labels do
+                    parts.labels[i]:SetShown(other == initializer)
+                    parts.values[i]:SetShown(other == initializer)
                 end
             end)
         end
+        baseInit(self, frame)
         local parts = frame.FVOVersions
-        parts.addon:SetText("Forever Voiceover " .. (ns.version or "dev"))
-        parts.packs:SetText(table.concat(PackLines(), "\n"))
-        for _, part in pairs(parts) do
-            part:Show()
+        local rows = VersionRows()
+        local widest = 0
+        for i, row in ipairs(rows) do
+            if not parts.labels[i] then
+                local top = -(HEADER_HEIGHT + VERSION_TOP + (i - 1) * VERSION_ROW)
+                local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                label:SetJustifyH("LEFT")
+                label:SetWordWrap(false)
+                label:SetPoint("TOPLEFT", VERSION_LEFT, top)
+                local value = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+                value:SetJustifyH("LEFT")
+                value:SetWordWrap(false)
+                parts.labels[i], parts.values[i] = label, value
+            end
+            parts.labels[i]:SetText(row[1])
+            parts.values[i]:SetText(row[2])
+            parts.labels[i]:Show()
+            parts.values[i]:Show()
+            widest = math.max(widest, parts.labels[i]:GetStringWidth())
+        end
+        local column = VERSION_LEFT + math.ceil(widest) + VERSION_GAP
+        for i = 1, #parts.labels do
+            local shown = i <= #rows
+            parts.labels[i]:SetShown(shown)
+            parts.values[i]:SetShown(shown)
+            parts.values[i]:SetPoint("TOPLEFT", column, -(HEADER_HEIGHT + VERSION_TOP + (i - 1) * VERSION_ROW))
         end
     end
     return initializer
+end
+
+--- A standard settings row: the label left, a 200 px panel button in the
+--- control column. Both actions open a window of their own, so Options closes
+--- first rather than stay on top of it.
+local function ActionButton(layout, name, buttonText, tooltip, onClick)
+    layout:AddInitializer(CreateSettingsButtonInitializer(name, buttonText, function()
+        _G.SettingsPanel:Close(true)
+        onClick()
+    end, tooltip, true))
 end
 
 function SettingsPanel:Open()
@@ -210,8 +207,16 @@ ns.OnInit(function()
         head:ApplySettings()
     end
 
-    -- On the addon's own page, where a player looking to opt back in lands first
+    -- The addon's own page: the ways to help the project, where a player looking
+    -- to opt back in lands first, then the versions a bug report asks for
+    layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Contribute"))
+    ActionButton(layout, "Unvoiced lines", "Send Quests to Project",
+        "Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.",
+        function() ns.Export:Show(false) end)
     Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
+    ActionButton(layout, "Problems", "Report Bug",
+        "Say what went wrong and copy a link that opens a GitHub issue with your addon and voice pack versions filled in.",
+        function() ns.Report:ShowGeneral() end)
     layout:AddInitializer(VersionsInitializer())
 
     -- What to voice
