@@ -188,7 +188,7 @@ end
 local function PlaceScroll(frame, bottom)
     local scroll = frame.Scroll
     scroll:ClearAllPoints()
-    scroll:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", 0, -12)
+    scroll:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", -4, -16)
     scroll:SetPoint("BOTTOMRIGHT", -30, bottom)
 end
 
@@ -216,9 +216,10 @@ function Export:GetFrame()
     frame.Hint = frame:CreateFontString(nil, "ARTWORK")
     frame.Hint:SetFontObject("GameFontHighlight")
     frame.Hint:SetJustifyH("LEFT")
-    frame.Hint:SetPoint("TOPLEFT", 16, -32)
-    frame.Hint:SetPoint("RIGHT", -16, 0)
-    frame.Hint:SetText("Edit the note if you need to, then Copy Link and paste it into a browser. The form is Contribute captured lines.\nYou do not have to do this for each quest: one export packs up everything you have seen since the last one.\nYour character name has been removed.")
+    frame.Hint:SetSpacing(3)
+    frame.Hint:SetPoint("TOPLEFT", 20, -38)
+    frame.Hint:SetPoint("RIGHT", -20, 0)
+    frame.Hint:SetText("Add a note if you like, then click Copy Link and paste it into your browser. It opens a GitHub form with all of this filled in.\n\nOne export covers everything you have seen since the last one, so there is no need to do this after every quest.")
 
     local function Hide()
         frame:Hide()
