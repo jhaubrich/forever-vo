@@ -38,8 +38,7 @@ local function Checkbox(category, key, name, tooltip, onChange)
             onChange(value)
         end)
     end
-    Settings.CreateCheckbox(category, setting, tooltip)
-    return setting
+    return setting, Settings.CreateCheckbox(category, setting, tooltip)
 end
 
 local function Dropdown(category, key, name, tooltip, choices, onChange)
@@ -229,6 +228,7 @@ local function ButtonRow(layout, text, tooltip, onClick)
         button:Show()
     end
     layout:AddInitializer(initializer)
+    return initializer
 end
 
 --- "Send 12 Quests to Project", counting what an export would carry as the login
@@ -260,10 +260,13 @@ ns.OnInit(function()
     -- The addon's own page: the ways to help the project, where a player looking
     -- to opt back in lands first, then the versions a bug report asks for
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Contribute"))
-    ButtonRow(layout, SendText,
+    local send = ButtonRow(layout, SendText,
         "Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.",
         function() ns.Export:Show(false) end)
-    Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
+    -- Under Send, indented and small as Blizzard draws a sub-option: it turns
+    -- off the login window that offers the same export
+    local _, optOut = Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
+    optOut:SetParentInitializer(send)
     ButtonRow(layout, function() return "Report Bug" end,
         "Say what went wrong and copy a link that opens a GitHub issue with your addon and voice pack versions filled in.",
         function() ns.Report:ShowGeneral() end)
