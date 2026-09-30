@@ -87,6 +87,18 @@ def collect_gossip_menus(conn: sqlite3.Connection) -> dict[int, set[int]]:
     return resolved
 
 
+def creature_displays(creatures: dict) -> dict[str, int]:
+    """Creature ID -> its Classic display, for every creature that has one.
+
+    Beside `npcs`, not in it: `npcs` holds the speakers Classic gives text to, while a
+    Forever capture can quote a creature Classic never lets speak (Vol'jin, 10540, has
+    no quest and no gossip in 1.12). Forever captures carry a model file and never a
+    display ID, so this is the only way such a speaker reaches its npc-<displayID> clip
+    or its archetype; generate.fill_displays takes it only where the models agree.
+    """
+    return {str(entry): row[3] for entry, row in creatures.items() if row[3]}
+
+
 def main() -> int:
     db_path = ensure_snapshot()
     conn = sqlite3.connect(db_path)
@@ -118,7 +130,7 @@ def main() -> int:
     accept_by_item = {row[3]: row[0] for row in items.values() if row[3]}
 
     out: dict[str, Any] = {
-        "version": 2,
+        "version": 3,
         "source": "classic",
         "quests": {},
         "gossip": {},
@@ -267,6 +279,8 @@ def main() -> int:
                 }
                 gossip_count += 1
 
+    out["displays"] = creature_displays(creatures)
+
     BULK_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(
         json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True), encoding="utf-8"
@@ -276,7 +290,8 @@ def main() -> int:
     progress = sum(1 for k in out["quests"] if k.endswith("-progress"))
     print(
         f"{OUTPUT}: {len(quests)} quests -> {accept} accept, {complete} complete, {progress} progress texts; "
-        f"{gossip_count} gossip lines; {len(npcs)} speakers"
+        f"{gossip_count} gossip lines; {len(npcs)} speakers; "
+        f"{len(out['displays'])} creature displays"
     )
     return 0
 
