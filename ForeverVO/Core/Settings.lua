@@ -123,8 +123,9 @@ local function CreateVersionsPanel()
     local list = _G.SettingsPanel:GetSettingsList()
     local panel = CreateFrame("Frame", nil, list)
     panel:SetFrameLevel(list.ScrollBox:GetFrameLevel() + 10)
+    -- Left with the list's rows; right with the header's Defaults button (-36)
     panel:SetPoint("BOTTOMLEFT", list.ScrollBox, "BOTTOMLEFT", 7, 12)
-    panel:SetSize(1, 1)
+    panel:SetPoint("TOPRIGHT", list, "TOPRIGHT", -36, 0)
     panel:Hide()
 
     local function Text(font)
@@ -145,8 +146,9 @@ local function CreateVersionsPanel()
     title:SetPoint("BOTTOMLEFT", addon, "TOPLEFT", 0, VERSION_GAP)
 
     local report = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    report:SetSize(110, 22)
-    report:SetPoint("BOTTOMLEFT", title, "TOPLEFT", 0, 2 * VERSION_GAP)
+    report:SetSize(160, 32)
+    report:SetNormalFontObject("GameFontNormalLarge")
+    report:SetHighlightFontObject("GameFontHighlightLarge")
     report:SetText("Report Bug")
     report:SetScript("OnClick", function()
         _G.SettingsPanel:Close(true)
@@ -156,6 +158,12 @@ local function CreateVersionsPanel()
     panel:SetScript("OnShow", function()
         addon:SetText("Forever Voiceover " .. (ns.version or "dev"))
         packs:SetText(table.concat(PackLines(), "\n"))
+        -- Above the title, at the right edge: one anchor cannot take its x from
+        -- the panel and its y from the title, so the column's height is added up
+        local column = packs:GetStringHeight() + subtitle:GetStringHeight() + addon:GetStringHeight()
+            + title:GetStringHeight() + (VERSION_LINE_HEIGHT - 12) + 2 * VERSION_GAP
+        report:ClearAllPoints()
+        report:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, column + 2 * VERSION_GAP)
     end)
     return panel
 end
