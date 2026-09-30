@@ -9,6 +9,8 @@
   and version, for bug reports. The minimap button's tooltip shows the addon
   version and how many quests you have to send, and its menu's Send entry
   the count too.
+- The login window's offer is shorter: how many quests we need, and that
+  sending needs a free GitHub account.
 - **Copy Link** in the export window says thank you in chat. Send with
   nothing to send leaves Options open and only says so in chat.
 - **Report Bug** opens the report window for a
