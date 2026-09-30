@@ -52,7 +52,7 @@ function MinimapButton:Create()
 
     local icon = button:CreateTexture(nil, "ARTWORK")
     icon:SetSize(16, 16) -- the microphone runs the full height of its image; 20 clips it on the ring
-    icon:SetTexture(ns.minimapIcon)
+    icon:SetTexture(ns.iconTexture)
     -- The dark disc sits a little off the ring's centre; measured in game
     icon:SetPoint("CENTER", background, "CENTER", -0.75, -0.5)
     button.Icon = icon

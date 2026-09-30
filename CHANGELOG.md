@@ -15,8 +15,8 @@
   carries over, and "Never" becomes the Greetings and Gossip boxes cleared.
   "Once" is remembered on each character, not just for the session.
 - The **Voice packs** options page is now **Voice Pack Debug**.
-- The minimap button shows the gold microphone from the project's art in
-  place of the borrowed spell icon.
+- The minimap button and the addon list show the gold microphone from the
+  project's art in place of the borrowed spell icon.
 
 ## 0.1.7
 

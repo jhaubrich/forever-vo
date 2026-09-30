@@ -3,7 +3,7 @@
 ## Notes: Voiced quests and NPC dialogue for World of Warcraft: Forever, from locally generated voice packs.
 ## Version: 0.1.7
 ## Author: Quinn Dougherty
-## IconTexture: Interface\Icons\Ability_Warrior_BattleShout
+## IconTexture: Interface\AddOns\ForeverVO\Media\Microphone
 ## SavedVariables: ForeverVODB, ForeverVOCaptureDB
 ## SavedVariablesPerCharacter: ForeverVOCharDB
 ## AddonCompartmentFunc: ForeverVO_OnCompartmentClick
