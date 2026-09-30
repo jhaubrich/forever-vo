@@ -115,20 +115,22 @@ local function PackLines()
     return packs
 end
 
--- Report Bug's size, and its right edge in a list row: rows end 20 px in from
--- the list's right edge (the ScrollBox's anchor), Defaults 36 px in
-local REPORT_WIDTH, REPORT_HEIGHT = 160, 32
-local REPORT_RIGHT = -16
+-- The buttons' size (wide enough for "Send Quests to Project" in the large
+-- font), and their right edge in a list row: rows end 20 px in from the list's
+-- right edge (the ScrollBox's anchor), Defaults 36 px in
+local BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_GAP = 230, 32, 8
+local BUTTON_RIGHT = -16
 local ROW_PAD = 10
 
---- A list row after the page's settings: Report Bug on the right, then a
+--- A list row after the page's settings: Send Quests to Project and Report Bug
+--- on the right, one above the other, then a
 --- "Versions" title, the addon's version, a "Voice packs" subtitle and one
 --- line per pack. It is a section header with no name, drawing its own title
 --- below the button. The header frame is pooled with every other header in the
 --- Settings list, so all of it is hidden again when the frame is reused.
 local function VersionsInitializer()
     local initializer = CreateSettingsListSectionHeaderInitializer("")
-    local titleTop = ROW_PAD + REPORT_HEIGHT + VERSION_GAP
+    local titleTop = ROW_PAD + 2 * BUTTON_HEIGHT + BUTTON_GAP + VERSION_GAP
     function initializer:GetExtent()
         return titleTop + 2 * VERSION_GAP + (3 + #PackLines()) * VERSION_LINE_HEIGHT + ROW_PAD
     end
@@ -145,16 +147,29 @@ local function VersionsInitializer()
                 end
                 return text
             end
-            local report = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-            report:SetSize(REPORT_WIDTH, REPORT_HEIGHT)
-            report:SetPoint("TOPRIGHT", REPORT_RIGHT, -ROW_PAD)
-            report:SetNormalFontObject("GameFontNormalLarge")
-            report:SetHighlightFontObject("GameFontHighlightLarge")
-            report:SetText("Report Bug")
-            report:SetScript("OnClick", function()
-                _G.SettingsPanel:Close(true)
-                ns.Report:ShowGeneral()
+            local function Button(text, onClick)
+                local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+                button:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT)
+                button:SetNormalFontObject("GameFontNormalLarge")
+                button:SetHighlightFontObject("GameFontHighlightLarge")
+                button:SetText(text)
+                button:SetScript("OnClick", function()
+                    _G.SettingsPanel:Close(true)
+                    onClick()
+                end)
+                return button
+            end
+            local send = Button("Send Quests to Project", function() ns.Export:Show(false) end)
+            send:SetPoint("TOPRIGHT", BUTTON_RIGHT, -ROW_PAD)
+            send:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:SetText("Send Quests to Project", 1, 0.82, 0)
+                GameTooltip:AddLine("Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.", 1, 1, 1, true)
+                GameTooltip:Show()
             end)
+            send:SetScript("OnLeave", GameTooltip_Hide)
+            local report = Button("Report Bug", function() ns.Report:ShowGeneral() end)
+            report:SetPoint("TOPRIGHT", send, "BOTTOMRIGHT", 0, -BUTTON_GAP)
             local title = Text("GameFontHighlightLarge")
             title:SetPoint("TOPLEFT", 7, -titleTop)
             title:SetText("Versions")
@@ -163,7 +178,7 @@ local function VersionsInitializer()
             subtitle:SetText("Voice packs")
             local packs = Text("GameFontHighlight", subtitle)
             packs:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -(VERSION_LINE_HEIGHT - 12))
-            frame.FVOVersions = { report = report, title = title, addon = addon, subtitle = subtitle, packs = packs }
+            frame.FVOVersions = { send = send, report = report, title = title, addon = addon, subtitle = subtitle, packs = packs }
             hooksecurefunc(frame, "Init", function(header, other)
                 for _, part in pairs(header.FVOVersions) do
                     part:SetShown(other == initializer)
@@ -178,33 +193,6 @@ local function VersionsInitializer()
         end
     end
     return initializer
-end
-
---- "Send Quests to Project" beside the Defaults button in the page header,
---- shown only while this addon's main page is. The header belongs to the
---- Settings panel and is shared by every page, so the button follows the
---- layout the panel displays (a search result is a layout of its own).
-local function AddHeaderButton(layout)
-    local header = _G.SettingsPanel:GetSettingsList().Header
-    local button = CreateFrame("Button", nil, header, "UIPanelButtonTemplate")
-    button:SetSize(180, 22)
-    button:SetPoint("RIGHT", header.DefaultsButton, "LEFT", -8, 0)
-    button:SetText("Send Quests to Project")
-    button:Hide()
-    button:SetScript("OnClick", function()
-        _G.SettingsPanel:Close(true)
-        ns.Export:Show(false)
-    end)
-    button:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        GameTooltip:SetText("Send Quests to Project", 1, 0.82, 0)
-        GameTooltip:AddLine("Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.", 1, 1, 1, true)
-        GameTooltip:Show()
-    end)
-    button:SetScript("OnLeave", GameTooltip_Hide)
-    hooksecurefunc(_G.SettingsPanel, "DisplayLayout", function(_, shown)
-        button:SetShown(shown == layout)
-    end)
 end
 
 function SettingsPanel:Open()
@@ -224,7 +212,6 @@ ns.OnInit(function()
 
     -- On the addon's own page, where a player looking to opt back in lands first
     Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
-    AddHeaderButton(layout)
     layout:AddInitializer(VersionsInitializer())
 
     -- What to voice
