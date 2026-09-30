@@ -1,0 +1,61 @@
+{
+ "addon": "0.1.6",
+ "gossip": {},
+ "npcs": {
+  "3389": {
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Regthar Deathgate",
+   "sex": 2
+  },
+  "5911": {
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Grunt Logmar",
+   "sex": 2
+  }
+ },
+ "origin": "issue-375",
+ "quests": {
+  "850-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Regthar Deathgate",
+   "npc": "3389",
+   "questID": 850,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Hello, $N.  Do you have Barak's Head for me?",
+   "time": 1790734428,
+   "title": "Kolkar Leaders",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "97250-complete": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Grunt Logmar",
+   "npc": "5911",
+   "questID": 97250,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "So the rumors were true! I expected as much, tensions have been rising along the eastern coast for some time. I knew it would only be a matter of time before conflict crept into our territory.\r\n\r\nHowever, I am skeptical that we played a role in the tavern's destruction. Too many Horde civilians rely on that route for trade and travel. Perhaps you could investigate further if you find the time.\r\n\r\nIn any case, today's deed is a victory for the Horde, and a stern warning to the Alliance!",
+   "time": 1790733316,
+   "title": "Wrongly Blamed, Justly Corrected",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

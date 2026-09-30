@@ -1,0 +1,55 @@
+{
+ "addon": "0.1.6",
+ "gossip": {},
+ "npcs": {
+  "265809": {
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Brakk",
+   "sex": 2
+  }
+ },
+ "origin": "issue-383",
+ "quests": {
+  "96604-accept": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Brakk",
+   "npc": "265809",
+   "questID": 96604,
+   "race": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Greetings, $c. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "time": 1790777188,
+   "title": "The Great Outdoors",
+   "wanted": true,
+   "zone": "Durotar"
+  },
+  "96652-complete": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Brakk",
+   "npc": "265809",
+   "questID": 96652,
+   "race": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Is that my journal? I've been missing this for a while. Thank you, $c.\r\n\r\nHey, you've got the look of an adventurer yourself. How would you like to learn about camping?",
+   "time": 1790777170,
+   "title": "The Adventurer",
+   "wanted": true,
+   "zone": "Durotar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
