@@ -7,12 +7,16 @@ local Util = ns.Util
 into a string players can
 paste into a GitHub issue (see .github/ISSUE_TEMPLATE/capture.yml). The
 window shows that issue as text, and Copy Link builds the form URL with the
-string in it, the same way /fvo report does. The export stamps
-ForeverVOCaptureDB.exportedAt when the window is shown, and Capture.Exported
-skips what an earlier export packed: before that, every export carried the
+string in it, the same way /fvo report does. A GitHub link holds about 25
+lines, so a longer export comes in parts, one issue each, every part a whole
+export of its own (Export:Parts). All at Once is the other way: the link opens
+the form without the string, and the player copies the string into it from a
+box of its own, one issue for up to ~250 lines (the form's 65,536 characters). Copy Link stamps
+ForeverVOCaptureDB.exportedAt past the parts copied so far (Export:MarkSent),
+and Capture.Exported skips what an earlier export packed: before that, every export carried the
 whole DB, and a player who exported after each quest, as the per-line
 reminder suggested, sent the same hundred lines a hundred times. "/fvo export
-all" packs everything again, for a string that was shown but never pasted;
+all" packs everything again, for a link that was copied but never sent;
 the lines stay in the DB either way. The string is JSON, zlib-compressed and
 base64-encoded with the client's own
 C_EncodingUtil, prefixed with "FVO1:". The character's name, class and race are
@@ -42,24 +46,24 @@ ns.Export = Export
 local NUDGE_AFTER = 10
 local PREFIX = "FVO1:"
 local ISSUE = "https://github.com/quinn-dougherty/forever-vo/issues/new"
--- Past this, GitHub returns 414 URI Too Long. The export string is the only
--- field that grows without a bound, so a long one is left out of the link.
+-- GitHub fails a longer link: logged out, 6,500 characters redirected to the
+-- login page and 7,000 got a 500 (8,200 and up a 414), measured 2026-09-30.
+-- The export string is the field that grows, so a long export is split into
+-- parts (Export:Parts) that fit.
 local URL_BUDGET = 6000
+-- A part is packed this far under the budget, so a note typed into it fits.
+local NOTE_ROOM = 600
+-- All at Once: the string is pasted into the form, whose box holds 65,536
+-- characters (GitHub's issue body limit), so a part holds ~250-300 lines.
+local PASTE_BUDGET = 60000
 local NOTE = "## Note:\n\n"
-local PRESS_COPY = "Click the link, then Ctrl+C"
-local PRESS_COPY_SHORT = "Click the link, then Ctrl+C. Paste the export string into the form; it was too long for the link."
 
---- Percent-encode one query component. Same rule as the report link.
+--- Percent-encode one query component. Same rule as the report link. Only
+--- the characters outside it reach the function: splitting an export encodes
+--- a link's worth of text many times over.
 local function Encode(value)
-    return (tostring(value):gsub(".", function(char)
-        local byte = char:byte()
-        if (byte >= 48 and byte <= 57)
-            or (byte >= 65 and byte <= 90)
-            or (byte >= 97 and byte <= 122)
-            or char == "-" or char == "_" or char == "." or char == "~" then
-            return char
-        end
-        return format("%%%02X", byte)
+    return (tostring(value):gsub("[^0-9A-Za-z%-_%.~]", function(char)
+        return format("%%%02X", char:byte())
     end))
 end
 
@@ -71,12 +75,22 @@ local function Query(fields)
     return ISSUE .. "?" .. table.concat(parts, "&")
 end
 
+local function NpcRecord(npc)
+    return {
+        name = npc.name, sex = npc.sex, displayID = npc.displayID,
+        modelFileID = npc.modelFileID, creatureType = npc.creatureType, isObject = npc.isObject,
+        addon = npc.addon, sexes = npc.sexes,
+    }
+end
+
 --- Builds the export table from ForeverVOCaptureDB: lines without audio, and
 --- voiced lines the pack asked to hear again from a reader like this one,
---- heard since the last export unless `all`.
+--- heard since the last export unless `all`. `npcs` holds the record of every
+--- speaker a line names; `recast` the records that go along on their own.
 function Export:Collect(all)
     local db = ForeverVOCaptureDB or {}
-    local lines, npcs, used = {}, {}, {}
+    local known = db.npcs or {}
+    local lines, npcs, recast = {}, {}, {}
     local function add(kind, entry)
         if not ns.Capture.Contributes(entry) or (not all and ns.Capture.Exported(entry)) then
             return
@@ -99,8 +113,8 @@ function Export:Collect(all)
             v = entry.differs,
             d = entry.time,
         })
-        if entry.npc then
-            used[entry.npc] = true
+        if entry.npc and known[entry.npc] then
+            npcs[entry.npc] = NpcRecord(known[entry.npc])
         end
     end
     for _, entry in pairs(db.quests or {}) do
@@ -110,68 +124,147 @@ function Export:Collect(all)
         add("gossip", entry)
     end
     local at = db.exportedAt
-    for key, npc in pairs(db.npcs or {}) do
+    for key, npc in pairs(known) do
         if npc.recast and (all or at == nil or npc.recast >= at) then
-            used[key] = true
-        end
-    end
-    for key in pairs(used) do
-        local npc = (db.npcs or {})[key]
-        if npc then
-            npcs[key] = {
-                name = npc.name, sex = npc.sex, displayID = npc.displayID,
-                modelFileID = npc.modelFileID, creatureType = npc.creatureType, isObject = npc.isObject,
-                addon = npc.addon, sexes = npc.sexes,
-            }
+            recast[key] = NpcRecord(npc)
         end
     end
     return {
-        v = 1,
         addon = ns.version,
         build = select(2, GetBuildInfo()),
         lines = lines,
         npcs = npcs,
+        recast = recast,
     }
 end
 
-function Export:Encode(all)
-    local data = self:Collect(all)
-    if #data.lines == 0 then
-        return nil, 0
-    end
-    local json = C_EncodingUtil.SerializeJSON(data)
+local function EncodeData(part)
+    local json = C_EncodingUtil.SerializeJSON({
+        v = 1,
+        addon = part.addon,
+        build = part.build,
+        lines = part.lines,
+        npcs = part.npcs,
+    })
     local compressed = C_EncodingUtil.CompressString(json, Enum.CompressionMethod.Zlib)
-    return PREFIX .. C_EncodingUtil.EncodeBase64(compressed), #data.lines
+    return PREFIX .. C_EncodingUtil.EncodeBase64(compressed)
+end
+
+--- The lines of an export in parts, oldest first: Copy Link on a part
+--- advances exportedAt past it (MarkSent), so a player who stops halfway gets
+--- the rest at the next export. Each part is a whole export of its own, with
+--- the records of its lines' speakers (and, in the first, the recast ones), so
+--- the pipeline takes each issue as it is. In parts sized for a link, each
+--- one's string rides in its URL; `paste` sizes them for the form's box
+--- instead (All at Once), whose string the player pastes by hand. A line too
+--- long for a link sits alone in a part marked `tooLong`.
+---@param all boolean every line, exported before or not
+---@param paste boolean parts sized for pasting, not for a link
+function Export:Parts(all, paste)
+    local data = self:Collect(all)
+    local lines = data.lines
+    table.sort(lines, function(a, b)
+        return (a.d or 0) < (b.d or 0)
+    end)
+    local parts = {}
+    local function Slice(from, to)
+        local part = { addon = data.addon, build = data.build, lines = {}, npcs = {} }
+        if #parts == 0 then
+            for key, record in pairs(data.recast) do
+                part.npcs[key] = record
+            end
+        end
+        for i = from, to do
+            local line = lines[i]
+            table.insert(part.lines, line)
+            if line.n and data.npcs[line.n] then
+                part.npcs[line.n] = data.npcs[line.n]
+            end
+        end
+        return part
+    end
+    local function Fits(part)
+        local payload = EncodeData(part)
+        if paste then
+            return #payload <= PASTE_BUDGET, payload
+        end
+        -- The widest part number stands in for the real one, not known yet.
+        local url, shortened = self:Link(self:Body(part, payload, 99, 99), part, 99, 99)
+        return not shortened and #url <= URL_BUDGET - NOTE_ROOM, payload
+    end
+    -- The longest run from `first` that fits: double the run until it does
+    -- not, then bisect. A few encodes per part, each about a part's size,
+    -- rather than one per line or one of everything that is left.
+    local first = 1
+    while first <= #lines do
+        local good, bad = first, nil
+        local step = 1
+        while not bad and good < #lines do
+            local try = math.min(first + step, #lines)
+            if Fits(Slice(first, try)) then
+                good = try
+                step = step * 2
+            else
+                bad = try
+            end
+        end
+        while bad and bad - good > 1 do
+            local mid = math.floor((good + bad) / 2)
+            if Fits(Slice(first, mid)) then
+                good = mid
+            else
+                bad = mid
+            end
+        end
+        local part = Slice(first, good)
+        local fits, payload = Fits(part)
+        part.payload = payload
+        part.tooLong = not fits
+        table.insert(parts, part)
+        first = good + 1
+    end
+    return parts
 end
 
 --- The issue text. The note is where the cursor starts. The facts under it
 --- are labels, and the export string stays whole at the bottom so a note
 --- does not land in the middle of it.
-function Export:Body(data, payload)
-    local count = #data.lines
-    local summary = format("%d %s. Your character name has been removed.",
-        count, Util.Plural(count, "line"))
-    local facts = { "Lines: " .. count, "Addon: " .. (data.addon or "dev") }
-    if data.build and data.build ~= "" then
-        table.insert(facts, "Build: " .. tostring(data.build))
+function Export:Body(part, payload, index, total, note)
+    local count = #part.lines
+    local summary = format("%d %s%s. Your character name has been removed.",
+        count, Util.Plural(count, "line"),
+        total > 1 and format(" (part %d of %d)", index, total) or "")
+    local facts = { "Lines: " .. count, "Addon: " .. (part.addon or "dev") }
+    if part.build and part.build ~= "" then
+        table.insert(facts, "Build: " .. tostring(part.build))
     end
-    return format("## Captured lines\n\n%s\n\n%s\n\n%s\n\n## Export string\n\n%s",
-        summary, NOTE, table.concat(facts, "\n"), payload)
+    return format("## Captured lines\n\n%s\n\n%s%s\n\n%s\n\n## Export string\n\n%s",
+        summary, NOTE, note or "", table.concat(facts, "\n"), payload)
+end
+
+--- What the player typed under the note heading, to carry into the next part.
+local function NoteOf(body)
+    local note = body:match("## Note:\n\n(.-)\n\nLines: ")
+    return note and note:match("^%s*(.-)%s*$") or ""
+end
+
+local function Title(part, index, total)
+    local count = #part.lines
+    return total > 1
+        and format("Captured lines (%d, part %d of %d)", count, index, total)
+        or format("Captured lines (%d)", count)
 end
 
 --- The capture form's export field is the whole text, and the decoder finds
 --- the FVO1 string inside it. A string that will not fit in the URL is left
 --- out; the form still opens on the right template.
-function Export:Link(body, count)
-    local title = format("Captured lines (%d)", count)
-    local function urlFor(text)
-        return Query({
-            { "template", "capture.yml" },
-            { "title", title },
-            { "export", text },
-        })
-    end
-    local url = urlFor(body)
+function Export:Link(body, part, index, total)
+    local title = Title(part, index, total)
+    local url = Query({
+        { "template", "capture.yml" },
+        { "title", title },
+        { "export", body },
+    })
     if #url <= URL_BUDGET then
         return url, false
     end
@@ -179,6 +272,19 @@ function Export:Link(body, count)
         { "template", "capture.yml" },
         { "title", title },
     }), true
+end
+
+--- All at Once: the link opens the form with the title, and the note in its
+--- "Anything else" field; the player pastes the string into Export string.
+function Export:PasteLink(part, index, total, note)
+    local fields = {
+        { "template", "capture.yml" },
+        { "title", Title(part, index, total) },
+    }
+    if note ~= "" then
+        table.insert(fields, { "notes", note })
+    end
+    return Query(fields)
 end
 
 -- ---------------------------------------------------------------------------
@@ -260,19 +366,104 @@ function Export:GetFrame()
     link:Hide()
     frame.LinkBox = link
 
+    -- Between the text and the link, the full width of the window, one line:
+    -- beside the buttons it ran off the left edge.
+    frame.Status = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    frame.Status:SetPoint("BOTTOMLEFT", link, "TOPLEFT", -4, 6)
+    frame.Status:SetPoint("RIGHT", -16, 0)
+    frame.Status:SetJustifyH("LEFT")
+    frame.Status:SetWordWrap(false)
+    frame.Status:Hide()
+
+    -- All at Once: the export string on its own, to copy into the form, with
+    -- its step above it; the link and its step move up to make room.
+    local paste = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
+    paste:SetAutoFocus(false)
+    paste:SetHeight(22)
+    paste:SetFontObject("GameFontHighlightSmall")
+    paste:SetMaxLetters(0)
+    paste:SetPoint("BOTTOMLEFT", 22, 40)
+    paste:SetPoint("BOTTOMRIGHT", -16, 40)
+    paste:SetScript("OnEscapePressed", Hide)
+    paste:SetScript("OnTextChanged", function(editBox, userInput)
+        if userInput then
+            editBox:SetText(frame.pasteText or "")
+            editBox:HighlightText()
+        end
+    end)
+    paste:SetScript("OnEditFocusGained", function(editBox)
+        editBox:HighlightText()
+    end)
+    paste:Hide()
+    frame.PasteBox = paste
+
+    frame.PasteStatus = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    frame.PasteStatus:SetPoint("BOTTOMLEFT", paste, "TOPLEFT", -4, 6)
+    frame.PasteStatus:SetPoint("RIGHT", -16, 0)
+    frame.PasteStatus:SetJustifyH("LEFT")
+    frame.PasteStatus:SetWordWrap(false)
+    frame.PasteStatus:SetTextColor(1, 0.82, 0)
+    frame.PasteStatus:Hide()
+
+    -- The buttons sit in the template's button bar, the 26 px under its
+    -- inset, where Blizzard's own windows put theirs (MagicButton_OnLoad's
+    -- offsets: 4 from the bottom, 4 from the left edge, 6 from the right, and
+    -- neighbours touching). Higher up they straddled the inset's border.
     frame.CopyButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     frame.CopyButton:SetSize(110, 22)
-    frame.CopyButton:SetPoint("BOTTOMRIGHT", -16, 12)
+    frame.CopyButton:SetPoint("BOTTOMRIGHT", -6, 4)
     frame.CopyButton:SetText("Copy Link")
     frame.CopyButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         Export:CopyLink()
     end)
 
-    frame.Status = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    frame.Status:SetPoint("RIGHT", frame.CopyButton, "LEFT", -12, 0)
-    frame.Status:SetJustifyH("RIGHT")
-    frame.Status:SetText("")
+    frame.NextButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    frame.NextButton:SetSize(80, 22)
+    frame.NextButton:SetPoint("RIGHT", frame.CopyButton, "LEFT", -1, 0)
+    frame.NextButton:SetText("Next")
+    frame.NextButton:SetScript("OnClick", function()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        Export:ShowPart(frame.index + 1)
+    end)
+
+    frame.PreviousButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    frame.PreviousButton:SetSize(80, 22)
+    frame.PreviousButton:SetPoint("RIGHT", frame.NextButton, "LEFT", -1, 0)
+    frame.PreviousButton:SetText("Previous")
+    frame.PreviousButton:SetScript("OnClick", function()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        Export:ShowPart(frame.index - 1)
+    end)
+
+    -- One issue however much was captured, by pasting instead of a link.
+    frame.ModeButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    frame.ModeButton:SetSize(110, 22)
+    frame.ModeButton:SetPoint("BOTTOMLEFT", 4, 4)
+    frame.ModeButton:SetScript("OnClick", function()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        Export:SetMode(not frame.paste)
+    end)
+    frame.ModeButton:SetScript("OnEnter", function(button)
+        GameTooltip:SetOwner(button, "ANCHOR_TOP")
+        if frame.paste then
+            GameTooltip:SetText("In Parts", 1, 0.82, 0)
+            GameTooltip:AddLine("One link per part, with everything filled in.", 1, 1, 1, true)
+        else
+            GameTooltip:SetText("All at Once", 1, 0.82, 0)
+            GameTooltip:AddLine("Send everything in one issue: the link opens the form, and you copy the export string into it yourself.", 1, 1, 1, true)
+        end
+        GameTooltip:Show()
+    end)
+    frame.ModeButton:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
+
+    frame.PartLabel = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    frame.PartLabel:SetPoint("LEFT", frame.ModeButton, "RIGHT", 4, 0)
+    frame.PartLabel:SetPoint("RIGHT", frame.PreviousButton, "LEFT", -4, 0)
+    frame.PartLabel:SetJustifyH("CENTER")
+    frame.PartLabel:SetWordWrap(false)
     return frame
 end
 
@@ -281,55 +472,170 @@ function Export:ClearStatus()
     if not frame then
         return
     end
-    frame.Status:SetText("")
+    frame.Status:Hide()
+    frame.PasteStatus:Hide()
+    frame.PasteBox:Hide()
     if frame.LinkBox:IsShown() then
         frame.LinkBox:Hide()
+        frame.LinkBox:SetPoint("BOTTOMLEFT", 22, 40)
+        frame.LinkBox:SetPoint("BOTTOMRIGHT", -16, 40)
         PlaceScroll(frame, 46)
+    end
+end
+
+--- Switches between parts sized for a link and All at Once, rebuilding the
+--- parts; the note carries over. What was copied so far stays counted in
+--- exportedAt, and the new parts start from nothing copied, which can only
+--- re-send a line, never skip one.
+function Export:SetMode(paste)
+    local frame = self.frame
+    frame.paste = paste
+    frame.parts = self:Parts(frame.all, paste)
+    frame.copied = {}
+    self:ShowPart(1)
+end
+
+--- Puts part `index` in the window, carrying over the note typed so far.
+function Export:ShowPart(index)
+    local frame = self.frame
+    local parts = frame.parts
+    if not parts[index] then
+        return
+    end
+    local editBox = frame.Scroll.EditBox
+    local note = frame.index and NoteOf(editBox:GetText() or "") or ""
+    frame.index = index
+    local part = parts[index]
+    self:ClearStatus()
+    local body = self:Body(part, part.payload, index, #parts, note)
+    editBox:SetText(body)
+    local at = body:find(NOTE, 1, true)
+    editBox:SetCursorPosition(at and (at + #NOTE - 1 + #note) or 0)
+
+    local split = #parts > 1
+    frame.PartLabel:SetText(split and format("Part %d of %d", index, #parts) or "")
+    frame.PreviousButton:SetShown(split)
+    frame.NextButton:SetShown(split)
+    frame.PreviousButton:SetEnabled(index > 1)
+    frame.NextButton:SetEnabled(index < #parts)
+    -- Offered only where it changes something: more than one link's worth.
+    frame.ModeButton:SetText(frame.paste and "In Parts" or "All at Once")
+    frame.ModeButton:SetShown(frame.paste or split)
+end
+
+--- Counts parts 1..k as sent once every one of them has had its link copied:
+--- exportedAt moves to the first line of the first part not copied yet (lines
+--- are oldest first), or to when the window opened once all are. It never
+--- moves back, so an "export all" or a second copy leaves it alone.
+function Export:MarkSent(index)
+    local frame = self.frame
+    local db = ForeverVOCaptureDB
+    if not db then
+        return
+    end
+    frame.copied[index] = true
+    local at = frame.shownAt
+    for i, part in ipairs(frame.parts) do
+        if not frame.copied[i] then
+            at = part.lines[1].d or 0
+            break
+        end
+    end
+    if (db.exportedAt or 0) < at then
+        db.exportedAt = at
     end
 end
 
 function Export:CopyLink()
     local frame = self.frame
+    if frame.paste then
+        return self:CopyPaste()
+    end
+    local part = frame.parts[frame.index]
     local body = frame.Scroll.EditBox:GetText() or ""
-    local url, shortened = self:Link(body, frame.count or 0)
+    if part.tooLong then
+        ns.UI.Alert:Show("This line is too long to fit in a link. Click All at Once to send it by pasting instead.")
+        return
+    end
+    local url, shortened = self:Link(body, part, frame.index, #frame.parts)
+    if shortened then
+        ns.UI.Alert:Show("Your note is too long for the link. Shorten it and click Copy Link again.")
+        return
+    end
     frame.link = url
     -- No SetFocus here. A button click that takes keyboard focus is the
     -- protected call the client reports as UNKNOWN(). Clicking the link is
     -- what focuses it, and OnEditFocusGained selects the text.
-    PlaceScroll(frame, 70)
+    PlaceScroll(frame, 94)
     frame.LinkBox:Show()
     frame.LinkBox:SetText(url)
-    frame.Status:SetText(shortened and PRESS_COPY_SHORT or PRESS_COPY)
+    local more = frame.index < #frame.parts and " Then click Next." or ""
+    frame.Status:SetText("Click the link, press Ctrl+C, and paste it into your browser." .. more)
     frame.Status:SetTextColor(1, 0.82, 0)
+    frame.Status:Show()
+    self:MarkSent(frame.index)
+end
+
+--- All at Once: a link to the form (title and note) and the string to paste.
+function Export:CopyPaste()
+    local frame = self.frame
+    local part = frame.parts[frame.index]
+    local note = NoteOf(frame.Scroll.EditBox:GetText() or "")
+    local url = self:PasteLink(part, frame.index, #frame.parts, note)
+    if #url > URL_BUDGET then
+        ns.UI.Alert:Show("Your note is too long for the link. Shorten it and click Copy Link again.")
+        return
+    end
+    frame.link = url
+    frame.pasteText = part.payload
+    PlaceScroll(frame, 142)
+    frame.LinkBox:SetPoint("BOTTOMLEFT", 22, 88)
+    frame.LinkBox:SetPoint("BOTTOMRIGHT", -16, 88)
+    frame.LinkBox:Show()
+    frame.LinkBox:SetText(url)
+    frame.Status:SetText("1. Click the link, press Ctrl+C, and open it in your browser.")
+    frame.Status:SetTextColor(1, 0.82, 0)
+    frame.Status:Show()
+    frame.PasteBox:Show()
+    frame.PasteBox:SetText(part.payload)
+    frame.PasteBox:SetCursorPosition(0)
+    local more = frame.index < #frame.parts and " Then Next." or ""
+    frame.PasteStatus:SetText("2. Click here, press Ctrl+C, and paste it into Export string." .. more)
+    frame.PasteStatus:Show()
+    self:MarkSent(frame.index)
 end
 
 ---@param all boolean pack every line, exported before or not
 function Export:Show(all)
     local db = ForeverVOCaptureDB or {}
-    local data = self:Collect(all)
-    if #data.lines == 0 then
+    local parts = self:Parts(all)
+    if #parts == 0 then
         if not all and db.exportedAt then
-            ns.Print("nothing new since your last export. |cffffd100/fvo export all|r packs everything again.")
+            ns.UI.Alert:Show("Nothing new since your last export.\n\n|cffffd100/fvo export all|r packs everything again.")
         else
-            ns.Print("nothing to export: every line seen so far already has audio.")
+            ns.UI.Alert:Show("Nothing to export: every line seen so far already has audio.")
         end
         return
     end
-    local payload = self:Encode(all)
     local frame = self:GetFrame()
-    frame.count = #data.lines
-    self:ClearStatus()
-    local editBox = frame.Scroll.EditBox
-    local body = self:Body(data, payload)
-    editBox:SetText(body)
+    frame.all = all
+    frame.paste = false
+    frame.parts = parts
+    frame.copied = {}
+    frame.shownAt = time()
+    frame.index = nil
+    self:ShowPart(1)
     frame:Show()
-    editBox:SetFocus()
-    local at = body:find(NOTE, 1, true)
-    editBox:SetCursorPosition(at and (at + #NOTE - 1) or 0)
+    frame.Scroll.EditBox:SetFocus()
+    local count = 0
+    for _, part in ipairs(parts) do
+        count = count + #part.lines
+    end
     local since = (not all and db.exportedAt) and " heard since your last export" or ""
-    db.exportedAt = time()
-    ns.Print(format("%d %s%s packed into %d characters. You do not have to do this for each quest.",
-        frame.count, Util.Plural(frame.count, "line"), since, #payload))
+    local split = #parts > 1
+        and format(" in %d parts, one issue each (a link only holds so much; All at Once sends one)", #parts) or ""
+    ns.Print(format("%d %s%s packed%s. You do not have to do this for each quest.",
+        count, Util.Plural(count, "line"), since, split))
 end
 
 --- Called by Capture after each recorded line; reminds the player once per session.
