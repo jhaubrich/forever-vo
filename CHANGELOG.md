@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `/fvo export` fits every export into links. A GitHub link only holds about
+  25 lines, and a longer export used to leave its string out of the link and
+  say so in a message that ran off the window. Now it comes in parts: **Next**
+  and **Previous** step through them, each part's Copy Link opens its own
+  issue, and a note you type carries over to the next part. Lines only count
+  as sent once their part's link is copied, so closing the window halfway (or
+  opening it and not sending) leaves the rest for your next export. Errors,
+  such as a note too long for the link or nothing to export, show in a popup
+  instead of chat.
 - **First gossip only**, to the right of **Gossip** in What to voice and on
   by default: an NPC's gossip is read the first time you talk to them, and
   not every time after. Greetings and quest text are read as before. It greys

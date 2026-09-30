@@ -29,5 +29,6 @@ UI\QuestLog.lua
 UI\Report.lua
 UI\MinimapButton.lua
 UI\Debug.lua
+UI\Alert.lua
 Core\Settings.lua
 Core\Commands.lua
