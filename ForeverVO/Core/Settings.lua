@@ -104,9 +104,6 @@ end
 
 local VERSION_LINE_HEIGHT = 18
 local VERSION_GAP = 10
--- A header initializer has no extent of its own; the list falls back to the
--- height of SettingsListSectionHeaderTemplate, which is this
-local HEADER_EXTENT = 45
 
 --- The installed voice packs by their full titles, or a note that there are
 --- none. Read when the page is shown: the packs register after this panel.
@@ -118,61 +115,57 @@ local function PackLines()
     return packs
 end
 
---- A section header with a Report Bug button beside its title and the addon's
---- version under it, then a "Voice packs" subtitle and one line per pack. The header frame is pooled with
---- every other header in the Settings list, so the extra text is hidden again
---- whenever the frame is reused for another one.
-local function VersionsInitializer()
-    local initializer = CreateSettingsListSectionHeaderInitializer("Versions")
-    function initializer:GetExtent()
-        return HEADER_EXTENT + 2 * VERSION_GAP + (2 + #PackLines()) * VERSION_LINE_HEIGHT
+--- Report Bug, then the addon's version and each voice pack's, pinned to the
+--- bottom of the settings list rather than placed in it: the list has no way to
+--- push an item to the bottom of the window. Built from the bottom up, so a
+--- longer pack list grows upwards. Shown with the page, like the header button.
+local function CreateVersionsPanel()
+    local list = _G.SettingsPanel:GetSettingsList()
+    local panel = CreateFrame("Frame", nil, list)
+    panel:SetFrameLevel(list.ScrollBox:GetFrameLevel() + 10)
+    panel:SetPoint("BOTTOMLEFT", list.ScrollBox, "BOTTOMLEFT", 7, 12)
+    panel:SetSize(1, 1)
+    panel:Hide()
+
+    local function Text(font)
+        local text = panel:CreateFontString(nil, "OVERLAY", font)
+        text:SetJustifyH("LEFT")
+        text:SetSpacing(VERSION_LINE_HEIGHT - 12)
+        return text
     end
-    local baseInit = initializer.InitFrame
-    function initializer:InitFrame(frame)
-        baseInit(self, frame)
-        if not frame.FVOVersions then
-            local function Text(font, anchor)
-                local text = frame:CreateFontString(nil, "OVERLAY", font)
-                text:SetJustifyH("LEFT")
-                text:SetSpacing(VERSION_LINE_HEIGHT - 12)
-                text:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -VERSION_GAP)
-                return text
-            end
-            local report = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-            report:SetSize(110, 22)
-            report:SetPoint("LEFT", frame.Title, "RIGHT", 16, 0)
-            report:SetText("Report Bug")
-            report:SetScript("OnClick", function()
-                _G.SettingsPanel:Close(true)
-                ns.Report:ShowGeneral()
-            end)
-            local addon = Text("GameFontHighlight", frame.Title)
-            local subtitle = Text("GameFontNormal", addon)
-            subtitle:SetText("Voice packs")
-            local packs = Text("GameFontHighlight", subtitle)
-            packs:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -(VERSION_LINE_HEIGHT - 12))
-            frame.FVOVersions = { report = report, addon = addon, subtitle = subtitle, packs = packs }
-            hooksecurefunc(frame, "Init", function(header, other)
-                for _, text in pairs(header.FVOVersions) do
-                    text:SetShown(other == initializer)
-                end
-            end)
-        end
-        local texts = frame.FVOVersions
-        texts.addon:SetText("Forever Voiceover " .. (ns.version or "dev"))
-        texts.packs:SetText(table.concat(PackLines(), "\n"))
-        for _, text in pairs(texts) do
-            text:Show()
-        end
-    end
-    return initializer
+    local packs = Text("GameFontHighlight")
+    packs:SetPoint("BOTTOMLEFT")
+    local subtitle = Text("GameFontNormal")
+    subtitle:SetText("Voice packs")
+    subtitle:SetPoint("BOTTOMLEFT", packs, "TOPLEFT", 0, VERSION_LINE_HEIGHT - 12)
+    local addon = Text("GameFontHighlight")
+    addon:SetPoint("BOTTOMLEFT", subtitle, "TOPLEFT", 0, VERSION_GAP)
+    local title = Text("GameFontHighlightLarge")
+    title:SetText("Versions")
+    title:SetPoint("BOTTOMLEFT", addon, "TOPLEFT", 0, VERSION_GAP)
+
+    local report = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    report:SetSize(110, 22)
+    report:SetPoint("BOTTOMLEFT", title, "TOPLEFT", 0, 2 * VERSION_GAP)
+    report:SetText("Report Bug")
+    report:SetScript("OnClick", function()
+        _G.SettingsPanel:Close(true)
+        ns.Report:ShowGeneral()
+    end)
+
+    panel:SetScript("OnShow", function()
+        addon:SetText("Forever Voiceover " .. (ns.version or "dev"))
+        packs:SetText(table.concat(PackLines(), "\n"))
+    end)
+    return panel
 end
 
---- "Send Quests to Project" beside the Defaults button in the page header,
---- shown only while this addon's main page is. The header belongs to the
---- Settings panel and is shared by every page, so the button follows the
---- layout the panel displays (a search result is a layout of its own).
-local function AddHeaderButton(layout)
+--- "Send Quests to Project" beside the Defaults button in the page header, and
+--- the versions panel, shown only while this addon's main page is. The header
+--- and the list belong to the Settings panel and are shared by every page, so
+--- both follow the layout the panel displays (a search result is a layout of
+--- its own).
+local function AddPageFrames(layout)
     local header = _G.SettingsPanel:GetSettingsList().Header
     local button = CreateFrame("Button", nil, header, "UIPanelButtonTemplate")
     button:SetSize(180, 22)
@@ -190,8 +183,10 @@ local function AddHeaderButton(layout)
         GameTooltip:Show()
     end)
     button:SetScript("OnLeave", GameTooltip_Hide)
+    local versions = CreateVersionsPanel()
     hooksecurefunc(_G.SettingsPanel, "DisplayLayout", function(_, shown)
         button:SetShown(shown == layout)
+        versions:SetShown(shown == layout)
     end)
 end
 
@@ -212,7 +207,7 @@ ns.OnInit(function()
 
     -- On the addon's own page, where a player looking to opt back in lands first
     Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
-    AddHeaderButton(layout)
+    AddPageFrames(layout)
 
     -- What to voice
     local voiced = Settings.RegisterVerticalLayoutSubcategory(category, "What to voice")
@@ -260,9 +255,6 @@ ns.OnInit(function()
             pcall(C_CVar.SetCVar, "ForeverVO_devOverlay", value and "1" or "0")
             ns.UI.Debug:Apply()
         end)
-
-    -- Last on the main page, below everything else
-    layout:AddInitializer(VersionsInitializer())
 
     Settings.RegisterAddOnCategory(category)
 end)

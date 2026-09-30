@@ -4,10 +4,10 @@
 
 - **Send Quests to Project** sits beside **Defaults** at the top of the
   Forever Voiceover page in Options (the same as `/fvo export`). The bottom of
-  the page lists the addon's version and, under **Voice packs**, every
+  the window lists the addon's version and, under **Voice packs**, every
   installed pack by its full name and version, for bug reports. The minimap
   button's tooltip shows the addon version too.
-- **Report Bug**, beside the Versions title, opens the report window for a
+- **Report Bug**, above the versions, opens the report window for a
   problem that is not about one line. Pick what went wrong (UI, playback, a
   Lua error, something else); the GitHub form opens titled with that and the
   first line you write, with your addon and voice pack versions filled in.
