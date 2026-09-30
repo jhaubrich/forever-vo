@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+- **Send Quests to Project** sits beside **Defaults** at the top of the
+  Forever Voiceover page in Options (the same as `/fvo export`). The bottom of
+  the page lists the addon's version and, under **Voice packs**, every
+  installed pack by its full name and version, for bug reports. The minimap
+  button's tooltip shows the addon version too.
+- **Repeat greetings and gossip** replaces both **Repeat gossip** and **First
+  gossip only**, which overlapped: *Every time*, *Gossip once, greetings
+  always* (the default), *Both once per NPC*, or *Once for quest givers*. A
+  greeting is the text an NPC with more than one quest opens with; gossip is
+  what an NPC says above the conversation options. Your earlier choice
+  carries over, and "Never" becomes the Greetings and Gossip boxes cleared.
+  "Once" is remembered on each character, not just for the session.
+- The **Voice packs** options page is now **Voice Pack Debug**.
+- The minimap button shows the gold microphone from the project's art in
+  place of the borrowed spell icon.
+
 ## 0.1.7
 
 - The login window now offers to send what you have seen. After the first

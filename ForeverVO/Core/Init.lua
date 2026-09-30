@@ -10,6 +10,7 @@ ns.name = ADDON_NAME
 ns.version = C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version") or "dev"
 ns.mediaPath = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\"
 ns.iconTexture = "Interface\\Icons\\Ability_Warrior_BattleShout" -- an NPC mid-shout; ships with the client
+ns.minimapIcon = ns.mediaPath .. "Microphone" -- the gold microphone from the project's CurseForge art
 ns.UI = {}
 
 ForeverVO = ns
@@ -25,8 +26,7 @@ ns.defaults = {
     playComplete = true,
     playGreeting = true,
     playGossip = true,
-    gossipOnce = true,                   -- an NPC's gossip is read once per session
-    gossipFrequency = "oncePerQuestNPC", -- always | oncePerQuestNPC | oncePerNPC | never
+    gossipRepeat = "gossipOnce",         -- always | gossipOnce | once | questGivers (Events.lua)
 
     -- Audio
     soundChannel = "Master",             -- Master | Dialog | SFX | Music | Ambience
@@ -56,9 +56,34 @@ ns.defaults = {
 
 ns.charDefaults = {
     paused = false,
-    seenGossip = {},
-    seenGossipOnce = {},
+    seenGossipOnce = {},                 -- NPCs whose gossip was read, by GUID or name
+    seenGreeting = {},                   -- the same for greetings
 }
+
+--- Addon 0.1.7 had two settings for one question, gossipFrequency (greetings
+--- and gossip together, with a "never" that the Greetings and Gossip boxes
+--- already cover) and the gossipOnce box beside Gossip. Fold them into
+--- gossipRepeat, keeping what the player heard before.
+local function MigrateGossipRepeat(db, char)
+    if db.gossipFrequency ~= nil and db.gossipRepeat == nil then
+        local once = db.gossipOnce ~= false
+        local frequency = db.gossipFrequency
+        if frequency == "oncePerNPC" then
+            db.gossipRepeat = "once"
+        elseif frequency == "oncePerQuestNPC" and not once then
+            db.gossipRepeat = "questGivers"
+        else
+            db.gossipRepeat = once and "gossipOnce" or "always"
+        end
+        if frequency == "never" then
+            db.playGreeting = false
+            db.playGossip = false
+        end
+    end
+    db.gossipFrequency = nil
+    db.gossipOnce = nil
+    char.seenGossip = nil -- greetings and gossip in one table; seenGreeting starts empty
+end
 
 local function ApplyDefaults(target, defaults)
     for key, value in pairs(defaults) do
@@ -102,6 +127,7 @@ loader:RegisterEvent("ADDON_LOADED")
 loader:RegisterEvent("PLAYER_LOGIN")
 loader:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == ADDON_NAME then
+        MigrateGossipRepeat(ForeverVODB or {}, ForeverVOCharDB or {})
         ForeverVODB = ApplyDefaults(ForeverVODB or {}, ns.defaults)
         ForeverVOCharDB = ApplyDefaults(ForeverVOCharDB or {}, ns.charDefaults)
         ns.db = ForeverVODB

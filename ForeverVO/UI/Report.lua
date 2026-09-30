@@ -140,10 +140,7 @@ local function ShortSound(path)
 end
 
 local function PackList()
-    local names = {}
-    for _, pack in ns.Packs:Iterate() do
-        table.insert(names, pack.version and format("%s %s", pack.name, pack.version) or pack.name)
-    end
+    local names = ns.Packs:Versions()
     if #names == 0 then
         return "none"
     end

@@ -122,6 +122,7 @@ end
 function ForeverVO_OnCompartmentEnter(_, menuButtonFrame)
     GameTooltip:SetOwner(menuButtonFrame, "ANCHOR_LEFT")
     GameTooltip:SetText("Forever Voiceover")
+    GameTooltip:AddLine("Version " .. (ns.version or "dev"), 0.6, 0.6, 0.6)
     local size = Queue:Size()
     if size > 0 then
         GameTooltip:AddLine(format("%d %s queued%s", size, ns.Util.Plural(size, "line"), Queue:IsPaused() and " (paused)" or ""), 1, 1, 1)
