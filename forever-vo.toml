@@ -538,6 +538,8 @@ Feralas = "fairalass"
 Lordaeron = "Lorderon"
 "Eldre'Thalas" = "Eldra thelass"
 Tyrande = "teronda"
+naxxramas = "naxRAMuss"
+Arthas = "Arthus"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
