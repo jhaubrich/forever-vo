@@ -112,6 +112,9 @@ ns.OnInit(function()
         head:ApplySettings()
     end
 
+    -- On the addon's own page, where a player looking to opt back in lands first
+    Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
+
     -- What to voice
     local voiced = Settings.RegisterVerticalLayoutSubcategory(category, "What to voice")
     Checkbox(voiced, "playAccept", "Quest offers", "Read the quest text when a quest is offered.")

@@ -8,7 +8,9 @@ body:
       value: |
         **You do not have to do this for each quest.** One export packs up everything you have seen since your last export, across logins and characters, so once every few play sessions is plenty. A new issue per quest just sends the same lines again.
 
-        In game, right-click the minimap button and choose "Send quests to project" (or type `/fvo export`), then use Copy Link. Pasting that link opens this form with the box below filled in. If the box is empty, the string was too long for the link: it is in the game window under Export string, and it pastes here. It starts with `FVO1:` and holds only quest and gossip text, the speaking NPC and the zone; your character name is removed before export.
+        In game, right-click the minimap button and choose "Send quests to project" (or type `/fvo export`), then use Copy Link. Pasting that link opens this form with the box below filled in. If the box is empty, the string was too long for the link: it is in the game window under Export string, and it pastes here. It starts with `FVO1:`.
+
+        **What is sent:** the text, who said it, the zone, and your character's class, race and sex. Never your name.
   - type: textarea
     id: export
     attributes:
