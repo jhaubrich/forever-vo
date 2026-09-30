@@ -43,6 +43,13 @@ local CHOICES = {
 local GENERAL = { key = "general", template = "bug-playback.yml" }
 local GENERAL_HINT = "Say what happened, then Copy Link and paste it into a browser. The GitHub form opens with this and your addon and voice pack versions filled in."
 local GENERAL_BODY = "What I did, what I expected, what the addon did instead:\n\n"
+-- What the general report is about: the dropdown's entries and the issue title's prefix
+local GENERAL_KINDS = {
+    { title = "UI", label = "Options, a window, or the minimap button" },
+    { title = "Playback", label = "Nothing plays, or the wrong line plays" },
+    { title = "Lua error", label = "A Lua error" },
+    { title = "Other", label = "Something else" },
+}
 
 local HINT = "Edit the report if you need to, then Copy Link and paste it into a browser. Choose what is wrong on the GitHub form, and submit.\nYour character name has been removed."
 local PRESS_COPY = "Press Ctrl+C"
@@ -289,15 +296,22 @@ local function BodyFor(choice, item, text)
     return format("%s\n\n%s\n\n%s\n\n%s", head, shown, mark, tail)
 end
 
+--- "<kind>: <the first line the player wrote>", or the form's placeholder.
+local function GeneralTitle(kind, body)
+    local written = body:sub(1, #GENERAL_BODY) == GENERAL_BODY and body:sub(#GENERAL_BODY + 1) or body
+    local first = OneLine(written:match("[^\n]*%S[^\n]*") or "")
+    return TrimTitle(format("%s: %s", kind.title, first ~= "" and first or "<what happened>"))
+end
+
 --- kind is left unset on the voice and capture forms. It is a required
 --- dropdown whose option text would have to be copied here and matched
 --- exactly, and the player picks it on the form. The editable box is the
 --- textarea; the title, the line, and the versions stay beside it.
 local function FieldsFromBody(choice, item, body)
     if choice == GENERAL then
-        -- no title: the form's own "Playback: <what happened>" asks for one
         return {
             { "template", choice.template },
+            { "title", GeneralTitle(GENERAL_KINDS[Report.generalKind or 1], body) },
             { "what", body },
             { "packs", PackList() },
             { "version", ns.version or "dev" },
@@ -401,7 +415,7 @@ end
 local function PlaceScroll(frame, bottom)
     local scroll = frame.Scroll
     scroll:ClearAllPoints()
-    local above = frame.Kinds[#CHOICES]:IsShown() and frame.Kinds[#CHOICES] or frame.Hint
+    local above = frame.general and frame.GeneralKindLabel or frame.Kinds[#CHOICES]
     scroll:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -12)
     scroll:SetPoint("BOTTOMRIGHT", -30, bottom)
 end
@@ -595,6 +609,10 @@ function Report:Show(item)
     for _, radio in ipairs(frame.Kinds) do
         radio:Show()
     end
+    if frame.GeneralKind then
+        frame.GeneralKind:Hide()
+        frame.GeneralKindLabel:Hide()
+    end
     PlaceScroll(frame, 46)
     frame:Show()
     self:SetKind(1)
@@ -610,6 +628,30 @@ function Report:ShowGeneral()
     for _, radio in ipairs(frame.Kinds) do
         radio:Hide()
     end
+    if not frame.GeneralKind then
+        local label = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        label:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", 0, -16)
+        label:SetText("What went wrong:")
+        local dropdown = CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")
+        dropdown:SetWidth(280)
+        dropdown:SetPoint("LEFT", label, "RIGHT", 10, 0)
+        dropdown:SetupMenu(function(_, root)
+            for index, kind in ipairs(GENERAL_KINDS) do
+                root:CreateRadio(kind.label, function()
+                    return (Report.generalKind or 1) == index
+                end, function()
+                    Report.generalKind = index
+                    Report:ClearStatus()
+                end)
+            end
+        end)
+        frame.GeneralKind = dropdown
+        frame.GeneralKindLabel = label
+    end
+    self.generalKind = 1
+    frame.GeneralKind:GenerateMenu()
+    frame.GeneralKind:Show()
+    frame.GeneralKindLabel:Show()
     self:ClearStatus()
     PlaceScroll(frame, 46)
     frame:Show()
