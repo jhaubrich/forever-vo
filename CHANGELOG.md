@@ -12,7 +12,7 @@
 - The login window's offer is shorter: how many quests we need, and that
   sending needs a free GitHub account.
 - **Copy Link** in the export window says thank you in chat. Send with
-  nothing to send leaves Options open and only says so in chat.
+  nothing to send leaves Options open and only says so in a popup.
 - **Report Bug** opens the report window for a
   problem that is not about one line. Pick what went wrong (UI, playback, a
   Lua error, something else); the GitHub form opens titled with that and the
@@ -27,6 +27,17 @@
 - The **Voice packs** options page is now **Voice Pack Debug**.
 - The minimap button and the addon list show the gold microphone from the
   project's art in place of the borrowed spell icon.
+- `/fvo export` fits every export into links. A GitHub link only holds about
+  25 lines, and a longer export used to leave its string out of the link and
+  say so in a message that ran off the window. Now it comes in parts: **Next**
+  and **Previous** step through them, each part's Copy Link opens its own
+  issue, and a note you type carries over to the next part. Lines only count
+  as sent once their part's link is copied, so closing the window halfway (or
+  opening it and not sending) leaves the rest for your next export. Errors,
+  such as a note too long for the link or nothing to export, show in a popup
+  instead of chat. **All at Once** sends a long export as one issue instead:
+  the link opens the form, and you copy the export string into it from the
+  box below the link (up to about 250 lines per issue).
 
 ## 0.1.7
 
