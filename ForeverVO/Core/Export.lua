@@ -404,9 +404,13 @@ function Export:GetFrame()
     frame.PasteStatus:SetTextColor(1, 0.82, 0)
     frame.PasteStatus:Hide()
 
+    -- The buttons sit in the template's button bar, the 26 px under its
+    -- inset, where Blizzard's own windows put theirs (MagicButton_OnLoad's
+    -- offsets: 4 from the bottom, 4 from the left edge, 6 from the right, and
+    -- neighbours touching). Higher up they straddled the inset's border.
     frame.CopyButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     frame.CopyButton:SetSize(110, 22)
-    frame.CopyButton:SetPoint("BOTTOMRIGHT", -16, 12)
+    frame.CopyButton:SetPoint("BOTTOMRIGHT", -6, 4)
     frame.CopyButton:SetText("Copy Link")
     frame.CopyButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -415,7 +419,7 @@ function Export:GetFrame()
 
     frame.NextButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     frame.NextButton:SetSize(80, 22)
-    frame.NextButton:SetPoint("RIGHT", frame.CopyButton, "LEFT", -8, 0)
+    frame.NextButton:SetPoint("RIGHT", frame.CopyButton, "LEFT", -1, 0)
     frame.NextButton:SetText("Next")
     frame.NextButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -424,7 +428,7 @@ function Export:GetFrame()
 
     frame.PreviousButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     frame.PreviousButton:SetSize(80, 22)
-    frame.PreviousButton:SetPoint("RIGHT", frame.NextButton, "LEFT", -4, 0)
+    frame.PreviousButton:SetPoint("RIGHT", frame.NextButton, "LEFT", -1, 0)
     frame.PreviousButton:SetText("Previous")
     frame.PreviousButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -434,7 +438,7 @@ function Export:GetFrame()
     -- One issue however much was captured, by pasting instead of a link.
     frame.ModeButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     frame.ModeButton:SetSize(110, 22)
-    frame.ModeButton:SetPoint("BOTTOMLEFT", 16, 12)
+    frame.ModeButton:SetPoint("BOTTOMLEFT", 4, 4)
     frame.ModeButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         Export:SetMode(not frame.paste)
@@ -455,9 +459,9 @@ function Export:GetFrame()
     end)
 
     frame.PartLabel = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    frame.PartLabel:SetPoint("LEFT", frame.ModeButton, "RIGHT", 8, 0)
-    frame.PartLabel:SetPoint("RIGHT", frame.PreviousButton, "LEFT", -8, 0)
-    frame.PartLabel:SetJustifyH("LEFT")
+    frame.PartLabel:SetPoint("LEFT", frame.ModeButton, "RIGHT", 4, 0)
+    frame.PartLabel:SetPoint("RIGHT", frame.PreviousButton, "LEFT", -4, 0)
+    frame.PartLabel:SetJustifyH("CENTER")
     frame.PartLabel:SetWordWrap(false)
     return frame
 end
