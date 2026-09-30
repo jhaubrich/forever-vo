@@ -111,7 +111,7 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
                 ns.db.showHead = not ns.db.showHead
                 ns.UI.TalkingHead:ApplySettings()
             end)
-            root:CreateButton("Send quests to project", function() ns.Export:Show() end)
+            root:CreateButton(ns.Export:SendLabel(), function() ns.Export:Show() end)
             root:CreateButton("Options", function() ns.SettingsPanel:Open() end)
         end)
     else
@@ -126,6 +126,10 @@ function ForeverVO_OnCompartmentEnter(_, menuButtonFrame)
     local size = Queue:Size()
     if size > 0 then
         GameTooltip:AddLine(format("%d %s queued%s", size, ns.Util.Plural(size, "line"), Queue:IsPaused() and " (paused)" or ""), 1, 1, 1)
+    end
+    local pending = ns.Export:PendingCount()
+    if pending > 0 then
+        GameTooltip:AddLine(format("%d %s to send to the project", pending, ns.Util.Plural(pending, "quest")), 1, 1, 1)
     end
     GameTooltip:AddLine("Left-click: options. Right-click: playback menu.", 0.6, 0.6, 0.6)
     GameTooltip:Show()

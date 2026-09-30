@@ -231,17 +231,6 @@ local function ButtonRow(layout, text, tooltip, onClick)
     return initializer
 end
 
---- "Send 12 Quests to Project", counting what an export would carry as the login
---- window does (distinct quests and gossip lines); the plain label when none.
-local function SendText()
-    local quests, gossip = ns.Capture:Pending()
-    local count = quests + gossip
-    if count == 0 then
-        return "Send Quests to Project"
-    end
-    return format("Send %d %s to Project", count, count == 1 and "Quest" or "Quests")
-end
-
 function SettingsPanel:Open()
     if self.category then
         Settings.OpenToCategory(self.category:GetID())
@@ -260,7 +249,7 @@ ns.OnInit(function()
     -- The addon's own page: the ways to help the project, where a player looking
     -- to opt back in lands first, then the versions a bug report asks for
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Contribute"))
-    local send = ButtonRow(layout, SendText,
+    local send = ButtonRow(layout, function() return ns.Export:SendLabel() end,
         "Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.",
         function() ns.Export:Show(false) end)
     -- Under Send, indented and small as Blizzard draws a sub-option: it turns

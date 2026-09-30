@@ -7,7 +7,8 @@
   **Report Bug** buttons, and lists the addon's
   version and, under **Voice packs**, every installed pack by its full name
   and version, for bug reports. The minimap button's tooltip shows the addon
-  version too.
+  version and how many quests you have to send, and its menu's Send entry
+  the count too.
 - **Report Bug** opens the report window for a
   problem that is not about one line. Pick what went wrong (UI, playback, a
   Lua error, something else); the GitHub form opens titled with that and the
