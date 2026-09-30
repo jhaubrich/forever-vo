@@ -129,7 +129,7 @@ function ForeverVO_OnCompartmentEnter(_, menuButtonFrame)
     end
     local pending = ns.Export:PendingCount()
     if pending > 0 then
-        GameTooltip:AddLine(format("%d %s to send to the project", pending, ns.Util.Plural(pending, "quest")), 1, 1, 1)
+        GameTooltip:AddLine(format("You have %d %s that we need!", pending, ns.Util.Plural(pending, "quest")), 1, 1, 1)
     end
     GameTooltip:AddLine("Left-click: options. Right-click: playback menu.", 0.6, 0.6, 0.6)
     GameTooltip:Show()
