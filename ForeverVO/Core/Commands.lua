@@ -111,7 +111,12 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
                 ns.db.showHead = not ns.db.showHead
                 ns.UI.TalkingHead:ApplySettings()
             end)
-            root:CreateButton(ns.Export:SendLabel(), function() ns.Export:Show() end)
+            -- In blue when there is something to send, so it stands out of the menu
+            local send = ns.Export:SendLabel()
+            if ns.Export:PendingCount() > 0 then
+                send = "|cff66bbff" .. send .. "|r"
+            end
+            root:CreateButton(send, function() ns.Export:Show() end)
             root:CreateButton("Options", function() ns.SettingsPanel:Open() end)
         end)
     else
