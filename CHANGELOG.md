@@ -7,6 +7,9 @@
   the page lists the addon's version and, under **Voice packs**, every
   installed pack by its full name and version, for bug reports. The minimap
   button's tooltip shows the addon version too.
+- **Report Bug**, beside the Versions title, opens the report window for a
+  problem that is not about one line. The GitHub form opens with your text
+  and your addon and voice pack versions filled in.
 - **Repeat greetings and gossip** replaces both **Repeat gossip** and **First
   gossip only**, which overlapped: *Every time*, *Gossip once, greetings
   always* (the default), *Both once per NPC*, or *Once for quest givers*. A

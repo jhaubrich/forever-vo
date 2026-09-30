@@ -118,8 +118,8 @@ local function PackLines()
     return packs
 end
 
---- A section header with the addon's version under its title, then a "Voice
---- packs" subtitle and one line per pack. The header frame is pooled with
+--- A section header with a Report Bug button beside its title and the addon's
+--- version under it, then a "Voice packs" subtitle and one line per pack. The header frame is pooled with
 --- every other header in the Settings list, so the extra text is hidden again
 --- whenever the frame is reused for another one.
 local function VersionsInitializer()
@@ -138,12 +138,20 @@ local function VersionsInitializer()
                 text:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -VERSION_GAP)
                 return text
             end
+            local report = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+            report:SetSize(110, 22)
+            report:SetPoint("LEFT", frame.Title, "RIGHT", 16, 0)
+            report:SetText("Report Bug")
+            report:SetScript("OnClick", function()
+                _G.SettingsPanel:Close(true)
+                ns.Report:ShowGeneral()
+            end)
             local addon = Text("GameFontHighlight", frame.Title)
             local subtitle = Text("GameFontNormal", addon)
             subtitle:SetText("Voice packs")
             local packs = Text("GameFontHighlight", subtitle)
             packs:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -(VERSION_LINE_HEIGHT - 12))
-            frame.FVOVersions = { addon = addon, subtitle = subtitle, packs = packs }
+            frame.FVOVersions = { report = report, addon = addon, subtitle = subtitle, packs = packs }
             hooksecurefunc(frame, "Init", function(header, other)
                 for _, text in pairs(header.FVOVersions) do
                     text:SetShown(other == initializer)

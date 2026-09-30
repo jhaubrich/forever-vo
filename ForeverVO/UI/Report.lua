@@ -3,6 +3,8 @@ local Util = ns.Util
 
 --[[
 Report copies a link that opens a GitHub issue about the line that is playing.
+Report Bug on the options page (ShowGeneral) uses the same window with no line:
+the playback form, filled with what the player writes and the versions.
 The link is the whole report: GitHub's new-issue URL takes the title and, for
 a YAML form, one query parameter per field id (line, detail, versions, and
 the rest). body= fills a blank issue, and this repo's forms would ignore it.
@@ -36,6 +38,11 @@ local CHOICES = {
     { key = "captures", label = "The text or the speaker is wrong", template = "bug-captures.yml", title = "Capture" },
     { key = "playback", label = "The addon misbehaved", template = "bug-playback.yml", title = "Playback" },
 }
+
+-- Report:ShowGeneral, from the options page: a bug with no line playing
+local GENERAL = { key = "general", template = "bug-playback.yml" }
+local GENERAL_HINT = "Say what happened, then Copy Link and paste it into a browser. The GitHub form opens with this and your addon and voice pack versions filled in."
+local GENERAL_BODY = "What I did, what I expected, what the addon did instead:\n\n"
 
 local HINT = "Edit the report if you need to, then Copy Link and paste it into a browser. Choose what is wrong on the GitHub form, and submit.\nYour character name has been removed."
 local PRESS_COPY = "Press Ctrl+C"
@@ -287,6 +294,15 @@ end
 --- exactly, and the player picks it on the form. The editable box is the
 --- textarea; the title, the line, and the versions stay beside it.
 local function FieldsFromBody(choice, item, body)
+    if choice == GENERAL then
+        -- no title: the form's own "Playback: <what happened>" asks for one
+        return {
+            { "template", choice.template },
+            { "what", body },
+            { "packs", PackList() },
+            { "version", ns.version or "dev" },
+        }
+    end
     local identity = Identity(item)
     local title = IssueTitle(choice, item)
     if choice.key == "playback" then
@@ -385,7 +401,8 @@ end
 local function PlaceScroll(frame, bottom)
     local scroll = frame.Scroll
     scroll:ClearAllPoints()
-    scroll:SetPoint("TOPLEFT", frame.Kinds[#CHOICES], "BOTTOMLEFT", 0, -12)
+    local above = frame.Kinds[#CHOICES]:IsShown() and frame.Kinds[#CHOICES] or frame.Hint
+    scroll:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -12)
     scroll:SetPoint("BOTTOMRIGHT", -30, bottom)
 end
 
@@ -550,10 +567,10 @@ end
 function Report:CopyLink()
     local frame = self.frame
     local item = frame.item
-    if not item then
+    if not item and not frame.general then
         return
     end
-    local choice = CHOICES[self.kind or 1]
+    local choice = frame.general and GENERAL or CHOICES[self.kind or 1]
     local body = frame.Scroll.EditBox:GetText() or ""
     local url, shortened = LinkFromBody(choice, item, body)
     frame.link = url
@@ -572,6 +589,32 @@ function Report:Show(item)
     end
     local frame = self:GetFrame()
     frame.item = item
+    frame.general = nil
+    frame:SetTitle("Forever Voiceover: report this line")
+    frame.Hint:SetText(HINT)
+    for _, radio in ipairs(frame.Kinds) do
+        radio:Show()
+    end
+    PlaceScroll(frame, 46)
     frame:Show()
     self:SetKind(1)
+end
+
+--- A bug report with no line attached, on the playback form.
+function Report:ShowGeneral()
+    local frame = self:GetFrame()
+    frame.item = nil
+    frame.general = true
+    frame:SetTitle("Forever Voiceover: report a bug")
+    frame.Hint:SetText(GENERAL_HINT)
+    for _, radio in ipairs(frame.Kinds) do
+        radio:Hide()
+    end
+    self:ClearStatus()
+    PlaceScroll(frame, 46)
+    frame:Show()
+    local editBox = frame.Scroll.EditBox
+    editBox:SetText(GENERAL_BODY)
+    editBox:SetFocus()
+    editBox:SetCursorPosition(#GENERAL_BODY)
 end
