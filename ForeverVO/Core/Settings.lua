@@ -182,14 +182,64 @@ local function VersionsInitializer()
     return initializer
 end
 
---- A standard settings row: the label left, a 200 px panel button in the
---- control column. Both actions open a window of their own, so Options closes
---- first rather than stay on top of it.
-local function ActionButton(layout, name, buttonText, tooltip, onClick)
-    layout:AddInitializer(CreateSettingsButtonInitializer(name, buttonText, function()
-        _G.SettingsPanel:Close(true)
-        onClick()
-    end, tooltip, true))
+-- A button alone in a list row, left-aligned with the settings' labels
+local BUTTON_ROW_HEIGHT = 26
+local BUTTON_HEIGHT = 22
+local BUTTON_PADDING = 40    -- beside the text, as Blizzard's panel buttons have
+local BUTTON_MIN_WIDTH = 160
+
+--- A list row holding only a button: Blizzard's button row puts a label left
+--- and the button in the control column, and the label only repeated the
+--- button. The row is a section header with no name, whose frames are pooled
+--- with every other header, so the button is hidden when another one reuses it.
+--- text is a function, read each time the row is shown.
+local function ButtonRow(layout, text, tooltip, onClick)
+    local initializer = CreateSettingsListSectionHeaderInitializer("")
+    initializer.fvoButton = true
+    function initializer:GetExtent()
+        return BUTTON_ROW_HEIGHT
+    end
+    local baseInit = initializer.InitFrame
+    function initializer:InitFrame(frame)
+        if not frame.FVOButton then
+            local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+            button:SetHeight(BUTTON_HEIGHT)
+            button:SetPoint("LEFT", VERSION_LEFT, 0)
+            button:SetScript("OnLeave", GameTooltip_Hide)
+            frame.FVOButton = button
+            hooksecurefunc(frame, "Init", function(header, other)
+                header.FVOButton:SetShown(other.fvoButton == true)
+            end)
+        end
+        baseInit(self, frame)
+        local button = frame.FVOButton
+        button:SetText(text())
+        button:SetWidth(math.max(BUTTON_MIN_WIDTH, math.ceil(button:GetFontString():GetStringWidth()) + BUTTON_PADDING))
+        button:SetScript("OnClick", function()
+            -- the window it opens would sit behind Options
+            _G.SettingsPanel:Close(true)
+            onClick()
+        end)
+        button:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(self:GetText(), 1, 0.82, 0)
+            GameTooltip:AddLine(tooltip, 1, 1, 1, true)
+            GameTooltip:Show()
+        end)
+        button:Show()
+    end
+    layout:AddInitializer(initializer)
+end
+
+--- "Send 12 Quests to Project", counting what an export would carry as the login
+--- window does (distinct quests and gossip lines); the plain label when none.
+local function SendText()
+    local quests, gossip = ns.Capture:Pending()
+    local count = quests + gossip
+    if count == 0 then
+        return "Send Quests to Project"
+    end
+    return format("Send %d %s to Project", count, count == 1 and "Quest" or "Quests")
 end
 
 function SettingsPanel:Open()
@@ -210,11 +260,11 @@ ns.OnInit(function()
     -- The addon's own page: the ways to help the project, where a player looking
     -- to opt back in lands first, then the versions a bug report asks for
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Contribute"))
-    ActionButton(layout, "Unvoiced lines", "Send Quests to Project",
+    ButtonRow(layout, SendText,
         "Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.",
         function() ns.Export:Show(false) end)
     Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
-    ActionButton(layout, "Problems", "Report Bug",
+    ButtonRow(layout, function() return "Report Bug" end,
         "Say what went wrong and copy a link that opens a GitHub issue with your addon and voice pack versions filled in.",
         function() ns.Report:ShowGeneral() end)
     layout:AddInitializer(VersionsInitializer())
