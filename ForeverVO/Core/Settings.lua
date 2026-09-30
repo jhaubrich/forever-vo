@@ -191,8 +191,10 @@ local BUTTON_MIN_WIDTH = 160
 --- and the button in the control column, and the label only repeated the
 --- button. The row is a section header with no name, whose frames are pooled
 --- with every other header, so the button is hidden when another one reuses it.
---- text is a function, read each time the row is shown.
-local function ButtonRow(layout, text, tooltip, onClick)
+--- text is a function, read each time the row is shown. opens, if given, says
+--- whether onClick will open a window; when it will not (an export with nothing
+--- in it only prints to chat), Options stays open.
+local function ButtonRow(layout, text, tooltip, onClick, opens)
     local initializer = CreateSettingsListSectionHeaderInitializer("")
     initializer.fvoButton = true
     function initializer:GetExtent()
@@ -216,7 +218,9 @@ local function ButtonRow(layout, text, tooltip, onClick)
         button:SetWidth(math.max(BUTTON_MIN_WIDTH, math.ceil(button:GetFontString():GetStringWidth()) + BUTTON_PADDING))
         button:SetScript("OnClick", function()
             -- the window it opens would sit behind Options
-            _G.SettingsPanel:Close(true)
+            if not opens or opens() then
+                _G.SettingsPanel:Close(true)
+            end
             onClick()
         end)
         button:SetScript("OnEnter", function(self)
@@ -251,7 +255,8 @@ ns.OnInit(function()
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Contribute"))
     local send = ButtonRow(layout, function() return ns.Export:SendLabel() end,
         "Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.",
-        function() ns.Export:Show(false) end)
+        function() ns.Export:Show(false) end,
+        function() return ns.Export:HasLines(false) end)
     -- Under Send, indented and small as Blizzard draws a sub-option: it turns
     -- off the login window that offers the same export
     local _, optOut = Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")

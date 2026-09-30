@@ -301,6 +301,7 @@ function Export:CopyLink()
     frame.LinkBox:SetText(url)
     frame.Status:SetText(shortened and PRESS_COPY_SHORT or PRESS_COPY)
     frame.Status:SetTextColor(1, 0.82, 0)
+    ns.Print("thank you for helping voice Forever! Once the form is submitted, your lines go into the next voice pack.")
 end
 
 --- How many lines an export would carry now, counted as the login window
@@ -318,6 +319,12 @@ function Export:SendLabel()
         return "Send Quests to Project"
     end
     return format("Send %d %s to Project", count, Util.Plural(count, "Quest"))
+end
+
+--- Whether Show(all) would open the window rather than only print to chat.
+---@param all boolean
+function Export:HasLines(all)
+    return #self:Collect(all).lines > 0
 end
 
 ---@param all boolean pack every line, exported before or not
