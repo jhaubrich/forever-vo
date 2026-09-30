@@ -79,8 +79,14 @@ function Welcome:GetFrame()
     send:SetPoint("TOPRIGHT", frame.Text, "BOTTOM", -BUTTON_GAP / 2, -PADDING)
     send:SetText("Send Quests to Project")
     -- White on blue, the blue of "Send" in the text above it: Blizzard's red
-    -- button pieces, greyed and tinted. Refresh drops the tint when disabled.
+    -- button pieces greyed, with blue added over them (a multiplied tint on
+    -- the grey came out near black). Refresh drops both when disabled.
     send:SetNormalFontObject(GameFontHighlight)
+    send.Blue = send:CreateTexture(nil, "BORDER")
+    send.Blue:SetPoint("TOPLEFT", 2, -2)
+    send.Blue:SetPoint("BOTTOMRIGHT", -2, 2)
+    send.Blue:SetColorTexture(0.1, 0.35, 0.7)
+    send.Blue:SetBlendMode("ADD")
     send:SetScript("OnClick", function()
         frame:Hide()
         ns.Export:Show(false)
@@ -130,14 +136,9 @@ function Welcome:Refresh(intro)
 
     frame.Send:SetEnabled(pending > 0)
     for _, key in ipairs({ "Left", "Middle", "Right" }) do
-        local piece = frame.Send[key]
-        piece:SetDesaturated(pending > 0)
-        if pending > 0 then
-            piece:SetVertexColor(0.4, 0.733, 1)
-        else
-            piece:SetVertexColor(1, 1, 1)
-        end
+        frame.Send[key]:SetDesaturated(pending > 0)
     end
+    frame.Send.Blue:SetShown(pending > 0)
     frame.OptOut:SetChecked(ns.db.crowdsourceOptOut)
     local textHeight = frame.Text:GetStringHeight()
     local checkTop = PADDING + frame.Title:GetStringHeight() + TITLE_GAP + textHeight + PADDING + BUTTON_HEIGHT + PADDING / 2
