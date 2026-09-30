@@ -15,6 +15,8 @@ local MODEL_SIZE = 115
 local TEXT_INSET = 28   -- left margin of the name and text when the portrait is hidden
 local TALK_ANIMATION = 60
 local MODEL_SETTLE = 0.5    -- seconds a model load gets before the book stands in
+local CLOSE_INSET = 12       -- the close button's offset from the top right corner
+local CONTROL_SIZE = 26
 local CONTROLS_OUT = 0.3    -- seconds the buttons take to fade before the panel does
 local READ_RATE = 15        -- characters a second, to page a line that has no duration
 local FALLBACK_LINES = 3    -- the box's height in lines, while its layout is unresolved
@@ -195,7 +197,7 @@ function TalkingHead:CreateFrame()
     frame.GlowRight:SetPoint("CENTER", frame.Portrait, "RIGHT", -11, 25)
 
     frame.CloseButton = CreateFrame("Button", nil, frame, "UIPanelCloseButtonNoScripts")
-    frame.CloseButton:SetPoint("TOPRIGHT", -12, -12)
+    frame.CloseButton:SetPoint("TOPRIGHT", -CLOSE_INSET, -CLOSE_INSET)
     frame.CloseButton:SetAlpha(0.01)
     frame.CloseButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
@@ -421,7 +423,8 @@ function TalkingHead:CreateControls()
 
     local function ControlButton(tooltip, onClick)
         local button = CreateFrame("Button", nil, frame)
-        button:SetSize(24, 24)
+        -- the square's art is drawn inside its box; at 26 it reads the size of the X
+        button:SetSize(CONTROL_SIZE, CONTROL_SIZE)
         button:SetAlpha(0.01) -- until the fade-in
         button:SetNormalAtlas("chatframe-button-up")
         button:SetPushedAtlas("chatframe-button-down")
@@ -469,7 +472,10 @@ function TalkingHead:CreateControls()
         ns.UI.QueueList:Toggle()
     end)
     frame.QueueButton = queue
-    queue:SetPoint("BOTTOMRIGHT", -15, 14)
+    -- centred on the close button's column, so the stack straddles the
+    -- parchment's edge the way the X does
+    local close = frame.CloseButton
+    queue:SetPoint("BOTTOM", frame, "BOTTOMRIGHT", -CLOSE_INSET - close:GetWidth() / 2, 14)
     for row = 0, 2 do
         local y = -(row * 4.5 + 1)
         local bar = queue.Glyph:CreateTexture(nil, "ARTWORK")
