@@ -5,8 +5,8 @@ local Util, Queue = ns.Util, ns.Queue
 The talking head: a frame that mirrors Blizzard's own TalkingHeadFrame
 (Blizzard_FrameXML/TalkingHeadUI.xml) in size, atlases, anchors and fade
 animations, so it reads as part of the client. Shows the current queue item
-with the speaker's model, name, title, and the spoken text paged in time with
-the audio. Right-click skips, the X clears the queue. The bug icon opens a
+with the speaker's model, name, title, and the spoken text in pages sized to
+the text box, turned in time with the audio. Right-click skips, the X clears the queue. The bug icon opens a
 GitHub issue about the line.
 ]]
 
@@ -15,7 +15,10 @@ local MODEL_SIZE = 115
 local TEXT_INSET = 28   -- left margin of the name and text when the portrait is hidden
 local TALK_ANIMATION = 60
 local MODEL_SETTLE = 0.5    -- seconds a model load gets before the book stands in
-local PAGE_CHARS = 330
+local CONTROLS_OUT = 0.3    -- seconds the buttons take to fade before the panel does
+local READ_RATE = 15        -- characters a second, to page a line that has no duration
+local FALLBACK_LINES = 3    -- the box's height in lines, while its layout is unresolved
+local FALLBACK_CHARS = 75   -- characters a line, while the font cannot be measured
 
 local TEXTURE_KIT_FORMATS = {
     TextBackground = "%s-TextBackground",
@@ -38,7 +41,9 @@ local FONT_COLORS = {
 
 local TalkingHead = {
     displayed = nil,
-    pageTimers = {},
+    pages = { "" },     -- the displayed item's pages (pageItem), and where each
+    starts = { 0 },     -- starts as a share of the text
+    heldAt = 0,         -- where the text is while its audio is not playing
 }
 ns.UI.TalkingHead = TalkingHead
 
@@ -110,6 +115,15 @@ function TalkingHead:Init()
     Queue:RegisterCallback("OnPause", self.UpdatePause, self)
 end
 
+--- Rebuilds the pages when the box or the font's pixel size may have
+--- changed, keeping the place in the line.
+function TalkingHead:Repaginate()
+    if self.displayed and self.pageItem == self.displayed then
+        self:Paginate(self.displayed)
+        self:RenderPage()
+    end
+end
+
 function TalkingHead:CreateFrame()
     local frame = CreateFrame("Button", "ForeverVOTalkingHead", UIParent)
     self.frame = frame
@@ -140,6 +154,20 @@ function TalkingHead:CreateFrame()
     end)
     frame:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
+    end)
+
+    local sinceRender = 0
+    frame:SetScript("OnUpdate", function(_, elapsed)
+        sinceRender = sinceRender + elapsed
+        if sinceRender >= 0.1 and #self.pages > 1 then
+            sinceRender = 0
+            self:RenderPage()
+        end
+    end)
+    frame:RegisterEvent("UI_SCALE_CHANGED")
+    frame:RegisterEvent("DISPLAY_SIZE_CHANGED")
+    frame:SetScript("OnEvent", function()
+        self:Repaginate()
     end)
 
     frame.TextBackground = frame:CreateTexture(nil, "BACKGROUND")
@@ -337,7 +365,6 @@ function TalkingHead:CreateText()
     frame.Title:SetFontObject("GameFontNormal")
     frame.Title:SetJustifyH("LEFT")
     frame.Title:SetPoint("TOPLEFT", frame.Name, "BOTTOMLEFT", 1, -1)
-    frame.Title:SetPoint("RIGHT", -42, 0)
     frame.Title:SetAlpha(0.01)
 
     frame.Text = frame:CreateFontString(nil, "ARTWORK")
@@ -345,50 +372,142 @@ function TalkingHead:CreateText()
     frame.Text:SetJustifyH("LEFT")
     frame.Text:SetJustifyV("TOP")
     frame.Text:SetPoint("TOPLEFT", frame.Title, "BOTTOMLEFT", 0, -4)
-    frame.Text:SetPoint("BOTTOMRIGHT", -42, 34)
+    frame.Text:SetPoint("BOTTOMRIGHT", -42, 16)
+    frame.Text:SetWordWrap(true)
     frame.Text:SetAlpha(0.01)
-    if AutoScalingFontStringMixin then
-        Mixin(frame.Text, AutoScalingFontStringMixin)
-        frame.Text.minLineHeight = 12
-    end
+
+    -- Wraps exactly like Text, at alpha 0, so pages can be sized to the box
+    frame.Measure = frame:CreateFontString(nil, "ARTWORK")
+    frame.Measure:SetFontObject("GameFontHighlightLarge")
+    frame.Measure:SetJustifyH("LEFT")
+    frame.Measure:SetWordWrap(true)
+    frame.Measure:SetNonSpaceWrap(false)
+    frame.Measure:SetPoint("TOPLEFT")
+    frame.Measure:SetAlpha(0)
 
     frame.Sheen:SetPoint("LEFT", frame.Name, "LEFT", -48, 0)
     frame.TextSheen:SetPoint("LEFT", frame.Text, "LEFT", -48, 16)
 end
 
+--- Pause, Skip and Queue are buttons in the gutter under the close button,
+--- where Blizzard's own talking head is empty, so the text gets the frame's
+--- full height. One look for all three: the chat frame's button square with
+--- a gold glyph from the credits screen's media controls (pause, play, fast
+--- forward). The client has no list glyph in that set, so Queue's is built
+--- from one of the pause glyph's bars laid on its side, with the dropdown
+--- menu's gold dots as bullets.
+local PAUSE_ATLAS = "creditsscreen-assets-buttons-pause"
+local PLAY_ATLAS = "creditsscreen-assets-buttons-play"
+
+--- Shows the left bar of the pause glyph turned a quarter to the left, as a
+--- horizontal bar: the bar spans x 57-128, y 27-228 of the 256px glyph.
+local function SetSidewaysBar(texture)
+    local info = C_Texture.GetAtlasInfo(PAUSE_ATLAS)
+    if not info then
+        texture:SetColorTexture(1, 0.82, 0)
+        return
+    end
+    local du = info.rightTexCoord - info.leftTexCoord
+    local dv = info.bottomTexCoord - info.topTexCoord
+    local u0, u1 = info.leftTexCoord + du * 57 / 256, info.leftTexCoord + du * 128 / 256
+    local v0, v1 = info.topTexCoord + dv * 27 / 256, info.topTexCoord + dv * 228 / 256
+    texture:SetTexture(info.file or info.filename)
+    -- corners UL, LL, UR, LR: the bar's top becomes the left end
+    texture:SetTexCoord(u1, v0, u0, v0, u1, v1, u0, v1)
+end
+
 function TalkingHead:CreateControls()
     local frame = self.frame
 
-    frame.QueueText = frame:CreateFontString(nil, "ARTWORK")
-    frame.QueueText:SetFontObject("GameFontDisableSmall")
-    frame.QueueText:SetJustifyH("LEFT")
-    frame.QueueText:SetPoint("BOTTOMLEFT", frame.Text, "BOTTOMLEFT", 0, -22)
-
-    local function Button(text, width, onClick)
-        local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-        button:SetSize(width, 20)
-        button:SetText(text)
+    local function ControlButton(tooltip, onClick)
+        local button = CreateFrame("Button", nil, frame)
+        button:SetSize(24, 24)
+        button:SetAlpha(0.01) -- until the fade-in
+        button:SetNormalAtlas("chatframe-button-up")
+        button:SetPushedAtlas("chatframe-button-down")
+        button:SetHighlightAtlas("chatframe-button-highlight", "ADD")
+        -- the glyph rides on its own frame so it can sink with the press
+        local glyph = CreateFrame("Frame", nil, button)
+        glyph:SetSize(14, 14)
+        glyph:SetPoint("CENTER")
+        button.Glyph = glyph
+        button:SetScript("OnMouseDown", function(self)
+            if self:IsEnabled() then
+                glyph:SetPoint("CENTER", 1, -1)
+            end
+        end)
+        button:SetScript("OnMouseUp", function()
+            glyph:SetPoint("CENTER")
+        end)
+        -- OnEnable/OnDisable do not reach the glyph reliably (Skip stayed
+        -- dimmed while enabled), so the state and the look change together
+        function button:SetUsable(usable)
+            self:SetEnabled(usable)
+            glyph:SetAlpha(usable and 1 or 0.35)
+        end
         button:SetScript("OnClick", function()
             PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
             onClick()
         end)
+        button:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(tooltip(self))
+            GameTooltip:Show()
+        end)
+        button:SetScript("OnLeave", GameTooltip_Hide)
         return button
     end
 
-    frame.QueueButton = Button("Queue", 62, function()
+    local function Icon(button, atlas)
+        local icon = button.Glyph:CreateTexture(nil, "ARTWORK")
+        icon:SetAllPoints()
+        icon:SetAtlas(atlas)
+        button.Icon = icon
+    end
+
+    local queue = ControlButton(function() return "Queue" end, function()
         ns.UI.QueueList:Toggle()
     end)
-    frame.QueueButton:SetPoint("BOTTOMRIGHT", -44, 12)
+    frame.QueueButton = queue
+    queue:SetPoint("BOTTOMRIGHT", -15, 14)
+    for row = 0, 2 do
+        local y = -(row * 4.5 + 1)
+        local bar = queue.Glyph:CreateTexture(nil, "ARTWORK")
+        SetSidewaysBar(bar)
+        bar:SetSize(10, 3.5)
+        bar:SetPoint("TOPLEFT", 4.5, y)
+        local dot = queue.Glyph:CreateTexture(nil, "ARTWORK")
+        dot:SetAtlas("common-dropdown-icon-radialtick-yellow")
+        dot:SetSize(9, 9) -- the dot is the middle third of its atlas
+        dot:SetPoint("CENTER", queue.Glyph, "TOPLEFT", 1.5, y - 1.75)
+    end
 
-    frame.SkipButton = Button("Skip", 54, function()
+    frame.SkipButton = ControlButton(function() return "Skip (right-click the panel)" end, function()
         Queue:Skip()
     end)
-    frame.SkipButton:SetPoint("RIGHT", frame.QueueButton, "LEFT", -4, 0)
+    frame.SkipButton:SetPoint("BOTTOM", queue, "TOP", 0, 2)
+    Icon(frame.SkipButton, "creditsscreen-assets-buttons-fastforward")
 
-    frame.PauseButton = Button("Pause", 66, function()
+    frame.PauseButton = ControlButton(function() return Queue:IsPaused() and "Resume" or "Pause" end, function()
         Queue:TogglePause()
     end)
-    frame.PauseButton:SetPoint("RIGHT", frame.SkipButton, "LEFT", -4, 0)
+    frame.PauseButton:SetPoint("BOTTOM", frame.SkipButton, "TOP", 0, 2)
+    Icon(frame.PauseButton, PAUSE_ATLAS)
+
+    -- "3 more queued" on the title line; the title gives way to it. It hangs
+    -- off Name, not Title, so the two do not anchor to each other
+    frame.QueueText = frame:CreateFontString(nil, "ARTWORK")
+    frame.QueueText:SetFontObject("GameFontNormalSmall")
+    frame.QueueText:SetJustifyH("RIGHT")
+    frame.QueueText:SetPoint("TOPRIGHT", frame.Name, "BOTTOMRIGHT", 0, -1)
+    frame.QueueText:SetAlpha(0.01)
+    frame.Title:ClearAllPoints()
+    frame.Title:SetPoint("TOPLEFT", frame.Name, "BOTTOMLEFT", 1, -1)
+    frame.Title:SetPoint("RIGHT", frame.QueueText, "LEFT", -8, 0)
+end
+
+function TalkingHead:SetQueueCount(remaining)
+    self.frame.QueueText:SetText(remaining > 0 and format("%d more queued", remaining) or "")
 end
 
 function TalkingHead:CreateAnimations()
@@ -403,8 +522,12 @@ function TalkingHead:CreateAnimations()
     Alpha(fadeIn, frame.Name, 0, 1, 0.25)
     Alpha(fadeIn, frame.Title, 0, 1, 0.25)
     Alpha(fadeIn, frame.Text, 0, 1, 0.25)
+    Alpha(fadeIn, frame.QueueText, 0, 1, 0.25)
     Alpha(fadeIn, frame.CloseButton, 0, 1, 0.75, 0.75)
     Alpha(fadeIn, frame.ReportButton, 0, 1, 0.75, 0.75)
+    for _, button in ipairs({ frame.PauseButton, frame.SkipButton, frame.QueueButton }) do
+        Alpha(fadeIn, button, 0, 1, 0.75, 0.75)
+    end
     Alpha(fadeIn, frame.GlowTop, 0, 0.7, 0.25, 0.15)
     Scale(fadeIn, frame.GlowTop, 0.25, 1, 1.5, 1, 0.25, 0.15)
     Alpha(fadeIn, frame.GlowTop, 0.7, 0, 0.5, 0.4)
@@ -446,10 +569,16 @@ function TalkingHead:CreateAnimations()
     Alpha(textIn, frame.Text, 0, 1, 0.25)
     frame.TextIn = textIn
 
+    -- The controls go first, the way they came in last
     local close = frame:CreateAnimationGroup()
     close:SetToFinalAlpha(true)
-    for _, region in ipairs({ frame.Model, frame.Model.PortraitBg, frame.Portrait, frame.TextBackground, frame.Name, frame.Title, frame.Text, frame.CloseButton, frame.ReportButton }) do
-        Alpha(close, region, 1, 0, 1)
+    Alpha(close, frame.CloseButton, 1, 0, CONTROLS_OUT)
+    Alpha(close, frame.ReportButton, 1, 0, CONTROLS_OUT)
+    for _, button in ipairs({ frame.PauseButton, frame.SkipButton, frame.QueueButton }) do
+        Alpha(close, button, 1, 0, CONTROLS_OUT)
+    end
+    for _, region in ipairs({ frame.Model, frame.Model.PortraitBg, frame.Portrait, frame.TextBackground, frame.Name, frame.Title, frame.QueueText, frame.Text }) do
+        Alpha(close, region, 1, 0, 1, CONTROLS_OUT)
     end
     close:SetScript("OnFinished", function()
         frame:Hide()
@@ -485,6 +614,8 @@ function TalkingHead:ApplyTextureKit()
     frame.Text:SetShadowColor(colors.Shadow:GetRGBA())
     frame.Title:SetTextColor(colors.Title:GetRGB())
     frame.Title:SetShadowColor(colors.Shadow:GetRGBA())
+    frame.QueueText:SetTextColor(colors.Title:GetRGB())
+    frame.QueueText:SetShadowColor(colors.Shadow:GetRGBA())
 end
 
 --- Shows or hides the portrait (model, ring, glows, book) and moves the name,
@@ -503,6 +634,7 @@ function TalkingHead:LayoutPortrait()
         frame.Name:SetPoint("TOPLEFT", TEXT_INSET, -19)
     end
     frame.Name:SetPoint("RIGHT", -42, 0)
+    self:Repaginate()
     if self.displayed then
         self:SetPortrait(self.displayed)
         if shown and frame:IsShown() and not frame.isClosing then
@@ -530,36 +662,116 @@ end
 -- Display
 -- ---------------------------------------------------------------------------
 
-function TalkingHead:CancelPageTimers()
-    for _, timer in ipairs(self.pageTimers) do
-        timer:Cancel()
+--- The text box in lines and a way to measure a string against it, from
+--- the hidden Measure string at the box's width. The box's own size is only
+--- known once the frame is laid out; until then it is estimated, and the
+--- last return says so.
+function TalkingHead:TextBox()
+    local frame = self.frame
+    local text, measure = frame.Text, frame.Measure
+    local width, height = text:GetWidth(), text:GetHeight()
+    local estimated = width <= 1 or height <= 1
+    if estimated then
+        ns.Debug("talking head text box not laid out yet, sizing pages by estimate")
+        local left = TEXT_INSET + 1 -- Title's offset from Name
+        if ns.db.showHead ~= false then
+            left = 5 + frame.Portrait:GetWidth() + 3 -- the portrait's right edge, then Name and Title's offsets
+        end
+        width, height = FRAME_WIDTH - 42 - left, 0
     end
-    wipe(self.pageTimers)
+    measure:SetWidth(width)
+    measure:SetText("Mg")
+    local one = measure:GetStringHeight()
+    measure:SetText("Mg\nMg")
+    local step = measure:GetStringHeight() - one -- a line and its spacing
+    if one <= 0 or step <= 0 then
+        ns.Debug("talking head font not measurable, sizing pages by characters")
+        return FALLBACK_LINES,
+            function(str) return #str <= FALLBACK_LINES * FALLBACK_CHARS end,
+            function(str) return math.ceil(#str / FALLBACK_CHARS) end,
+            true
+    end
+    local lines = FALLBACK_LINES
+    if height > 1 then
+        lines = math.max(1, math.floor((height - one) / step + 1.01))
+    end
+    local limit = one + (lines - 1) * step + 0.5
+    local function Height(str)
+        measure:SetText(str)
+        return measure:GetStringHeight()
+    end
+    return lines,
+        function(str) return Height(str) <= limit end,
+        function(str) return math.floor((Height(str) - one) / step + 1.5) end,
+        estimated
+end
+
+--- Splits the item's text into pages that fit the box.
+function TalkingHead:Paginate(item)
+    local frame = self.frame
+    if item ~= self.pageItem then
+        self.heldAt = 0
+    end
+    self.pageItem, self.page = item, nil
+    if not frame.Text:IsShown() then
+        self.pages, self.starts = { "" }, { 0 }
+        return
+    end
+    local lines, fits, count, estimated = self:TextBox()
+    if frame.Text.SetMaxLines then
+        frame.Text:SetMaxLines(lines)
+    end
+    self.pages, self.starts = Util.Paginate(item.text, fits, count, lines)
+    self.chars = Util.CharCount(item.text or "")
+    if estimated and not self.remeasuring then
+        -- measure again once the frame has been laid out, keeping the place
+        self.remeasuring = true
+        C_Timer.After(0, function()
+            self.remeasuring = nil
+            self:Repaginate()
+        end)
+    end
+end
+
+--- Shows the page the audio has reached: its share of the play time against
+--- each page's share of the text. While the audio is not playing (paused, in
+--- the lead-in, queued while paused) the text stays where it was; playback
+--- always starts from the top, so the text does too.
+function TalkingHead:RenderPage()
+    local item = self.displayed
+    if not item or item ~= self.pageItem then
+        return
+    end
+    local at = self.heldAt
+    if item.startedAt then
+        local elapsed = GetTime() - item.startedAt
+        local length = item.playLength
+        if length and length > 0 then
+            at = elapsed / length
+        else
+            at = elapsed * READ_RATE / math.max(1, self.chars or 0)
+        end
+    end
+    local page = 1
+    for i = 2, #self.pages do
+        if self.starts[i] <= at then
+            page = i
+        end
+    end
+    self.heldAt = self.starts[page]
+    if page ~= self.page then
+        self.page = page
+        local text = self.frame.Text
+        text:SetText(self.pages[page])
+        if text.IsTruncated and text:IsTruncated() then
+            ns.Debug("talking head page", page, "truncated:", self.pages[page])
+        end
+    end
 end
 
 function TalkingHead:ShowPagedText(item)
-    self:CancelPageTimers()
-    local frame = self.frame
-    local pages = Util.Paginate(item.text, PAGE_CHARS)
-    frame.Text:SetText(pages[1])
-    if #pages == 1 or not item.duration then
-        return
-    end
-    local total = 0
-    for _, page in ipairs(pages) do
-        total = total + #page
-    end
-    local elapsed = #pages[1]
-    for i = 2, #pages do
-        local at = (item.leadIn or 0) + item.duration * (elapsed / total)
-        local page = pages[i]
-        table.insert(self.pageTimers, C_Timer.NewTimer(at, function()
-            if self.displayed == item then
-                frame.Text:SetText(page)
-            end
-        end))
-        elapsed = elapsed + #page
-    end
+    self:Paginate(item)
+    self:RenderPage()
 end
 
 function TalkingHead:SetPortrait(item)
@@ -594,8 +806,8 @@ function TalkingHead:Present(item)
     if not wasShown then
         frame.Name:SetText(name)
         frame.Title:SetText(title)
+        frame:Show() -- first, so the text box is laid out when the pages are sized
         self:ShowPagedText(item)
-        frame:Show()
         frame.FadeIn:Play()
     else
         frame.TextOut:Play()
@@ -615,7 +827,6 @@ end
 function TalkingHead:CloseFrame()
     local frame = self.frame
     self.displayed = nil
-    self:CancelPageTimers()
     frame.Model:StopTalking()
     if frame:IsShown() and not frame.isClosing then
         frame.isClosing = true
@@ -634,15 +845,15 @@ function TalkingHead:Update()
     end
 
     local remaining = Queue:Size() - 1
-    frame.QueueText:SetText(remaining > 0 and format("%d more queued", remaining) or "")
-    frame.SkipButton:SetEnabled(Queue:Size() > 0)
+    self:SetQueueCount(remaining)
+    frame.SkipButton:SetUsable(Queue:Size() > 0)
     self:UpdatePause(Queue:IsPaused())
     ns.UI.QueueList:Update()
 end
 
 function TalkingHead:UpdatePause(paused)
     local frame = self.frame
-    frame.PauseButton:SetText(paused and "Resume" or "Pause")
+    frame.PauseButton.Icon:SetAtlas(paused and PLAY_ATLAS or PAUSE_ATLAS)
     if paused then
         frame.Model:StopTalking()
     elseif self.displayed then

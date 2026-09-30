@@ -13,6 +13,8 @@ The playback queue. Items are plain tables:
     parts,                             -- optional { {path, duration}, ... } played back to
                                        -- back: a line the speaker and the narrator share
     handle, timer,                     -- runtime playback state
+    startedAt, playLength,             -- when the audio started (GetTime) and how long it
+                                       -- runs, gaps included; the talking head pages by it
     onStop,                            -- optional callback when removed
   }
 
@@ -67,7 +69,13 @@ end
 
 local function PlayItem(self, item)
     local parts = item.parts
+    item.startedAt = GetTime()
     if parts and #parts > 0 then
+        local length = PART_GAP * (#parts - 1)
+        for _, part in ipairs(parts) do
+            length = length + (part.duration or 0)
+        end
+        item.playLength = length
         -- One file after another; the item's duration is their sum, which is
         -- what the talking head pages the text against
         local function PlayPart(index)
@@ -84,6 +92,7 @@ local function PlayItem(self, item)
         end
         PlayPart(1)
     else
+        item.playLength = item.duration
         item.handle = Audio.Play(item.path)
         item.timer = C_Timer.NewTimer((item.duration or 0) + TAIL_SILENCE, function()
             item.timer = nil
@@ -112,6 +121,7 @@ local function StartPlayback(self, item)
 end
 
 local function StopPlayback(item)
+    item.startedAt = nil
     if item.timer then
         item.timer:Cancel()
         item.timer = nil
