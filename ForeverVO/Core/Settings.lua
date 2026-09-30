@@ -118,14 +118,14 @@ local function PackLines()
     return packs
 end
 
---- A section header with a grey note and the addon's version under its title,
---- then a "Voice packs" subtitle and one line per pack. The header frame is pooled with
+--- A section header with the addon's version under its title, then a "Voice
+--- packs" subtitle and one line per pack. The header frame is pooled with
 --- every other header in the Settings list, so the extra text is hidden again
 --- whenever the frame is reused for another one.
 local function VersionsInitializer()
     local initializer = CreateSettingsListSectionHeaderInitializer("Versions")
     function initializer:GetExtent()
-        return HEADER_EXTENT + 3 * VERSION_GAP + (3 + #PackLines()) * VERSION_LINE_HEIGHT
+        return HEADER_EXTENT + 2 * VERSION_GAP + (2 + #PackLines()) * VERSION_LINE_HEIGHT
     end
     local baseInit = initializer.InitFrame
     function initializer:InitFrame(frame)
@@ -138,15 +138,12 @@ local function VersionsInitializer()
                 text:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -VERSION_GAP)
                 return text
             end
-            local note = Text("GameFontHighlight", frame.Title)
-            note:SetTextColor(GRAY_FONT_COLOR:GetRGB())
-            note:SetText("Include these when you report a bug.")
-            local addon = Text("GameFontHighlight", note)
+            local addon = Text("GameFontHighlight", frame.Title)
             local subtitle = Text("GameFontNormal", addon)
             subtitle:SetText("Voice packs")
             local packs = Text("GameFontHighlight", subtitle)
             packs:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -(VERSION_LINE_HEIGHT - 12))
-            frame.FVOVersions = { note = note, addon = addon, subtitle = subtitle, packs = packs }
+            frame.FVOVersions = { addon = addon, subtitle = subtitle, packs = packs }
             hooksecurefunc(frame, "Init", function(header, other)
                 for _, text in pairs(header.FVOVersions) do
                     text:SetShown(other == initializer)
