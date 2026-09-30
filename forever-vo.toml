@@ -534,6 +534,12 @@ base_split_level = 40
 # generator's full quality, so this can go back up on any later build.
 bitrate = "32k"
 transcode_workers = 4
+# The delta is every line the Base packs do not already ship as it is (a
+# baseline recorded when both are built), so it grows with changes, not with
+# play, and each Base release absorbs it. A restaged voice lands in it too;
+# past this size the nightly stops uploading it and says a Base release is due.
+# The upload API refused 574 MB once (2026-09-24).
+delta_cap_mb = 400
 
 # CurseForge project IDs. The player addon's ID also lives in its TOC. The API
 # key stays out of git (.env: CF_API_KEY, or CURSEFORGE_API_KEY).

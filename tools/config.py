@@ -337,6 +337,9 @@ class Release(Strict):
     transcode_workers: int = (
         4  # ffmpeg is CPU work; leave cores for the GPU workers' own decoding
     )
+    delta_cap_mb: int = (
+        400  # past this the nightly stops uploading the delta: a Base release is due
+    )
 
 
 class Config(Strict):

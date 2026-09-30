@@ -3,19 +3,24 @@
 Three packs are released from the one working folder (ForeverVO_Data holds
 everything on the maintainer's machine):
 
-  base          ForeverVO_Data_Base          Classic-era lines (source: classic):
-  base_endgame  ForeverVO_Data_Base_Endgame  quests to level 40 with all gossip,
-                                             and quests from 41, split so each
-                                             fits CurseForge's 1 GB website cap.
+  base          ForeverVO_Data_Base          every line: quests to level 40
+  base_endgame  ForeverVO_Data_Base_Endgame  with all gossip, and quests from
+                                             41, split so each fits
+                                             CurseForge's 1 GB website cap.
                                              Huge, rarely released, uploaded by
-                                             hand. (The maintainer's working
-                                             folder stays ForeverVO_Data; they
-                                             coexist because their pack names
-                                             differ from it.)
-  delta         ForeverVO_Data_Forever       lines captured in game, by the
-                                             owner or by the community.
-                                             Small, released often, higher
+                                             hand. Building one records what
+                                             it shipped (release_baseline.json).
+                                             (The maintainer's working folder
+                                             stays ForeverVO_Data; they coexist
+                                             because their pack names differ.)
+  delta         ForeverVO_Data_Forever       every line that differs from what
+                                             the two Base packs shipped: new,
+                                             re-worded, re-voiced, re-rolled.
+                                             Small, released nightly, higher
                                              priority so it overrides the base.
+                                             Until both Base packs have been
+                                             built with a baseline, the old
+                                             rule: lines read in game.
 
     ./tools/run.sh tools/release_pack.py delta               # build zip only
     ./tools/run.sh tools/release_pack.py delta --upload      # and upload to CurseForge
@@ -63,15 +68,21 @@ from requests_toolbelt import MultipartEncoder
 
 from tools.config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR, Config, Release, load_config
 from tools.generate import (
+    Item,
     VoiceCatalog,
     load_items,
     load_sources,
+    part_name,
     rebuild_tables,
     sound_folder,
 )
 
 RELEASE_DIR = DATA_DIR / "release"
 STATE_FILE = DATA_DIR / "release_state.json"
+# What every file the Base packs last shipped sounded like ({pack: {name: stamp}}),
+# written when a Base pack is built; the delta is whatever differs from it.
+BASELINE_FILE = DATA_DIR / "release_baseline.json"
+BASE_PACKS = ("base", "base_endgame")
 CF_API = "https://wow.curseforge.com/api"
 GAME_VERSION_NAME = "1.60.1"
 
@@ -91,11 +102,111 @@ SAMPLE_RATE = 22050
 
 
 def is_forever_line(entry: dict) -> bool:
-    """Delta pack membership: lines players saw in game. Everything else is Classic's
-    text and stays in the base pack, so the delta does not grow as the bulk run
-    works through Classic."""
+    """Delta pack membership before the first Base build that records a baseline:
+    lines players saw in game. Everything else is Classic's text and stays in the
+    base pack, so the delta does not grow as the bulk run works through Classic.
+
+    It grew anyway, with play: every quest a player reads is captured, and a
+    Classic line read in game moved to the delta with the same audio (half of its
+    178 MB on 2026-09-29, and 10 MB shipped in both). See `delta_line`."""
     source = entry.get("source", "classic")
     return bool(entry.get("player")) or source in ("capture", "community")
+
+
+def file_stamp(index: dict, name: str) -> str:
+    """What a pack file says, from sound_index: text fingerprint, voice, duration
+    (the duration gives away a re-rolled take, #333). `name` is a base name, or a
+    path under Sounds/ for an alternate (Quests/Narrator/<voice>/<base>,
+    Gossip/Sex/<m|f>/<base>), whose index key drops the Quests/Gossip folder."""
+    if "/" in name:
+        name = name.split("/", 1)[1]
+    entry = index.get(name)
+    if not isinstance(entry, dict):
+        return "?"
+    return f"{entry.get('t') or '?'}:{entry.get('v') or '?'}:{entry.get('d') or '?'}"
+
+
+def line_files(item: Item, config: Config) -> list[str]:
+    """Every file a line can have, named as rebuild_tables lists them: its gender
+    variants, their parts, the alternate narrators' recordings of whatever the
+    narrator reads, and the speaker's other sex."""
+    names: list[str] = []
+    folder = item.subfolder
+    voices = config.voices.narrator_alternates
+    for variant in item.variants():
+        names.append(variant.base)
+        if item.is_narrator:
+            names += [f"{folder}/Narrator/{v}/{variant.base}" for v in voices]
+        for index, (role, _) in enumerate(variant.parts, 1):
+            part = part_name(variant.base, index)
+            names.append(part)
+            if role == "narrator":
+                names += [f"{folder}/Narrator/{v}/{part}" for v in voices]
+        if item.sex_alternate:
+            names.append(f"{folder}/Sex/{item.sex_alternate[0]}/{variant.base}")
+    return names
+
+
+def on_disk(name: str, sounds_dir: Path = SOUNDS_DIR) -> bool:
+    if "/" in name:
+        return (sounds_dir / f"{name}.mp3").exists()
+    return (sounds_dir / sound_folder(name) / f"{name}.mp3").exists()
+
+
+def delta_line(
+    item: Item,
+    config: Config,
+    baseline: dict[str, str],
+    index: dict,
+    sounds_dir: Path = SOUNDS_DIR,
+) -> bool:
+    """Delta pack membership: a line any of whose files is new since the Base packs
+    were built, or says something else now (text, voice, a new take), or is gone.
+    A line the Base packs already carry as it is stays out, however many players
+    have read it; the next Base release absorbs the rest and the delta starts over."""
+    for name in line_files(item, config):
+        was = baseline.get(name)
+        if not on_disk(name, sounds_dir):
+            if was is not None:
+                return True  # shipped, and gone since (a line now only parts)
+            continue
+        if was is None or file_stamp(index, name) != was:
+            return True
+    return False
+
+
+def load_baseline() -> dict[str, str] | None:
+    """Every file both Base packs last shipped, with its stamp; None until both
+    have been built since baselines were recorded (one alone would put the other's
+    whole set in the delta)."""
+    if not BASELINE_FILE.exists():
+        return None
+    packs = json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
+    if not all(pack in packs for pack in BASE_PACKS):
+        return None
+    merged: dict[str, str] = {}
+    for pack in BASE_PACKS:
+        merged.update(packs[pack])
+    return merged
+
+
+def record_baseline(pack: str, stats: dict, index_path: Path = SOUND_INDEX) -> None:
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    packs = (
+        json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
+        if BASELINE_FILE.exists()
+        else {}
+    )
+    packs[pack] = {name: file_stamp(index, name) for name in pack_files(stats)}
+    BASELINE_FILE.write_text(json.dumps(packs, indent=0, sort_keys=True), "utf-8")
+
+
+def pack_files(stats: dict) -> list[str]:
+    return (
+        sorted(stats["files"])
+        + sorted(stats.get("narratorFiles", ()))
+        + sorted(stats.get("sexFiles", ()))
+    )
 
 
 def base_part(entry: dict, split_level: int) -> int:
@@ -116,7 +227,7 @@ class PackSpec:
     pack_name: str  # what the addon shows as the pack's name
     priority: int  # a higher pack's line wins over a lower one's
     notes: str
-    select: Callable[[dict], bool]  # entry -> belongs to this pack
+    select: Callable[[Item], bool]  # line -> belongs to this pack
 
 
 PACK_NAMES = ("base", "base_endgame", "delta")
@@ -130,28 +241,24 @@ def pack_specs(release: Release) -> dict[str, PackSpec]:
             title="Forever Voiceover Data: Base",
             pack_name="Classic",
             priority=100,
-            notes=f"Classic-era quests to level {split} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
-            select=lambda entry: (
-                not is_forever_line(entry) and base_part(entry, split) == 1
-            ),
+            notes=f"Quests to level {split} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
+            select=lambda item: base_part(item.entry, split) == 1,
         ),
         "base_endgame": PackSpec(
             folder="ForeverVO_Data_Base_Endgame",
             title="Forever Voiceover Data: Base Endgame",
             pack_name="Classic Endgame",
             priority=100,
-            notes=f"Classic-era quests from level {split + 1}, voiced. Install with Forever Voiceover and Base.",
-            select=lambda entry: (
-                not is_forever_line(entry) and base_part(entry, split) == 2
-            ),
+            notes=f"Quests from level {split + 1}, voiced. Install with Forever Voiceover and Base.",
+            select=lambda item: base_part(item.entry, split) == 2,
         ),
         "delta": PackSpec(
             folder="ForeverVO_Data_Forever",
             title="Forever Voiceover Data: Forever",
             pack_name="Forever",
             priority=200,
-            notes="New and revised Forever lines from player captures. Sits on top of Forever Voiceover Data.",
-            select=is_forever_line,
+            notes="Lines new or revised since the Base packs, updated nightly. Sits on top of Forever Voiceover Data.",
+            select=lambda item: is_forever_line(item.entry),
         ),
     }
 
@@ -232,11 +339,13 @@ def stage_tables(pack: str, version: str, config: Config) -> tuple[Path, dict]:
     spec = pack_specs(config.release)[pack]
     sources = load_sources()
     catalog = VoiceCatalog(config)
-    items = [
-        item
-        for item in load_items(sources, include_progress=True, catalog=catalog)
-        if spec.select(item.entry)
-    ]
+    items = load_items(sources, include_progress=True, catalog=catalog)
+    baseline = load_baseline() if pack == "delta" else None
+    if baseline is not None:
+        index = json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
+        items = [item for item in items if delta_line(item, config, baseline, index)]
+    else:
+        items = [item for item in items if spec.select(item)]
     stage = RELEASE_DIR / spec.folder
     if stage.exists():
         shutil.rmtree(stage)
@@ -411,25 +520,9 @@ def content_tag(stats: dict, index_path: Path = SOUND_INDEX) -> str:
         else {}
     )
 
-    def stamp(name: str) -> str:
-        # A speaker's other sex is listed as Gossip/Sex/f/<base> and indexed as
-        # Sex/f/<base>. (Narrator files have the same mismatch and stamp "?";
-        # left alone, since changing it would re-release every pack once.)
-        if "/Sex/" in name:
-            name = name.split("/", 1)[1]
-        entry = index.get(name)
-        if not isinstance(entry, dict):
-            return "?"
-        return (
-            f"{entry.get('t') or '?'}:{entry.get('v') or '?'}:{entry.get('d') or '?'}"
-        )
-
-    names = (
-        sorted(stats["files"])
-        + sorted(stats.get("narratorFiles", ()))
-        + sorted(stats.get("sexFiles", ()))
+    joined = "\n".join(
+        f"{name}={file_stamp(index, name)}" for name in pack_files(stats)
     )
-    joined = "\n".join(f"{name}={stamp(name)}" for name in names)
     return hashlib.blake2b(joined.encode("utf-8"), digest_size=8).hexdigest()
 
 
@@ -482,11 +575,7 @@ def main(argv: list[str] | None = None) -> int:
     stage, stats = stage_tables(args.pack, version, config)
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
-    fingerprint = (
-        sorted(stats["files"])
-        + sorted(stats.get("narratorFiles", ()))
-        + sorted(stats.get("sexFiles", ()))
-    )
+    fingerprint = pack_files(stats)
     content = content_tag(stats)
     if args.if_changed:
         last = state.get(args.pack, {})
@@ -518,6 +607,16 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
     zip_path = package(args.pack, version, stage, stats, release)
+    size_mb = zip_path.stat().st_size / 1e6
+    if args.upload and args.pack == "delta" and size_mb > release.delta_cap_mb:
+        # The upload API refused 574 MB once; well before that the delta has
+        # outgrown its job. The Base packs absorb it (their build resets the
+        # baseline), and until then players keep the last delta.
+        print(
+            f"not uploading: the delta is {size_mb:.0f} MB, over delta_cap_mb "
+            f"({release.delta_cap_mb}); release Base and Base Endgame, which absorb it"
+        )
+        return 0
 
     if args.upload:
         upload(args.pack, zip_path, version, stats, release_type, release)
@@ -530,6 +629,8 @@ def main(argv: list[str] | None = None) -> int:
         "content": content,
     }
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
+    if args.pack in BASE_PACKS:
+        record_baseline(args.pack, stats)
     return 0
 
 

@@ -450,8 +450,21 @@ Three CurseForge projects, three release paths:
   because the mp3s are gitignored and the checkout has no audio. The TOC carries
   `## X-Curse-Project-ID`; the packager maps Interface 16001 to game version
   "1.60.1" itself, there is no version field to fill.
-- **Delta pack** "Forever Voiceover Data: Forever" (1705094): lines whose
-  source is not `classic` (captures, community), priority 200.
+- **Delta pack** "Forever Voiceover Data: Forever" (1705094), priority 200:
+  every line that differs from what the two Base packs last shipped (since
+  2026-09-29). Building a Base pack records each shipped file's stamp (text
+  fingerprint, voice, duration) in the gitignored
+  `tools/data/release_baseline.json`; `delta_line` puts a line in the delta
+  when any of its files (variants, parts, narrator and other-sex alternates) is
+  new, restamped or gone. Until both Base packs have been built with a
+  baseline the old rule holds: lines read in game (`is_forever_line`), which
+  grew with play, not with change (178 MB on 2026-09-29, half of it Classic
+  lines read in game with unchanged audio, 10 MB of it also in Base). Base now
+  takes every line at its level, so each Base release absorbs the delta and it
+  starts over; building a Base pack counts as releasing it, so upload what
+  you build. A restaged voice lands in the delta, and past `delta_cap_mb`
+  (400) the nightly stops uploading it and says a Base release is due. The
+  next Base came out at ~785 MB and Endgame ~388 MB when estimated.
   `tools/release_pack.py delta --upload --if-changed` runs at the end of the
   nightly job and uploads a dated beta when the file set changed.
 - **Base packs** "Forever Voiceover Data: Base" (1705100, installs as
@@ -459,7 +472,7 @@ Three CurseForge projects, three release paths:
   created 2026-09-24, ID under `[release.curseforge_projects]`, installs as
   `ForeverVO_Data_Base_Endgame`; the owner's working folder `ForeverVO_Data`
   is never shipped): the Classic-sourced lines, priority 100, released by
-  hand and rarely. The complete Classic set with the five alternate narrators
+  hand, and now whenever the delta grows large. The complete Classic set with the five alternate narrators
   it had until 2026-09-25 was 1.36 GB at 32 kbps (with orc-male alone about
   1.08 GB, so the split stays for now), and **the CurseForge website caps a file at 1 GB**
   (learned 2026-09-24 when the 1,378 MB zip was refused; the API's cap is
