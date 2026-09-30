@@ -78,15 +78,6 @@ function Welcome:GetFrame()
     send:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT)
     send:SetPoint("TOPRIGHT", frame.Text, "BOTTOM", -BUTTON_GAP / 2, -PADDING)
     send:SetText("Send Quests to Project")
-    -- White on blue, the blue of "Send" in the text above it: a blue fill over
-    -- the red inside Blizzard's button, leaving its copper rim as it is (blue
-    -- over the whole button turned the rim blue too). Hidden when disabled.
-    send:SetNormalFontObject(GameFontHighlight)
-    send.Blue = send:CreateTexture(nil, "BORDER")
-    send.Blue:SetPoint("TOPLEFT", 4, -3)
-    send.Blue:SetPoint("BOTTOMRIGHT", -4, 3)
-    send.Blue:SetColorTexture(1, 1, 1)
-    send.Blue:SetGradient("VERTICAL", CreateColor(0.12, 0.36, 0.7, 1), CreateColor(0.3, 0.6, 0.95, 1))
     send:SetScript("OnClick", function()
         frame:Hide()
         ns.Export:Show(false)
@@ -135,7 +126,6 @@ function Welcome:Refresh(intro)
     frame.Text:SetText(table.concat(lines, "\n"))
 
     frame.Send:SetEnabled(pending > 0)
-    frame.Send.Blue:SetShown(pending > 0)
     frame.OptOut:SetChecked(ns.db.crowdsourceOptOut)
     local textHeight = frame.Text:GetStringHeight()
     local checkTop = PADDING + frame.Title:GetStringHeight() + TITLE_GAP + textHeight + PADDING + BUTTON_HEIGHT + PADDING / 2
