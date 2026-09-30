@@ -129,6 +129,21 @@ def is_dud(path: Path) -> bool:
     return len(data) == DUD_SIZE and hashlib.md5(data).hexdigest() == DUD_MD5
 
 
+def display_model_file(display_id: int | None) -> int | None:
+    """The model file a creature display draws, which is what a capture records
+    (`modelFileID`, from GetModelFileID): CreatureDisplayInfo.ModelID ->
+    CreatureModelData.FileDataID."""
+    if not display_id:
+        return None
+    row = load_db2("CreatureDisplayInfo").get(int(display_id))
+    if not row:
+        return None
+    model = load_db2("CreatureModelData").get(int(row.get("ModelID") or 0))
+    if not model:
+        return None
+    return int(model.get("FileDataID") or 0) or None
+
+
 def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:
     """Maps a CreatureDisplayInfo ID to (DisplayRaceID, DisplaySexID).
 

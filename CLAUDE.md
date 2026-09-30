@@ -597,7 +597,17 @@ owner's machine picks the files up on the next sync.
   reads it in `OnModelLoaded`, and the merge ignores zero display IDs. On the
   Forever client it never yields anything at all (0 of 146 captured NPCs), only
   `GetModelFileID()` does; the Classic export supplies display IDs for
-  unchanged NPCs and the `modelFileID` fallback covers Forever-only ones. Several
+  unchanged NPCs and the `modelFileID` fallback covers Forever-only ones. Until
+  2026-09-29 "unchanged NPCs" meant only those Classic lets speak (quest givers,
+  gossip): Vol'jin (10540) has neither in 1.12, so his captured gossip read as
+  plain troll-male beside his own `npc-10357` clip. `classicdb.py` now also writes
+  `displays` (every creature's display, classic.json version 3) and
+  `generate.fill_displays` gives a captured NPC that display only when its model
+  file is the one the capture recorded, since Forever remodels some (Quarrymaster
+  Thesten, Morhan Coppertongue, Malorne Bladeleaf keep their voice). A filled NPC
+  is marked `displayVia: "model"` and `model_cast` still reports its model, so the
+  addon's recast check (#352) still covers it. 34 NPCs filled, 13 changed voice
+  (36 lines). Several
   `CreatureModelData` rows can share one file (Jornah's 949470 has two), so the
   reverse index is keyed by model ID, not by file.
 - `wowdata.voice_for_npc` once silently used an old field name
