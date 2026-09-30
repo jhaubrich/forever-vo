@@ -498,9 +498,13 @@ function Report:GetFrame()
     link:Hide()
     frame.LinkBox = link
 
+    -- In the template's button bar, the 26 px under its inset, where
+    -- Blizzard's own windows put theirs (MagicButton_OnLoad: 4 from the
+    -- bottom, 6 from the right), as in the export window. At 12 up it
+    -- straddled the inset's border.
     frame.CopyButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     frame.CopyButton:SetSize(110, 22)
-    frame.CopyButton:SetPoint("BOTTOMRIGHT", -16, 12)
+    frame.CopyButton:SetPoint("BOTTOMRIGHT", -6, 4)
     frame.CopyButton:SetText("Copy Link")
     frame.CopyButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
