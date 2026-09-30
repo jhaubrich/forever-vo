@@ -532,7 +532,8 @@ since 2026-09-24 when the inbox thread passed 50 comments; since 2026-09-30 an
 export past one link's worth, about 25 lines under the 6,000-character
 `URL_BUDGET`, is split into parts, each a whole `FVO1:` export filed as its
 own issue, and Copy Link advances `exportedAt` past the parts copied so far,
-so opening the window no longer counts as sending) or, the older way,
+so opening the window no longer counts as sending; All at Once instead sizes
+parts for the form's 65,536-character box, and the player pastes the string) or, the older way,
 as a comment on the pinned inbox issue #1 (label `capture-inbox`; the owner
 keeps it open for anyone following a stale note).
 `.github/workflows/ingest-captures.yml` handles both: it decodes the text with

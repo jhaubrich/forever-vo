@@ -10,7 +10,9 @@
   as sent once their part's link is copied, so closing the window halfway (or
   opening it and not sending) leaves the rest for your next export. Errors,
   such as a note too long for the link or nothing to export, show in a popup
-  instead of chat.
+  instead of chat. **All at Once** sends a long export as one issue instead:
+  the link opens the form, and you copy the export string into it from the
+  box below the link (up to about 250 lines per issue).
 - **First gossip only**, to the right of **Gossip** in What to voice and on
   by default: an NPC's gossip is read the first time you talk to them, and
   not every time after. Greetings and quest text are read as before. It greys
