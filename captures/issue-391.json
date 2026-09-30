@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "3033": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Turak Runetotem",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-391",
+ "quests": {
+  "98362-complete": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Turak Runetotem",
+   "npc": "3033",
+   "questID": 98362,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Welcome back, $N. I can sense you have met with the Great Cat Spirit and have successfully completed the trial. All druids must pass a trial given by this spirit, though the trials vary by generation. I am proud you have passed and have heeded the wisdom of the Great Cat Spirit. It is an ancient spirit that is as deadly as it is playful, though I can sense you understand the spirit's nature already.\r\n\r\nI will now instruct you on how to take the shape of the cat.",
+   "time": 1790785832,
+   "title": "To Thunder Bluff",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
