@@ -63,6 +63,7 @@
   #clips-body tr:hover { background: var(--panel); }
   #clips-body tr.picked { background: var(--panel); }
   #clips-body td.pos { color: var(--gold); font-weight: 600; width: 3em; }
+  #clips-body td.kind { max-width: 22em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   #clips-body td.at { font-family: ui-monospace, monospace; font-size: 12px; }
   #clips-wrap { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
   .pill { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px; border: 1px solid var(--line); margin-left: 6px; }
@@ -123,7 +124,9 @@
     <textarea id="text">Aye, a stack o' letters came through the pass today, and I dinnae have the time to send them along.</textarea>
 
     <div class="row">
-      <div><label for="voice">Voice</label><select id="voice"></select></div>
+      <div><label for="voice">Voice</label>
+        <input id="voice-search" type="search" placeholder="search voices: sylv, vari, dwarf guard…" autocomplete="off" style="width:100%;margin-bottom:4px">
+        <select id="voice"></select></div>
       <div><label for="reference">Clone from</label><select id="reference"></select></div>
       <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
     </div>
@@ -131,8 +134,10 @@
       <div><label for="exag">Exaggeration values (0&ndash;2)</label><input id="exag" value="0.45, 0.75"></div>
       <div><label for="cfg">cfg_weight values (0&ndash;1)</label><input id="cfg" value="0.5, 0.3"></div>
       <div><label for="tempo">Tempo values (0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept)</label><input id="tempo" value="1.0"></div>
+      <div><label for="pitch">Pitch values in semitones (&minus;12&ndash;12; 0 as generated, down is negative)</label><input id="pitch" value="0"></div>
       <button id="knobs-help-toggle" class="help" title="What these three do">?</button>
       <button id="go" class="primary">Generate</button>
+      <button id="stop" hidden title="Stop after the take in progress; the model cannot be interrupted mid-take">Stop</button>
     </div>
     <div id="knobs-help" hidden>
       <h4>What these three do</h4>
@@ -153,6 +158,13 @@
           control. A pitch-preserving stretch applied when the mp3 is written, and the
           stretched length is what the addon pages text against. Try a lower cfg_weight
           first.</td></tr>
+        <tr><td>pitch</td><td>&minus;12&ndash;12 semitones. Not a model knob either: a shift
+          that keeps the length, applied when the mp3 is written. Chatterbox pulls every
+          clone toward its own mid-range voice, so a deep speaker comes out high &mdash;
+          Varimathras's takes measured 153&nbsp;Hz against his recordings' 86&ndash;89, and
+          &minus;3 to &minus;5 sounded right where matching the number (&minus;9) did not.
+          The model runs once per take; every tempo and pitch here is cut from that same
+          audio, so a sweep compares one delivery.</td></tr>
       </table>
       <p>The two interact: guidance amplifies whatever the conditioning says, so raising
         exaggeration <i>and</i> cfg_weight compounds. The pairing in this pack &mdash; 0.75
@@ -175,6 +187,7 @@
       <summary>Source clips &mdash; what this voice's reference is cut from</summary>
       <div class="row" style="margin-top:8px">
         <button id="clips-load">Load candidates</button>
+        <select id="clips-group" hidden title="Which folder's clips the table shows; picks from every folder stay listed"></select>
         <button id="clips-reset">Clear picks</button>
         <button id="clips-build" class="primary">Build and keep</button>
         <audio id="clips-ref" controls preload="none" style="flex:0 0 auto"></audio>
@@ -264,20 +277,34 @@ function applyState(s) {
 // its file exists.
 function voiceOptions(s) {
   const rows = s.pickable || s.voices.map(v => ({ voice: v, clip: true, displays: null }));
+  const option = r => {
+    const star = s.resolved[r.voice] && s.resolved[r.voice].tuned ? " ★" : "";
+    const who = r.label ? ` — ${esc(r.label)}` : "";
+    // what the voice is worth picking for: how many creature displays it answers
+    // for, and how many lines it actually speaks
+    const bits = [];
+    if (r.displays) bits.push(`${r.displays} display${r.displays === 1 ? "" : "s"}`);
+    if (r.lines) bits.push(`${r.lines} line${r.lines === 1 ? "" : "s"}`);
+    if (!r.clip) bits.unshift("no clip yet");
+    const note = bits.length ? ` — ${bits.join(", ")}` : "";
+    return `<option value="${r.voice}">${r.voice}${who}${star}${note}</option>`;
+  };
   const group = (label, list) => list.length
-    ? `<optgroup label="${label}">` + list.map(r => {
-        const star = s.resolved[r.voice] && s.resolved[r.voice].tuned ? " ★" : "";
-        const who = r.label ? ` — ${esc(r.label)}` : "";
-        // what the voice is worth picking for: how many creature displays it answers
-        // for, and how many lines it actually speaks
-        const bits = [];
-        if (r.displays) bits.push(`${r.displays} display${r.displays === 1 ? "" : "s"}`);
-        if (r.lines) bits.push(`${r.lines} line${r.lines === 1 ? "" : "s"}`);
-        if (!r.clip) bits.unshift("no clip yet");
-        const note = bits.length ? ` — ${bits.join(", ")}` : "";
-        return `<option value="${r.voice}">${r.voice}${who}${star}${note}</option>`;
-      }).join("") + "</optgroup>"
+    ? `<optgroup label="${label}">` + list.map(option).join("") + "</optgroup>"
     : "";
+  // While the search box has text, one list best match first instead of the groups.
+  // The voice in use stays at the top, so narrowing the list never changes the voice
+  // behind the page's back (a select whose value vanishes silently takes its first).
+  const query = $("voice-search").value.trim();
+  if (query) {
+    const current = $("voice").value;
+    const hits = rows.map(r => ({ r, score: fuzzyScore(query, `${r.voice} ${r.label || ""}`) }))
+      .filter(h => h.score > 0 && h.r.voice !== current)
+      .sort((a, b) => b.score - a.score).map(h => h.r);
+    const mine = rows.filter(r => r.voice === current);
+    return group("In use", mine) + (hits.length ? group(`Matches (${hits.length})`, hits)
+      : `<optgroup label="No matches for “${esc(query)}”"></optgroup>`);
+  }
   const isArch = r => r.archetype;
   const isNpc = r => r.voice.startsWith("npc-");
   return group("Race voices", rows.filter(r => !isArch(r) && !isNpc(r)))
@@ -286,7 +313,43 @@ function voiceOptions(s) {
        + group("Named NPCs", rows.filter(isNpc));
 }
 
-// The three boxes keep whatever was typed last, and "Keep these settings" writes them:
+// Every character of the query in order, anywhere in the text; 0 when they are not
+// all there. Runs of consecutive letters and letters that start a word score higher,
+// so "vari" ranks Varimathras over a voice that merely has v, a, r and i in it, and
+// "dwarf guard" finds dwarf-male-guard.
+function fuzzyScore(query, text) {
+  const q = query.toLowerCase().replace(/\s+/g, ""), t = text.toLowerCase();
+  let score = 0, run = 0, from = 0;
+  for (const ch of q) {
+    const at = t.indexOf(ch, from);
+    if (at < 0) return 0;
+    run = at === from ? run + 1 : 1;
+    score += run * 2 + (at === 0 || /[\s\-—_]/.test(t[at - 1]) ? 3 : 0) - Math.min(at - from, 5) * 0.2;
+    from = at + 1;
+  }
+  if (t.includes(query.toLowerCase().trim())) score += q.length * 2;  // a plain substring wins
+  return Math.max(score, 0.01);
+}
+
+function refreshVoiceList() {
+  if (!state) return;
+  const voice = $("voice"), keep = voice.value;
+  voice.innerHTML = voiceOptions(state);
+  voice.value = keep;
+}
+$("voice-search").addEventListener("input", refreshVoiceList);
+// Enter takes the best match; Escape clears the search and shows the groups again
+$("voice-search").addEventListener("keydown", ev => {
+  if (ev.key === "Escape") { $("voice-search").value = ""; refreshVoiceList(); return; }
+  if (ev.key !== "Enter") return;
+  const best = $("voice").querySelector('optgroup[label^="Matches"] option');
+  if (!best) return;
+  $("voice").value = best.value;
+  $("voice").dispatchEvent(new Event("change"));
+  $("voice-search").value = ""; refreshVoiceList();
+});
+
+// The four boxes keep whatever was typed last, and "Keep these settings" writes them:
 // switch to a voice someone tuned by ear and press it, and 0.75 / 0.3 is replaced by
 // the numbers left over from the voice before. They are loaded from the voice itself
 // on every change of voice, so Keep can only ever write that voice's own settings back
@@ -299,6 +362,7 @@ function loadVoiceSettings() {
   $("exag").value = `${r ? r.exaggeration : d.exaggeration}`;
   $("cfg").value = `${r ? r.cfg_weight : d.cfg_weight}`;
   $("tempo").value = `${r ? r.tempo : d.tempo}`;
+  $("pitch").value = `${r ? r.pitch : d.pitch}`;
 }
 
 function showResolved() {
@@ -308,7 +372,7 @@ function showResolved() {
   const ref = $("reference").value;
   $("resolved").innerHTML = `Saved resolution for <b>${$("voice").value}</b>: clip <b>${r.clip || "none (built-in voice)"}</b>` +
     (r.source !== $("voice").value ? ` borrowed from <b>${r.source}</b>` : "") +
-    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>, tempo <b>${r.tempo}</b>` +
+    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>, tempo <b>${r.tempo}</b>, pitch <b>${r.pitch}</b>` +
     (ref ? ` · this run clones from <b>${ref}.wav</b> instead` : "");
 }
 
@@ -441,6 +505,7 @@ $("voice").addEventListener("change", () => {
   showSpeakerPin();
   if (clipsVoice && $("voice").value !== clipsVoice) {
     clipsRows = []; picks = []; clipsVoice = null;
+    $("clips-group").hidden = true; $("clips-group").innerHTML = "";
     $("clips-body").innerHTML = ""; $("clips-status").textContent = ""; $("clips-warn").textContent = "";
     $("clips-budget").textContent = ""; $("clips-ref").removeAttribute("src");
   }
@@ -450,7 +515,7 @@ $("reference").addEventListener("change", showResolved);
 // The server rejects a setting outside its bounds, but it should not have to: a typo
 // in one of these boxes is caught here, naming the field and what it allows, rather
 // than coming back as a failed request.
-const BOUNDS = { exag: [0, 2, "Exaggeration"], cfg: [0, 1, "cfg_weight"], tempo: [0.5, 2, "Tempo"] };
+const BOUNDS = { exag: [0, 2, "Exaggeration"], cfg: [0, 1, "cfg_weight"], tempo: [0.5, 2, "Tempo"], pitch: [-12, 12, "Pitch"] };
 
 function numbers(value, field) {
   const out = value.split(/[,\s]+/).filter(Boolean).map(Number);
@@ -468,10 +533,10 @@ $("go").addEventListener("click", async () => {
   try {
     body = { text: $("text").value, voice: $("voice").value, reference: $("reference").value || null,
              exaggeration: numbers($("exag").value, "exag"), cfg_weight: numbers($("cfg").value, "cfg"),
-             tempo: numbers($("tempo").value, "tempo"),
+             tempo: numbers($("tempo").value, "tempo"), pitch: numbers($("pitch").value, "pitch"),
              takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
-  busy($("go"), true); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
+  busy($("go"), true); runSession = null; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
   try {
     const response = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
@@ -482,16 +547,28 @@ $("go").addEventListener("click", async () => {
       let nl; while ((nl = buffer.indexOf("\n")) >= 0) { const line = buffer.slice(0, nl); buffer = buffer.slice(nl + 1); if (line.trim()) onEvent(JSON.parse(line)); }
     }
   } catch (e) { toast(e.message, "warn"); }
-  busy($("go"), false); refresh(); loadSessions();
+  busy($("go"), false); $("stop").hidden = true; runSession = null; refresh(); loadSessions();
+});
+
+// the session comes with the run's first event; until then there is nothing to stop
+let runSession = null;
+$("stop").addEventListener("click", async () => {
+  if (!runSession) { toast("the run has not started yet; try again in a moment", "warn"); return; }
+  busy($("stop"), true);
+  try {
+    const r = await api(`/api/generate/${encodeURIComponent(runSession)}/stop`, { method: "POST" });
+    $("progress").textContent += r.stopping ? " · stopping after the take in progress…" : "";
+  } catch (e) { toast(e.message, "warn"); busy($("stop"), false); }
 });
 
 function onEvent(ev) {
-  if (ev.event === "start") { $("progress").textContent = `spoken as: “${ev.spoken}”`; return; }
+  if (ev.event === "start") { runSession = ev.session; $("progress").textContent = `spoken as: “${ev.spoken}”`; return; }
+  if (ev.event === "stopped") { $("progress").textContent = `stopped · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   if (ev.event === "error") { toast(ev.message, "warn"); $("progress").textContent = ev.message; return; }
   if (ev.event === "done") { $("progress").textContent += ` · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   const tr = document.createElement("tr");
   const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
-    (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "");
+    (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "");
   tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
     `<td class="n">${ev.seconds === "" ? "" : `${ev.seconds}s in ${ev.elapsed}s`}</td><td></td>`;
   tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
@@ -504,7 +581,7 @@ function onEvent(ev) {
     busy(keep, true);
     try {
       applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, reference: ev.reference }) }));
+        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, reference: ev.reference }) }));
       toast(`Kept for ${$("voice").value}. The next generate run restages that voice's files.`, "ok");
       document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
     } catch (e) { toast(e.message, "warn"); }
@@ -513,7 +590,7 @@ function onEvent(ev) {
   cell.appendChild(keep);
   if (current) {
     const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
-    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1]);
+    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0]);
     write.title =
       "Generate this line once more under the SAVED settings and put that file in the pack, " +
       "then record its fingerprint so the nightly run neither redoes it nor misses it.\n\n" +
@@ -543,8 +620,8 @@ function onEvent(ev) {
 
 function isSaved(recipe) {
   if (!state) return false;
-  const [clip, e, c, t] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
-  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t;
+  const [clip, e, c, t, p = 0] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
+  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t && (r.pitch || 0) === p;
 }
 
 $("p-keep").addEventListener("click", async () => {
@@ -573,7 +650,7 @@ $("sessions").addEventListener("change", () => {
   $("takes-body").innerHTML = ""; $("progress").textContent = `takes from ${s.session}`;
   if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); }
   s.takes.forEach((t, i) => onEvent({ event: "take", n: i + 1, take: t.take, name: t.name, url: t.url, seconds: "", elapsed: "",
-    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, reference: null }));
+    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, reference: null }));
 });
 
 $("rebuild").addEventListener("click", async () => {
@@ -597,12 +674,15 @@ function renderClips() {
   if (!clipsRows.length) { body.innerHTML = ""; $("clips-budget").textContent = ""; return; }
   let at = 0; const offsets = new Map();
   picks.forEach(f => { offsets.set(f, at); at += clipsSeconds(f); });
-  body.innerHTML = clipsRows.map(c => {
+  // the folder select narrows the table, never the picks: a picked row from another
+  // folder stays listed, so the order and the budget always show the whole reference
+  const group = $("clips-group").hidden ? "" : $("clips-group").value;  // "" is all
+  body.innerHTML = clipsRows.filter(c => !group || c.group === group || picks.includes(c.fdid)).map(c => {
     const i = picks.indexOf(c.fdid);
     const off = offsets.get(c.fdid);
     const band = off === undefined ? "" : off < clipsWindows.t3 ? "t3" : off < clipsWindows.s3gen ? "s3" : "out";
     return `<tr data-f="${c.fdid}" class="${i >= 0 ? "picked" : ""}">` +
-      `<td class="pos">${i >= 0 ? i + 1 : ""}</td><td>${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
+      `<td class="pos">${i >= 0 ? i + 1 : ""}</td><td class="kind" title="${esc(c.group)}: ${esc(c.kind)}">${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
       `<td class="n">${c.seconds.toFixed(1)}s</td>` +
       `<td class="at">${off === undefined ? "" : off.toFixed(1) + "s"}` +
       `${band ? `<span class="pill ${band}">${band === "t3" ? "t3" : band === "s3" ? "s3gen" : "averaged"}</span>` : ""}</td>` +
@@ -662,6 +742,13 @@ async function loadClips(refresh) {
     renderHistory(d.history, picks);
     if (d.clips.length) {
       clipsRows = d.clips;
+      const sel = $("clips-group"), keep = sel.value;
+      sel.innerHTML = `<option value="">all (${d.clips.length})</option>` + d.groups.map(g => {
+        const n = d.clips.filter(c => c.group === g).length;
+        return `<option value="${esc(g)}">${esc(g)} (${n})</option>`;
+      }).join("");
+      sel.hidden = d.groups.length < 2;
+      sel.value = d.groups.includes(keep) ? keep : "";
       if (refresh !== false || !picks.length) picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
@@ -669,8 +756,12 @@ async function loadClips(refresh) {
       renderHistory(d.history, picks);   // again, now that picks are seeded
       if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
       busy($("clips-load"), false);
-    } else if (d.status === "loading" && !clipsPoll) {
-      clipsPoll = setInterval(() => loadClips(false), 3000);
+    } else if (d.status === "loading") {
+      if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 3000);
+    } else {
+      // finished with nothing to offer ("0 clips"): stop polling, or the button spins for good
+      if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
+      busy($("clips-load"), false);
     }
   } catch (e) { toast(e.message, "warn"); busy($("clips-load"), false); }
 }
@@ -682,6 +773,7 @@ $("clips-load").addEventListener("click", () => {
   loadClips(true);
 });
 $("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
+$("clips-group").addEventListener("change", renderClips);
 $("clips-help-toggle").addEventListener("click", () => { $("clips-help").hidden = !$("clips-help").hidden; });
 $("knobs-help-toggle").addEventListener("click", () => { $("knobs-help").hidden = !$("knobs-help").hidden; });
 $("clips-build").addEventListener("click", async () => {

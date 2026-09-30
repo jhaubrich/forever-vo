@@ -1,8 +1,9 @@
 local _, ns = ...
 
-local Audio = {
-    dialogMuted = false,
-}
+-- Whether we turned the Dialog channel off is ns.db.dialogMuted, not a local:
+-- the client saves Sound_EnableDialog to Config.wtf, so a reload or logout
+-- mid-line would otherwise leave the game's own barks off for good.
+local Audio = {}
 ns.Audio = Audio
 
 local CHANNEL_CVARS = {
@@ -42,10 +43,10 @@ function Audio.Play(path)
     if not willPlay then
         return nil
     end
-    if ns.db.muteGameDialog and channel ~= "Dialog" and not Audio.dialogMuted then
+    if ns.db.muteGameDialog and channel ~= "Dialog" and not ns.db.dialogMuted then
         -- Silence the game's own NPC voice lines while ours are playing
-        Audio.dialogMuted = C_CVar.GetCVarBool("Sound_EnableDialog")
-        if Audio.dialogMuted then
+        if C_CVar.GetCVarBool("Sound_EnableDialog") then
+            ns.db.dialogMuted = true
             SetCVar("Sound_EnableDialog", "0")
         end
     end
@@ -58,10 +59,20 @@ function Audio.Stop(handle)
     end
 end
 
---- Called when the queue drains: restore the dialog channel if we muted it.
+--- Called when the queue drains or pauses: restore the dialog channel if we muted it.
 function Audio.Idle()
-    if Audio.dialogMuted then
+    if ns.db and ns.db.dialogMuted then
         SetCVar("Sound_EnableDialog", "1")
-        Audio.dialogMuted = false
+        ns.db.dialogMuted = false
     end
 end
+
+-- A session that ended mid-line (a crash skips PLAYER_LOGOUT) left the channel
+-- off; nothing is playing yet, so turn it back on. On logout, restore it before
+-- the client writes Config.wtf.
+ns.OnInit(function()
+    Audio.Idle()
+    local frame = CreateFrame("Frame")
+    frame:RegisterEvent("PLAYER_LOGOUT")
+    frame:SetScript("OnEvent", Audio.Idle)
+end)

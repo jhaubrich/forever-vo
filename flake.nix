@@ -18,7 +18,10 @@
     {
       devShells = forEachSystem (pkgs: {
         default = pkgs.mkShell {
-          packages = with pkgs; [ uv ffmpeg lua5_1 ];
+          # ffmpeg-full, not the default "small" build: the pitch knob is ffmpeg's
+          # rubberband filter, which nixpkgs builds only into the full variant
+          # (withRubberband ? withFullDeps && withGPL).
+          packages = with pkgs; [ uv ffmpeg-full lua5_1 ];
 
           env = {
             # Never a system Python, even if one is on PATH: only the one uv manages.

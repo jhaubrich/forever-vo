@@ -8,9 +8,12 @@ from __future__ import annotations
 
 import csv
 import functools
+import hashlib
 import json
 import os
 import re
+import shutil
+import threading
 from collections import Counter
 from pathlib import Path
 
@@ -18,6 +21,7 @@ import requests
 
 from tools.config import (
     BETA_BUILD,
+    CASC_DIR,
     DATA_DIR,
     DB2_DIR,
     GENDER_DICT,
@@ -54,15 +58,42 @@ def load_db2(table: str, build: str = BETA_BUILD) -> dict[int, dict[str, str]]:
 
 
 def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
-    """Downloads a CASC file (e.g. an .ogg voice line) by FileDataID.
+    """Puts a CASC file (e.g. an .ogg voice line) at `dest`, by FileDataID.
 
-    Written to a temporary file and renamed. The cache is "the file is there", so a
+    Each file is downloaded once per build into CASC_DIR/<build>/ and hard-linked to
+    wherever it is asked for: a file's bytes never change within a build, and the same
+    clip is wanted in several places - `fvo-soundpaths --folders` probes every line of
+    the named folders, then the audition fetches them again per voice into
+    tools/voices/raw/<voice>/, once for each display of a character (Tyrande's two
+    folders are ~500 files). A link costs no second copy; a copy is the fallback where
+    the two directories cannot share one.
+    """
+    if dest.exists():
+        return dest
+    cached = CASC_DIR / build / f"{fdid}{dest.suffix}"
+    if not cached.exists():
+        _download(fdid, cached, build)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        os.link(cached, dest)
+    except FileExistsError:
+        pass  # another thread put it there first
+    except OSError:
+        part = dest.with_name(f"{dest.name}.{os.getpid()}.{threading.get_ident()}.part")
+        try:
+            shutil.copyfile(cached, part)
+            os.replace(part, dest)
+        finally:
+            part.unlink(missing_ok=True)
+    return dest
+
+
+def _download(fdid: int, dest: Path, build: str) -> None:
+    """Written to a temporary file and renamed. The cache is "the file is there", so a
     download cut short by a dropped connection or a Ctrl-C used to be kept for good, and
     every later reference built from that clip was silently truncated: ffmpeg's concat
     demuxer stops at the first input it cannot open and still exits 0.
     """
-    if dest.exists():
-        return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     response = requests.get(
         f"{WAGO_BASE}/api/casc/{fdid}", params={"version": build}, timeout=180
@@ -72,13 +103,30 @@ def fetch_file(fdid: int, dest: Path, build: str = BETA_BUILD) -> Path:
         raise FileNotFoundError(
             f"FileDataID {fdid} not in build {build}: {response.text}"
         )
-    part = dest.with_name(f"{dest.name}.{os.getpid()}.part")
+    # the thread too: the folder probe in soundpaths fetches from a pool in one process
+    part = dest.with_name(f"{dest.name}.{os.getpid()}.{threading.get_ident()}.part")
     try:
         part.write_bytes(response.content)
         os.replace(part, dest)
     finally:
         part.unlink(missing_ok=True)
-    return dest
+
+
+# The shapes wago serves for a FileDataID the listfile names but this build cannot
+# play: an empty file (every vo_1127_* line); the same length of zero bytes where the
+# file is encrypted with a key wago does not have (vo_111_gazlowe_*); and one 3,447-byte,
+# 0.0003 s Ogg that is byte-identical wherever it stands in (later-expansion lines of
+# Sylvanas and Thrall). Tested by content, not by length: real barks run to 0.1 s.
+DUD_SIZE = 3447
+DUD_MD5 = "de6135861a6cacfe176830f18f597c3e"
+
+
+def is_dud(path: Path) -> bool:
+    """True for a file that stands in for audio this client does not have."""
+    data = path.read_bytes()
+    if not data.strip(b"\0"):  # empty, or zeroed
+        return True
+    return len(data) == DUD_SIZE and hashlib.md5(data).hexdigest() == DUD_MD5
 
 
 def display_race_sex(display_id: int | None) -> tuple[int | None, int | None]:

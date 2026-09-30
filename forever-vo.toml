@@ -59,6 +59,19 @@ dracthyr = "bloodelf"
 orcmalekid = "humanmalekid-male"
 orcfemalekid = "humanfemalekid-female"
 
+# A named NPC (npc-<displayID>) is offered its greeting kit and every line in its
+# sound set's folder under sound/creature/ as source clips. Some characters were
+# filed under more than one folder over the expansions; list the others here, keyed
+# by the set's own folder (tools/data/sound_sets.json), and run
+# `./tools/run.sh fvo-soundpaths --folders` so tools/data/named_folders.json has them.
+# Folders are never matched by name: anduin, anduin_lothar and anduinwrynn are two
+# different people. lady_sylvanas_windrunner is Legion to Dragonflight.
+[voices.named_folders]
+# sylvanaswindrunner = ["sylvanas", "lady_sylvanas_windrunner"]
+jainaproudmoore = ["lady_jaina_proudmoore"]  # Legion on
+tyrandewhisperwind = ["tyrande_whisperwind"]  # Legion on
+voljin = ["warchief_voljin"]  # Legion and Battle for Azeroth, long speeches
+
 # One speaker always in one voice, ahead of everything the capture says
 # (#319). Keyed like the pack's gossip (creature ID, negative for game
 # objects); any voice name the generator resolves (race, archetype, species,
@@ -276,6 +289,33 @@ clips = [
     552187,
 ]
 
+[voices.sources.npc-11657]
+clips = [561338, 561337, 561336, 561335, 561334, 561333]
+
+[voices.sources.npc-11658]
+clips = [1686476, 1686475]
+
+[voices.sources.npc-10006]
+clips = [543354, 543358, 543359, 543366, 543369, 543357]
+
+[voices.sources.npc-4527]
+clips = [5723108, 5758116]
+
+[voices.sources.npc-2970]
+clips = [2737069, 552771]
+
+[voices.sources.npc-10357]
+clips = [563883]
+
+[voices.sources.npc-7274]
+clips = [1524582]
+
+[voices.sources.npc-7052]
+clips = [6180634, 6183896]
+
+[voices.sources.npc-126478]
+clips = [6180634, 6183896]
+
 [voices.sources.troll-male-dark]
 clips = [
     562868,
@@ -465,6 +505,27 @@ tempo = 1.1
 exaggeration = 0.5
 cfg_weight = 0.6
 tempo = 1.05
+
+[tts.voices.npc-11657]
+exaggeration = 0.7
+cfg_weight = 0.4
+tempo = 0.9
+
+[tts.voices.npc-11658]
+exaggeration = 0.8
+cfg_weight = 0.5
+pitch = -3.0
+
+[tts.voices.npc-10006]
+exaggeration = 0.5
+cfg_weight = 0.5
+tempo = 0.9
+pitch = -2.5
+
+[tts.voices.npc-4527]
+exaggeration = 0.45
+cfg_weight = 0.5
+pitch = -1.0
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
@@ -475,6 +536,8 @@ Tirisfal = "Tirrisfal"
 Varimathras = "Vairimathrus"
 Feralas = "fairalass"
 Lordaeron = "Lorderon"
+"Eldre'Thalas" = "Eldra thelass"
+Tyrande = "teronda"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything

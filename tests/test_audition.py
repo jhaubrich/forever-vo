@@ -291,3 +291,129 @@ def test_sound_packs_without_a_client_is_just_the_working_folder(
 ) -> None:
     packs = sound_packs(tmp_path / "missing", tmp_path)
     assert [(p.key, p.label) for p in packs] == [("ForeverVO_Data", "working folder")]
+
+
+def test_stop_ends_a_run_after_the_take_in_progress(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+    import threading
+
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    monkeypatch.setattr(audition, "AUDITION_DIR", tmp_path)
+    # a Studio without its corpus thread or a model: only what /api/generate touches
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio.model_lock = threading.Lock()
+    studio.stops = {}
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    class FakeSynth:
+        catalog = None
+
+        def render(self, text: str, voice: str) -> str:
+            # the page presses Stop while the first take is being made
+            (session,) = studio.stops
+            assert client.post(f"/api/generate/{session}/stop").json() == {
+                "stopping": True
+            }
+            return "audio"
+
+        def encode(self, audio: str, out: Path, tempo: float, pitch: float) -> float:
+            out.write_bytes(b"")
+            return 1.0
+
+    monkeypatch.setattr(studio, "synth", lambda: FakeSynth(), raising=False)
+    response = client.post(
+        "/api/generate",
+        json={
+            "text": "Hello there.",
+            "voice": "human-male",
+            "exaggeration": [0.45],
+            "cfg_weight": [0.5],
+            "takes": 3,
+        },
+    )
+    events = [json.loads(line)["event"] for line in response.text.splitlines()]
+    assert events == ["start", "take", "stopped"]
+    assert studio.stops == {}  # a finished run leaves nothing to stop
+    assert client.post("/api/generate/nope/stop").json() == {"stopping": False}
+
+
+def test_one_take_is_encoded_at_every_tempo_and_pitch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The model runs once per take; a pitch sweep shifts that same audio."""
+    import json
+    import threading
+
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    monkeypatch.setattr(audition, "AUDITION_DIR", tmp_path)
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio.model_lock = threading.Lock()
+    studio.stops = {}
+    renders: list[str] = []
+    encodes: list[tuple[str, float, float]] = []
+
+    class FakeSynth:
+        catalog = None
+
+        def render(self, text: str, voice: str) -> str:
+            renders.append(text)
+            return f"audio{len(renders)}"
+
+        def encode(self, audio: str, out: Path, tempo: float, pitch: float) -> float:
+            encodes.append((audio, tempo, pitch))
+            out.write_bytes(b"")
+            return 1.0
+
+    monkeypatch.setattr(studio, "synth", lambda: FakeSynth(), raising=False)
+    client = TestClient(audition.create_app(studio, addons=None))
+    response = client.post(
+        "/api/generate",
+        json={
+            "text": "Hello there.",
+            "voice": "human-male",
+            "exaggeration": [0.45],
+            "cfg_weight": [0.5],
+            "tempo": [1.0],
+            "pitch": [0.0, -3.0, -5.0],
+            "takes": 2,
+        },
+    )
+    takes = [json.loads(line) for line in response.text.splitlines()]
+    assert len(renders) == 2
+    assert encodes == [
+        ("audio1", 1.0, 0.0),
+        ("audio1", 1.0, -3.0),
+        ("audio1", 1.0, -5.0),
+        ("audio2", 1.0, 0.0),
+        ("audio2", 1.0, -3.0),
+        ("audio2", 1.0, -5.0),
+    ]
+    names = [t["name"] for t in takes if t["event"] == "take"]
+    assert names[1] == "human-male-e0.45-c0.5-t1.0-p-3.0-take1.mp3"
+    # a past run reads its pitch back from the file name
+    (run,) = client.get("/api/sessions").json()
+    assert sorted(t["pitch"] for t in run["takes"]) == [
+        -5.0,
+        -5.0,
+        -3.0,
+        -3.0,
+        0.0,
+        0.0,
+    ]
+
+
+def test_write_tuning_keeps_pitch_only_when_it_differs(toml_copy: Path) -> None:
+    config = write_tuning(toml_copy, "gnome-male", 0.6, 0.4, None, 1.0, -3.0)
+    assert config.tts.voices["gnome-male"].pitch == -3.0
+    config = write_tuning(toml_copy, "gnome-male", 0.6, 0.4, None, 1.0, 0.0)
+    assert config.tts.voices["gnome-male"].pitch is None

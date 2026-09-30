@@ -304,7 +304,9 @@ plays the working folder's file, else the first installed `ForeverVO_Data*`
 pack under `WOW_DIR`'s `Interface/AddOns` that has it, in the addon's priority
 order (`sound_packs`; `--addons` names another folder): a contributor's working
 folder is mostly empty, and before 2026-09-28 every line read "no file in the
-pack yet" for them. One model instance, loaded on
+pack yet" for them. Stop, beside Generate, ends a run after the take in
+progress: Chatterbox's `generate()` cannot be interrupted, so the check is
+between takes (`Studio.stops`, `/api/generate/<session>/stop`). One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
 we need are plain HTML, and the addon's own rule of no libraries and a native
@@ -738,7 +740,31 @@ of the 10 s window, then the knobs.
   Source clips panel, or with `fvo-refclips`.
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
-  just two greetings, so his clone is rougher.
+  just two greetings, so his clone is rougher. The automatic build uses the kit
+  alone, but the kit is not all the client has: Sylvanas's set links four
+  greetings and her folder `sound/creature/sylvanaswindrunner/` holds ~90 more
+  lines this build ships (Wrath Gate, HoR), linked from no beta kit. So since
+  2026-09-29 a named voice's audition candidates are the kit plus every file in
+  its set's folder, one group per folder in the Source clips panel's select, and
+  a pick in `[voices.sources.npc-*]` is how those reach a reference.
+  `fvo-soundpaths --folders` (kept apart from `--refresh`, so it never renames an
+  archetype) streams the community listfile - the pinned verified one lacks real
+  lines, `vo_920_sylvanas_*` - keeps `.ogg` only (wago answers a `.ogg.meta` with
+  400), fetches each file once and commits the real ones with their lengths to
+  `tools/data/named_folders.json`. Every named set's folder is listed, stock and
+  Warcraft III ones (`dwarfmalegrimnpc`, `peon`) included, on the owner's call.
+  What a listed file can be instead of audio (`wowdata.is_dud`): empty
+  (`vo_1127_*`), zero bytes where it is encrypted (`vo_111_gazlowe_*`), or one
+  byte-identical 3,447-byte 0.0003 s Ogg. Test by content, never by a length
+  floor: real barks run to 0.1 s and a 0.286 s one is a saved pick. A character
+  filed under more than one folder gets the others from `[voices.named_folders]`,
+  keyed by the set's own folder, then a `--folders` run; never by name matching
+  (`anduin`, `anduin_lothar`, `anduinwrynn` are two people). Sylvanas's `sylvanas`
+  and `lady_sylvanas_windrunner` (Legion on, mostly real audio) are there,
+  commented out. Every `wowdata.fetch_file` download lands once per build in
+  `tools/data/casc/<build>/<fdid>.<ext>` (gitignored) and is hard-linked where it
+  is asked for, so the probe, each display's candidates and the reference
+  builders share one copy.
 - Species voices (PR #21, 2026-09-23): a speaker with no player race resolves
   through its model file (`tools/data/species_models.json`, keyed by
   `CreatureModelData.FileDataID`, which is also what `GetModelFileID()`
@@ -763,11 +789,22 @@ of the 10 s window, then the knobs.
   close one (orc children to the human child clips).
 - **Chatterbox conditioning is `[tts]` in `forever-vo.toml`**, with per-voice
   overrides under `[tts.voices.<voice>]` that may also name a different clip to
-  clone from (`reference`). The knobs are `exaggeration`, `cfg_weight` and
-  `tempo`; the last is not a model parameter (Chatterbox's `generate()` has no
-  pace control) but a pitch-preserving `atempo` stretch applied by
-  `Synth.speak` at encode time, with the stretched length recorded as the
-  duration. Only knobs that differ from the `[tts]` defaults join the
+  clone from (`reference`). The knobs are `exaggeration`, `cfg_weight`,
+  `tempo` and `pitch`; the last two are not model parameters (Chatterbox's
+  `generate()` has no pace control) but ffmpeg filters applied by
+  `Synth.encode` after `Synth.render` (`generate.encode_filters`): tempo a
+  pitch-preserving `atempo` stretch, with the stretched length recorded as the
+  duration, and pitch (since 2026-09-29, #341) a length-keeping `rubberband`
+  shift in semitones, which is why the flake installs `ffmpeg-full` (nixpkgs
+  builds rubberband into the full variant only); `generate.py` checks for the
+  filter before loading the model (`require_filters`) rather than failing at the
+  first pitched line of a night's run. Chatterbox pulls every clone toward its own mid-range
+  voice: Varimathras's takes measured 153 Hz against his recordings' 86-89 Hz
+  on every pick of clips tried, and -3 to -5 semitones sounded right where
+  matching the number (-9) did not. That is a pitch correction after the
+  model, not the knobs-for-accent argument the section below warns against;
+  accent still comes from the reference. The audition page renders a take
+  once and encodes every tempo and pitch of its sweep from that audio. Only knobs that differ from the `[tts]` defaults join the
   fingerprint (`Tts.differences`), so adding a knob later never restages what
   was already stamped. `generate.VoiceCatalog` resolves a voice to the
   clip it actually uses (its own, else its fallback race's, else the narrator's,

@@ -33,6 +33,7 @@ from pathlib import Path
 
 import requests
 
+from tools.build_retail_references import is_combat
 from tools.build_voice_references import (
     RAW_DIR,
     S3GEN_SECONDS,
@@ -43,10 +44,26 @@ from tools.build_voice_references import (
     duration,
     emote_speech_fdids,
     files_by_kit,
+    named_npc_fdids,
     set_fdids,
 )
-from tools.config import BETA_BUILD, GENDER_DICT, RACE_DICT, RETAIL_BUILD, VOICES_DIR
-from tools.wowdata import fetch_file, load_db2, sound_set_displays
+from tools.config import (
+    BETA_BUILD,
+    GENDER_DICT,
+    RACE_DICT,
+    RETAIL_BUILD,
+    VOICES_DIR,
+    Voices,
+    load_config,
+)
+from tools.soundpaths import folders, named_folder_files
+from tools.wowdata import (
+    display_sound_set,
+    fetch_file,
+    is_dud,
+    load_db2,
+    sound_set_displays,
+)
 
 LABELS_DIR = VOICES_DIR / "audition-labels"
 LABEL_VOICE = "human-female"
@@ -56,8 +73,9 @@ GAP_SECONDS = 0.5
 class Candidate:
     """One clip a voice could be built from."""
 
-    def __init__(self, kind: str, fdid: int, build: str) -> None:
+    def __init__(self, kind: str, fdid: int, build: str, group: str = "") -> None:
         self.kind, self.fdid, self.build = kind, fdid, build
+        self.group = group or kind  # what the audition page's folder select shows
         self.path = Path()
         self.seconds = 0.0
 
@@ -72,6 +90,8 @@ class Candidate:
             self.path = fetch_file(
                 self.fdid, RAW_DIR / voice / f"{self.fdid}.ogg", build=self.build
             )
+            if is_dud(self.path):  # named in the listfile, not carried by this build
+                return False
             self.seconds = duration(self.path)
         except (
             FileNotFoundError,
@@ -113,17 +133,59 @@ def speech_candidates(voice: str) -> list[Candidate]:
                     kind_of[fdid] = name.lower()
         where = "speech" if build == BETA_BUILD else "retail speech"
         return [
-            Candidate(f"{where} {kind_of.get(f, '')}".strip(), f, build) for f in fdids
+            Candidate(f"{where} {kind_of.get(f, '')}".strip(), f, build, where)
+            for f in fdids
         ]
     return []
 
 
-def candidates(voice: str) -> list[Candidate]:
+def _bark_last(folder: str, stem: str) -> bool:
+    """A swing, shout or death cry, to list after the lines that talk.
+
+    is_combat reads the underscore tokens of a vo_ name; a Classic name runs the
+    character into the kind (sylvanaswindrunneraggro02), so it is also asked about what
+    is left once the folder's name is taken off the front.
+    """
+    rest = stem[len(folder) :] if stem.startswith(folder) else ""
+    return is_combat(stem) or bool(rest and is_combat(rest.strip("_")))
+
+
+def named_candidates(voice: str, voices: Voices) -> list[Candidate]:
+    """A named NPC's greeting kit, then every line in its set's sound folder and in the
+    folders `[voices.named_folders]` adds, each folder a group, barks last.
+
+    The kit is the four greetings Sylvanas's NPCSounds row links; her folder holds about
+    ninety more lines the client ships (tools/soundpaths.py, `--folders`).
+    """
+    found = [
+        Candidate("greeting", fdid, BETA_BUILD, "greetings")
+        for fdid in named_npc_fdids().get(voice, [])
+    ]
+    try:
+        own = folders().get(display_sound_set(int(voice.removeprefix("npc-"))) or 0)
+    except ValueError:
+        own = None
+    if own:
+        files = named_folder_files()
+        for folder in [own, *voices.named_folders.get(own, [])]:
+            rows = files.get(folder.lower(), [])
+            rows = sorted(rows, key=lambda r: (_bark_last(folder.lower(), r[1]), r[0]))
+            found.extend(
+                Candidate(stem, fdid, BETA_BUILD, folder) for fdid, stem, _ in rows
+            )
+    return found
+
+
+def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
     """Speech first, then greetings. Fetches as it goes.
 
     An archetype offers its own set's greetings and its race's speech; a plain voice
-    offers every set the race is cast with, most-used first.
+    offers every set the race is cast with, most-used first. A named NPC
+    (`npc-<displayID>`) has no race, so none of that finds anything: it offers its
+    greeting kit and its sound folders instead (named_candidates).
     """
+    if voice.startswith("npc-"):
+        return _fetched(named_candidates(voice, voices or load_config().voices), voice)
     found = speech_candidates(voice)
     race_gender = base_voice(voice)
     counts: Counter[int] = sound_set_displays().get(race_gender) or Counter()
@@ -136,8 +198,18 @@ def candidates(voice: str) -> list[Candidate]:
     for sound_id, displays in wanted_sets:
         for fdid in set_fdids(sound_id):
             found.append(
-                Candidate(f"set {sound_id} ({displays} displays)", fdid, BETA_BUILD)
+                Candidate(
+                    f"set {sound_id} ({displays} displays)",
+                    fdid,
+                    BETA_BUILD,
+                    f"set {sound_id}",
+                )
             )
+    return _fetched(found, voice)
+
+
+def _fetched(found: list[Candidate], voice: str) -> list[Candidate]:
+    """The first of each FileDataID that can be had, in order."""
     seen: set[int] = set()
     kept = []
     for candidate in found:
@@ -153,9 +225,11 @@ def cmd_list(args) -> int:
     if not found:
         print(f"{args.voice}: no candidate clips")
         return 1
-    print(f"{'#':>4}  {'source':<28} {'fdid':>9}  seconds")
+    print(f"{'#':>4}  {'group':<20} {'source':<36} {'fdid':>9}  seconds")
     for i, c in enumerate(found, 1):
-        print(f"{i:>4}  {c.kind:<28} {c.fdid:>9}  {c.seconds:5.1f}")
+        print(
+            f"{i:>4}  {c.group[:20]:<20} {c.kind[:36]:<36} {c.fdid:>9}  {c.seconds:5.1f}"
+        )
     print(f"\n{len(found)} clips, {sum(c.seconds for c in found):.0f}s total")
     return 0
 

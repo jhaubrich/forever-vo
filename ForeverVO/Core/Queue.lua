@@ -246,6 +246,7 @@ function Queue:Pause()
     if current then
         StopPlayback(current)
     end
+    Audio.Idle() -- nothing of ours plays while paused; let the game's barks through
     self:TriggerEvent("OnPause", true)
     self:TriggerEvent("OnChanged")
 end

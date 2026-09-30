@@ -29,6 +29,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "fastapi",             # the tests import the audition app; CI runs them without the tts group
+    "httpx",               # fastapi's TestClient needs it; the tts group only brings it in by chance
     "hypothesis>=6.168.1",
     "pytest>=9.1.1",
     "ruff>=0.16.8",
