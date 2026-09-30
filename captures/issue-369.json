@@ -1,0 +1,29 @@
+{
+ "addon": "0.1.6",
+ "gossip": {},
+ "npcs": {},
+ "origin": "issue-369",
+ "quests": {
+  "79007-accept": {
+   "build": "70058",
+   "class": null,
+   "differs": null,
+   "event": "accept",
+   "isObject": true,
+   "mapID": 1413,
+   "name": "Unknown",
+   "npc": null,
+   "questID": 79007,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "<The faint radiance of the embers darkening, you stumble across the remnants of a recent fire.\r\n\r\nAmidst the scattered provisions, you discover a blistered note.>\r\n\r\n\"Not all that burns is lost. Find the twin land, find the place.\"",
+   "time": 1790728383,
+   "title": "... and that note you found",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
