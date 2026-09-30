@@ -49,6 +49,7 @@ ns.defaults = {
     capture = true,
     notifyUnvoiced = true,
     crowdsourceOptOut = false,           -- no login prompt to send lines (Welcome.lua)
+    welcomed = false,                    -- the login prompt's introduction was shown (Welcome.lua)
     debug = false,
     devOverlay = false,                  -- quest key and voice on the dialog; a CVar, see UI/Debug.lua
 }

@@ -11,6 +11,9 @@
   the count too.
 - The login window's offer is shorter: how many quests we need, and that
   sending needs a free GitHub account.
+- **Don't Show This Again** in the login window holds across logins, not
+  only across `/reload`: after a client restart the window came back as if
+  for a first login and ignored the box.
 - **Copy Link** in the export window says thank you in chat. Send with
   nothing to send leaves Options open and only says so in a popup.
 - **Report Bug** opens the report window for a
