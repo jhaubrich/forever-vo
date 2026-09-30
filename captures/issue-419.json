@@ -1,0 +1,92 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "1651": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Lee Brown",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1992": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 123698,
+   "name": "Tarindrella",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "383": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Jason Mathers",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-419",
+ "quests": {
+  "97977-progress": {
+   "build": "70124",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Tarindrella",
+   "npc": "1992",
+   "questID": 97977,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Don't worry about any larger totems you might find. I wouldn't know what to do with them if you found a way to get them!",
+   "time": 1790800052,
+   "title": "Nature's Call",
+   "wanted": null,
+   "zone": "Teldrassil"
+  },
+  "99127-progress": {
+   "build": "70124",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Jason Mathers",
+   "npc": "383",
+   "questID": 99127,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Any catches to speak of?",
+   "time": 1790803545,
+   "title": "A Net Disaster",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "99143-progress": {
+   "build": "70124",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Lee Brown",
+   "npc": "1651",
+   "questID": 99143,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "What did you find? Anything interesting?",
+   "time": 1790803520,
+   "title": "Bottles and Baubles",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
