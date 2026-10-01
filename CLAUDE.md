@@ -784,7 +784,9 @@ of the 10 s window, then the knobs.
   commented out. Every `wowdata.fetch_file` download lands once per build in
   `tools/data/casc/<build>/<fdid>.<ext>` (gitignored) and is hard-linked where it
   is asked for, so the probe, each display's candidates and the reference
-  builders share one copy.
+  builders share one copy. Their lengths are kept beside them in `seconds.json`
+  (`refclips.ClipSeconds`, since 2026-10-01), so loading a voice's candidates
+  probes each file once per build instead of on every load and restart.
 - Species voices (PR #21, 2026-09-23): a speaker with no player race resolves
   through its model file (`tools/data/species_models.json`, keyed by
   `CreatureModelData.FileDataID`, which is also what `GetModelFileID()`

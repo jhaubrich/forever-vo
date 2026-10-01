@@ -803,7 +803,7 @@ async function loadClips(refresh) {
       if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
       busy($("clips-load"), false);
     } else if (d.status === "loading") {
-      if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 3000);
+      if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 1000);
     } else {
       // finished with nothing to offer ("0 clips"): stop polling, or the button spins for good
       if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
