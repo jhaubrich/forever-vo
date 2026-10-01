@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "257019|45c78ce3": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Nyassa Swiftdraught",
+   "npc": "257019",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Nostyec Aetwinter, mod. E wirsh ador eynes re an tiras an lo vil va novaedi E gol melka ras re y bor rothas aelgestron.",
+   "time": 1790823014,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "257021|bedfc7be": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Halassa Fernbreeze",
+   "npc": "257021",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Nostyec Regenthor, mod. E wirsh ador eynes re an tiras an lo vil va novaedi E gol melka ras re y bor rothas aelgestron.",
+   "time": 1790822978,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "257019": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Nyassa Swiftdraught",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "257021": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Halassa Fernbreeze",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-442",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
