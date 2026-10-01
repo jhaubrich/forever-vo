@@ -1,0 +1,128 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "4596|b22b0c37": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "James Van Brunt",
+   "npc": "4596",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "How is the edge of your steel? Good enough to cut through the belly of your enemy? Let me show you some things to make it even sharper.",
+   "time": 1790839139,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "4605|e9a5758c": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Basil Frye",
+   "npc": "4605",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "You have learned much, more than I can teach. Go to James Van Brunt, he will teach you what I cannot.",
+   "time": 1790839630,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "11835": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Theodore Griffs",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1938": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Dalar Dawnweaver",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4596": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "James Van Brunt",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4605": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Basil Frye",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5819": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Mirelle Tremayne",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-451",
+ "quests": {
+  "423-progress": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Dalar Dawnweaver",
+   "npc": "1938",
+   "questID": 423,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "I will need 6 Glutton Shackles and 3 Darksoul Shackles before I can assess the situation and devise a final solution for Arugal.  Now heed your bidding and slay Moonrage Gluttons and Moonrage Darksouls until you have what I need.",
+   "time": 1790841591,
+   "title": "Arugal's Folly",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "95216-accept": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Theodore Griffs",
+   "npc": "11835",
+   "questID": 95216,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Welcome to the most vital organ of the Undercity: The Apothecarium! Here we experiment on the most virulent of Azeroth's exotic specimens.\r\n\r\nYou've caught me in a good mood, so I will let you in on my latest investigation. It appears there is a particularly venomous arthropod stalking the ruins above our fair city. Its toxins are said to eat through even undead flesh. How exhilarating!\r\n\r\nI wish to validate these claims. Should you find yourself withering away from its bite, I should love a sample.",
+   "time": 1790838628,
+   "title": "The New Plague",
+   "wanted": true,
+   "zone": "Undercity"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
