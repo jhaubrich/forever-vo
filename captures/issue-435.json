@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "11065|ad07ed45": {
+   "build": "70124",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Thonys Pillarstone",
+   "npc": "11065",
+   "questID": null,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "Ye're a fine enchanter indeed! Now it's time fer ye to move on. I want ye to talk to Gimble Thistlefuzz, upstairs. He's a bit of a character, but he'll steer ye in the right direction from here on out!",
+   "time": 1790809277,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "5157|7805515d": {
+   "build": "70124",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Gimble Thistlefuzz",
+   "npc": "5157",
+   "questID": null,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "Great, let's get started... ha! Fooled you! Surely you didn't think it would be that simple. You'll need to prove your mettle just like everyone else!",
+   "time": 1790809323,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  }
+ },
+ "npcs": {
+  "11065": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Thonys Pillarstone",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5157": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 900914,
+   "name": "Gimble Thistlefuzz",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-435",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
