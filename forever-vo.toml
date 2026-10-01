@@ -355,6 +355,17 @@ clips = [
     7745192,
 ]
 
+[voices.sources.skyborne-male]
+clips = [
+    7930423,
+    7744509,
+    7744484,
+    7930426,
+    7744809,
+    7744790,
+    7744793,
+]
+
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
