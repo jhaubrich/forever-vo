@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "167": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Morhan Coppertongue",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6577": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 900914,
+   "name": "Bingles Blastenheimer",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-434",
+ "quests": {
+  "2038-progress": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Bingles Blastenheimer",
+   "npc": "6577",
+   "questID": 2038,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "$N! Where are my things?!",
+   "time": 1790806152,
+   "title": "Bingles' Missing Supplies",
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "86776-accept": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Morhan Coppertongue",
+   "npc": "167",
+   "questID": 86776,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Thelsamar's a great place to live, but we don't have all of the amenities of Ironforge. I'm always running out of bronze! I need more bronze if I'm going to keep making tools and kettles and pots!\r\n\r\nI can tell you have a little experience at the forge. Think you could smelt me some bronze bars? I can pay you well for it!",
+   "time": 1790803608,
+   "title": "Ingredients for the Forge",
+   "wanted": null,
+   "zone": "Loch Modan"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
