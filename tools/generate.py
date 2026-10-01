@@ -173,8 +173,20 @@ class VoiceCatalog:
         restages when that clip's picks change, whoever picked them. Rebuilding a clip
         is still invisible on its own: the bytes are not hashed, only the decision. A
         voice with no picks hashes exactly as before."""
-        resolved = self.resolve(voice)
         key = text_key(text)
+        fields = self.conditioning(voice)
+        if not fields:
+            return key
+        return (
+            key
+            + "+"
+            + ",".join(f"{name}={value}" for name, value in sorted(fields.items()))
+        )
+
+    def conditioning(self, voice: str) -> dict[str, object]:
+        """What `fingerprint` adds to the text hash: the settings that differ from the
+        defaults, and a digest of the clips picked for the clip this voice reads from."""
+        resolved = self.resolve(voice)
         fields = self.config.tts.differences(resolved.settings)
         picked = (
             self.config.voices.sources.get(resolved.clip.stem)
@@ -189,13 +201,23 @@ class VoiceCatalog:
             fields["clips"] = hashlib.blake2b(
                 joined.encode(), digest_size=4
             ).hexdigest()
-        if not fields:
-            return key
-        return (
-            key
-            + "+"
-            + ",".join(f"{name}={value}" for name, value in sorted(fields.items()))
-        )
+        return fields
+
+    def recipe(self, voice: str) -> str:
+        """The clip this voice reads from and its `conditioning`, as one string.
+
+        [voices.approved] stores it, so an approval holds only while the voice still
+        sounds as it did when heard: a re-pick, a retuning, or a change to a voice it
+        borrows from moves it, wherever that edit was made. The clip's name is in it
+        and the text hash is not, unlike `fingerprint`, because two voices reading the
+        same text alike is not the question here. Rebuilding a clip's audio without
+        changing its picks does not move it, as it does not move `fingerprint` (#51)."""
+        resolved = self.resolve(voice)
+        fields: dict[str, object] = {
+            "clip": resolved.clip.stem if resolved.clip else "none",
+            **self.conditioning(voice),
+        }
+        return ",".join(f"{name}={value}" for name, value in sorted(fields.items()))
 
     def tuned(self, voice: str) -> bool:
         return not self.config.tts.is_default(self.resolve(voice).settings)

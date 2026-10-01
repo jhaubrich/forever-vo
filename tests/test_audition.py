@@ -90,27 +90,34 @@ def test_write_speaker_voice_pins_and_unpins_and_keeps_comments(
     assert "[voices.speakers]" not in toml_copy.read_text(encoding="utf-8")
 
 
-def test_write_approval_marks_and_unmarks_and_keeps_comments(
+def test_write_approval_sets_and_removes_a_recipe_and_keeps_comments(
     toml_copy: Path,
 ) -> None:
     before = toml_copy.read_text(encoding="utf-8")
-    config = write_approval(toml_copy, "scourge-male-dark", True)
-    config = write_approval(toml_copy, "gnome-female", True)
-    assert config.voices.approved == ["gnome-female", "scourge-male-dark"]
+    # names no real approval can have, since the repository's file holds real ones
+    config = write_approval(toml_copy, "test-male-dark", "clip=test-male-dark")
+    config = write_approval(toml_copy, "test-female", "clip=test-female")
+    assert config.voices.approved["test-male-dark"] == "clip=test-male-dark"
     assert config.voices.speakers == load_config(CONFIG_TOML).voices.speakers
-    config = write_approval(toml_copy, "gnome-female", True)  # twice is once
-    assert config.voices.approved == ["gnome-female", "scourge-male-dark"]
-    write_approval(toml_copy, "gnome-female", False)
-    config = write_approval(toml_copy, "scourge-male-dark", False)
-    assert config.voices.approved == []
+    # approving again records the recipe heard this time
+    config = write_approval(toml_copy, "test-female", "clip=test-female,tempo=1.1")
+    assert config.voices.approved["test-female"] == "clip=test-female,tempo=1.1"
+    write_approval(toml_copy, "test-female", None)
+    config = write_approval(toml_copy, "test-male-dark", None)
+    assert "test-female" not in config.voices.approved
+    assert "test-male-dark" not in config.voices.approved
     restored = toml_copy.read_text(encoding="utf-8")
     assert tomlkit.parse(restored).unwrap() == tomlkit.parse(before).unwrap()
-    assert "# Quests handed out by objects and items have no speaker" in restored
+    # the comments ahead of [voices.approved] and of the table before it stay put
+    assert "# Voices someone has auditioned by ear and approved" in restored
+    assert restored.index("# CurseForge project IDs.") < restored.index(
+        "[release.curseforge_projects]"
+    )
 
 
 def test_write_approval_refuses_what_is_not_a_voice_name(toml_copy: Path) -> None:
     with pytest.raises(HTTPException):
-        write_approval(toml_copy, "Scourge Male", True)
+        write_approval(toml_copy, "Scourge Male", "clip=scourge-male")
 
 
 def test_write_speaker_voice_refuses_what_is_not_a_voice_name(

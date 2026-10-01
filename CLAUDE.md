@@ -294,9 +294,11 @@ per take with the resolved recipe beside it. "Keep these settings" writes
 for a picked line's speaker a `[voices.speakers]` pin, "Always read ... in") into
 `forever-vo.toml` through tomlkit, so the comments survive, validated by the
 models before the file is replaced. The "Approved by ear" box beside the voice
-list writes `[voices] approved` (the ★ in the list; it meant "has a
-`[tts.voices]` row" until 2026-10-01), a note for people that nothing generates
-from. "Write to pack" regenerates one line's
+list writes `[voices.approved]`, a note for people that nothing generates from:
+each voice maps to the `VoiceCatalog.recipe` heard (clip read from, knobs off
+the defaults, picks digest), so a re-pick or retuning of it or of a voice it
+borrows from, made anywhere, turns its ★ into ☆ until someone listens again
+(the ★ meant "has a `[tts.voices]` row" until 2026-10-01). "Write to pack" regenerates one line's
 pack file under the *saved* configuration only and records the fingerprint
 `generate.py` would compute, so the nightly run neither redoes nor misses it;
 it is disabled until the row's recipe is the saved one. On the ROCm build

@@ -170,9 +170,9 @@ class Voices(Strict):
     speakers: dict[
         str, str
     ] = {}  # speaker key -> voice, for the few whose captured model is wrong
-    approved: list[
-        str
-    ] = []  # voices auditioned by ear and approved; a note for people, nothing reads it
+    approved: dict[
+        str, str
+    ] = {}  # voice -> the recipe heard when it was approved by ear; nothing generates from it
 
     @field_validator("speakers")
     @classmethod
@@ -195,11 +195,11 @@ class Voices(Strict):
 
     @field_validator("approved")
     @classmethod
-    def _approved_voices(cls, value: list[str]) -> list[str]:
+    def _approved_voices(cls, value: dict[str, str]) -> dict[str, str]:
         for voice in value:
             if not _VOICE_NAME.fullmatch(voice):
                 raise ValueError(
-                    f"[voices] approved {voice!r} is not a voice name "
+                    f"[voices.approved] {voice!r} is not a voice name "
                     '(lowercase words joined by "-", like "goblin-male")'
                 )
         return value

@@ -129,7 +129,7 @@
       <div><label for="voice">Voice</label>
         <input id="voice-search" type="search" placeholder="search voices: sylv, vari, dwarf guard…" autocomplete="off" style="width:100%;margin-bottom:4px">
         <select id="voice"></select>
-        <label class="check" title="Saved as [voices] approved in forever-vo.toml, and shown as ★ in the list. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> Approved by ear</label></div>
+        <label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></div>
       <div><label for="reference">Clone from</label><select id="reference"></select></div>
       <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
     </div>
@@ -278,7 +278,12 @@ function applyState(s) {
 // list. Only a note: nothing is generated or restaged by it.
 function showApproval() {
   if (!state) return;
-  $("approved").checked = state.approved.includes($("voice").value);
+  const mark = state.approved[$("voice").value];
+  $("approved").checked = mark === "current";
+  // half-ticked: approved once, changed since; ticking approves it as it is now
+  $("approved").indeterminate = mark === "stale";
+  $("approved-label").textContent = mark === "stale"
+    ? "Approved before a change (tick to approve as it is now)" : "Approved by ear";
 }
 
 $("approved").addEventListener("change", async () => {
@@ -299,7 +304,7 @@ $("approved").addEventListener("change", async () => {
 function voiceOptions(s) {
   const rows = s.pickable || s.voices.map(v => ({ voice: v, clip: true, displays: null }));
   const option = r => {
-    const star = s.approved.includes(r.voice) ? " ★" : "";
+    const star = { current: " ★", stale: " ☆" }[s.approved[r.voice]] || "";
     const who = r.label ? ` — ${esc(r.label)}` : "";
     // what the voice is worth picking for: how many creature displays it answers
     // for, and how many lines it actually speaks

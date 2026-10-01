@@ -257,24 +257,23 @@ def write_speaker_voice(path: Path, speaker: str, voice: str) -> Config:
         return _validated_write(path, doc)
 
 
-def write_approval(path: Path, voice: str, approved: bool) -> Config:
-    """Adds the voice to [voices].approved or takes it out, keeping the list sorted.
-    The key is replaced where it stands, so its comment stays with it; appended
-    instead, tomlkit puts it under the comment that belongs to [voices.fallbacks]."""
+def write_approval(path: Path, voice: str, recipe: str | None) -> Config:
+    """Sets [voices.approved].<voice> to the recipe heard; None takes the approval off.
+    The table stays when it empties, so its comment keeps its place in the file."""
     with _config_lock(path):
         doc = tomlkit.parse(path.read_text(encoding="utf-8"))
         voices = doc.get("voices")
         if voices is None:
             voices = tomlkit.table()
             doc["voices"] = voices
-        names = set(voices.get("approved", []))
-        if approved:
-            names.add(voice)
-        else:
-            names.discard(voice)
-        array = tomlkit.array()
-        array.extend(sorted(names))
-        voices["approved"] = array.multiline(bool(names))
+        approved = voices.get("approved")
+        if approved is None:
+            approved = tomlkit.table()
+            voices["approved"] = approved
+        if recipe:
+            approved[voice] = recipe
+        elif voice in approved:
+            del approved[voice]
         return _validated_write(path, doc)
 
 
@@ -949,7 +948,12 @@ class Studio:
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
             "speakers": config.voices.speakers,
-            "approved": sorted(config.voices.approved),
+            # current: heard as it is configured now; stale: approved, then something
+            # it reads from changed (VoiceCatalog.recipe)
+            "approved": {
+                voice: "current" if catalog.recipe(voice) == heard else "stale"
+                for voice, heard in config.voices.approved.items()
+            },
             "sources": {
                 v: e.model_dump(exclude_none=True)
                 for v, e in config.voices.sources.items()
@@ -1340,10 +1344,11 @@ def create_app(
 
     @app.post("/api/keep-approval")
     def keep_approval(request: KeepApproval) -> dict[str, Any]:
-        """Marks a voice approved by ear, or takes the mark off. Only a note in the
-        TOML: nothing is generated or restaged by it."""
+        """Marks a voice approved by ear as it is configured now, or takes the mark
+        off. Only a note in the TOML: nothing is generated or restaged by it."""
         _safe(request.voice)
-        write_approval(studio.config_path, request.voice, request.approved)
+        recipe = studio.catalog().recipe(request.voice) if request.approved else None
+        write_approval(studio.config_path, request.voice, recipe)
         return studio.state()
 
     @app.post("/api/keep-speaker-voice")

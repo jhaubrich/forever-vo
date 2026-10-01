@@ -19,25 +19,6 @@
 narrator = "narrator"
 narrator_alternates = ["orc-male"]
 
-# Voices someone has auditioned by ear and approved, starred in the audition
-# page's voice list and set with its "Approved by ear" box. A note for people:
-# nothing is generated or restaged by it.
-approved = [
-    "bloodelf-female",
-    "bloodelf-male",
-    "gnome-female",
-    "gnome-male",
-    "goblin-female",
-    "goblin-male",
-    "human-female",
-    "human-male",
-    "npc-11657",
-    "npc-11658",
-    "skyborne-female",
-    "skyborne-male",
-    "tauren-female",
-]
-
 # Races without a reference clip borrow a related one; the narrator without a
 # tools/voices/narrator.wav borrows human-male. A borrowed clip brings its
 # owner's [tts.voices] tuning with it.
@@ -654,3 +635,11 @@ addon = 1705010          # Forever Voiceover
 delta = 1705094          # Forever Voiceover Data: Forever
 base = 1705100           # Forever Voiceover Data: Base (Classic quests to level 40, all gossip)
 base_endgame = 1709884   # Forever Voiceover Data: Base Endgame (Classic quests from 41)
+
+# Voices someone has auditioned by ear and approved, set with the audition
+# page's "Approved by ear" box. Each holds the recipe heard (the clip read from,
+# the settings that differ from [tts], a digest of the picked clips), so a later
+# re-pick or retuning, of this voice or one it borrows from, shows it as
+# approved before a change (a hollow star) until someone listens again. A note
+# for people: nothing is generated or restaged by it.
+[voices.approved]
