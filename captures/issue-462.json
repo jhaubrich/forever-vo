@@ -1,0 +1,155 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "6741|886683cb": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Innkeeper Norman",
+   "npc": "6741",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "The old kingdom of Lordaeron is perilous. We urge caution for anyone who dares to venture into the now decaying lands of Tirisfal Glades. If you must, find the Undercity and the upper courtyards are what you seek.",
+   "time": 1790859717,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "6741|e0b9e88a": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Innkeeper Norman",
+   "npc": "6741",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Our ancient lands in the north east of the Eastern Kingdom. Named after Lordain himself, it was once a proud and powerful kingdom. Its history is rich and serves as many lessons to upstart nobles and kings. One of its defining moments was assisting in the foundation of the Alliance that we know today.\r\n\r\nUnfortunately its history is also dark, and its current inhabitants defile its lands day by day. There is still much of significance in the ruins that now rest above the Undercity but it is folly to attempt that journey and expect to return still among the living.",
+   "time": 1790859728,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "2055": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Master Apothecary Faranell",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "251001": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Deathguard Kristof",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "266484": {
+   "addon": "0.1.7",
+   "creatureType": "Undead",
+   "modelFileID": 121768,
+   "name": "Morbin Lightbane",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "270582": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Mon'ye",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "6741": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Innkeeper Norman",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "7825": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Oran Snakewrithe",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-462",
+ "quests": {
+  "95204-complete": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Oran Snakewrithe",
+   "npc": "7825",
+   "questID": 95204,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "<Oran bites the crest to ensure authenticity.>\r\n\r\nWell I'll be. A genuine relic of our home. Mostly intact, too. We need to be extra careful with this one.\r\n\r\nThank you for your aid in restoring our history, $c. I'll see to it that we take good care of this.",
+   "time": 1790858217,
+   "title": "Crest of Lordaeron",
+   "wanted": true,
+   "zone": "Undercity"
+  },
+  "95204-progress": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Oran Snakewrithe",
+   "npc": "7825",
+   "questID": 95204,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "What have you got there, $c? A tasty morsel?",
+   "time": 1790858215,
+   "title": "Crest of Lordaeron",
+   "wanted": true,
+   "zone": "Undercity"
+  },
+  "97292-accept": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "questID": 97292,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "I have concocted a lovely serum that our new guest is sure to find quite... stimulating.\r\n\r\nTake this. Feed it into the workings dripping from above him. Let's see if we can't show him why it's in his best interest to serve loyally.\r\n\r\nAnd try not to drop it. I can't afford a new assistant.",
+   "time": 1790859283,
+   "title": "Unending Torment",
+   "wanted": true,
+   "zone": "Undercity"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
