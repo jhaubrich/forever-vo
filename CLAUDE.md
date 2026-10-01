@@ -846,13 +846,15 @@ of the 10 s window, then the knobs.
   went: a `reference` pointing elsewhere means the picks are never read. Both
   results are about the reference, which is the rule at the top of this
   section.
-- `narrator_alternates` under `[voices]` is the narrator menu: since 2026-09-25
-  just orc-male beside the default (human-male's clip), over ~1,040 narrated
+- `narrator_alternates` under `[voices]` is the narrator menu: since 2026-10-01
+  just skyborne-female beside the default (human-male's clip), one male and one
+  female voice; orc-male held the slot from 2026-09-25 and was dropped for not
+  sounding good enough. It covers ~1,040 narrated
   quest and ~336 narrated gossip lines in the full Classic set (1,340 files per
   voice, ~4 h of GPU each). It was five alternates before: each cost about 6.5%
   of every pack, together a third, and the base split by level exists because
-  of them. The four dropped voices' files (human-female, dwarf-male,
-  nightelf-female, troll-female) are still under `Sounds/*/Narrator/` and in
+  of them. The five dropped voices' files (human-female, dwarf-male,
+  nightelf-female, troll-female, orc-male) are still under `Sounds/*/Narrator/` and in
   `sound_index.json`; `rebuild_tables` and the release only look at the
   configured voices, so they are dead weight until deleted. The player's pick
   lives in the `ForeverVO_narratorVoice` CVar as well as the settings, from

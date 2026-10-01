@@ -11,13 +11,15 @@
 # the alternates live in Sounds\Quests\Narrator\<voice>\. Adding a voice here
 # costs one more pass over every narrator line (~1,040 quest and ~336 gossip
 # lines in the full Classic set, plus parts) and about 6.5% of every pack's
-# size. The menu is just the default (human-male's clip) and orc-male since
-# 2026-09-25: five alternates were a third of each pack, and the two base packs
-# had to be split by quest level to stay under CurseForge's 1 GB cap. The four
-# dropped voices' files stay under Sounds/*/Narrator/ until deleted by hand;
-# the tables and releases only list voices named here.
+# size. The menu is one male and one female voice: the default (human-male's
+# clip) and skyborne-female since 2026-10-01. Five alternates were a third of
+# each pack until 2026-09-25, and the two base packs had to be split by quest
+# level to stay under CurseForge's 1 GB cap; orc-male, the one kept then, was
+# dropped for not sounding good enough. The dropped voices' files stay under
+# Sounds/*/Narrator/ until deleted by hand; the tables and releases only list
+# voices named here.
 narrator = "narrator"
-narrator_alternates = ["orc-male"]
+narrator_alternates = ["skyborne-female"]
 
 # Races without a reference clip borrow a related one; the narrator without a
 # tools/voices/narrator.wav borrows human-male. A borrowed clip brings its

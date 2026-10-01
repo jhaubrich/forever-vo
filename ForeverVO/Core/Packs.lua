@@ -56,7 +56,7 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- the model file a speaker's voice was cast from, for speakers the
       -- pipeline knows only by model (Forever's own NPCs have no display ID);
       -- a player who sees another model exports the NPC record (Capture.lua)
-    narratorVoices = { "human-female", "dwarf-male" },
+    narratorVoices = { "skyborne-female" },
     narrator = {
       [questID] = { [1] = { a = 5.4, c = 3.3, cP = { [2] = 1.2 } }, [2] = { a = 5.1 } },
       -- the same quest read in each alternate narrator voice, indexed into

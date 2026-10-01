@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The second **Narrator voice** is Skyborne female instead of Orc male, so
+  the menu has a male and a female voice. If you picked Orc male, narrated
+  lines go back to the default narrator until you pick again.
 - `/fvo export` fits every export into links. A GitHub link only holds about
   25 lines, and a longer export used to leave its string out of the link and
   say so in a message that ran off the window. Now it comes in parts: **Next**
