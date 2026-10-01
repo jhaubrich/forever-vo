@@ -574,6 +574,7 @@ function Export:CopyLink()
     frame.Status:SetTextColor(1, 0.82, 0)
     frame.Status:Show()
     self:MarkSent(frame.index)
+    ns.Print("thank you for helping voice Forever! Once the form is submitted, your lines go into the next voice pack.")
 end
 
 --- All at Once: a link to the form (title and note) and the string to paste.
@@ -603,6 +604,30 @@ function Export:CopyPaste()
     frame.PasteStatus:SetText("2. Click here, press Ctrl+C, and paste it into Export string." .. more)
     frame.PasteStatus:Show()
     self:MarkSent(frame.index)
+    ns.Print("thank you for helping voice Forever! Once the form is submitted, your lines go into the next voice pack.")
+end
+
+--- How many lines an export would carry now, counted as the login window
+--- counts them: distinct quests (an offer and its turn-in are one) and gossip.
+function Export:PendingCount()
+    local quests, gossip = ns.Capture:Pending()
+    return quests + gossip
+end
+
+--- "Send 12 Quests to Project", or the plain label when there is nothing to
+--- send; the options button and the minimap menu both use it.
+function Export:SendLabel()
+    local count = self:PendingCount()
+    if count == 0 then
+        return "Send Quests to Project"
+    end
+    return format("Send %d %s to Project", count, Util.Plural(count, "Quest"))
+end
+
+--- Whether Show(all) would open the window rather than only print to chat.
+---@param all boolean
+function Export:HasLines(all)
+    return #self:Collect(all).lines > 0
 end
 
 ---@param all boolean pack every line, exported before or not

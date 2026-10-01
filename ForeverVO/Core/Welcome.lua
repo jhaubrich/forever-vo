@@ -8,10 +8,12 @@ lines an export would carry (Capture:Pending), until the player ticks the
 opt-out box, which sets crowdsourceOptOut (the same box is on the addon's
 own page under Options, to opt back in). "Send Quests to Project" opens the /fvo export window.
 
-The "seen" flag is kept in an addon-registered CVar rather than saved
-variables: until late September 2026 this beta client did not load saved
-variables back but did persist the CVar store, and the CVar stays so nobody
-who has seen the welcome is shown the introduction again.
+The "seen" flag is kept in saved variables (welcomed) and in an
+addon-registered CVar. The CVar came first, from when this beta did not load
+saved variables back, but it does not outlive the client either: it holds
+through a /reload and is gone at the next login, which showed the
+introduction, opt-out ignored, on every login (2026-09-30). The opt-out now
+wins outright, and ticking it counts as having seen the introduction.
 
 The prompt is a frame of the addon's own, not a StaticPopup. With the client's
 alpha gamepad UI on, every StaticPopup that opens is handed to the gamepad
@@ -35,27 +37,17 @@ local TITLE_GAP = 10
 local INTRO = "This addon reads quests and NPC dialogue aloud in voices made by players, not by Blizzard. Quest text is not in the game files, so a line can only be voiced once someone has seen it and sent it in."
 
 local function HasSeen()
-    return C_CVar.GetCVar(CVAR) == "1"
+    return ns.db.welcomed or ns.db.crowdsourceOptOut or C_CVar.GetCVar(CVAR) == "1"
 end
 
 local function MarkSeen()
+    ns.db.welcomed = true
     C_CVar.SetCVar(CVAR, "1")
 end
 
---- "3 quests and 5 NPC lines", or nil when there is nothing to send.
+--- How many there are to send, counted as the Send button counts them.
 local function Pending()
-    local quests, gossip = ns.Capture:Pending()
-    local parts = {}
-    if quests > 0 then
-        table.insert(parts, format("|cffffd100%d|r %s", quests, Util.Plural(quests, "quest")))
-    end
-    if gossip > 0 then
-        table.insert(parts, format("|cffffd100%d|r NPC %s", gossip, Util.Plural(gossip, "line")))
-    end
-    if #parts == 0 then
-        return nil
-    end
-    return table.concat(parts, " and ")
+    return ns.Export:PendingCount()
 end
 
 function Welcome:GetFrame()
@@ -127,14 +119,16 @@ function Welcome:Refresh(intro)
         table.insert(lines, INTRO)
         table.insert(lines, "")
     end
-    if pending then
-        table.insert(lines, format("You have %s the voice pack does not have yet. Send them and a bot voices them for everyone. Sending opens a GitHub issue, so you need a free GitHub account.", pending))
+    if pending > 0 then
+        table.insert(lines, format("You have |cffffd100%d|r %s we need! Click |cff66bbffSend|r so we can voice them.", pending, Util.Plural(pending, "quest")))
+        table.insert(lines, "")
+        table.insert(lines, "Sending opens a GitHub issue, so you need a free GitHub account.")
     else
         table.insert(lines, "Nothing to send yet. Play with the addon on, and you will be asked here when you have lines to contribute, or type |cffffd100/fvo export|r any time.")
     end
     frame.Text:SetText(table.concat(lines, "\n"))
 
-    frame.Send:SetEnabled(pending ~= nil)
+    frame.Send:SetEnabled(pending > 0)
     frame.OptOut:SetChecked(ns.db.crowdsourceOptOut)
     local textHeight = frame.Text:GetStringHeight()
     local checkTop = PADDING + frame.Title:GetStringHeight() + TITLE_GAP + textHeight + PADDING + BUTTON_HEIGHT + PADDING / 2
@@ -159,8 +153,11 @@ ns.OnInit(function()
 end)
 
 ns.OnLogin(function()
+    if ns.db.crowdsourceOptOut then
+        return
+    end
     local first = not HasSeen()
-    if not first and (ns.db.crowdsourceOptOut or not Pending()) then
+    if not first and Pending() == 0 then
         return
     end
     C_Timer.After(4, function()

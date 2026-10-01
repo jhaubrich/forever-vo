@@ -111,7 +111,12 @@ function ForeverVO_OnCompartmentClick(_, buttonName, menuButtonFrame)
                 ns.db.showHead = not ns.db.showHead
                 ns.UI.TalkingHead:ApplySettings()
             end)
-            root:CreateButton("Send quests to project", function() ns.Export:Show() end)
+            -- In blue when there is something to send, so it stands out of the menu
+            local send = ns.Export:SendLabel()
+            if ns.Export:PendingCount() > 0 then
+                send = "|cff66bbff" .. send .. "|r"
+            end
+            root:CreateButton(send, function() ns.Export:Show() end)
             root:CreateButton("Options", function() ns.SettingsPanel:Open() end)
         end)
     else
@@ -122,9 +127,14 @@ end
 function ForeverVO_OnCompartmentEnter(_, menuButtonFrame)
     GameTooltip:SetOwner(menuButtonFrame, "ANCHOR_LEFT")
     GameTooltip:SetText("Forever Voiceover")
+    GameTooltip:AddLine("Version " .. (ns.version or "dev"), 0.6, 0.6, 0.6)
     local size = Queue:Size()
     if size > 0 then
         GameTooltip:AddLine(format("%d %s queued%s", size, ns.Util.Plural(size, "line"), Queue:IsPaused() and " (paused)" or ""), 1, 1, 1)
+    end
+    local pending = ns.Export:PendingCount()
+    if pending > 0 then
+        GameTooltip:AddLine(format("You have %d %s that we need!", pending, ns.Util.Plural(pending, "quest")), 1, 1, 1)
     end
     GameTooltip:AddLine("Left-click: options. Right-click: playback menu.", 0.6, 0.6, 0.6)
     GameTooltip:Show()

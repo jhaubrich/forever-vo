@@ -191,23 +191,28 @@ end
 -- Gossip events
 -- ---------------------------------------------------------------------------
 
-local function ShouldPlayGossip(speaker)
-    local frequency = ns.db.gossipFrequency
-    if frequency == "never" then
-        return false
+--- The table that remembers which NPCs have had this event read.
+local function SeenFor(event)
+    return event == "greeting" and ns.char.seenGreeting or ns.char.seenGossipOnce
+end
+
+--- Whether gossipRepeat lets this NPC's greeting or gossip be read now, and the
+--- key to remember it under once it is.
+local function ShouldPlayGossip(event, speaker)
+    local key = speaker.guid or speaker.name
+    local mode = ns.db.gossipRepeat
+    if not key or mode == "always" or not SeenFor(event)[key] then
+        return true, key
     end
-    local npcKey = speaker.guid or speaker.name or "unknown"
-    local seen = ns.char.seenGossip[npcKey]
-    if frequency == "oncePerNPC" and seen then
-        return false
+    if mode == "gossipOnce" then
+        return event ~= "gossip", key
+    elseif mode == "questGivers" then
+        -- a greeting only ever comes from an NPC with quests to show
+        local hasQuests = event == "greeting"
+            or C_GossipInfo.GetNumActiveQuests() > 0 or C_GossipInfo.GetNumAvailableQuests() > 0
+        return not hasQuests, key
     end
-    if frequency == "oncePerQuestNPC" and seen then
-        local hasQuests = C_GossipInfo.GetNumActiveQuests() > 0 or C_GossipInfo.GetNumAvailableQuests() > 0
-        if hasQuests then
-            return false
-        end
-    end
-    return true, npcKey
+    return false, key -- once
 end
 
 local function QueueGossip(event, text)
@@ -234,11 +239,7 @@ local function QueueGossip(event, text)
     if (event == "greeting" and not ns.db.playGreeting) or (event == "gossip" and not ns.db.playGossip) then
         return
     end
-    local onceKey = speaker.guid or speaker.name
-    if event == "gossip" and ns.db.gossipOnce and onceKey and ns.char.seenGossipOnce[onceKey] then
-        return
-    end
-    local play, npcKey = ShouldPlayGossip(speaker)
+    local play, seenKey = ShouldPlayGossip(event, speaker)
     if not play then
         return
     end
@@ -252,9 +253,8 @@ local function QueueGossip(event, text)
     MaybeLeadIn(item, speaker)
     if Queue:Add(item) then
         currentGossipItem = item
-        ns.char.seenGossip[npcKey] = true
-        if event == "gossip" and onceKey then
-            ns.char.seenGossipOnce[onceKey] = true
+        if seenKey then
+            SeenFor(event)[seenKey] = true
         end
     end
 end
