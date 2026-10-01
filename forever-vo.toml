@@ -19,6 +19,25 @@
 narrator = "narrator"
 narrator_alternates = ["orc-male"]
 
+# Voices someone has auditioned by ear and approved, starred in the audition
+# page's voice list and set with its "Approved by ear" box. A note for people:
+# nothing is generated or restaged by it.
+approved = [
+    "bloodelf-female",
+    "bloodelf-male",
+    "gnome-female",
+    "gnome-male",
+    "goblin-female",
+    "goblin-male",
+    "human-female",
+    "human-male",
+    "npc-11657",
+    "npc-11658",
+    "skyborne-female",
+    "skyborne-male",
+    "tauren-female",
+]
+
 # Races without a reference clip borrow a related one; the narrator without a
 # tools/voices/narrator.wav borrows human-male. A borrowed clip brings its
 # owner's [tts.voices] tuning with it.

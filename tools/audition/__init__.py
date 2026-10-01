@@ -257,6 +257,27 @@ def write_speaker_voice(path: Path, speaker: str, voice: str) -> Config:
         return _validated_write(path, doc)
 
 
+def write_approval(path: Path, voice: str, approved: bool) -> Config:
+    """Adds the voice to [voices].approved or takes it out, keeping the list sorted.
+    The key is replaced where it stands, so its comment stays with it; appended
+    instead, tomlkit puts it under the comment that belongs to [voices.fallbacks]."""
+    with _config_lock(path):
+        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+        voices = doc.get("voices")
+        if voices is None:
+            voices = tomlkit.table()
+            doc["voices"] = voices
+        names = set(voices.get("approved", []))
+        if approved:
+            names.add(voice)
+        else:
+            names.discard(voice)
+        array = tomlkit.array()
+        array.extend(sorted(names))
+        voices["approved"] = array.multiline(bool(names))
+        return _validated_write(path, doc)
+
+
 def write_voice_sources(
     path: Path, voice: str, clips: list[int], build: str | None = None
 ) -> Config:
@@ -928,6 +949,7 @@ class Studio:
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
             "speakers": config.voices.speakers,
+            "approved": sorted(config.voices.approved),
             "sources": {
                 v: e.model_dump(exclude_none=True)
                 for v, e in config.voices.sources.items()
@@ -985,6 +1007,11 @@ class KeepTuning(BaseModel):
 class KeepPronunciation(BaseModel):
     word: str = Field(min_length=1)
     spoken: str = ""
+
+
+class KeepApproval(BaseModel):
+    voice: str
+    approved: bool
 
 
 class KeepSpeakerVoice(BaseModel):
@@ -1309,6 +1336,14 @@ def create_app(
             studio.config_path, request.word.strip(), request.spoken.strip()
         )
         studio.forget_corpus()
+        return studio.state()
+
+    @app.post("/api/keep-approval")
+    def keep_approval(request: KeepApproval) -> dict[str, Any]:
+        """Marks a voice approved by ear, or takes the mark off. Only a note in the
+        TOML: nothing is generated or restaged by it."""
+        _safe(request.voice)
+        write_approval(studio.config_path, request.voice, request.approved)
         return studio.state()
 
     @app.post("/api/keep-speaker-voice")

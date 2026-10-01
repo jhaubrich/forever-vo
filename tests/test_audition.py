@@ -17,6 +17,7 @@ from tools.audition import (
     search,
     sound_packs,
     sources_warnings,
+    write_approval,
     write_pronunciation,
     write_speaker_voice,
     write_tuning,
@@ -87,6 +88,29 @@ def test_write_speaker_voice_pins_and_unpins_and_keeps_comments(
     config = write_speaker_voice(toml_copy, "248200", "")
     assert config.voices.speakers == {}
     assert "[voices.speakers]" not in toml_copy.read_text(encoding="utf-8")
+
+
+def test_write_approval_marks_and_unmarks_and_keeps_comments(
+    toml_copy: Path,
+) -> None:
+    before = toml_copy.read_text(encoding="utf-8")
+    config = write_approval(toml_copy, "scourge-male-dark", True)
+    config = write_approval(toml_copy, "gnome-female", True)
+    assert config.voices.approved == ["gnome-female", "scourge-male-dark"]
+    assert config.voices.speakers == load_config(CONFIG_TOML).voices.speakers
+    config = write_approval(toml_copy, "gnome-female", True)  # twice is once
+    assert config.voices.approved == ["gnome-female", "scourge-male-dark"]
+    write_approval(toml_copy, "gnome-female", False)
+    config = write_approval(toml_copy, "scourge-male-dark", False)
+    assert config.voices.approved == []
+    restored = toml_copy.read_text(encoding="utf-8")
+    assert tomlkit.parse(restored).unwrap() == tomlkit.parse(before).unwrap()
+    assert "# Quests handed out by objects and items have no speaker" in restored
+
+
+def test_write_approval_refuses_what_is_not_a_voice_name(toml_copy: Path) -> None:
+    with pytest.raises(HTTPException):
+        write_approval(toml_copy, "Scourge Male", True)
 
 
 def test_write_speaker_voice_refuses_what_is_not_a_voice_name(
