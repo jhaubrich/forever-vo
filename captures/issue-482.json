@@ -1,0 +1,161 @@
+{
+ "addon": "0.1.6",
+ "gossip": {},
+ "npcs": {
+  "12738": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Nori Pridedrift",
+   "sex": 2
+  },
+  "658": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Sten Stoutarm",
+   "sex": 2
+  },
+  "714": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Talin Keeneye",
+   "sex": 2
+  },
+  "786": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Grelin Whitebeard",
+   "sex": 2
+  },
+  "836": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Durnan Furcutter",
+   "sex": 2
+  },
+  "912": {
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Thran Khorman",
+   "sex": 2
+  }
+ },
+ "origin": "issue-482",
+ "quests": {
+  "179-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Sten Stoutarm",
+   "npc": "658",
+   "questID": 179,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Wolves giving you a bit of trouble? You'd do well to avoid the fangs and claws and other sharp bits, yes?",
+   "time": 1790875783,
+   "title": "Dwarven Outfitters",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "233-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Talin Keeneye",
+   "npc": "714",
+   "questID": 233,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Yes? Do you have something for me?",
+   "time": 1790876248,
+   "title": "Coldridge Valley Mail Delivery",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "234-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Grelin Whitebeard",
+   "npc": "786",
+   "questID": 234,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Is there something I can help you with?",
+   "time": 1790876550,
+   "title": "Coldridge Valley Mail Delivery",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "3112-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Thran Khorman",
+   "npc": "912",
+   "questID": 3112,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, well, another memorandum from a $r on a mission... isn't this quaint.\n\nNo, no, I ain't teasin' ya, little one. Gotta respect your tenacity, that much is fer sure. I'd be just as peeved if Ironforge was taken by Dark Iron dwarves, so don't be thinkin' I don't feel for your plight...",
+   "time": 1790875829,
+   "title": "Simple Memorandum",
+   "wanted": null,
+   "zone": "Anvilmar"
+  },
+  "3364-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Durnan Furcutter",
+   "npc": "836",
+   "questID": 3364,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Aye, I'm Durnan Furcutter.  You have something for me?",
+   "time": 1790876626,
+   "title": "Scalding Mornbrew Delivery",
+   "wanted": null,
+   "zone": "Anvilmar"
+  },
+  "3365-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Nori Pridedrift",
+   "npc": "12738",
+   "questID": 3365,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "I trust the scalding mornbrew got to Durnan on time!  Did you remember to bring me back my mug?",
+   "time": 1790876895,
+   "title": "Bring Back the Mug",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
