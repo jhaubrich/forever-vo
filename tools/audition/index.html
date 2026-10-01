@@ -64,7 +64,8 @@
   #clips-body tr { cursor: pointer; }
   #clips-body tr:hover { background: var(--panel); }
   #clips-body tr.picked { background: var(--panel); }
-  #clips-body td.pos { color: var(--gold); font-weight: 600; width: 3em; }
+  #clips-body td.pos { color: var(--gold); font-weight: 600; width: 7.5em; white-space: nowrap; }
+  #clips-body td.pos button { font-size: 11px; padding: 0 4px; margin-left: 2px; line-height: 1.4; }
   #clips-body td.kind { max-width: 22em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   #clips-body td.at { font-family: ui-monospace, monospace; font-size: 12px; }
   #clips-wrap { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
@@ -227,7 +228,8 @@
       </div>
       <p class="note">Click a row to add it, click again to drop it. Click order is the
         order in the clip, head first &mdash; only the first seconds of a reference reach
-        the model, so what you put at the top is the voice.</p>
+        the model, so what you put at the top is the voice. On a picked row, &#x2912; moves it
+        to the head and &#x25B2;/&#x25BC; one place earlier or later.</p>
     </details>
   </section>
 </main>
@@ -696,6 +698,12 @@ let clipsVoice = null, clipsRows = [], picks = [], clipsWindows = { t3: 6, s3gen
 
 function clipsSeconds(fdid) { const r = clipsRows.find(c => c.fdid === fdid); return r ? r.seconds : 0; }
 
+// Hidden rather than disabled where the move is not possible, so the column stays
+// aligned; a click on a disabled button is not reliably kept from the row.
+function moveButton(move, title, glyph, possible) {
+  return `<button data-move="${move}" title="${title}"${possible ? "" : ' style="visibility:hidden"'}>${glyph}</button>`;
+}
+
 function renderClips() {
   const body = $("clips-body");
   if (!clipsRows.length) { body.innerHTML = ""; $("clips-budget").textContent = ""; return; }
@@ -709,7 +717,10 @@ function renderClips() {
     const off = offsets.get(c.fdid);
     const band = off === undefined ? "" : off < clipsWindows.t3 ? "t3" : off < clipsWindows.s3gen ? "s3" : "out";
     return `<tr data-f="${c.fdid}" class="${i >= 0 ? "picked" : ""}">` +
-      `<td class="pos">${i >= 0 ? i + 1 : ""}</td><td class="kind" title="${esc(c.group)}: ${esc(c.kind)}">${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
+      `<td class="pos">${i >= 0 ? `${i + 1}` +
+        moveButton("top", "Move to the head of the reference", "⤒", i > 0) +
+        moveButton("up", "Move one earlier", "▲", i > 0) +
+        moveButton("down", "Move one later", "▼", i < picks.length - 1) : ""}</td><td class="kind" title="${esc(c.group)}: ${esc(c.kind)}">${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
       `<td class="n">${c.seconds.toFixed(1)}s</td>` +
       `<td class="at">${off === undefined ? "" : off.toFixed(1) + "s"}` +
       `${band ? `<span class="pill ${band}">${band === "t3" ? "t3" : band === "s3" ? "s3gen" : "averaged"}</span>` : ""}</td>` +
@@ -718,7 +729,15 @@ function renderClips() {
   body.querySelectorAll("tr").forEach(tr => tr.addEventListener("click", ev => {
     if (ev.target.closest("audio")) return;
     const f = +tr.dataset.f, i = picks.indexOf(f);
-    if (i >= 0) picks.splice(i, 1); else picks.push(f);
+    const move = ev.target.closest("button[data-move]");
+    // the order cell of a picked row only ever reorders: a near miss on a button
+    // must not drop the pick
+    if (!move && i >= 0 && ev.target.closest("td.pos")) return;
+    if (move) {
+      // reorder in place; the row stays where it is in the table, its number changes
+      const to = { top: 0, up: i - 1, down: i + 1 }[move.dataset.move];
+      if (i >= 0 && to >= 0 && to < picks.length) { picks.splice(i, 1); picks.splice(to, 0, f); }
+    } else if (i >= 0) picks.splice(i, 1); else picks.push(f);
     renderClips();
   }));
   const total = picks.reduce((t, f) => t + clipsSeconds(f), 0);
