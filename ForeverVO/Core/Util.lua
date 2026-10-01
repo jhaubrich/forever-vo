@@ -241,24 +241,67 @@ function Util.PlayerGenderPrefix()
     return letter and (letter .. "-") or ""
 end
 
---- Splits spoken text into sentence-aligned pages no longer than maxChars.
-function Util.Paginate(text, maxChars)
-    local pages, current = {}, ""
-    for sentence in (text or ""):gmatch("[^%.%!%?]+[%.%!%?]*%s*") do
-        if current ~= "" and #current + #sentence > maxChars then
-            table.insert(pages, strtrim(current))
-            current = sentence
-        else
-            current = current .. sentence
-        end
+--- Characters (not bytes) in a string, colour codes left out.
+function Util.CharCount(str)
+    str = str:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+    return select(2, str:gsub("[^\128-\191]", ""))
+end
+
+--- Whether a word ends a sentence: . ! ? or an ellipsis, then any closing
+--- quotes or brackets.
+local function EndsSentence(word)
+    word = word:gsub("[\"')%]]+$", ""):gsub("\226\128[\157\153]$", "")
+    return word:find("[%.!%?]$") ~= nil or word:find("\226\128\166$") ~= nil
+end
+
+--- Splits spoken text into pages for a box `maxLines` lines tall. `fits(str)`
+--- says whether a string fits the box, `lines(str)` how many lines it wraps
+--- to. A page ends at the last sentence end on it when the text up to there
+--- fills all but the last line, else at the last word that fits; a word too
+--- long for the box gets a page of its own. Line breaks are collapsed, since
+--- a blank line would take a third of the box. Returns the pages and, for
+--- each, the share of the text's characters before it: where it starts in
+--- the audio.
+function Util.Paginate(text, fits, lines, maxLines)
+    text = strtrim(((text or ""):gsub("%s+", " ")))
+    local words = {}
+    for word in text:gmatch("%S+") do
+        words[#words + 1] = word
     end
-    if strtrim(current) ~= "" then
-        table.insert(pages, strtrim(current))
+    local pages = {}
+    local first = 1
+    while first <= #words do
+        local last = first
+        while last < #words and fits(table.concat(words, " ", first, last + 1)) do
+            last = last + 1
+        end
+        if last < #words then
+            for k = last, first, -1 do
+                if EndsSentence(words[k]) then
+                    if k == last or lines(table.concat(words, " ", first, k)) >= maxLines - 1 then
+                        last = k
+                    end
+                    break
+                end
+            end
+        end
+        pages[#pages + 1] = table.concat(words, " ", first, last)
+        first = last + 1
     end
     if #pages == 0 then
-        pages[1] = text or ""
+        return { "" }, { 0 }
     end
-    return pages
+    local Chars = Util.CharCount
+    local total = 0
+    for _, page in ipairs(pages) do
+        total = total + Chars(page)
+    end
+    local starts, before = {}, 0
+    for i, page in ipairs(pages) do
+        starts[i] = total > 0 and before / total or 0
+        before = before + Chars(page)
+    end
+    return pages, starts
 end
 
 function Util.Plural(count, singular, plural)

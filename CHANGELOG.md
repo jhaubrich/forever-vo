@@ -41,6 +41,13 @@
   instead of chat. **All at Once** sends a long export as one issue instead:
   the link opens the form, and you copy the export string into it from the
   box below the link (up to about 250 lines per issue).
+- The talking head no longer cuts long lines off with "...". Pages are sized
+  to the text box, so each shows in full, and there is room for a fourth line.
+  Pages now keep time with the voice through a pause (the page holds),
+  Resume and Replay (back to the first page), and lines read in several parts.
+- Pause, Skip and Queue are small gold buttons under the close button, in
+  place of the red button row. "N more queued" moved to the title line. The
+  buttons fade out before the panel does.
 
 ## 0.1.7
 
