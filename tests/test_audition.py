@@ -365,7 +365,7 @@ def test_stop_ends_a_run_after_the_take_in_progress(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str) -> str:
+        def render(self, text: str, voice: str, stopped=None) -> str:
             # the page presses Stop while the first take is being made
             (session,) = studio.stops
             assert client.post(f"/api/generate/{session}/stop").json() == {
@@ -417,7 +417,7 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str) -> str:
+        def render(self, text: str, voice: str, stopped=None) -> str:
             renders.append(text)
             return f"audio{len(renders)}"
 
@@ -745,3 +745,35 @@ def test_a_voice_is_filed_under_its_races_expansion() -> None:
     # every race the client names has one, and each is an expansion the page orders
     assert {r for r in RACE_DICT.values() if r != "narrator"} <= set(RACE_EXPANSION)
     assert set(RACE_EXPANSION.values()) <= set(EXPANSIONS)
+
+
+def test_a_take_stops_between_the_sentences_of_a_long_line() -> None:
+    from types import SimpleNamespace
+    from typing import Any
+
+    from tools.generate import Synth, TakeStopped
+
+    pressed: list[bool] = []
+
+    class Model:
+        calls = 0
+
+        def generate(self, text: str, **kwargs: object) -> object:
+            Model.calls += 1
+            pressed.append(True)  # Stop is pressed while the first sentence renders
+            return SimpleNamespace(shape=(1, 48_000), cpu=lambda: self.wav)
+
+        wav = SimpleNamespace(shape=(1, 48_000))
+
+    synth: Any = object.__new__(Synth)  # a Synth with a stand-in model, no GPU
+    synth.sr = 24_000
+    synth.torch = SimpleNamespace(zeros=lambda *shape: None)
+    synth.model = Model()
+    settings = SimpleNamespace(exaggeration=0.5, cfg_weight=0.5)
+    synth.catalog = SimpleNamespace(
+        resolve=lambda voice: SimpleNamespace(clip=None, settings=settings)
+    )
+    text = "The first sentence is long enough. " * 3 + "And so is the second one here."
+    with pytest.raises(TakeStopped):
+        synth.render(text, "human-male", stopped=lambda: bool(pressed))
+    assert Model.calls == 1  # the second sentence was never started

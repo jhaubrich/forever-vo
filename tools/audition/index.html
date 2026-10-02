@@ -219,7 +219,7 @@
     </div>
     <div class="row" style="margin-top:8px">
       <button id="go" class="primary">Generate</button>
-      <button id="stop" hidden title="Stop after the take in progress; the model cannot be interrupted mid-take">Stop</button>
+      <button id="stop" hidden title="Stop after the sentence in progress; the model cannot be interrupted mid-sentence">Stop</button>
     </div>
     <div id="knobs-help" hidden>
       <h4>What these three do</h4>
@@ -879,7 +879,7 @@ $("stop").addEventListener("click", async () => {
   busy($("stop"), true);
   try {
     const r = await api(`/api/generate/${encodeURIComponent(runSession)}/stop`, { method: "POST" });
-    $("progress").textContent += r.stopping ? " · stopping after the take in progress…" : "";
+    $("progress").textContent += r.stopping ? " · stopping after the sentence in progress…" : "";
   } catch (e) { toast(e.message, "warn"); busy($("stop"), false); }
 });
 

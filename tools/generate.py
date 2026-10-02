@@ -544,6 +544,10 @@ def load_items(
 # ----------------------------------------------------------------------------
 
 
+class TakeStopped(Exception):
+    """Synth.render was asked to stop between two generate() calls."""
+
+
 class Synth:
     def __init__(
         self,
@@ -602,11 +606,15 @@ class Synth:
             self.render(text, voice), out_mp3, settings.tempo, settings.pitch
         )
 
-    def render(self, text: str, voice: str):
+    def render(self, text: str, voice: str, stopped=None):
         """The model's audio for `text` in `voice`, before tempo and pitch.
 
         Apart from encode so the audition page can hear one take several ways: tempo
         and pitch are applied afterwards, so a sweep over them needs no second take.
+        `stopped`, a callable, is asked before each generate() call; when it answers
+        true the take is abandoned with TakeStopped. A long line is several chunks and
+        a short one up to three tries, so checking only between takes left the
+        audition page's Stop waiting minutes on the ROCm card.
         """
         resolved = self.catalog.resolve(voice)
         settings = resolved.settings
@@ -622,6 +630,8 @@ class Synth:
             floor = max(0.5, 0.15 * len(part.split()))
             best = None
             for attempt in range(3):
+                if stopped is not None and stopped():
+                    raise TakeStopped
                 wav = self.model.generate(
                     part,
                     exaggeration=settings.exaggeration,

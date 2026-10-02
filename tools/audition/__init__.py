@@ -82,6 +82,7 @@ from tools.config import (
 from tools.generate import (
     Item,
     Synth,
+    TakeStopped,
     Variant,
     VoiceCatalog,
     load_items,
@@ -1651,15 +1652,22 @@ def create_app(
             ):
                 catalog = VoiceCatalog(variant_config(exaggeration, cfg_weight))
                 for take in range(1, request.takes + 1):
-                    # between takes only: Chatterbox's generate() has no way to be
-                    # interrupted, so the take in progress always finishes
+                    # between takes, and inside one between generate() calls (a long
+                    # line is several): Chatterbox's generate() itself cannot be
+                    # interrupted, so the call in progress always finishes
                     if stop.is_set():
                         yield json.dumps({"event": "stopped", "count": n}) + "\n"
                         return
                     t0 = time.time()
-                    with studio.model_lock:
-                        synth.catalog = catalog
-                        audio = synth.render(spoken, request.voice)
+                    try:
+                        with studio.model_lock:
+                            synth.catalog = catalog
+                            audio = synth.render(
+                                spoken, request.voice, stopped=stop.is_set
+                            )
+                    except TakeStopped:
+                        yield json.dumps({"event": "stopped", "count": n}) + "\n"
+                        return
                     for tempo, pitch in itertools.product(request.tempo, request.pitch):
                         resolved = VoiceCatalog(
                             variant_config(exaggeration, cfg_weight, tempo, pitch)
