@@ -910,12 +910,18 @@ def speaker_int(key: str | None) -> int | None:
 
 
 def unclipped_speakers(catalog: VoiceCatalog) -> dict[str, str]:
-    """The [voices.speakers] entries whose voice would borrow another's clip: a
-    typo, or a voice not built yet. An archetype falling back to its own race
-    is fine, since that is how every other speaker of it is read."""
+    """The [voices.speakers] and [voices.sound_sets] entries whose voice would
+    borrow another's clip: a typo, or a voice not built yet. An archetype falling
+    back to its own race is fine, since that is how every other speaker of it is
+    read. Keyed as the TOML spells them, `[voices.speakers] 248200` and so on."""
+    voices = catalog.config.voices
+    pinned = {
+        **{f"[voices.speakers] {k}": v for k, v in voices.speakers.items()},
+        **{f"[voices.sound_sets] {k}": v for k, v in voices.sound_sets.items()},
+    }
     return {
-        speaker: voice
-        for speaker, voice in catalog.config.voices.speakers.items()
+        where: voice
+        for where, voice in pinned.items()
         if catalog.resolve(voice).source not in (voice, base_voice(voice))
     }
 
@@ -1394,9 +1400,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config = load_config()
     catalog = VoiceCatalog(config)
-    for speaker, voice in unclipped_speakers(catalog).items():
+    for where, voice in unclipped_speakers(catalog).items():
         print(
-            f"warning: [voices.speakers] {speaker} = {voice!r} has no clip of its "
+            f"warning: {where} = {voice!r} has no clip of its "
             f"own; it is read in {catalog.resolve(voice).source}"
         )
     narrator = config.voices.narrator

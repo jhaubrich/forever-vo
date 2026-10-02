@@ -62,7 +62,11 @@ SOUND_PATH = re.compile(r"^sound/creature/([^/]+)/", re.IGNORECASE)
 NAMED_FOLDERS = DATA_DIR / "named_folders.json"
 # `.ogg` only: the listfile also names a `.ogg.meta` beside some lines, and wago answers
 # those with a 400. Folder names may hold spaces (`witch doctor`, `wolf rider`).
-FOLDER_FILE = re.compile(r"^sound/creature/([^/]+)/([^/]+)\.ogg$", re.IGNORECASE)
+# sound/character/ too: player voice sets (`pcdhnightelfmale`, Legion's night elf demon
+# hunter) carry connected flirt and hello lines that no NPC set of the race has.
+FOLDER_FILE = re.compile(
+    r"^sound/(?:creature|character)/([^/]+)/([^/]+)\.ogg$", re.IGNORECASE
+)
 PROBE_WORKERS = 4  # wago already answers the odd 504 to one client at a time
 
 
@@ -291,6 +295,30 @@ def descriptor(sound_id: int, voice: str) -> str | None:
             rest = re.sub(r"npc$", "", rest).strip("_-")
             return rest or "standard"
     return None
+
+
+def other_sex_set(sound_id: int, voice: str) -> bool:
+    """True when the set's folder is filed under the other sex than `voice`'s.
+
+    A few displays are cast with a set recorded for the other sex: three night elf
+    male displays use set 52, nightelffemalesentinelnpc, the voice of 187 female ones.
+    Another race's folder is not enough: blood elves were cast with night elf sets
+    (149, nightelfmalestandardnpc, is 35 of blood elf male's displays), and those
+    recordings are the race's voice here. A folder named for one character
+    (fandralstaghelm) has no sex in its name and is never caught.
+    """
+    folder = folders().get(sound_id)
+    _, _, gender = voice.partition("-")
+    others = [g for g in GENDER_DICT.values() if g != gender]
+    if not folder or not others:
+        return False
+    races = {r for r in RACE_DICT.values() if r != "narrator"}
+    return any(
+        folder.startswith(f"{name}{other}")
+        for race in races
+        for name in (race, _client_race(race))
+        for other in others
+    )
 
 
 def _client_race(race: str) -> str:

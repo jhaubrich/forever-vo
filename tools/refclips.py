@@ -61,7 +61,7 @@ from tools.config import (
     Voices,
     load_config,
 )
-from tools.soundpaths import folders, named_folder_files
+from tools.soundpaths import folders, named_folder_files, other_sex_set
 from tools.wowdata import (
     display_sound_set,
     fetch_file,
@@ -274,6 +274,8 @@ def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
         else counts.most_common()
     )
     for sound_id, displays in wanted_sets:
+        if other_sex_set(sound_id, race_gender):
+            continue  # the other sex's recordings, cast on a few displays
         for fdid in set_fdids(sound_id):
             found.append(
                 Candidate(

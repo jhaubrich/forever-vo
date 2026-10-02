@@ -375,7 +375,14 @@ build artifact, never hand-edited):
    hints, then narrator. The archetype step is skipped when its clip would be
    identical to the race's, and when the set belongs to another race - 26 sets
    span more than one, and trusting the name once had night elves read by a
-   blood elf recording.
+   blood elf recording. A set with no clip of its own reads a sibling's
+   (`wowdata.sibling_sets`, since 2026-10-02): the voice's other sets in the same
+   sound folder that hold at least half of its greetings, the same actor cast
+   again (121 is 59's fourteen files and two more). Only the most-used set of a
+   folder is minted a name and built, so the siblings used to fall to the plain
+   race voice; the change moved 1,816 lines of 189 speakers onto archetypes. The
+   shared files are required because Forever's skyborne sets sit in unnamed
+   folders (`7478494`) holding several actors.
 
 Voice quality notes: Chatterbox on an RTX 3080 does ~6 s of audio in ~5 s
 with the game closed, roughly 3x slower with it open. Perth (the watermarker)

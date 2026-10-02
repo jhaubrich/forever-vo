@@ -221,6 +221,21 @@ def species_voice_names(species: str, sex_id: int | None, voices: Voices) -> lis
         stem = trimmed
 
 
+def speaker_species(display_id: int | None, model_file_id: int | None) -> str | None:
+    """The species a speaker's model belongs to (species_models.json), or None: by its
+    display's model where the display is known, else by the captured model file."""
+    species = None
+    if display_id:
+        cdi = load_db2("CreatureDisplayInfo").get(int(display_id))
+        model = load_db2("CreatureModelData").get(int((cdi or {}).get("ModelID") or 0))
+        species = _species_by_model_file().get(
+            int((model or {}).get("FileDataID") or 0)
+        )
+    if not species and model_file_id:
+        species = _species_by_model_file().get(int(model_file_id))
+    return species
+
+
 def species_voice(
     display_id: int | None,
     sex_id: int | None,
@@ -242,15 +257,7 @@ def species_voice(
     Forever client never fills the display ID (issue #2), so a speaker the Classic
     export does not know is reached only through the model file (issue #22).
     """
-    species = None
-    if display_id:
-        cdi = load_db2("CreatureDisplayInfo").get(int(display_id))
-        model = load_db2("CreatureModelData").get(int((cdi or {}).get("ModelID") or 0))
-        species = _species_by_model_file().get(
-            int((model or {}).get("FileDataID") or 0)
-        )
-    if not species and model_file_id:
-        species = _species_by_model_file().get(int(model_file_id))
+    species = speaker_species(display_id, model_file_id)
     if not species:
         return None
     for name in species_voice_names(species, sex_id, voices):
@@ -403,8 +410,40 @@ def archetype_of(name: str) -> tuple[str, int] | None:
     return None
 
 
+@functools.cache
+def sibling_sets(voice: str, sound_id: int) -> tuple[int, ...]:
+    """The voice's other sets recorded by the same actor as `sound_id`, most-used first.
+
+    Filed in the same sound folder and holding at least half of this set's greetings
+    and farewells: sets 59 and 121 are both nightelfmalestandardnpc, 121 being 59's
+    fourteen files and two more. The folder alone is not enough, since Forever's own
+    sets sit in unnamed folders (`7478494`) that hold several skyborne actors and share
+    no file between them.
+    """
+    from tools.build_voice_references import set_fdids
+    from tools.soundpaths import folders
+
+    folder = folders().get(sound_id)
+    if not folder:
+        return ()
+    own = set(set_fdids(sound_id))
+    found = []
+    for other, _ in (sound_set_displays().get(voice) or Counter()).most_common():
+        if other == sound_id or folders().get(other) != folder:
+            continue
+        if own and len(own & set(set_fdids(other))) * 2 >= len(own):
+            found.append(other)
+    return tuple(found)
+
+
 def archetype_voice(voice: str, display_id: int | None) -> str | None:
-    """`<race>-<gender>-s<set>` when this display's archetype has a clip of its own.
+    """`<race>-<gender>-<word>` when this display's archetype has a clip of its own.
+
+    A set with no clip borrows one from a sibling (sibling_sets), the most-used first:
+    Blizzard cast the same actor twice or more, and only the most-used of them is
+    minted a name and built, so the rest used to fall to the plain race voice while
+    barking in the archetype's voice in game. A sibling's own clip, once built, wins
+    over the borrowed one.
 
     None when the set belongs to another race (26 sets span more than one, and
     trusting the name alone once had night elves read by a blood elf recording), and
@@ -413,19 +452,23 @@ def archetype_voice(voice: str, display_id: int | None) -> str | None:
     would cost GPU for the same audio.
     """
     sound_id = display_sound_set(display_id)
-    if not sound_id or sound_id not in sound_set_displays().get(voice, {}):
+    if not sound_id or sound_id not in (sound_set_displays().get(voice) or {}):
         return None
-    name = archetype_names(voice).get(sound_id, f"{voice}-s{sound_id}")
-    clip, plain = VOICES_DIR / f"{name}.wav", VOICES_DIR / f"{voice}.wav"
-    if not clip.exists():
-        return None
-    if (
-        plain.exists()
-        and clip.stat().st_size == plain.stat().st_size
-        and clip.read_bytes() == plain.read_bytes()
-    ):
-        return None
-    return name
+    names = archetype_names(voice)
+    plain = VOICES_DIR / f"{voice}.wav"
+    for candidate in [sound_id, *sibling_sets(voice, sound_id)]:
+        name = names.get(candidate, f"{voice}-s{candidate}")
+        clip = VOICES_DIR / f"{name}.wav"
+        if not clip.exists():
+            continue
+        if (
+            plain.exists()
+            and clip.stat().st_size == plain.stat().st_size
+            and clip.read_bytes() == plain.read_bytes()
+        ):
+            return None
+        return name
+    return None
 
 
 def voice_for_npc(
@@ -440,8 +483,8 @@ def voice_for_npc(
     In order: `[voices.speakers]` for this `speaker` key, the NPC's own cloned clip
     (npc-<displayID>.wav), the race and sex of its displayID, the same via its
     modelFileID (the Forever client provides the model file but never the display
-    ID; the Classic export supplies display IDs for unchanged NPCs), the zone hint,
-    then human. Sex falls back to the in-game UnitSex (2 male, 3 female); game
+    ID; the Classic export supplies display IDs for unchanged NPCs), a species clip,
+    `[voices.sound_sets]` for the display's NPCSounds set, the zone hint, then human. Sex falls back to the in-game UnitSex (2 male, 3 female); game
     objects, items and genderless units go to the narrator.
     `voices` ([voices] in forever-vo.toml) defaults to the repository's.
     """
@@ -478,6 +521,12 @@ def voice_for_npc(
         own = species_voice(display_id, sex_id, npc.get("modelFileID"), voices=voices)
         if own:
             return own
+        # The set Blizzard cast the display with still says who it is when the
+        # model does not: Gryfe and Bragok bark goblinmalezanynpc on a model the
+        # client tables give no race
+        by_set = voices.sound_sets.get(str(display_sound_set(display_id) or ""))
+        if by_set:
+            return by_set
         race = hint or "human"
     if sex_id is None:
         return voices.narrator

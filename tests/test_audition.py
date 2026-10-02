@@ -504,3 +504,150 @@ def _link(source: Path, dest: Path) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_bytes(source.read_bytes())
     return dest
+
+
+def test_clips_put_the_voices_added_from_also_first_last_added_on_top(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, refclips
+    from tools.config import load_config
+
+    def row(fdid: int, group: str) -> dict[str, object]:
+        return {"n": fdid, "fdid": fdid, "kind": "line", "group": group,
+                "seconds": 1.0, "url": f"/{fdid}.ogg"}  # fmt: skip
+
+    loaded = {
+        "nightelf-male": [row(1, "speech"), row(2, "set 59")],
+        "folder-pcdhnightelfmale": [row(3, "pcdhnightelfmale")],
+        "folder-night_elf_male_ghost": [row(4, "night_elf_male_ghost"), row(1, "x")],
+    }
+    # a Studio with candidates already loaded: only what /api/clips touches
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: loaded[voice])
+    monkeypatch.setattr(studio, "config", load_config)
+    studio.clips_status = {}
+    studio._rows = None  # the corpus still loading: the headings go without line counts
+    # a set's heading reads the client tables (gitignored); the voice it is asked about
+    # is the point here, not the wording
+    monkeypatch.setattr(
+        audition,
+        "group_about",
+        lambda voice, group, spoken: (
+            "joke" if group == "speech" else f"{voice} {group}"
+        ),
+    )
+    monkeypatch.setattr(audition, "seed_recipe_history", lambda voice: None)
+    monkeypatch.setattr(audition, "npc_labels", dict)
+    monkeypatch.setattr(audition, "unlisted_clip_folders", lambda config: [])
+    # the real TOML's saved picks for the voice, which are not on this machine's disk
+    monkeypatch.setattr(audition, "local_clip", lambda voice, fdid, build: None)
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: {})
+    monkeypatch.setattr(audition, "sources_warnings", lambda config, voice: [])
+    monkeypatch.setattr(refclips.CLIP_SECONDS, "save", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    also = "folder-pcdhnightelfmale,folder-night_elf_male_ghost"
+    d = client.get(f"/api/clips/nightelf-male?also={also}").json()
+    # the ghost was added last, so it is on top; fdid 1 is the voice's own already
+    assert [c["fdid"] for c in d["clips"]] == [4, 3, 1, 2]
+    assert [c["source"] for c in d["clips"]] == ["also", "also", "own", "own"]
+    assert d["groups"] == [
+        "folder-night_elf_male_ghost: night_elf_male_ghost",
+        "folder-pcdhnightelfmale: pcdhnightelfmale",
+        "speech",
+        "set 59",
+    ]
+    assert d["about"] == {
+        # a borrowed group is described as its own voice's group
+        "folder-night_elf_male_ghost: night_elf_male_ghost": (
+            "folder-night_elf_male_ghost night_elf_male_ghost"
+        ),
+        "folder-pcdhnightelfmale: pcdhnightelfmale": (
+            "folder-pcdhnightelfmale pcdhnightelfmale"
+        ),
+        "speech": "joke",
+        "set 59": "nightelf-male set 59",
+    }
+
+
+def test_species_wanted_offers_a_speaking_species_with_no_clip(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from types import SimpleNamespace
+    from typing import Any
+
+    from tools import audition, wowdata
+    from tools.config import Voices
+
+    species = {126042: "spirithealer", 1: "ogre", 2: "fleshgolem"}
+    monkeypatch.setattr(wowdata, "speaker_species", lambda d, m: species.get(m))
+    monkeypatch.setattr(wowdata, "display_race_sex", lambda d: (None, None))
+    config = SimpleNamespace(voices=Voices())
+
+    def item(model: int, voice: str, sex: int = 3) -> Any:  # a stand-in Item
+        npc = {"modelFileID": model, "sex": sex}
+        return SimpleNamespace(npc=npc, voice=voice, config=config, speaker_key="1")
+
+    items = [
+        item(126042, "human-female"),  # the spirit healer, female by UnitSex
+        item(1, "human-male", 2),  # an ogre whose clip is on another machine
+        item(2, "npc-10699", 2),  # a flesh golem on its own named clip
+    ]
+    wanted = audition.species_wanted(items, voiced={"ogre-male"})
+    assert wanted == {
+        "spirithealer-female": audition.SpeciesWant(1, "human-female", frozenset({"1"}))
+    }
+
+
+def test_wowhead_links_creatures_and_game_objects() -> None:
+    from tools.audition import wowhead_url
+
+    assert wowhead_url("10583") == "https://www.wowhead.com/npc=10583"
+    assert wowhead_url("-123") == "https://www.wowhead.com/object=123"
+    assert wowhead_url("") is None
+
+
+def test_npcs_lists_the_voices_speakers_most_lines_first(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    def row(key: str, name: str, voice: str) -> audition.LineRow:
+        return audition.LineRow(
+            base=f"{key}-x", subfolder="Gossip", title=name, speaker=name,
+            voice=voice, raw="", spoken="", level=1, source="capture",
+            speaker_key=key,
+        )  # fmt: skip
+
+    rows = [
+        row("10583", "Gryfe", "goblin-male-zany"),
+        row("16075", "Kwee Q. Peddlefeet", "goblin-male-zany"),
+        row("16075", "Kwee Q. Peddlefeet", "goblin-male-zany"),
+        row("-42", "A Wanted Poster", "goblin-male-zany"),
+        row("", "An item", "goblin-male-zany"),  # no speaker to link
+        row("6491", "Spirit Healer", "human-female"),
+    ]
+    studio = object.__new__(audition.Studio)
+    want = audition.SpeciesWant(1, "human-female", frozenset({"6491"}))
+    monkeypatch.setattr(studio, "rows_if_loaded", lambda: rows)
+    monkeypatch.setattr(
+        studio, "species_want", lambda v: want if v == "spirithealer-female" else None
+    )
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/npcs/goblin-male-zany").json()
+    assert [(n["name"], n["lines"], n["url"]) for n in d["npcs"]] == [
+        ("Kwee Q. Peddlefeet", 2, "https://www.wowhead.com/npc=16075"),
+        ("A Wanted Poster", 1, "https://www.wowhead.com/object=42"),
+        ("Gryfe", 1, "https://www.wowhead.com/npc=10583"),
+    ]
+    # nobody is cast on a species voice before its clip exists: who would move to it
+    d = client.get("/api/npcs/spirithealer-female").json()
+    assert [(n["name"], n["now"]) for n in d["npcs"]] == [
+        ("Spirit Healer", "human-female")
+    ]

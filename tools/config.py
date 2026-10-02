@@ -143,7 +143,7 @@ class VoiceSources(Strict):
 
 _SPEAKER_KEY = re.compile(r"-?[1-9][0-9]*")
 _VOICE_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
-_FOLDER_NAME = re.compile(r"[a-z0-9_]+")
+_FOLDER_NAME = re.compile(r"[a-z0-9_-]+")
 
 
 class Voices(Strict):
@@ -174,6 +174,9 @@ class Voices(Strict):
     speakers: dict[
         str, str
     ] = {}  # speaker key -> voice, for the few whose captured model is wrong
+    sound_sets: dict[
+        str, str
+    ] = {}  # NPCSounds set -> voice, for a display with no race and no species clip
     approved: dict[
         str, str
     ] = {}  # voice -> the recipe heard when it was approved by ear; nothing generates from it
@@ -197,16 +200,33 @@ class Voices(Strict):
                 )
         return value
 
+    @field_validator("sound_sets")
+    @classmethod
+    def _sound_set_voices(cls, value: dict[str, str]) -> dict[str, str]:
+        for key, voice in value.items():
+            if not key.isdigit() or key.startswith("0"):
+                raise ValueError(
+                    f"[voices.sound_sets] key {key!r} is not an NPCSounds set ID"
+                )
+            if not _VOICE_NAME.fullmatch(voice):
+                raise ValueError(
+                    f"[voices.sound_sets] {key} = {voice!r} is not a voice name "
+                    '(lowercase words joined by "-", like "banshee-female")'
+                )
+        return value
+
     @field_validator("clip_folders")
     @classmethod
     def _folder_names(cls, value: list[str]) -> list[str]:
-        """Folder names as the listfile spells them under sound/creature/: lowercase,
-        since named_folders.json is keyed that way and a capital would never match."""
+        """Folder names as the listfile spells them under sound/creature/ or
+        sound/character/: lowercase, since named_folders.json is keyed that way and a
+        capital would never match. Legion's player sets put a hyphen in theirs
+        (`pc_-_nightborne_elf_male`)."""
         for folder in value:
             if not _FOLDER_NAME.fullmatch(folder):
                 raise ValueError(
                     f"[voices] clip_folders {folder!r} is not a sound folder name "
-                    '(lowercase letters, digits and "_", like "guldan")'
+                    '(lowercase letters, digits, "_" and "-", like "guldan")'
                 )
         return value
 

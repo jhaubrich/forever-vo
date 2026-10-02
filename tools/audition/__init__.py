@@ -69,6 +69,7 @@ from tools.config import (
     CASC_DIR,
     CONFIG_TOML,
     DATA_DIR,
+    GENDER_DICT,
     PACK_NAME,
     SOUND_INDEX,
     SOUNDS_DIR,
@@ -90,6 +91,8 @@ from tools.generate import (
 from tools.textclean import clean
 from tools.wowdata import (
     archetype_names,
+    base_voice,
+    dominant_sound_set,
     fetch_file,
     is_archetype,
     sound_set_displays,
@@ -755,6 +758,7 @@ class Studio:
         self.model_status = "not loaded"
         self.corpus_status = "not loaded"
         self._lines_per_voice: Counter[str] | None = None
+        self._species_wanted: dict[str, SpeciesWant] = {}
         self.clips_lock = threading.Lock()
         self._clips: dict[str, list[dict[str, Any]]] = {}
         self.clips_status: dict[str, str] = {}
@@ -795,8 +799,21 @@ class Studio:
                     v.base: (item, v) for item in items for v in item.variants()
                 }
                 self._rows = line_rows(items)
+                self._species_wanted = species_wanted(items, indexed_voices())
                 self.corpus_status = f"{len(self._rows)} lines"
             return self._rows
+
+    def rows_if_loaded(self) -> list[LineRow] | None:
+        """The corpus rows, or None while they load; never waits on the corpus lock."""
+        return self._rows
+
+    def species_want(self, voice: str) -> SpeciesWant | None:
+        return self._species_wanted.get(voice)
+
+    def spoken_if_loaded(self) -> dict[str, int]:
+        """lines_per_voice, or {} while the corpus is still loading, so a request that
+        only wants the counts for a label never waits minutes on the corpus lock."""
+        return self.lines_per_voice() if self._rows is not None else {}
 
     def lines_per_voice(self) -> dict[str, int]:
         """How many lines each voice actually speaks - the reason to bother with it.
@@ -933,6 +950,47 @@ class Studio:
                             "archetype": True,
                             "label": None,
                             "lines": spoken.get(name, 0),
+                        }
+                    )
+        # A species whose speakers have lines but no clip of their kind: the spirit
+        # healer, read as human-female. Building <species>-<sex>.wav is what casts
+        # them on it (wowdata.species_voice), so only the species that speak are
+        # offered, not all 411 in species_models.json.
+        listed = {r["voice"] for r in rows}
+        for name, want in self._species_wanted.items():
+            count, now = want.lines, want.now
+            if name not in listed:
+                rows.append(
+                    {
+                        "voice": name,
+                        "clip": False,
+                        "displays": None,
+                        "archetype": False,
+                        "label": None,
+                        "lines": count,
+                        "species": now,
+                    }
+                )
+        # A race in [voices.fallbacks] reads another race's clip until it has its own:
+        # nightborne from nightelf-male.wav. Offered so it can get one; building
+        # <race>-<gender>.wav is what takes its speakers off the borrowed voice, since
+        # VoiceCatalog prefers a voice's own clip to its fallback.
+        listed = {r["voice"] for r in rows}
+        for race, borrowed in self.config().voices.fallbacks.items():
+            if race == "narrator":
+                continue
+            for gender in GENDER_DICT.values():
+                name = f"{race}-{gender}"
+                if name not in listed:
+                    rows.append(
+                        {
+                            "voice": name,
+                            "clip": False,
+                            "displays": displays.get(name),
+                            "archetype": False,
+                            "label": None,
+                            "lines": spoken.get(name, 0),
+                            "borrows": f"{borrowed}-{gender}",
                         }
                     )
         return sorted(rows, key=lambda r: r["voice"])
@@ -1116,6 +1174,137 @@ def local_clip(voice: str, fdid: int, build: str | None) -> Path | None:
     except OSError:
         shutil.copyfile(found, dest)
     return dest
+
+
+def indexed_voices() -> set[str]:
+    """Every voice sound_index.json records a file in."""
+    try:
+        index = json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return set()
+    return {entry.get("v") for entry in index.values() if entry.get("v")}
+
+
+@dataclass(frozen=True)
+class SpeciesWant:
+    lines: int
+    now: str  # the voice most of those lines are read in today
+    speakers: frozenset[str]  # their speaker keys, for the NPC list
+
+
+def species_wanted(
+    items: list[Item], voiced: set[str] | None = None
+) -> dict[str, SpeciesWant]:
+    """Species voices that would take lines, with the voice those lines have now:
+    {"spirithealer-female": SpeciesWant(1, "human-female", {"6491"})}. A speaker counts when its model
+    names a species and it is not read in a voice of that species, which happens
+    when the species has no clip; the name offered is the most specific
+    wowdata.species_voice_names would try.
+
+    `voiced` is every voice the sound index has files in. A species clip is not in
+    git, so one that exists on the machine that generates the pack (ogre-male, from
+    Warcraft III) can be missing here; offering it would invite a clip that shadows
+    that one."""
+    from tools.wowdata import (
+        display_race_sex,
+        speaker_species,
+        species_voice_names,
+    )
+
+    found: dict[str, Counter[str]] = {}
+    speakers: dict[str, set[str]] = {}
+    for item in items:
+        npc = item.npc or {}
+        if npc.get("isObject") or npc.get("isObjectOrItem"):
+            continue
+        # a speaker's own clip or a pinned voice stays ahead of any species voice
+        if (
+            item.voice.startswith("npc-")
+            or str(item.speaker_key) in item.config.voices.speakers
+        ):
+            continue
+        species = speaker_species(npc.get("displayID"), npc.get("modelFileID"))
+        if not species:
+            continue
+        sex = display_race_sex(npc.get("displayID"))[1]
+        if sex is None:
+            sex = {2: 0, 3: 1}.get(npc.get("sex"))
+        names = species_voice_names(species, sex, item.config.voices)
+        if not names or item.voice in names or set(names) & (voiced or set()):
+            continue
+        found.setdefault(names[0], Counter())[item.voice] += 1
+        speakers.setdefault(names[0], set()).add(str(item.speaker_key or ""))
+    return {
+        name: SpeciesWant(
+            sum(now.values()), now.most_common(1)[0][0], frozenset(speakers[name])
+        )
+        for name, now in sorted(found.items())
+    }
+
+
+def group_about(voice: str, group: str, spoken: dict[str, int]) -> str:
+    """One line on what a clip group is, for its heading in the Source clips table.
+
+    For a set: its folder, how many creature displays use it in this race, whether
+    the plain voice is built from it, and whether it has an archetype clip of its own
+    and how many lines that speaks (`spoken`, empty while the corpus loads)."""
+    from tools.refclips import FOLDER_PREFIX
+    from tools.soundpaths import folders, named_folder_files
+
+    race_gender = base_voice(voice)
+    if group.startswith("set ") and group[4:].isdigit():
+        sound_id = int(group[4:])
+        counts = sound_set_displays().get(race_gender) or Counter()
+        folder = folders().get(sound_id)
+        n = counts.get(sound_id, 0)
+        about = [folder or "folder unknown", f"{n} display{'' if n == 1 else 's'}"]
+        shared = [
+            other
+            for other in counts
+            if other != sound_id and folder and folders().get(other) == folder
+        ]
+        if shared:
+            about.append(
+                "same folder as " + ", ".join(f"set {other}" for other in shared)
+            )
+        if sound_id == dominant_sound_set(race_gender):
+            about.append(f"the main set, what {race_gender} sounds like")
+        name = archetype_names(race_gender).get(sound_id)
+        if name == voice:
+            about.append("this voice's own set")
+        elif name and (VOICES_DIR / f"{name}.wav").exists():
+            lines = spoken.get(name)
+            about.append(f"clip {name}" + (f", {lines} lines" if lines else ""))
+        else:
+            about.append(f"no clip of its own: its NPCs read as {race_gender}")
+        return " · ".join(about)
+    if group == "speech":
+        return f"spoken /joke and /flirt emotes, {race_gender}'s only connected speech"
+    if group == "retail speech":
+        return f"/joke and /flirt from retail: this client has none for {race_gender}"
+    if group == "greetings":
+        return "the greeting kit this NPC's sound set links"
+    if group == "saved picks from other voices":
+        return "named by a saved pick, offered by none of the groups here"
+    files = named_folder_files().get(group.lower())
+    if files is not None:
+        where = (
+            "sound folder from [voices] clip_folders"
+            if voice.startswith(FOLDER_PREFIX)
+            else "sound folder"
+        )
+        return f"{where} · {len(files)} real lines"
+    return ""
+
+
+def wowhead_url(speaker_key: str) -> str | None:
+    """wowhead's page for a speaker: npc=<id> for a creature, object=<id> for a game
+    object, whose key is the negated ID."""
+    if speaker_key.isdigit():
+        return f"https://www.wowhead.com/npc={speaker_key}"
+    if speaker_key.startswith("-") and speaker_key[1:].isdigit():
+        return f"https://www.wowhead.com/object={speaker_key[1:]}"
+    return None
 
 
 def _voice_label(voice: str, labels: dict[int, str]) -> str:
@@ -1502,6 +1691,37 @@ def create_app(
             "pack_url": f"/api/pack/{PACK_NAME}/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}",
         }
 
+    @app.get("/api/npcs/{voice}")
+    def npcs(voice: str) -> dict[str, Any]:
+        """The speakers read in this voice, most lines first, for the page's NPC list.
+        A species voice nobody is cast on yet lists the speakers who would move to it
+        once its clip exists (`moving`). Creature keys link to wowhead's npc pages,
+        game objects (negative keys) to its object pages; items have no key."""
+        _safe(voice)
+        rows = studio.rows_if_loaded()
+        if rows is None:
+            return {"voice": voice, "status": "loading", "npcs": []}
+        want = studio.species_want(voice)
+        moving = want.speakers if want else frozenset()
+        found: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            key = row.speaker_key
+            if not key or not (row.voice == voice or key in moving):
+                continue
+            entry = found.setdefault(
+                key,
+                {
+                    "key": key,
+                    "name": row.speaker or key,
+                    "lines": 0,
+                    "url": wowhead_url(key),
+                    "now": row.voice if row.voice != voice else None,
+                },
+            )
+            entry["lines"] += 1
+        listed = sorted(found.values(), key=lambda n: (-n["lines"], n["name"]))
+        return {"voice": voice, "status": "ready", "npcs": listed}
+
     @app.get("/api/clips/audio/{voice}/{name}")
     def clip_audio(voice: str, name: str) -> FileResponse:
         from tools.refclips import RAW_DIR as CLIP_RAW
@@ -1521,10 +1741,13 @@ def create_app(
         fetch runs; the page polls.
 
         `also` names other voices whose candidates join the table, each group labelled
-        with the voice it came from: Thrall's lines for an orc archetype. A saved pick
+        with the voice it came from: Thrall's lines for an orc archetype. They come
+        first, the last one added at the top, since one is added to be listened to and
+        would otherwise sit below a few hundred of the voice's own rows. A saved pick
         found among none of them is listed anyway, from the download cache, so a
         rebuild cannot drop a clip borrowed in an earlier session. `pending` names the
-        borrowed voices still loading."""
+        borrowed voices still loading. Each row's `source` is "own", "also" or "saved",
+        for the group headings the page draws."""
         from tools import refclips
 
         _safe(voice)
@@ -1533,12 +1756,15 @@ def create_app(
         seed_recipe_history(voice)
         config = studio.config()
         picked = config.voices.sources.get(voice)
-        rows = list(found or [])
+        rows = [{**c, "source": "own"} for c in found or []]
         pending = []
+        spoken = studio.spoken_if_loaded()
+        about = {c["group"]: group_about(voice, c["group"], spoken) for c in rows}
         if found is not None:
             labels = npc_labels()
             seen = {c["fdid"] for c in rows}
-            for other in others:
+            borrowed: list[dict[str, Any]] = []
+            for other in reversed(others):
                 theirs = studio.clips(other)
                 if theirs is None:
                     pending.append(other)
@@ -1547,7 +1773,11 @@ def create_app(
                 for c in theirs:
                     if c["fdid"] not in seen:
                         seen.add(c["fdid"])
-                        rows.append({**c, "group": f"{name}: {c['group']}"})
+                        group = f"{name}: {c['group']}"
+                        if group not in about:
+                            about[group] = group_about(other, c["group"], spoken)
+                        borrowed.append({**c, "group": group, "source": "also"})
+            rows = borrowed + rows
             saved_build = picked.build if picked else None
             for fdid in picked.clips if picked else []:
                 if fdid in seen:
@@ -1561,6 +1791,7 @@ def create_app(
                             "fdid": fdid,
                             "kind": "saved pick",
                             "group": "saved picks from other voices",
+                            "source": "saved",
                             "seconds": round(
                                 refclips.CLIP_SECONDS.get(
                                     fdid, saved_build or BETA_BUILD, path
@@ -1578,6 +1809,11 @@ def create_app(
             "pending": pending,
             # in first-seen order, for the page's folder select
             "groups": list(dict.fromkeys(c["group"] for c in rows)),
+            # one line on each, for the table's group headings
+            "about": {
+                group: about.get(group) or group_about(voice, group, spoken)
+                for group in dict.fromkeys(c["group"] for c in rows)
+            },
             "picked": picked.clips if picked else [],
             "build": picked.build if picked else None,
             "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
