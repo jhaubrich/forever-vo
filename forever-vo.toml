@@ -775,6 +775,12 @@ cfg_weight = 0.3
 exaggeration = 0.6
 cfg_weight = 0.2
 pitch = -1.0
+
+[tts.voices.spirithealer-female]
+exaggeration = 0.5
+cfg_weight = 0.2
+tempo = 0.7
+pitch = -4.0
 [pronunciations]
 "Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
