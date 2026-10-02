@@ -669,3 +669,33 @@ def test_a_species_voice_offers_the_lines_that_will_move_to_it() -> None:
         healer
     ]
     assert audition.random_line(rows, "spirithealer-female", moving=moving) is healer
+
+
+def test_clips_say_loading_until_the_rows_are_in_even_if_the_load_finished(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, refclips
+    from tools.config import load_config
+
+    # refresh=1 restarts the load, which for a voice with nothing to fetch finishes
+    # on its thread before the answer is built: no rows yet, status already done
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio._rows = None
+    studio.clips_status = {"spirithealer-female": "0 clips"}
+    monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: None)
+    monkeypatch.setattr(studio, "config", load_config)
+    monkeypatch.setattr(audition, "seed_recipe_history", lambda voice: None)
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: {})
+    monkeypatch.setattr(audition, "sources_warnings", lambda config, voice: [])
+    monkeypatch.setattr(audition, "unlisted_clip_folders", lambda config: [])
+    monkeypatch.setattr(refclips.CLIP_SECONDS, "save", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/clips/spirithealer-female?refresh=1").json()
+    assert d["status"] == "loading"  # the page keeps polling
+    studio.clips_status["spirithealer-female"] = "failed: wago said no"
+    d = client.get("/api/clips/spirithealer-female").json()
+    assert d["status"].startswith("failed")  # and stops on a failure

@@ -1841,9 +1841,16 @@ def create_app(
                         }
                     )
             refclips.CLIP_SECONDS.save()
+        # "loading" whenever this answer was built without the voice's rows: a load
+        # with nothing to fetch (spirithealer-female, no candidates of its own)
+        # finishes on its thread before this line, and reporting its "0 clips" with
+        # no rows told the page to stop polling for good. A failure still says so.
+        status = studio.clips_status.get(voice, "not loaded")
+        if found is None and not status.startswith("failed"):
+            status = "loading"
         return {
             "voice": voice,
-            "status": studio.clips_status.get(voice, "not loaded"),
+            "status": status,
             "clips": rows,
             "pending": pending,
             # in first-seen order, for the page's folder select
