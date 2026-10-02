@@ -1491,13 +1491,15 @@ def create_app(
         }
 
     @app.get("/api/lines")
-    def lines(q: str = "", voice: str = "") -> dict[str, Any]:
-        """Search by words, or list one voice's own lines when `voice` is given."""
+    def lines(q: str = "", voice: str = "", limit: int = 60) -> dict[str, Any]:
+        """Search by words, or list one voice's own lines when `voice` is given, the
+        `limit` longest of them (0 for all: the page lists a voice's every line when
+        the voice is chosen)."""
         rows = studio.rows()
         if voice:
             _safe(voice)
             moving = studio.moving_to(voice)
-            found = lines_in_voice(rows, voice, moving=moving)
+            found = lines_in_voice(rows, voice, limit=limit or len(rows), moving=moving)
             total = sum(1 for row in rows if _in_voice(row, voice, moving))
             return {
                 "rows": [payload(row) for row in found],

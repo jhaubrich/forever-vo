@@ -782,3 +782,30 @@ def test_a_take_stops_between_the_sentences_of_a_long_line() -> None:
     with pytest.raises(TakeStopped):
         synth.render(text, "human-male", stopped=lambda: bool(pressed))
     assert Model.calls == 1  # the second sentence was never started
+
+
+def test_a_voice_lists_every_line_when_asked_for_all(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    def row(i: int) -> audition.LineRow:
+        return audition.LineRow(
+            base=f"{i}-accept", subfolder="Quests", title=f"Quest {i}", speaker="Gryfe",
+            voice="goblin-male-zany", raw="x" * i, spoken="x" * i, level=1,
+            source="capture", speaker_key="10583",
+        )  # fmt: skip
+
+    rows = [row(i) for i in range(1, 76)]
+    studio = object.__new__(audition.Studio)
+    monkeypatch.setattr(studio, "rows", lambda: rows)
+    monkeypatch.setattr(studio, "moving_to", lambda voice: frozenset())
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/lines?voice=goblin-male-zany").json()
+    assert (len(d["rows"]), d["total"]) == (60, 75)  # the button's longest sixty
+    d = client.get("/api/lines?voice=goblin-male-zany&limit=0").json()
+    assert (len(d["rows"]), d["total"]) == (75, 75)  # choosing a voice lists them all
+    assert d["rows"][0]["base"] == "75-accept"  # longest first
