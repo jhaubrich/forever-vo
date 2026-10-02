@@ -696,6 +696,38 @@ def test_clips_say_loading_until_the_rows_are_in_even_if_the_load_finished(
 
     d = client.get("/api/clips/spirithealer-female?refresh=1").json()
     assert d["status"] == "loading"  # the page keeps polling
+    assert d["pending"] == ["spirithealer-female"]
     studio.clips_status["spirithealer-female"] = "failed: wago said no"
     d = client.get("/api/clips/spirithealer-female").json()
     assert d["status"].startswith("failed")  # and stops on a failure
+
+
+def test_borrowed_clips_are_listed_while_the_voice_still_loads(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, refclips
+    from tools.config import load_config
+
+    banshee = {"n": 1, "fdid": 1243396, "kind": "vo_70_weeping_banshee_04",
+               "group": "weeping_banshee", "seconds": 3.6, "url": "/x.ogg"}  # fmt: skip
+    loaded = {"nightborne-female": None, "folder-weeping_banshee": [banshee]}
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio._rows = None
+    studio.clips_status = {"nightborne-female": "loading"}
+    monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: loaded[voice])
+    monkeypatch.setattr(studio, "config", load_config)
+    monkeypatch.setattr(audition, "seed_recipe_history", lambda voice: None)
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: {})
+    monkeypatch.setattr(audition, "sources_warnings", lambda config, voice: [])
+    monkeypatch.setattr(audition, "unlisted_clip_folders", lambda config: [])
+    monkeypatch.setattr(audition, "group_about", lambda voice, group, spoken: "")
+    monkeypatch.setattr(refclips.CLIP_SECONDS, "save", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/clips/nightborne-female?also=folder-weeping_banshee").json()
+    assert d["status"] == "loading"
+    assert d["pending"] == ["nightborne-female"]
+    assert [c["fdid"] for c in d["clips"]] == [1243396]  # not an empty table

@@ -64,16 +64,36 @@
   #npcs-list a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--dim); }
   #npcs-list a:hover { color: var(--gold); border-bottom-color: var(--gold); }
   #npcs-list .m { color: var(--dim); font-size: 12px; }
-  /* the voice search's live matches, over the page below the box */
+  /* The voice, its clip and takes, then the knobs: a grid each, a one-line label over
+     every box so the boxes share a line, and anything longer as a hint under the box.
+     Sized by the column they sit in, not the window: it is half as wide at 1600px. */
+  .setup { container-type: inline-size; }
+  .fields { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(4.5em, 7em); gap: 0 12px; align-items: start; }
+  .fields.knobs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .fields > div > label:not(.check) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fields input:not([type="checkbox"]), .fields select { width: 100%; }
+  .fields .hint { color: var(--dim); font-size: 11px; margin-top: 3px; }
+  .fields-head { display: flex; align-items: center; gap: 6px; color: var(--dim); font-size: 12px; margin: 12px 0 -4px; }
+  @container (max-width: 560px) {
+    .fields { grid-template-columns: minmax(0, 1fr) minmax(4.5em, 7em); }
+    .fields .voice-field { grid-column: 1 / -1; }
+    .fields.knobs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  /* the voice combobox: the box shows the voice in use, typing narrows the list under
+     it, an empty box browses every voice; the hidden #voice select stays the value */
   .voice-find { position: relative; }
-  #voice-results { position: absolute; z-index: 20; left: 0; right: 0; top: 100%; margin: -2px 0 0; padding: 0; list-style: none;
+  #voice-search { padding-right: 26px; text-overflow: ellipsis; }
+  #voice-caret { position: absolute; right: 1px; top: 1px; bottom: 1px; width: 24px; padding: 0; border: 0; background: transparent; color: var(--dim); }
+  #voice-results { position: absolute; z-index: 20; left: 0; right: 0; top: 100%; margin: 2px 0 0; padding: 0; list-style: none;
     max-height: 50vh; overflow: auto; background: var(--bg); border: 1px solid var(--gold); border-radius: 4px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5); }
   #voice-results li { padding: 5px 8px; border-bottom: 1px solid var(--line); cursor: pointer; }
   #voice-results li:last-child { border-bottom: 0; }
-  #voice-results li.active, #voice-results li:hover { background: var(--panel); }
+  #voice-results li.active, #voice-results li[data-v]:hover { background: var(--panel); }
   #voice-results li.current { color: var(--gold); }
   #voice-results .m { color: var(--dim); font-size: 12px; }
   #voice-results li.none { color: var(--dim); cursor: default; }
+  #voice-results li.group { position: sticky; top: 0; background: var(--bg); color: var(--dim); cursor: default; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em; padding-top: 8px; }
   #results li > div { flex: 1; min-width: 0; }
   #results button.play { flex: 0 0 auto; padding: 2px 8px; font-size: 12px; }
   .badge { display: inline-block; font-size: 11px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 10px; color: var(--dim); margin-left: 4px; }
@@ -174,24 +194,28 @@
     <label for="text">Text (cleaned and respelled before it reaches the model)</label>
     <textarea id="text">Aye, a stack o' letters came through the pass today, and I dinnae have the time to send them along.</textarea>
 
-    <div class="row">
-      <div><label for="voice">Voice</label>
-        <div class="voice-find">
-          <input id="voice-search" type="search" placeholder="search voices: sylv, vari, dwarf guard…" autocomplete="off" style="width:100%;margin-bottom:4px"
-            role="combobox" aria-controls="voice-results" aria-expanded="false">
-          <ul id="voice-results" role="listbox" hidden></ul>
-        </div>
-        <select id="voice"></select>
-        <label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></div>
-      <div><label for="reference">Clone from</label><select id="reference"></select></div>
-      <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
-    </div>
-    <div class="row">
-      <div><label for="exag">Exaggeration values (0&ndash;2)</label><input id="exag" value="0.45, 0.75"></div>
-      <div><label for="cfg">cfg_weight values (0&ndash;1)</label><input id="cfg" value="0.5, 0.3"></div>
-      <div><label for="tempo">Tempo values (0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept)</label><input id="tempo" value="1.0"></div>
-      <div><label for="pitch">Pitch values in semitones (&minus;12&ndash;12; 0 as generated, down is negative)</label><input id="pitch" value="0"></div>
-      <button id="knobs-help-toggle" class="help" title="What these three do">?</button>
+    <div class="setup">
+      <div class="fields">
+        <div class="voice-field"><label for="voice-search">Voice</label>
+          <div class="voice-find">
+            <input id="voice-search" type="text" autocomplete="off" spellcheck="false" placeholder="type to search: sylv, vari, dwarf guard…"
+              role="combobox" aria-controls="voice-results" aria-expanded="false" aria-autocomplete="list">
+            <button id="voice-caret" type="button" tabindex="-1" aria-label="Show every voice" title="Show every voice">&#9662;</button>
+            <ul id="voice-results" role="listbox" aria-label="Voices" hidden></ul>
+          </div>
+          <select id="voice" hidden aria-hidden="true" tabindex="-1"></select>
+          <div id="voice-note" class="hint"></div>
+          <label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></div>
+        <div><label for="reference">Clone from</label><select id="reference"></select></div>
+        <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
+      </div>
+      <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these three do">?</button></div>
+      <div class="fields knobs">
+        <div><label for="exag">Exaggeration</label><input id="exag" value="0.45, 0.75"><div class="hint">0&ndash;2</div></div>
+        <div><label for="cfg">cfg_weight</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1</div></div>
+        <div><label for="tempo">Tempo</label><input id="tempo" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
+        <div><label for="pitch">Pitch, semitones</label><input id="pitch" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
+      </div>
     </div>
     <div class="row" style="margin-top:8px">
       <button id="go" class="primary">Generate</button>
@@ -336,6 +360,8 @@ function applyState(s) {
   ref.innerHTML = `<option value="">the voice's own (${"as configured"})</option>` + s.voices.map(v => `<option value="${v}">${v}.wav</option>`).join("");
   if (first) { voice.value = s.voices.includes("dwarf-female") ? "dwarf-female" : s.voices[0]; }
   else { voice.value = keepVoice; ref.value = keepRef; }
+  // the 15 s refresh lands here: an open voice list is redrawn where it was scrolled to
+  if (!$("voice-results").hidden) renderVoiceResults(false);
   if (first) loadVoiceSettings();
   showResolved();
   showSpeakerPin();
@@ -390,36 +416,36 @@ function voiceMatches(s, query) {
     .sort((a, b) => b.score - a.score || a.r.voice.length - b.r.voice.length).map(h => h.r);
 }
 
-function voiceOptions(s) {
+// The list in groups, or while searching the voice in use and the matches best first.
+// [label, rows] pairs, empty groups included.
+function voiceGroups(s, query) {
   const rows = voiceRows(s);
-  const option = r => {
-    const who = r.label ? ` — ${esc(r.label)}` : "";
-    const note = voiceNote(s, r);
-    return `<option value="${r.voice}">${r.voice}${who}${voiceStar(s, r)}${note ? ` — ${note}` : ""}</option>`;
-  };
-  const group = (label, list) => list.length
-    ? `<optgroup label="${label}">` + list.map(option).join("") + "</optgroup>"
-    : "";
-  // While the search box has text, one list best match first instead of the groups.
-  // The voice in use stays at the top, so narrowing the list never changes the voice
-  // behind the page's back (a select whose value vanishes silently takes its first).
-  const query = $("voice-search").value.trim();
   if (query) {
     const current = $("voice").value;
     const hits = voiceMatches(s, query).filter(r => r.voice !== current);
-    const mine = rows.filter(r => r.voice === current);
-    return group("In use", mine) + (hits.length ? group(`Matches (${hits.length})`, hits)
-      : `<optgroup label="No matches for “${esc(query)}”"></optgroup>`);
+    return [["In use", rows.filter(r => r.voice === current)], [`Matches (${hits.length})`, hits]];
   }
   const isArch = r => r.archetype;
   const isNpc = r => r.voice.startsWith("npc-");
-  return group("Race voices", rows.filter(r => !isArch(r) && !isNpc(r) && !r.borrows && !r.species))
-       + group("Archetypes — with a clip", rows.filter(r => isArch(r) && r.clip))
-       + group("Archetypes — not built yet", rows.filter(r => isArch(r) && !r.clip))
-       + group("Named NPCs", rows.filter(isNpc))
-       + group("Species with no clip yet", rows.filter(r => r.species))
-       + group("Races borrowing another's clip", rows.filter(r => r.borrows));
+  return [["Race voices", rows.filter(r => !isArch(r) && !isNpc(r) && !r.borrows && !r.species)],
+          ["Archetypes — with a clip", rows.filter(r => isArch(r) && r.clip)],
+          ["Archetypes — not built yet", rows.filter(r => isArch(r) && !r.clip)],
+          ["Named NPCs", rows.filter(isNpc)],
+          ["Species with no clip yet", rows.filter(r => r.species)],
+          ["Races borrowing another's clip", rows.filter(r => r.borrows)]];
 }
+
+// The hidden select behind the combobox: every voice, always, so whatever is set on it
+// is a real option (a select whose value vanishes silently takes its first).
+function voiceOptions(s) {
+  const option = r => {
+    const note = voiceNote(s, r);
+    return `<option value="${r.voice}">${esc(voiceTitle(s, r))}${note ? ` — ${esc(note)}` : ""}</option>`;
+  };
+  return voiceGroups(s, "").filter(([, list]) => list.length)
+    .map(([label, list]) => `<optgroup label="${esc(label)}">` + list.map(option).join("") + "</optgroup>").join("");
+}
+function voiceTitle(s, r) { return `${r.voice}${r.label ? ` — ${r.label}` : ""}${voiceStar(s, r)}`; }
 
 // Each word of the query is scored on its own and they all have to be there, in any
 // order: "guard dwarf" finds dwarf-male-guard. A word is its characters in order anywhere
@@ -477,62 +503,129 @@ function editDistance(a, b) {
   return d[a.length][b.length];
 }
 
-function refreshVoiceList() {
-  if (!state) return;
-  const voice = $("voice"), keep = voice.value;
-  voice.innerHTML = voiceOptions(state);
-  voice.value = keep;
-  renderVoiceResults();
+// The combobox. #voice, hidden, is still the value every other part of the page reads,
+// sets and listens to; the box only shows it and drives it. Away from the box it reads
+// the voice in use. Focused, that text is selected and the list under it holds every
+// voice in its groups; typing replaces it and narrows the list to the matches. Arrow
+// keys move, Enter or a click takes one, Escape puts the voice back and closes, and
+// leaving the box closes it.
+let voiceActive = 0, voiceQuery = "";
+const VOICE_RESULTS_MAX = 15;
+function voiceRow(v) { return (state && voiceRows(state).find(r => r.voice === v)) || { voice: v }; }
+
+// Lines are picked and sessions restored by setting #voice's value outright, with no
+// change event, so the box follows the select's own setter rather than the event.
+{
+  const select = $("voice"), base = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
+  Object.defineProperty(select, "value", { configurable: true,
+    get() { return base.get.call(this); },
+    set(v) { base.set.call(this, v); showVoice(); } });
+}
+function showVoice() {
+  const box = $("voice-search"), v = $("voice").value;
+  if (!state || !v) return;
+  const r = voiceRow(v), title = voiceTitle(state, r);
+  box.title = title;
+  // never under someone's typing: the refresh sets the value again every 15 s
+  if (document.activeElement !== box) box.value = title;
+  $("voice-note").textContent = voiceNote(state, r);
 }
 
-// The matches as you type, under the box: the select above narrows too, but a closed
-// select shows one line. Arrow keys move, Enter or a click takes one, Escape clears.
-let voiceActive = 0;
-const VOICE_RESULTS_MAX = 15;
-function renderVoiceResults() {
-  const box = $("voice-results"), query = $("voice-search").value.trim();
-  const open = !!(state && query && document.activeElement === $("voice-search"));
-  box.hidden = !open;
-  $("voice-search").setAttribute("aria-expanded", String(open));
-  if (!open) return;
-  const all = voiceMatches(state, query), hits = all.slice(0, VOICE_RESULTS_MAX);
-  voiceActive = Math.min(voiceActive, Math.max(hits.length - 1, 0));
-  const current = $("voice").value;
-  box.innerHTML = hits.length ? hits.map((r, i) => {
-    const note = voiceNote(state, r);
-    return `<li role="option" data-v="${r.voice}" class="${i === voiceActive ? "active" : ""}${r.voice === current ? " current" : ""}">` +
-      `${esc(r.voice)}${r.label ? ` — ${esc(r.label)}` : ""}${voiceStar(state, r)}` +
+function openVoiceList() {
+  const items = renderVoiceResults();
+  // browsing opens on the voice in use, searching on the best match below it
+  const at = voiceQuery ? items.findIndex(li => li.dataset.v !== $("voice").value) : items.findIndex(li => li.dataset.v === $("voice").value);
+  voiceActive = Math.max(at, 0);
+  renderVoiceResults();
+}
+function closeVoiceList() {
+  $("voice-results").hidden = true;
+  $("voice-search").setAttribute("aria-expanded", "false");
+  $("voice-search").removeAttribute("aria-activedescendant");
+}
+// Draws the list and returns its options; scroll false keeps where it was scrolled to
+function renderVoiceResults(scroll = true) {
+  const box = $("voice-results"), input = $("voice-search");
+  if (!state || document.activeElement !== input) { closeVoiceList(); return []; }
+  box.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+  const current = $("voice").value, top = box.scrollTop;
+  let n = 0, html = "";
+  const option = r => {
+    const note = voiceNote(state, r), i = n++;
+    return `<li role="option" id="voice-opt-${i}" data-v="${esc(r.voice)}" aria-selected="${i === voiceActive}"` +
+      ` class="${i === voiceActive ? "active" : ""}${r.voice === current ? " current" : ""}">${esc(voiceTitle(state, r))}` +
       `${note ? ` <span class="m">${esc(note)}</span>` : ""}${r.voice === current ? ` <span class="m">(in use)</span>` : ""}</li>`;
-  }).join("") + (all.length > hits.length ? `<li class="none">… ${all.length - hits.length} more; keep typing</li>` : "")
-    : `<li class="none">No voice matches “${esc(query)}”</li>`;
-  box.querySelectorAll("li[data-v]").forEach(li => li.addEventListener("mousedown", ev => {
-    ev.preventDefault();  // keep the focus in the box until the pick is made
-    takeVoice(li.dataset.v);
-  }));
-  const active = box.querySelector("li.active");
-  if (active) active.scrollIntoView({ block: "nearest" });
+  };
+  for (const [label, list] of voiceGroups(state, voiceQuery)) {
+    // only the matches are cut short; the full list is a few hundred and scrolls
+    const shown = voiceQuery ? list.slice(0, VOICE_RESULTS_MAX) : list;
+    if (!list.length) continue;
+    html += `<li class="group" role="presentation">${esc(label)}</li>` + shown.map(option).join("") +
+      (list.length > shown.length ? `<li class="none" role="presentation">… ${list.length - shown.length} more; keep typing</li>` : "");
+  }
+  if (voiceQuery && !voiceGroups(state, voiceQuery)[1][1].length) html += `<li class="none" role="presentation">No voice matches “${esc(voiceQuery)}”</li>`;
+  box.innerHTML = html;
+  const items = [...box.querySelectorAll("li[data-v]")];
+  voiceActive = Math.min(voiceActive, Math.max(items.length - 1, 0));
+  const active = items[voiceActive];
+  if (active) input.setAttribute("aria-activedescendant", active.id); else input.removeAttribute("aria-activedescendant");
+  if (!scroll) box.scrollTop = top;
+  else if (active) active.scrollIntoView({ block: "nearest" });
+  return items;
 }
 function takeVoice(v) {
-  $("voice-search").value = ""; voiceActive = 0;
-  refreshVoiceList();
+  voiceQuery = ""; voiceActive = 0;
+  const changed = v !== $("voice").value;
   $("voice").value = v;
-  $("voice").dispatchEvent(new Event("change"));
+  if (changed) $("voice").dispatchEvent(new Event("change"));
   $("voice-search").blur();
+  showVoice();
 }
-$("voice-search").addEventListener("input", () => { voiceActive = 0; refreshVoiceList(); });
-$("voice-search").addEventListener("focus", renderVoiceResults);
-$("voice-search").addEventListener("blur", () => { $("voice-results").hidden = true; $("voice-search").setAttribute("aria-expanded", "false"); });
+// The text on focus is the voice in use, selected so typing replaces it; a click's
+// mouseup would otherwise drop the selection it lands in.
+let voiceFocusClick = false;
+$("voice-search").addEventListener("focus", () => {
+  voiceQuery = ""; voiceFocusClick = true;
+  $("voice-search").select();
+  openVoiceList();
+});
+$("voice-search").addEventListener("mouseup", ev => { if (voiceFocusClick) ev.preventDefault(); voiceFocusClick = false; });
+$("voice-search").addEventListener("click", () => { if ($("voice-results").hidden) openVoiceList(); });
+$("voice-search").addEventListener("input", () => { voiceQuery = $("voice-search").value.trim(); openVoiceList(); });
+$("voice-search").addEventListener("blur", () => { voiceQuery = ""; closeVoiceList(); showVoice(); });
+// a press anywhere in the list (a group heading, its scrollbar) keeps the focus in the box
+$("voice-results").addEventListener("mousedown", ev => {
+  ev.preventDefault();
+  const li = ev.target.closest("li[data-v]");
+  if (li) takeVoice(li.dataset.v);
+});
+$("voice-caret").addEventListener("mousedown", ev => {
+  ev.preventDefault();
+  if (document.activeElement !== $("voice-search")) $("voice-search").focus();
+  else if ($("voice-results").hidden) openVoiceList();
+  else closeVoiceList();
+});
 $("voice-search").addEventListener("keydown", ev => {
-  if (ev.key === "Escape") { $("voice-search").value = ""; voiceActive = 0; refreshVoiceList(); return; }
-  const items = [...$("voice-results").querySelectorAll("li[data-v]")];
-  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
-    if (!items.length) return;
+  voiceFocusClick = false;
+  const box = $("voice-search"), open = !$("voice-results").hidden;
+  if (ev.key === "Escape") {
     ev.preventDefault();
+    voiceQuery = ""; box.value = voiceTitle(state, voiceRow($("voice").value)); box.select();
+    closeVoiceList();
+    return;
+  }
+  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+    ev.preventDefault();
+    if (!open) { openVoiceList(); return; }
+    const items = [...$("voice-results").querySelectorAll("li[data-v]")];
+    if (!items.length) return;
     voiceActive = (voiceActive + (ev.key === "ArrowDown" ? 1 : items.length - 1)) % items.length;
     renderVoiceResults();
     return;
   }
-  if (ev.key !== "Enter") return;
+  if (ev.key !== "Enter" || !open) return;
+  const items = [...$("voice-results").querySelectorAll("li[data-v]")];
   const pick = items[voiceActive] || items[0];
   if (pick) { ev.preventDefault(); takeVoice(pick.dataset.v); }
 });
@@ -894,6 +987,7 @@ $("rebuild").addEventListener("click", async () => {
 // runs every 15 s and would otherwise wipe a half-made pick. It is invalidated in one
 // place: the voice select's change handler. applyState restores voice.value by
 // assignment, which fires no change event, so a refresh cannot reach this.
+let clipsSeedPending = false;  // Load candidates asked for the saved picks; not seeded yet
 let clipsVoice = null, clipsRows = [], clipsGroups = [], clipsAbout = {}, picks = [], clipsWindows = { t3: 6, s3gen: 10 }, clipsPoll = null;
 
 // Collapsed clip groups, by group name, remembered in this browser across voices and
@@ -1015,6 +1109,7 @@ function renderHistory(history, picked) {
 async function loadClips(refresh) {
   const voice = $("voice").value;
   clipsVoice = voice;
+  if (refresh === true) clipsSeedPending = true;
   try {
     const query = new URLSearchParams();
     if (refresh === true) query.set("refresh", "1");
@@ -1041,7 +1136,13 @@ async function loadClips(refresh) {
       }).join("");
       sel.hidden = d.groups.length < 2;
       sel.value = d.groups.includes(keep) ? keep : "";
-      if (refresh !== false || !picks.length) picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
+      // The saved picks are seeded once the voice's own rows are in: borrowed sources
+      // now arrive first while the voice still loads, and seeding then kept only the
+      // picks found among them, for good
+      if (!d.pending.includes(voice) && (clipsSeedPending || !picks.length)) {
+        picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
+        clipsSeedPending = false;
+      }
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
       renderClips();

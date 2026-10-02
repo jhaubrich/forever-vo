@@ -155,6 +155,9 @@ class Candidate:
                 self.fdid, RAW_DIR / voice / f"{self.fdid}.ogg", build=self.build
             )
             if is_dud(self.path):  # named in the listfile, not carried by this build
+                # unlinked, or the next build's candidate for this FileDataID would
+                # find the dud at the same path and never fetch its own copy
+                self.path.unlink(missing_ok=True)
                 return False
             self.seconds = CLIP_SECONDS.get(self.fdid, self.build, self.path)
         except (
@@ -196,10 +199,17 @@ def speech_candidates(voice: str) -> list[Candidate]:
                 for fdid in kits.get(int(row.get("SoundID") or 0), []):
                     kind_of[fdid] = name.lower()
         where = "speech" if build == BETA_BUILD else "retail speech"
-        return [
-            Candidate(f"{where} {kind_of.get(f, '')}".strip(), f, build, where)
-            for f in fdids
-        ]
+        found = []
+        for f in fdids:
+            kind = f"{where} {kind_of.get(f, '')}".strip()
+            if build != BETA_BUILD:
+                # Only the emote table is retail's: the beta client ships many of the
+                # files themselves (nightborne's), and wago serves the beta build at
+                # once where an uncached retail file can hang for minutes. _fetched
+                # takes the first that can be had.
+                found.append(Candidate(kind, f, BETA_BUILD, where))
+            found.append(Candidate(kind, f, build, where))
+        return found
     return []
 
 

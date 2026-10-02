@@ -150,3 +150,23 @@ def test_a_race_voice_leaves_out_other_sexes_and_characters_kits(
     monkeypatch.setattr(refclips, "_fetched", lambda found, voice: found)
     found = refclips.candidates("skyborne-female", Voices())
     assert [c.group for c in found] == ["set 3773"]
+
+
+def test_retail_speech_is_fetched_from_the_beta_build_first(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # nightborne's emote table is retail's, but the beta client ships the files
+    tables = {
+        refclips.BETA_BUILD: {},
+        refclips.RETAIL_BUILD: {"nightborne-female": [7]},
+    }
+    monkeypatch.setattr(refclips, "emote_speech_fdids", lambda build: tables[build])
+    monkeypatch.setattr(refclips, "files_by_kit", lambda build: {})
+    monkeypatch.setattr(refclips, "emote_names", lambda build: {})
+    monkeypatch.setattr(refclips, "load_db2", lambda table, build: {})
+    found = refclips.speech_candidates("nightborne-female")
+    assert [(c.fdid, c.build) for c in found] == [
+        (7, refclips.BETA_BUILD),
+        (7, refclips.RETAIL_BUILD),
+    ]
+    assert {c.group for c in found} == {"retail speech"}

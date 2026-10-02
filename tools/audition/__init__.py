@@ -1799,24 +1799,31 @@ def create_app(
         pending = []
         spoken = studio.spoken_if_loaded()
         about = {c["group"]: group_about(voice, c["group"], spoken) for c in rows}
+        # borrowed sources are listed while this voice's own load still runs, which
+        # with wago slow can be minutes: before, the table stayed empty and the page
+        # blanked it on every poll until the voice's own list was in
+        if found is None:
+            pending.append(voice)
+        labels = npc_labels()
+        seen = {c["fdid"] for c in rows}
+        borrowed: list[dict[str, Any]] = []
+        for other in reversed(others):
+            theirs = studio.clips(other)
+            if theirs is None:
+                pending.append(other)
+                continue
+            name = _voice_label(other, labels)
+            for c in theirs:
+                if c["fdid"] not in seen:
+                    seen.add(c["fdid"])
+                    group = f"{name}: {c['group']}"
+                    if group not in about:
+                        about[group] = group_about(other, c["group"], spoken)
+                    borrowed.append({**c, "group": group, "source": "also"})
+        rows = borrowed + rows
+        # a saved pick not among the candidates, listed from the download cache; only
+        # once the voice's own rows are in, or one of them would be filed here
         if found is not None:
-            labels = npc_labels()
-            seen = {c["fdid"] for c in rows}
-            borrowed: list[dict[str, Any]] = []
-            for other in reversed(others):
-                theirs = studio.clips(other)
-                if theirs is None:
-                    pending.append(other)
-                    continue
-                name = _voice_label(other, labels)
-                for c in theirs:
-                    if c["fdid"] not in seen:
-                        seen.add(c["fdid"])
-                        group = f"{name}: {c['group']}"
-                        if group not in about:
-                            about[group] = group_about(other, c["group"], spoken)
-                        borrowed.append({**c, "group": group, "source": "also"})
-            rows = borrowed + rows
             saved_build = picked.build if picked else None
             for fdid in picked.clips if picked else []:
                 if fdid in seen:
