@@ -130,15 +130,17 @@
   #clips-body tr.sub { cursor: pointer; user-select: none; }
   #clips-body tr.sub th .caret { display: inline-block; width: 1.1em; color: var(--dim); }
   #clips-body tr.sub:hover { background: none; }
-  #clips-body tr.sub th { text-align: left; padding: 10px 4px 3px; border-bottom: 1px solid var(--line); color: var(--gold); font-weight: 600; }
-  #clips-body tr.sub th .note { font-weight: 400; margin-left: 0.6em; }
+  /* group headings at twice the table's size (24px over 12px), so a long table reads
+     as sections; the counts and the line on what the set is scale with them */
+  #clips-body tr.sub th { text-align: left; padding: 16px 4px 5px; border-bottom: 1px solid var(--line); color: var(--gold); font-weight: 600; font-size: 24px; }
+  #clips-body tr.sub th .note { font-weight: 400; margin-left: 0.6em; font-size: 24px; }
   /* groups added with "Also offer clips from": on top, with an edge of their own colour
      down the whole run. No fill, so nothing about them reads as picked or hovered. */
   #clips-body tr.sub.also th { border-left: 3px solid var(--borrow); padding-left: 8px; }
   #clips-body tr.also td:first-child { box-shadow: inset 2px 0 0 var(--borrow); }
   #clips-body tr.sub th .borrowed { display: inline-block; margin-left: 0.6em; padding: 0 6px; border: 1px solid var(--borrow);
-    border-radius: 9px; color: var(--borrow); font-size: 11px; font-weight: 500; line-height: 1.5; vertical-align: 1px; }
-  #clips-body tr.sub th .about { font-weight: 400; color: var(--dim); font-size: 12px; margin-top: 2px; }
+    border-radius: 18px; color: var(--borrow); font-size: 22px; font-weight: 500; line-height: 1.5; vertical-align: 2px; padding: 0 12px; }
+  #clips-body tr.sub th .about { font-weight: 400; color: var(--dim); font-size: 22px; margin-top: 4px; }
   #clips-body tr.picked { background: var(--panel); }
   #clips-body td.pos { color: var(--gold); font-weight: 600; width: 7.5em; white-space: nowrap; }
   #clips-body td.pos button { font-size: 11px; padding: 0 4px; margin-left: 2px; line-height: 1.4; }

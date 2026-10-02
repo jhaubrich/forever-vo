@@ -320,8 +320,11 @@ drops a borrowed clip. A run that ends raises a desktop notification from the
 server through `notify-send` (`run_finished`): the browser's Notification API
 never showed one on the owner's KDE desktop though permission was granted, and a
 server with no `notify-send` sends none. Stop, beside Generate, ends a run after
-the take in progress: Chatterbox's `generate()` cannot be interrupted, so the check is
-between takes (`Studio.stops`, `/api/generate/<session>/stop`). One model instance, loaded on
+the sentence in progress: Chatterbox's `generate()` cannot be interrupted, so the check
+is between takes and, since 2026-10-02, between the generate() calls of one take
+(`Synth.render`'s `stopped`, raising `TakeStopped`), since a long line is several
+chunks and a short one up to three tries (`Studio.stops`,
+`/api/generate/<session>/stop`). One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
 we need are plain HTML, and the addon's own rule of no libraries and a native
