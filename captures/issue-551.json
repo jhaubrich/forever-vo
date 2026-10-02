@@ -1,0 +1,84 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "382": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Marshal Marris",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "900": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Bailiff Conacher",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-551",
+ "quests": {
+  "20-progress": {
+   "build": "70170",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Marshal Marris",
+   "npc": "382",
+   "questID": 20,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Have you been slaying orcs, $N?  If so, then show me...",
+   "time": 1790948595,
+   "title": "Blackrock Menace",
+   "wanted": null,
+   "zone": "Redridge Mountains"
+  },
+  "91-progress": {
+   "build": "70170",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Bailiff Conacher",
+   "npc": "900",
+   "questID": 91,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Turn in 10 Shadowhide Pendants to me, and you shall be rewarded.",
+   "time": 1790943309,
+   "title": "Solomon's Law",
+   "wanted": null,
+   "zone": "Lakeshire Town Hall"
+  },
+  "95999-accept": {
+   "build": "70170",
+   "class": "Hunter",
+   "differs": true,
+   "event": "accept",
+   "isObject": true,
+   "mapID": 1433,
+   "name": "Unknown",
+   "npc": null,
+   "questID": 95999,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Wanted! Incinerator Gar'im, Leader of an orc incursion in Render's Valley. Purported to be working with the Blackrock of Stonewatch Keep.\r\n\r\nBeware of Incinerator Gar'im. He and his Shadowcasters are extremely dangerous. A handsome reward will be given to any brave soul that can deliver proof of Incinerator Gar'im's demise to Magistrate Solomon.",
+   "time": 1790943329,
+   "title": "WANTED: Incinerator Gar'im",
+   "wanted": null,
+   "zone": "Lakeshire Town Hall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
