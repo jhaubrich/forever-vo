@@ -51,10 +51,10 @@ function MinimapButton:Create()
     background:SetPoint("TOPLEFT", 7, -5)
 
     local icon = button:CreateTexture(nil, "ARTWORK")
-    icon:SetSize(20, 20)
+    icon:SetSize(16, 16) -- the microphone runs the full height of its image; 20 clips it on the ring
     icon:SetTexture(ns.iconTexture)
-    icon:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- trim the spell icon's dark frame
-    icon:SetPoint("TOPLEFT", 6, -5)
+    -- The dark disc sits a little off the ring's centre; measured in game
+    icon:SetPoint("CENTER", background, "CENTER", -0.75, -0.5)
     button.Icon = icon
 
     button:SetScript("OnClick", function(self, mouseButton)
@@ -69,11 +69,11 @@ function MinimapButton:Create()
             return
         end
         self:SetScript("OnUpdate", DragTo)
-        self.Icon:SetTexCoord(0.12, 0.88, 0.12, 0.88)
+        self.Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
     end)
     button:SetScript("OnDragStop", function(self)
         self:SetScript("OnUpdate", nil)
-        self.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+        self.Icon:SetTexCoord(0, 1, 0, 1)
     end)
 
     UpdatePosition(button)

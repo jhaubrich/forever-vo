@@ -5,6 +5,34 @@
 - The second **Narrator voice** is Skyborne female instead of Orc male, so
   the menu has a male and a female voice. If you picked Orc male, narrated
   lines go back to the default narrator until you pick again.
+- The Forever Voiceover page in Options has **Send Quests to Project** (the
+  same as `/fvo export`, and showing how many lines you have to send) and
+  **Report Bug** buttons, and lists the addon's
+  version and, under **Voice packs**, every installed pack by its full name
+  and version, for bug reports. The minimap button's tooltip shows the addon
+  version and how many quests you have to send, and its menu's Send entry
+  the count too.
+- The login window's offer is shorter: how many quests we need, and that
+  sending needs a free GitHub account.
+- **Don't Show This Again** in the login window holds across logins, not
+  only across `/reload`: after a client restart the window came back as if
+  for a first login and ignored the box.
+- **Copy Link** in the export window says thank you in chat. Send with
+  nothing to send leaves Options open and only says so in a popup.
+- **Report Bug** opens the report window for a
+  problem that is not about one line. Pick what went wrong (UI, playback, a
+  Lua error, something else); the GitHub form opens titled with that and the
+  first line you write, with your addon and voice pack versions filled in.
+- **Repeat greetings and gossip** replaces both **Repeat gossip** and **First
+  gossip only**, which overlapped: *Every time*, *Gossip once, greetings
+  always* (the default), *Both once per NPC*, or *Once for quest givers*. A
+  greeting is the text an NPC with more than one quest opens with; gossip is
+  what an NPC says above the conversation options. Your earlier choice
+  carries over, and "Never" becomes the Greetings and Gossip boxes cleared.
+  "Once" is remembered on each character, not just for the session.
+- The **Voice packs** options page is now **Voice Pack Debug**.
+- The minimap button and the addon list show the gold microphone from the
+  project's art in place of the borrowed spell icon.
 - `/fvo export` fits every export into links. A GitHub link only holds about
   25 lines, and a longer export used to leave its string out of the link and
   say so in a message that ran off the window. Now it comes in parts: **Next**
@@ -16,6 +44,13 @@
   instead of chat. **All at Once** sends a long export as one issue instead:
   the link opens the form, and you copy the export string into it from the
   box below the link (up to about 250 lines per issue).
+- The talking head no longer cuts long lines off with "...". Pages are sized
+  to the text box, so each shows in full, and there is room for a fourth line.
+  Pages now keep time with the voice through a pause (the page holds),
+  Resume and Replay (back to the first page), and lines read in several parts.
+- Pause, Skip and Queue are small gold buttons under the close button, in
+  place of the red button row. "N more queued" moved to the title line. The
+  buttons fade out before the panel does.
 
 ## 0.1.7
 

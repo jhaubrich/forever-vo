@@ -25,10 +25,14 @@ silently repoint a pick at different audio.
 from __future__ import annotations
 
 import argparse
+import json
+import os
 import re
 import subprocess
 import sys
-from collections import Counter
+import threading
+from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import requests
@@ -49,6 +53,7 @@ from tools.build_voice_references import (
 )
 from tools.config import (
     BETA_BUILD,
+    CASC_DIR,
     GENDER_DICT,
     RACE_DICT,
     RETAIL_BUILD,
@@ -65,9 +70,67 @@ from tools.wowdata import (
     sound_set_displays,
 )
 
+FETCH_WORKERS = (
+    8  # clips fetched and probed at once on a load; wago copes with this many
+)
+
 LABELS_DIR = VOICES_DIR / "audition-labels"
 LABEL_VOICE = "human-female"
 GAP_SECONDS = 0.5
+
+
+class ClipSeconds:
+    """FileDataID -> length in seconds, kept beside the CASC cache it measures.
+
+    A file never changes within a build, so neither does its length. Probing was most
+    of a candidate load once the files were on disk - 146 ffprobe runs, 5.4 of
+    human-male's 6.3 s - and it was redone on every load and after every restart.
+    """
+
+    def __init__(self, root: Path = CASC_DIR) -> None:
+        self.root = root
+        self.lock = threading.Lock()
+        self._loaded: dict[str, dict[str, float]] = {}
+        self._dirty: set[str] = set()
+
+    def _table(self, build: str) -> dict[str, float]:
+        if build not in self._loaded:
+            path = self.root / build / "seconds.json"
+            try:
+                self._loaded[build] = json.loads(path.read_text(encoding="utf-8"))
+            except (FileNotFoundError, ValueError):
+                self._loaded[build] = {}
+        return self._loaded[build]
+
+    def get(self, fdid: int, build: str, path: Path) -> float:
+        with self.lock:
+            known = self._table(build).get(str(fdid))
+        if known is not None:
+            return known
+        seconds = duration(path)  # outside the lock, so probes run side by side
+        with self.lock:
+            self._table(build)[str(fdid)] = seconds
+            self._dirty.add(build)
+        return seconds
+
+    def save(self) -> None:
+        """Merged into what is on disk, since another process may have added lengths."""
+        with self.lock:
+            for build in sorted(self._dirty):
+                path = self.root / build / "seconds.json"
+                path.parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    merged = json.loads(path.read_text(encoding="utf-8"))
+                except (FileNotFoundError, ValueError):
+                    merged = {}
+                merged.update(self._loaded[build])
+                part = path.with_name(f"{path.name}.{os.getpid()}.part")
+                part.write_text(json.dumps(merged, sort_keys=True), encoding="utf-8")
+                part.replace(path)
+            self._dirty.clear()
+
+
+CLIP_SECONDS = ClipSeconds()
 
 
 class Candidate:
@@ -92,7 +155,7 @@ class Candidate:
             )
             if is_dud(self.path):  # named in the listfile, not carried by this build
                 return False
-            self.seconds = duration(self.path)
+            self.seconds = CLIP_SECONDS.get(self.fdid, self.build, self.path)
         except (
             FileNotFoundError,
             requests.RequestException,
@@ -176,6 +239,19 @@ def named_candidates(voice: str, voices: Voices) -> list[Candidate]:
     return found
 
 
+FOLDER_PREFIX = "folder-"  # a clip folder's name where a voice's would go
+
+
+def folder_candidates(folder: str) -> list[Candidate]:
+    """Every real line in one sound folder, barks last: [voices] clip_folders, for the
+    characters this client ships recordings of but casts no NPC with (Gul'dan)."""
+    rows = sorted(
+        named_folder_files().get(folder, []),
+        key=lambda r: (_bark_last(folder, r[1]), r[0]),
+    )
+    return [Candidate(stem, fdid, BETA_BUILD, folder) for fdid, stem, _ in rows]
+
+
 def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
     """Speech first, then greetings. Fetches as it goes.
 
@@ -186,6 +262,8 @@ def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
     """
     if voice.startswith("npc-"):
         return _fetched(named_candidates(voice, voices or load_config().voices), voice)
+    if voice.startswith(FOLDER_PREFIX):
+        return _fetched(folder_candidates(voice.removeprefix(FOLDER_PREFIX)), voice)
     found = speech_candidates(voice)
     race_gender = base_voice(voice)
     counts: Counter[int] = sound_set_displays().get(race_gender) or Counter()
@@ -209,15 +287,25 @@ def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
 
 
 def _fetched(found: list[Candidate], voice: str) -> list[Candidate]:
-    """The first of each FileDataID that can be had, in order."""
-    seen: set[int] = set()
-    kept = []
+    """The first of each FileDataID that can be had, in order.
+
+    FileDataIDs are fetched side by side, and the candidates for one FileDataID in
+    turn: they share a destination file, and a later one is only wanted when an earlier
+    one cannot be had. A first load is mostly waiting on wago, one file at a time.
+    """
+    by_fdid: dict[int, list[Candidate]] = defaultdict(list)
     for candidate in found:
-        if candidate.fdid in seen or not candidate.fetch(voice):
-            continue
-        seen.add(candidate.fdid)
-        kept.append(candidate)
-    return kept
+        by_fdid[candidate.fdid].append(candidate)
+
+    def first_had(fdid: int) -> Candidate | None:
+        return next((c for c in by_fdid[fdid] if c.fetch(voice)), None)
+
+    try:
+        with ThreadPoolExecutor(FETCH_WORKERS) as pool:
+            kept = list(pool.map(first_had, by_fdid))  # dicts keep first-seen order
+    finally:
+        CLIP_SECONDS.save()
+    return [c for c in kept if c is not None]
 
 
 def cmd_list(args) -> int:

@@ -1,0 +1,58 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "263399|b37c4e4d": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Sam Sarsaparilla",
+   "npc": "263399",
+   "questID": null,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Howdy there, traveler!",
+   "time": 1790926559,
+   "title": null,
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "npcs": {
+  "263399": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Sam Sarsaparilla",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-508",
+ "quests": {
+  "95998-accept": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Sam Sarsaparilla",
+   "npc": "263399",
+   "questID": 95998,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Well howdy there, $c. I can see you've got the look of an adventurer about you. Good for you. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nIt's a big wide world out there and you'll need to learn to thrive in the wilds to be successful. Not sure how your outdoorsman skills are but I reckon I could teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire, get comfy. I'll walk you through it.",
+   "time": 1790926560,
+   "title": "The Great Outdoors",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -3,6 +3,8 @@ local Util = ns.Util
 
 --[[
 Report copies a link that opens a GitHub issue about the line that is playing.
+Report Bug on the options page (ShowGeneral) uses the same window with no line:
+the playback form, filled with what the player writes and the versions.
 The link is the whole report: GitHub's new-issue URL takes the title and, for
 a YAML form, one query parameter per field id (line, detail, versions, and
 the rest). body= fills a blank issue, and this repo's forms would ignore it.
@@ -35,6 +37,18 @@ local CHOICES = {
     { key = "voices", label = "It sounds wrong", template = "bug-voices.yml", title = "Voice" },
     { key = "captures", label = "The text or the speaker is wrong", template = "bug-captures.yml", title = "Capture" },
     { key = "playback", label = "The addon misbehaved", template = "bug-playback.yml", title = "Playback" },
+}
+
+-- Report:ShowGeneral, from the options page: a bug with no line playing
+local GENERAL = { key = "general", template = "bug-playback.yml" }
+local GENERAL_HINT = "Say what happened, then Copy Link and paste it into a browser. The GitHub form opens with this and your addon and voice pack versions filled in."
+local GENERAL_BODY = "What I did, what I expected, what the addon did instead:\n\n"
+-- What the general report is about: the dropdown's entries and the issue title's prefix
+local GENERAL_KINDS = {
+    { title = "UI", label = "Options, a window, or the minimap button" },
+    { title = "Playback", label = "Nothing plays, or the wrong line plays" },
+    { title = "Lua error", label = "A Lua error" },
+    { title = "Other", label = "Something else" },
 }
 
 local HINT = "Edit the report if you need to, then Copy Link and paste it into a browser. Choose what is wrong on the GitHub form, and submit.\nYour character name has been removed."
@@ -140,10 +154,7 @@ local function ShortSound(path)
 end
 
 local function PackList()
-    local names = {}
-    for _, pack in ns.Packs:Iterate() do
-        table.insert(names, pack.version and format("%s %s", pack.name, pack.version) or pack.name)
-    end
+    local names = ns.Packs:Versions()
     if #names == 0 then
         return "none"
     end
@@ -285,11 +296,27 @@ local function BodyFor(choice, item, text)
     return format("%s\n\n%s\n\n%s\n\n%s", head, shown, mark, tail)
 end
 
+--- "<kind>: <the first line the player wrote>", or the form's placeholder.
+local function GeneralTitle(kind, body)
+    local written = body:sub(1, #GENERAL_BODY) == GENERAL_BODY and body:sub(#GENERAL_BODY + 1) or body
+    local first = OneLine(written:match("[^\n]*%S[^\n]*") or "")
+    return TrimTitle(format("%s: %s", kind.title, first ~= "" and first or "<what happened>"))
+end
+
 --- kind is left unset on the voice and capture forms. It is a required
 --- dropdown whose option text would have to be copied here and matched
 --- exactly, and the player picks it on the form. The editable box is the
 --- textarea; the title, the line, and the versions stay beside it.
 local function FieldsFromBody(choice, item, body)
+    if choice == GENERAL then
+        return {
+            { "template", choice.template },
+            { "title", GeneralTitle(GENERAL_KINDS[Report.generalKind or 1], body) },
+            { "what", body },
+            { "packs", PackList() },
+            { "version", ns.version or "dev" },
+        }
+    end
     local identity = Identity(item)
     local title = IssueTitle(choice, item)
     if choice.key == "playback" then
@@ -388,7 +415,8 @@ end
 local function PlaceScroll(frame, bottom)
     local scroll = frame.Scroll
     scroll:ClearAllPoints()
-    scroll:SetPoint("TOPLEFT", frame.Kinds[#CHOICES], "BOTTOMLEFT", 0, -12)
+    local above = frame.general and frame.GeneralKindLabel or frame.Kinds[#CHOICES]
+    scroll:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -12)
     scroll:SetPoint("BOTTOMRIGHT", -30, bottom)
 end
 
@@ -470,9 +498,13 @@ function Report:GetFrame()
     link:Hide()
     frame.LinkBox = link
 
+    -- In the template's button bar, the 26 px under its inset, where
+    -- Blizzard's own windows put theirs (MagicButton_OnLoad: 4 from the
+    -- bottom, 6 from the right), as in the export window. At 12 up it
+    -- straddled the inset's border.
     frame.CopyButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     frame.CopyButton:SetSize(110, 22)
-    frame.CopyButton:SetPoint("BOTTOMRIGHT", -16, 12)
+    frame.CopyButton:SetPoint("BOTTOMRIGHT", -6, 4)
     frame.CopyButton:SetText("Copy Link")
     frame.CopyButton:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -553,10 +585,10 @@ end
 function Report:CopyLink()
     local frame = self.frame
     local item = frame.item
-    if not item then
+    if not item and not frame.general then
         return
     end
-    local choice = CHOICES[self.kind or 1]
+    local choice = frame.general and GENERAL or CHOICES[self.kind or 1]
     local body = frame.Scroll.EditBox:GetText() or ""
     local url, shortened = LinkFromBody(choice, item, body)
     frame.link = url
@@ -575,6 +607,60 @@ function Report:Show(item)
     end
     local frame = self:GetFrame()
     frame.item = item
+    frame.general = nil
+    frame:SetTitle("Forever Voiceover: report this line")
+    frame.Hint:SetText(HINT)
+    for _, radio in ipairs(frame.Kinds) do
+        radio:Show()
+    end
+    if frame.GeneralKind then
+        frame.GeneralKind:Hide()
+        frame.GeneralKindLabel:Hide()
+    end
+    PlaceScroll(frame, 46)
     frame:Show()
     self:SetKind(1)
+end
+
+--- A bug report with no line attached, on the playback form.
+function Report:ShowGeneral()
+    local frame = self:GetFrame()
+    frame.item = nil
+    frame.general = true
+    frame:SetTitle("Forever Voiceover: report a bug")
+    frame.Hint:SetText(GENERAL_HINT)
+    for _, radio in ipairs(frame.Kinds) do
+        radio:Hide()
+    end
+    if not frame.GeneralKind then
+        local label = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        label:SetPoint("TOPLEFT", frame.Hint, "BOTTOMLEFT", 0, -16)
+        label:SetText("What went wrong:")
+        local dropdown = CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")
+        dropdown:SetWidth(280)
+        dropdown:SetPoint("LEFT", label, "RIGHT", 10, 0)
+        dropdown:SetupMenu(function(_, root)
+            for index, kind in ipairs(GENERAL_KINDS) do
+                root:CreateRadio(kind.label, function()
+                    return (Report.generalKind or 1) == index
+                end, function()
+                    Report.generalKind = index
+                    Report:ClearStatus()
+                end)
+            end
+        end)
+        frame.GeneralKind = dropdown
+        frame.GeneralKindLabel = label
+    end
+    self.generalKind = 1
+    frame.GeneralKind:GenerateMenu()
+    frame.GeneralKind:Show()
+    frame.GeneralKindLabel:Show()
+    self:ClearStatus()
+    PlaceScroll(frame, 46)
+    frame:Show()
+    local editBox = frame.Scroll.EditBox
+    editBox:SetText(GENERAL_BODY)
+    editBox:SetFocus()
+    editBox:SetCursorPosition(#GENERAL_BODY)
 end

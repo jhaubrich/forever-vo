@@ -1,0 +1,61 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "248197|cc5aee35": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gor'mak",
+   "npc": "248197",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "You won't find better equipment anywhere else!",
+   "time": 1790748672,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "3355|e97bc5d7": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Saru Steelfury",
+   "npc": "3355",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Welcome to my forge, Blacksmith. Let me share with you a little secret. No one, no one in the world can you trust. Not men, not women, not beasts ... this you can trust, Steel.",
+   "time": 1790749781,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "248197": {
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Gor'mak",
+   "sex": 2
+  },
+  "3355": {
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Saru Steelfury",
+   "sex": 2
+  }
+ },
+ "origin": "issue-420",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}

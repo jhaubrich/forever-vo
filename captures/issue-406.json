@@ -1,0 +1,87 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "3174|cb2b8cd1": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Dwukk",
+   "npc": "3174",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Just swinging a hammer at an anvil doesn't make you a smith. Give me that and let me teach you something before you embarrass us all.",
+   "time": 1790791798,
+   "title": null,
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "npcs": {
+  "1937": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Apothecary Renferrel",
+   "sex": 2
+  },
+  "1951": {
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Quinn Yorick",
+   "sex": 2
+  },
+  "3174": {
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Dwukk",
+   "sex": 2
+  }
+ },
+ "origin": "issue-406",
+ "quests": {
+  "91920-progress": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh. You're back?",
+   "time": 1790783480,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "91921-progress": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Quinn Yorick",
+   "npc": "1951",
+   "questID": 91921,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "You return! I was beginning to come to terms with devolving into a ghoul.",
+   "time": 1790783685,
+   "title": "Return to Quinn (Again)",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

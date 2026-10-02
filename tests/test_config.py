@@ -13,6 +13,7 @@ from tools.config import (
     Readers,
     Tts,
     Voices,
+    VoiceSources,
     VoiceTuning,
     load_config,
 )
@@ -141,6 +142,48 @@ def test_tuning_follows_the_borrowed_clip(tmp_path: Path) -> None:
     assert (
         VoiceCatalog(faster, voices_dir=tmp_path).fingerprint("human-male", "Well met.")
         == text_key("Well met.") + "+tempo=1.1"
+    )
+
+
+def test_recipe_moves_with_what_the_voice_reads_from(tmp_path: Path) -> None:
+    """[voices.approved] holds a recipe, so a change to the voice or to one it
+    borrows from shows the approval as stale, wherever the edit was made."""
+    for name in ("dwarf-male", "human-male"):
+        (tmp_path / f"{name}.wav").write_bytes(b"")
+    base = load_config().model_copy(
+        update={"tts": Tts(), "voices": Voices(fallbacks={"darkirondwarf": "dwarf"})}
+    )
+
+    def recipes(config: Config) -> dict[str, str]:
+        catalog = VoiceCatalog(config, voices_dir=tmp_path)
+        return {
+            v: catalog.recipe(v)
+            for v in ("dwarf-male", "darkirondwarf-male", "human-male")
+        }
+
+    heard = recipes(base)
+    assert heard["dwarf-male"] == heard["darkirondwarf-male"] == "clip=dwarf-male"
+    assert heard["human-male"] == "clip=human-male"
+
+    picked = base.model_copy(
+        update={
+            "voices": Voices(
+                fallbacks={"darkirondwarf": "dwarf"},
+                sources={"dwarf-male": VoiceSources(clips=[1, 2])},
+            )
+        }
+    )
+    retuned = base.model_copy(
+        update={"tts": Tts(voices={"dwarf-male": VoiceTuning(tempo=1.1)})}
+    )
+    for changed in (recipes(picked), recipes(retuned)):
+        # the borrower moves with the voice it reads from; the others stay approved
+        assert changed["dwarf-male"] != heard["dwarf-male"]
+        assert changed["darkirondwarf-male"] == changed["dwarf-male"]
+        assert changed["human-male"] == heard["human-male"]
+    # the same picks again are the same recipe, so an undo brings the approval back
+    assert recipes(picked) == recipes(
+        picked.model_copy(update={"voices": picked.voices.model_copy()})
     )
 
 

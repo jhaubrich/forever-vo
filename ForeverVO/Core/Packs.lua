@@ -150,6 +150,15 @@ function Packs:Iterate()
     return ipairs(self.list)
 end
 
+--- "<name> <version>" for each installed pack, highest priority first.
+function Packs:Versions()
+    local names = {}
+    for _, pack in self:Iterate() do
+        table.insert(names, pack.version and format("%s %s", pack.name, pack.version) or pack.name)
+    end
+    return names
+end
+
 local function SoundPath(pack, subfolder, base)
     return format("Interface\\AddOns\\%s\\Sounds\\%s\\%s.mp3", pack.folder, subfolder, base)
 end

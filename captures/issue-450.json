@@ -1,0 +1,92 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "1937": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Apothecary Renferrel",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1950": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Rane Yorick",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "1951": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Quinn Yorick",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-450",
+ "quests": {
+  "425-progress": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Rane Yorick",
+   "npc": "1950",
+   "questID": 425,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you killed Ivar the Foul?  If you won't do it for me and my brother, then do it for the Forsaken.",
+   "time": 1790837734,
+   "title": "Ivar the Foul",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "91920-progress": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh. You're back?",
+   "time": 1790836446,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "91921-progress": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Quinn Yorick",
+   "npc": "1951",
+   "questID": 91921,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "You return! I was beginning to come to terms with devolving into a ghoul.",
+   "time": 1790837451,
+   "title": "Return to Quinn (Again)",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

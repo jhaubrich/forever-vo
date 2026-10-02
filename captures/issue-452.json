@@ -1,0 +1,62 @@
+{
+ "addon": "0.1.6",
+ "gossip": {
+  "3399|48c1c064": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Zamja",
+   "npc": "3399",
+   "questID": null,
+   "race": null,
+   "sex": "m",
+   "source": "community",
+   "text": "Wulan in Shadowprey Village can sell you the \"Expert Cookbook\".  You will need that if you are to better yourself.",
+   "time": 1790845055,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "3399": {
+   "creatureType": "Humanoid",
+   "modelFileID": 1018060,
+   "name": "Zamja",
+   "sex": 3
+  },
+  "6747": {
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Innkeeper Kauth",
+   "sex": 2
+  }
+ },
+ "origin": "issue-452",
+ "quests": {
+  "1656-progress": {
+   "build": "70124",
+   "class": null,
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Innkeeper Kauth",
+   "npc": "6747",
+   "questID": 1656,
+   "race": null,
+   "sex": "f",
+   "source": "community",
+   "text": "Yes, young one? What can Kauth do for you?\n\nThe journey here from the Mesa can be a tremendous burden for some, but a welcome sight for others. Which is it for you, I wonder?",
+   "time": 1790819580,
+   "title": "A Task Unfinished",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

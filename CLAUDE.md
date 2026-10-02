@@ -293,7 +293,12 @@ per take with the resolved recipe beside it. "Keep these settings" writes
 `[tts.voices.<voice>]` (or a `[pronunciations]` entry from the sidebar, or
 for a picked line's speaker a `[voices.speakers]` pin, "Always read ... in") into
 `forever-vo.toml` through tomlkit, so the comments survive, validated by the
-models before the file is replaced. "Write to pack" regenerates one line's
+models before the file is replaced. The "Approved by ear" box beside the voice
+list writes `[voices.approved]`, a note for people that nothing generates from:
+each voice maps to the `VoiceCatalog.recipe` heard (clip read from, knobs off
+the defaults, picks digest), so a re-pick or retuning of it or of a voice it
+borrows from, made anywhere, turns its ★ into ☆ until someone listens again
+(the ★ meant "has a `[tts.voices]` row" until 2026-10-01). "Write to pack" regenerates one line's
 pack file under the *saved* configuration only and records the fingerprint
 `generate.py` would compute, so the nightly run neither redoes nor misses it;
 it is disabled until the row's recipe is the saved one. On the ROCm build
@@ -304,8 +309,18 @@ plays the working folder's file, else the first installed `ForeverVO_Data*`
 pack under `WOW_DIR`'s `Interface/AddOns` that has it, in the addon's priority
 order (`sound_packs`; `--addons` names another folder): a contributor's working
 folder is mostly empty, and before 2026-09-28 every line read "no file in the
-pack yet" for them. Stop, beside Generate, ends a run after the take in
-progress: Chatterbox's `generate()` cannot be interrupted, so the check is
+pack yet" for them. The Source clips panel's "Also offer clips from" adds
+another voice's candidates to the table (Thrall's folder for an orc archetype),
+including the sound folders `[voices] clip_folders` names
+(Gul'dan's 156 Warlords and Legion lines, which no NPC here is cast with; add one
+with `fvo-soundpaths --folders --only <folder>`, which probes just that folder),
+and a saved pick found among none of them is still listed, linked from the
+download cache or another voice's raw folder (`local_clip`), so a rebuild never
+drops a borrowed clip. A run that ends raises a desktop notification from the
+server through `notify-send` (`run_finished`): the browser's Notification API
+never showed one on the owner's KDE desktop though permission was granted, and a
+server with no `notify-send` sends none. Stop, beside Generate, ends a run after
+the take in progress: Chatterbox's `generate()` cannot be interrupted, so the check is
 between takes (`Studio.stops`, `/api/generate/<session>/stop`). One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
@@ -779,7 +794,9 @@ of the 10 s window, then the knobs.
   commented out. Every `wowdata.fetch_file` download lands once per build in
   `tools/data/casc/<build>/<fdid>.<ext>` (gitignored) and is hard-linked where it
   is asked for, so the probe, each display's candidates and the reference
-  builders share one copy.
+  builders share one copy. Their lengths are kept beside them in `seconds.json`
+  (`refclips.ClipSeconds`, since 2026-10-01), so loading a voice's candidates
+  probes each file once per build instead of on every load and restart.
 - Species voices (PR #21, 2026-09-23): a speaker with no player race resolves
   through its model file (`tools/data/species_models.json`, keyed by
   `CreatureModelData.FileDataID`, which is also what `GetModelFileID()`

@@ -82,7 +82,7 @@ pack.gossip = {
 		{ f="68-fd70707d", h="fd70707d", t="And I wish I could join you $n. Head over to Stormwind Keep. You'll find Thelman Slatefist in the King's audience chamber. He will aid you in getting to Alterac Valley.", d=10.097, v="human-male-official" },
 	},
 	[167] = {
-		{ f="167-58405dcd", h="58405dcd", t="Greetings.", d=1.133, v="human-male" },
+		{ f="167-58405dcd", h="58405dcd", t="Greetings.", d=0.760, v="dwarf-male" },
 	},
 	[197] = {
 		{ f="197-877c25a9", h="877c25a9", t="Hey, citizen!  You look like a stout one.  We guards are spread a little thin out here, and I could use your help...", d=6.666, v="human-male-official" },
@@ -122,9 +122,19 @@ pack.gossip = {
 	[261] = {
 		{ f="261-04c00651", h="04c00651", t="Hello, citizen.  You look like a woman with a purpose - do you have business with the Stormwind Army?", d=6.217, v="human-male-official" },
 	},
+	[268] = {
+		{ f="268-f1060a41", h="f1060a41", t="Greetings, $c! I have but one goal: the cataloging and recording of all knowledge related to the history of Duskwood and Darkshire. Perhaps you could help me in my endeavor?", d=10.589, v="human-male-official" },
+	},
+	[272] = {
+		{ f="272-c8dcec52", h="c8dcec52", t="Hello, hello!  Welcome to my kitchen, sir!  This is where all of the Scarlet Raven Tavern's finest delicacies are made.  Ah, just smell the wonderful aroma!", d=11.519, v="human-male-official" },
+	},
 	[277] = {
 		{ f="277-ed056522", h="ed056522", t="Best deals in all of Stormwind my friend, won't find any better. Now, what can I help you with?", d=7.019, v="human-male" },
 		{ f="277-fe52f4ea", h="fe52f4ea", t="Just browsing my wares or is there something specific I can help you find today?", d=5.750, v="human-male" },
+	},
+	[278] = {
+		{ f="278-58ba323c", h="58ba323c", t="Hello, good lady.  Have a seat, and a meal if you're hungry.  Don't fret if I look busy with my needlework - I'm listening to you...", d=7.391, v="human-female-official" },
+		{ f="278-a87776c0", h="a87776c0", t="Hello, good sir.  Have a seat, and a meal if you're hungry.  Don't fret if I look busy with my needlework - I'm listening to you...", d=7.104, v="human-female-official" },
 	},
 	[295] = {
 		{ f="295-19cbe7de", h="19cbe7de", t="When you give love tokens to townsfolk, you'll receive different gifts in return.  Some of those you'll want to keep and use, but others can be bundled together and given to your favorite hero!  Visit Kwee Q. Peddlefeet to turn them in.$B$BKwee can be found near Bolvar, Magni, or Tyrande.", d=17.172, v="human-male" },
@@ -147,6 +157,13 @@ pack.gossip = {
 	},
 	[332] = {
 		{ f="332-750fd870", h="750fd870", t="Welcome to SI:7 headquarters, $N.", d=3.587, v="human-male-official" },
+	},
+	[342] = {
+		{ f="342-b3581ed7", h="b3581ed7", t="Hail, FROSTY!  Welcome to my humble garden.  The weather has been perfect lately.  Let us hope it holds steady for a ripe harvest.", d=6.875, v="human-female-warrior" },
+		{ f="342-c3b776bb", h="c3b776bb", t="Hail, SHOOTING!  Welcome to my humble garden.  The weather has been perfect lately.  Let us hope it holds steady for a ripe harvest.", d=8.045, v="human-female-warrior" },
+	},
+	[344] = {
+		{ f="344-d18fd3a5", h="d18fd3a5", t="Who is this $c who goes before the Court of Lakshire in the Kingdom of Stormwind?  State your business within this township, $R.  The orc threat to the Kingdom is far too great to squander time in idle conversation.", d=12.734, v="human-male-official" },
 	},
 	[347] = {
 		{ f="347-799d56ff", h="799d56ff", t="The Stormpike Guard must be destroyed!  Ready for Alterac Valley $c?", d=6.520, v="orc-male-shady" },
@@ -173,12 +190,22 @@ pack.gossip = {
 		{ f="377-3df2cbb2", h="3df2cbb2", t="Do not turn your back on the Light, $c, it may be the one thing that saves you some day.", d=5.747, v="human-female-official" },
 		{ f="377-bab8ec77", h="bab8ec77", t="I trust the Light is with you, $n. Is there something that I can I help you with?", d=5.853, v="human-female-official" },
 	},
+	[381] = {
+		{ f="381-50146e32", h="50146e32", t="Well met, $C.  If you're here for business, then get yourself a brew and we'll have ourselves a talk.", d=7.509, v="human-male-standard" },
+	},
+	[382] = {
+		{ f="382-04802d87", h="04802d87", t="I don't have time to chat, citizen, but if you're willing to give us a hand against the orcs, then I'll find a use for you.", d=6.564, v="human-male-official" },
+	},
 	[384] = {
 		{ f="384-f8288f6c", h="f8288f6c", t="Years of quality breeding techniques and plenty of care allow me the privilege of showing you these horses!  Please, take your time as you consider them for your mount.  A horse is a companion for the ages, friend.  Don't sell yourself short - get your steed here today!", d=13.506, v="human-female" },
 		{ f="384-fccbd4ef", h="fccbd4ef", t="Sorry, but I am not disposed to sell horses to any individual who is not considered to be at least exalted to the Kingdom of Stormwind.  These steeds are the finest you'll find anywhere, and we certainly wouldn't want them in the hands of our enemies.$B$BNot saying you're an enemy, of course... just earn the trust of Stormwind and then we can do business.", d=17.420, v="human-female" },
 	},
+	[392] = {
+		{ f="392-9183bb21", h="9183bb21", t="Do not be alarmed, $r.  I have long since passed from this land but I intend no harm to your kind.  I have witnessed too much death in my time.  My only wish now is for peace.  Perhaps you can help my cause.", d=13.782, v="human-male" },
+	},
 	[415] = {
 		{ f="415-26f5a1f4", h="26f5a1f4", t="Hey ma'am, do you think you could give me a hand with something?  I'm really in dire straits here...", d=6.080, v="human-male" },
+		{ f="415-fca64b70", h="fca64b70", t="Hey buddy, do you think you could give me a hand with something?  I'm really in dire straits here...", d=5.898, v="human-male" },
 	},
 	[459] = {
 		{ f="459-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=17.629, v="human-female-warrior" },
@@ -214,6 +241,9 @@ pack.gossip = {
 	[543] = {
 		{ f="543-0e051c59", h="0e051c59", t="You've come for training in order to pass it on to your pets?", d=5.240, v="nightelf-female" },
 		{ f="543-4ef1d72e", h="4ef1d72e", t="Ah friend, I only help hunters and their pets.", d=5.200, v="nightelf-female" },
+	},
+	[633] = {
+		{ f="633-b8d58f51", h="b8d58f51", t="It's dark times that have come, $c... All too soon will we lose everything... When the Light will forsake all but those who truly walk under the Light.", d=10.047, v="human-female-official" },
 	},
 	[656] = {
 		{ f="656-eb6991e6", h="eb6991e6", t="There were thieves everywhere!   It was horrible.  The cave came down on us.  I think the mining company is all dead, including my brother, the Foreman.", d=10.720, v="dwarf-male-guard" },
@@ -411,6 +441,9 @@ pack.gossip = {
 		{ f="1070-8a3dd721", h="8a3dd721", t="You'll find the town of Lakeshire yonder, across the bridge. But you'll not find it a peaceful place. If you're here for adventure, lass, then mark me--you've found it!", d=8.455, v="human-male-official" },
 		{ f="1070-bd6c9aff", h="bd6c9aff", t="You'll find the town of Lakeshire yonder, across the bridge. But you'll not find it a peaceful place. If you're here for adventure, lad, then mark me--you've found it!", d=9.983, v="human-male-official" },
 	},
+	[1092] = {
+		{ f="1092-fc807fb6", h="fc807fb6", t="At ease, $R.  This is no time for formalities.  With the Alliance forces under attack, the protection of the Dwarven territories becomes even more critical.  The recent Trogg uprising poses a dreadful threat to the King's land.", d=17.600, v="dwarf-male-guard" },
+	},
 	[1103] = {
 		{ f="1103-4ac3ad23", h="4ac3ad23", t="I'm a simple man who knows a few things about tailoring, but you need more assistance than I can provide. I have heard of a Night Elf who is quite an accomplished tailor. He resides in Stormwind, in the Magic District. ", d=12.130, v="human-male-standard" },
 		{ f="1103-b31c2daa", h="b31c2daa", t="I can tell that your wardrobe is in dire need of care.", d=3.587, v="human-male-standard" },
@@ -441,6 +474,7 @@ pack.gossip = {
 		{ f="1228-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=18.166, v="gnome-male-zany" },
 		{ f="1228-544e5c2b", h="544e5c2b", t="Well met, $c.  My advice to you is this: As you travel the world, be wary of magic for it will burn the untrained.", d=8.003, v="gnome-male-zany" },
 		{ f="1228-5e1b4375", h="5e1b4375", t="Greetings.  I'm a mage trainer, and you're a mage.", d=3.345, v="gnome-male-zany" },
+		{ f="1228-c2a278c1", h="c2a278c1", t="Greetings.  I'm a mage trainer, and you're a mage.", d=2.939, v="gnome-male-zany" },
 	},
 	[1229] = {
 		{ f="1229-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=19.350, v="dwarf-male" },
@@ -489,7 +523,7 @@ pack.gossip = {
 		{ f="1252-83b3b21e", h="83b3b21e", t="Greetings and salutations to you, good $r. P'rhaps you'd like to share a drink with me, help fight off the chill of the wind? Come, I've more than enough to share.", d=11.160, v="dwarf-male-standard" },
 	},
 	[1253] = {
-		{ f="1253-a23f7e7e", h="a23f7e7e", t="Welcome, $c, to the Misty Pine. If you are weary from your travels, feel free to rest and warm yourself inside. And perhaps if you've some spare time, you could assist me in some tasks.", d=12.770, v="human-male" },
+		{ f="1253-a23f7e7e", h="a23f7e7e", t="Welcome, $c, to the Misty Pine. If you are weary from your travels, feel free to rest and warm yourself inside. And perhaps if you've some spare time, you could assist me in some tasks.", d=11.479, v="human-male-official" },
 	},
 	[1257] = {
 		{ f="1257-ed056522", h="ed056522", t="Best deals in all of Stormwind my friend, won't find any better. Now, what can I help you with?", d=6.889, v="human-male" },
@@ -605,6 +639,7 @@ pack.gossip = {
 	[1317] = {
 		{ f="1317-29729a1b", h="29729a1b", t="If you have what it takes, I will be happy to show you the way.", d=3.511, v="human-male-standard" },
 		{ f="1317-c22f48e7", h="c22f48e7", t="Your confidence is well-founded, traveler. Now your true education may begin!", d=5.948, v="human-male-standard" },
+		{ f="1317-c3ea1f53", h="c3ea1f53", t="You seem confident. Surely you wouldn't mind a test of your skills?", d=4.504, v="human-male-standard" },
 		{ f="1317-f472d1d3", h="f472d1d3", t="A true professional know his limitations, and I'm not ashamed to admit that your skills exceed mine. I want you to pay a visit to Kitta Firewind at the Tower of Azora. She is well-renowned, and with good reason.", d=14.712, v="human-male-standard" },
 		{ f="1317-fcbd9346", h="fcbd9346", t="You are not ready. Speak to Betty Quinn, she's standing by the stairs over there. Return to me when you have achieved a higher enlightenment.", d=8.883, v="human-male-standard" },
 	},
@@ -683,6 +718,9 @@ pack.gossip = {
 	[1374] = {
 		{ f="1374-61386298", h="61386298", t="Curse that Brewers' League!  They have access to all the best ingredients, while we're stuck here grubbing for grain and hops!  I really would like to give them some bitter tasting justice...", d=11.240, v="dwarf-male" },
 	},
+	[1377] = {
+		{ f="1377-900ed517", h="900ed517", t="Driving a Steam Tank isn't for everyone.  It takes an iron grip and nerves of steel...lucky I have both!  How about you?  How's your mettle?  Want to prove it to me?", d=8.920, v="dwarf-male" },
+	},
 	[1382] = {
 		{ f="1382-0c543544", h="0c543544", t="Cooking is a life long pursuit and I see we share the same passion!", d=6.080, v="orc-male-standard" },
 		{ f="1382-3b48d638", h="3b48d638", t="Dirge Quikcleave of Gadgetzan is a master of the culinary arts.  To better yourself you will need to seek him out.", d=7.000, v="orc-male-standard" },
@@ -698,7 +736,7 @@ pack.gossip = {
 	},
 	[1385] = {
 		{ f="1385-324e1b75", h="324e1b75", t="We have only a small foothold on this continent for now, but the humans can't fight us off forever. Then they'll pay for enslaving us. We'll cut their lying tongues out for their treachery.", d=13.560, v="orc-male-standard" },
-		{ f="1385-52fccf29", h="52fccf29", t="I'd train you if I could, but you're too much for me. Tell you what: go talk to the tauren Una in the northwestern shops of Thunder Bluff's central plateau. She's got some real talent.", d=12.440, v="orc-male-standard" },
+		{ f="1385-52fccf29", h="52fccf29", t="I'd train you if I could, but you're too much for me. Tell you what: go talk to the tauren Una in the northwestern shops of Thunder Bluff's central plateau. She's got some real talent.", d=13.200, v="orc-male-standard" },
 		{ f="1385-b8cb2665", h="b8cb2665", t="You've got more guts than brains, coming to me without the proper training. Go talk to somebody closer to your skill level, like the orc Kamari, who lives in the Drag of Orgrimmar.", d=13.120, v="orc-male-standard" },
 	},
 	[1386] = {
@@ -815,7 +853,7 @@ pack.gossip = {
 		{ f="1464-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.520, v="dwarf-male-standard" },
 		{ f="1464-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=32.550, v="dwarf-male-standard" },
 		{ f="1464-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.360, v="dwarf-male-standard" },
-		{ f="1464-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=31.870, v="dwarf-male-standard" },
+		{ f="1464-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=32.310, v="dwarf-male-standard" },
 		{ f="1464-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=6.680, v="dwarf-male-standard" },
 		{ f="1464-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=26.150, v="dwarf-male-standard" },
 		{ f="1464-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=9.520, v="dwarf-male-standard" },
@@ -836,6 +874,7 @@ pack.gossip = {
 	},
 	[1466] = {
 		{ f="1466-8a39834c", h="8a39834c", t="This hide isn't ready to work with yet. I wish it didn't take so long to make leather. There has to be some way to cut down on all this waiting. It can't be good for my health, you know?", d=8.612, v="gnome-female-standard" },
+		{ f="1466-9e43c86b", h="9e43c86b", t="Aww, what rotten luck! My skills aren't good enough to be of any use to you. Oh well. Talk to Fimble Finespindle over there by the loom. He's been working with leather for longer than I have.", d=9.651, v="gnome-female-standard" },
 		{ f="1466-f7f23ddc", h="f7f23ddc", t="Oh, goody, something else to do while I wait! You're a real life-saver, $N!", d=4.247, v="gnome-female-standard" },
 	},
 	[1470] = {
@@ -1383,10 +1422,13 @@ pack.gossip = {
 		{ f="1901-b59b5053", h="b59b5053", t="Yer no warrior... Why ye wouldn't even last a day under my training regimen!  $B$BA $c who thinks $ghe's : she's; a warrior.  Ha!", d=8.640, v="dwarf-male", g=true },
 	},
 	[1937] = {
-		{ f="1937-19122c56", h="19122c56", t="The Dark Lady has put the challenge forth.  Now it is up to the Royal Apothecary Society to develop a new plague.  We shall bring Arthas and his wretched army to their knees.", d=10.960, v="scourge-male-dark" },
+		{ f="1937-19122c56", h="19122c56", t="The Dark Lady has put the challenge forth.  Now it is up to the Royal Apothecary Society to develop a new plague.  We shall bring Arthas and his wretched army to their knees.", d=12.600, v="scourge-male-dark" },
 	},
 	[1938] = {
 		{ f="1938-cd4928e4", h="cd4928e4", t="The Kirin Tor did not heed my warnings! The Alliance is a sham. Arugal is a reckless fool.", d=6.240, v="scourge-male-dark" },
+	},
+	[1949] = {
+		{ f="1949-7811a62d", h="7811a62d", t="Greetings, adventurer.", d=2.119, v="human-male", s={ ["f"]=1.469 } },
 	},
 	[1950] = {
 		{ f="1950-aa9cd6e2", h="aa9cd6e2", t="My brother and I are on a vital mission, but we are holed up in this farmhouse.  The Deathstalkers need your help.", d=8.520, v="scourge-female-warrior" },
@@ -1477,9 +1519,10 @@ pack.gossip = {
 		{ f="1992-05f55f8a", h="05f55f8a", t="Only in Nature do we find purity.", d=2.760, v="dryad-female" },
 	},
 	[2055] = {
-		{ f="2055-288436fb", h="288436fb", t="The Royal Apothecary Society shall heed The Dark Lady's call to uncover the New Plague and drive Arthas and his heathen Scourge Army from the world once and for all.", d=13.400, v="scourge-male-standard" },
+		{ f="2055-288436fb", h="288436fb", t="The Royal Apothecary Society shall heed The Dark Lady's call to uncover the New Plague and drive Arthas and his heathen Scourge Army from the world once and for all.", d=17.840, v="scourge-male-standard" },
 	},
 	[2057] = {
+		{ f="2057-b0e063a7", h="b0e063a7", t="This is a dangerous line of business!  Miran just left with a delivery. He should be back in a few minutes.", d=7.240, v="dwarf-male" },
 		{ f="2057-f6158e52", h="f6158e52", t="Delivering these barrels to the excavation site is hard work, but there are so many depending on us to get the blast powder there.$B$BWe must do what we can against the Dark Irons!", d=9.720, v="dwarf-male" },
 	},
 	[2079] = {
@@ -1490,6 +1533,9 @@ pack.gossip = {
 	},
 	[2082] = {
 		{ f="2082-7bfda406", h="7bfda406", t="The flora and fauna of Shadowglen is a testament to our talents at working with nature.  It is an honor to bear witness to our grand achievement.", d=9.600, v="nightelf-male-warrior" },
+	},
+	[2086] = {
+		{ f="2086-4eb20e0f", h="4eb20e0f", t="It takes strong arms and brave hearts to keep the town of Menethil safe!", d=4.960, v="dwarf-male-guard" },
 	},
 	[2119] = {
 		{ f="2119-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=23.870, v="scourge-male-warrior" },
@@ -1546,6 +1592,9 @@ pack.gossip = {
 		{ f="2132-2626d93e", h="2626d93e", t="Here to learn about potions? I've got plenty to teach you. I might be dead, but I haven't lost my brains. Yet.", d=11.400, v="scourge-female" },
 		{ f="2132-90af25de", h="90af25de", t="I appreciate the company, but let's face it: you have more experience with potions than I do. Talk to Doctor Marsh instead if you want training. He's a Forsaken in the Apothecarium of the Undercity.", d=15.120, v="scourge-female" },
 		{ f="2132-db927cdf", h="db927cdf", t="Nice to see a friendly face. I don't get much chitchat from Apothecary Johaan unless he wants something. He's been out of the grave too long. Someday I'll be like that, I hear. Creepy. Maybe by then I won't care.", d=16.160, v="scourge-female" },
+	},
+	[2151] = {
+		{ f="2151-bdcb2ee4", h="bdcb2ee4", t="Hail, $C.  The roads of our fair forest are not entirely without peril.  Tread cautiously.", d=10.160, v="nightelf-female-priestess" },
 	},
 	[2198] = {
 		{ f="2198-dc8290dc", h="dc8290dc", t="Greetings and salutations, hero!  I have the latest news from both continents and points beyond for your consideration.", d=7.362, v="human-male-standard" },
@@ -1710,7 +1759,7 @@ pack.gossip = {
 		{ f="2352-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.136, v="human-male" },
 		{ f="2352-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=30.541, v="human-male" },
 		{ f="2352-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.363, v="human-male" },
-		{ f="2352-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.877, v="human-male" },
+		{ f="2352-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.246, v="human-male" },
 		{ f="2352-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=6.181, v="human-male" },
 		{ f="2352-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=27.892, v="human-male" },
 		{ f="2352-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.401, v="human-male" },
@@ -1765,7 +1814,7 @@ pack.gossip = {
 		{ f="2388-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.600, v="scourge-male" },
 		{ f="2388-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=35.670, v="scourge-male" },
 		{ f="2388-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.080, v="scourge-male" },
-		{ f="2388-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.070, v="scourge-male" },
+		{ f="2388-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=35.470, v="scourge-male" },
 		{ f="2388-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=6.880, v="scourge-male" },
 		{ f="2388-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=31.190, v="scourge-male" },
 		{ f="2388-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.680, v="scourge-male" },
@@ -1840,6 +1889,12 @@ pack.gossip = {
 	[2496] = {
 		{ f="2496-e386ad41", h="e386ad41", t="Welcome to Booty Bay, partner.  I hope your stay in my town is enjoyable and uneventful - emphasis on the latter.  We've got plenty of drink if you're thirsty, and plenty of bouncers if you're antsy.$B$BNow then... what can this humble servant of the Steamwheedle Cartel do for you?  Better still - what can you do for me, eh?", d=18.350, v="npc-7167" },
 	},
+	[2504] = {
+		{ f="2504-60988031", h="60988031", t="Please clean yourself before handling our tomes.", d=4.347, v="human-male-standard" },
+	},
+	[2543] = {
+		{ f="2543-41cbc7e1", h="41cbc7e1", t="Take care while in our city, $c. We are ever wary of strangers since the city was destroyed, and any untoward behavior while within this place will not be tolerated.", d=9.973, v="human-male-official" },
+	},
 	[2627] = {
 		{ f="2627-08d0d148", h="08d0d148", t="Yeah, you know a few things! If you wanna' learn more you're gonna' have to talk to Georgio Bolero in Stormwind.", d=4.400, v="goblin-male" },
 		{ f="2627-834549b8", h="834549b8", t="Not bad... for an amateur! Still, you know about as much as I do. If you wanna' learn more you're gonna' have to talk to Josef Gregorian in Undercity.", d=6.320, v="goblin-male" },
@@ -1852,7 +1907,7 @@ pack.gossip = {
 	},
 	[2704] = {
 		{ f="2704-15da2919", h="15da2919", t="Heya mon.  You come right place learn how ta wield a new weapon.", d=5.360, v="troll-male-dark" },
-		{ f="2704-f0975974", h="f0975974", t="Ansekhwa, da tauren weapon master, is on da Thunder Bluff lower rise.  He teach one and two-handed maces, staves and guns.    Archibald, da undead weapon master in da War Quarter of da Undercity, train good with crossbows, daggers, one and two-handed swords and polearms.    Sayoc, da ugly orc right here, can teach da ways of bows, daggers, fist weapons, one and two-handed axes and thrown weapons mon.", d=32.190, v="troll-male-dark" },
+		{ f="2704-f0975974", h="f0975974", t="Ansekhwa, da tauren weapon master, is on da Thunder Bluff lower rise.  He teach one and two-handed maces, staves and guns.    Archibald, da undead weapon master in da War Quarter of da Undercity, train good with crossbows, daggers, one and two-handed swords and polearms.    Sayoc, da ugly orc right here, can teach da ways of bows, daggers, fist weapons, one and two-handed axes and thrown weapons mon.", d=30.830, v="troll-male-dark" },
 	},
 	[2784] = {
 		{ f="2784-a2f26445", h="a2f26445", t="Ah, so you have. You are most welcome in Ironforge, $c.     This city is the seat of the Bronzebeard Clan. We are an ancient and proud people and our craftsmen are second to none. You'll find no finer creations of metal or stonework than dwarven-make.    We are also amongst boldest of explorers on Azeroth. If you have a taste for adventure, you will be in good company amongst our people.    Thank you for speaking with me, $N. Go now with the blessings of the Bronzebeard Clan.     I wish you and your people well.", d=39.910, v="npc-3597" },
@@ -1946,7 +2001,7 @@ pack.gossip = {
 	},
 	[2988] = {
 		{ f="2988-00c35128", h="00c35128", t="The Outrunners' duty is to ensure the safety of those who travel across the plains of Mulgore. Those that would threaten the safety of the $r homeland risk punishment at our hands.", d=11.108, v="tauren-male-warrior" },
-		{ f="2988-2e223ff7", h="2e223ff7", t="The Outrunners' duty is to ensure the safety of those who travel across the plains of Mulgore. Those that would threaten the safety of the tauren homeland risk punishment at our hands.", d=10.515, v="tauren-male-warrior" },
+		{ f="2988-2e223ff7", h="2e223ff7", t="The Outrunners' duty is to ensure the safety of those who travel across the plains of Mulgore. Those that would threaten the safety of the tauren homeland risk punishment at our hands.", d=11.386, v="tauren-male-warrior" },
 	},
 	[2993] = {
 		{ f="2993-f7a5deb4", h="f7a5deb4", t="The land has been good to our people, $c. We must be thankful for our good fortune.", d=6.040, v="tauren-male" },
@@ -1968,7 +2023,7 @@ pack.gossip = {
 		{ f="3007-501c3600", h="501c3600", t="Cairne has brought us to a land rich with possibilities for the future. We have been fortunate, and so in turn we pass on our good fortune to others. That is why I began teaching, $n.", d=16.200, v="tauren-female" },
 		{ f="3007-6f1fdfed", h="6f1fdfed", t="The needle is small, but the thread is strong, and the stitches are fine. Our pact with Thrall and the others will hold. The Horde will not be driven from these lands.", d=12.840, v="tauren-female" },
 		{ f="3007-b65785f5", h="b65785f5", t="It's been so long since I was a novice myself that I don't think I'd be the best teacher for you. Try talking to Tarn or Mak, right over there. One of them should be able to answer your questions.", d=12.640, v="tauren-female" },
-		{ f="3007-c9ecec7c", h="c9ecec7c", t="Even my talents have a limit, and you have reached it. Congratulations, $n. Your next stop should be Camp Mojache in Feralas. The tauren Hahrana Ironhide lives there; she is renowned for her skill.", d=14.240, v="tauren-female" },
+		{ f="3007-c9ecec7c", h="c9ecec7c", t="Even my talents have a limit, and you have reached it. Congratulations, $n. Your next stop should be Camp Mojache in Feralas. The tauren Hahrana Ironhide lives there; she is renowned for her skill.", d=17.000, v="tauren-female" },
 	},
 	[3008] = {
 		{ f="3008-a1a91c02", h="a1a91c02", t="Cairne himself lives here, they say. Once I have finished crafting a fitting gift, I will seek him out. Perhaps he will have words of wisdom for me.", d=10.040, v="tauren-male" },
@@ -1986,6 +2041,7 @@ pack.gossip = {
 		{ f="3011-463ccfcd", h="463ccfcd", t="Enchanting has run in our family for generations. I learned at an early age, just as my son is doing now.", d=9.840, v="tauren-male-shaman" },
 		{ f="3011-893e8e5b", h="893e8e5b", t="There is one whose knowledge exceeds my own. You are ready to seek her out. Go to Sun Rock Retreat in Stonetalon Mountains. Find Hgarth, and continue your training.", d=15.800, v="tauren-male-shaman" },
 		{ f="3011-ab001504", h="ab001504", t="Ah, very good. I am satisfied that you are a worthy student. Now, your training with me may begin...", d=8.760, v="tauren-male-shaman" },
+		{ f="3011-dab22e8f", h="dab22e8f", t="I will teach you... soon. I require a demonstration of your loyalty, first.", d=7.520, v="tauren-male-shaman" },
 	},
 	[3026] = {
 		{ f="3026-0c543544", h="0c543544", t="Cooking is a life long pursuit and I see we share the same passion!", d=5.680, v="tauren-female-shaman" },
@@ -2038,7 +2094,7 @@ pack.gossip = {
 	},
 	[3039] = {
 		{ f="3039-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=25.150, v="tauren-male-shaman" },
-		{ f="3039-43dfca45", h="43dfca45", t="Remember, all things are connected. If the beasts were gone from the land, our kind would die from a great loneliness of spirit, for whatever happens to the beasts also happens to the Tauren. Whatever befalls Azeroth befalls all those that inhabit it.   ", d=20.240, v="tauren-male-shaman" },
+		{ f="3039-43dfca45", h="43dfca45", t="Remember, all things are connected. If the beasts were gone from the land, our kind would die from a great loneliness of spirit, for whatever happens to the beasts also happens to the Tauren. Whatever befalls Azeroth befalls all those that inhabit it.   ", d=22.600, v="tauren-male-shaman" },
 		{ f="3039-4d7252e0", h="4d7252e0", t="I can not train you, young one. ", d=2.760, v="tauren-male-shaman" },
 	},
 	[3040] = {
@@ -2093,15 +2149,15 @@ pack.gossip = {
 		{ f="3049-544e5c2b", h="544e5c2b", t="Well met, $c.  My advice to you is this: As you travel the world, be wary of magic for it will burn the untrained.", d=12.360, v="scourge-male-warrior" },
 	},
 	[3050] = {
-		{ f="3050-57562eaa", h="57562eaa", t="The tauren are sons and daughters of the Earthmother, and we show respect to all her children.  Even the beasts we slay are cherished, as their bodies give nourishment and their skins provide warmth.", d=11.277, v="tauren-male-warrior" },
+		{ f="3050-57562eaa", h="57562eaa", t="The tauren are sons and daughters of the Earthmother, and we show respect to all her children.  Even the beasts we slay are cherished, as their bodies give nourishment and their skins provide warmth.", d=11.144, v="tauren-male-warrior" },
 	},
 	[3052] = {
 		{ f="3052-25d0fbd5", h="25d0fbd5", t="Come closer, young one.  In my time I could hear the flutter of a prey's beating heart, but now you must speak up if you want your words heard.", d=8.140, v="tauren-male-warrior" },
-		{ f="3052-b1b18289", h="b1b18289", t="I have run through these plains for many, many seasons.  And I have hunted great beasts.  And I had never been bested... until I faced Ghost Howl.$B$BLong ago, the massive wolf was an ally to the tauren and fought bravely against the Burning Legion.  But he was wounded savagely by a demon, and the tear in his flesh never healed.  Eventually... it drove Ghost Howl mad.$B$BNow he roams the plains in agony, seeking an end to his pain.  To my shame, when we fought I lacked the strength to slay him...", d=31.787, v="tauren-male-warrior" },
+		{ f="3052-b1b18289", h="b1b18289", t="I have run through these plains for many, many seasons.  And I have hunted great beasts.  And I had never been bested... until I faced Ghost Howl.$B$BLong ago, the massive wolf was an ally to the tauren and fought bravely against the Burning Legion.  But he was wounded savagely by a demon, and the tear in his flesh never healed.  Eventually... it drove Ghost Howl mad.$B$BNow he roams the plains in agony, seeking an end to his pain.  To my shame, when we fought I lacked the strength to slay him...", d=31.851, v="tauren-male-warrior" },
 		{ f="3052-b2e9278b", h="b2e9278b", t="You killed Ghost Howl.  You're a stud!", d=3.349, v="tauren-male-warrior" },
 	},
 	[3057] = {
-		{ f="3057-114886ab", h="114886ab", t="Muln Earthfury has told me much of the Windshapers and I am proud to open the lands--and skies--of Mulgore to your people.    The Tauren and the Skyborne are both children of this land. Kalimdor.     I hope that your people are able to find what they are looking for here and that you are able to save your homeland. In the meantime, it is my hope that you are able to learn more of the land that your ancestors used to call home.    Please make yourself at home here in Thunder Bluff, and may the Earth Mother bless your journey.", d=36.100, v="npc-4307" },
+		{ f="3057-114886ab", h="114886ab", t="Muln Earthfury has told me much of the Windshapers and I am proud to open the lands--and skies--of Mulgore to your people.    The Tauren and the $R are both children of this land. Kalimdor.     I hope that your people are able to find what they are looking for here and that you are able to save your homeland. In the meantime, it is my hope that you are able to learn more of the land that your ancestors used to call home.    Please make yourself at home here in Thunder Bluff, and may the Earth Mother bless your journey.", d=34.580, v="npc-4307" },
 		{ f="3057-690a7170", h="690a7170", t="Greetings young one, and welcome to Thunder Bluff.  You'll find safe refuge from the burdens of the world here.  All denizens of the Horde are welcome here.  The spirits of the present and past come alive here in this sacred place, my friend.  Honor them, and in doing so honor yourself.", d=20.240, v="npc-4307" },
 		{ f="3057-b13061db", h="b13061db", t="Ah, a young warrior to be no doubt!  I take it you are participating in Children's Week, yes?  It warms these weary bones to hear that you are setting the example by which others will be sure to follow.$B$BI'd be delighted to oblige you and the young lad.  Hrmm... what advice should I give to him?  Listen to the spirits, yes... maybe something about eating all of his vegetables too...", d=28.110, v="npc-4307" },
 	},
@@ -2139,7 +2195,8 @@ pack.gossip = {
 	[3065] = {
 		{ f="3065-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=21.218, v="tauren-male-warrior" },
 		{ f="3065-2d23ed1c", h="2d23ed1c", t="I do not have the knowledge you seek.", d=2.933, v="tauren-male-warrior" },
-		{ f="3065-47ec2e50", h="47ec2e50", t="Tauren have a passion for hunting; it is something that runs deep with our kind.", d=4.672, v="tauren-male-warrior" },
+		{ f="3065-47ec2e50", h="47ec2e50", t="Tauren have a passion for hunting; it is something that runs deep with our kind.", d=4.568, v="tauren-male-warrior" },
+		{ f="3065-a8bfc941", h="a8bfc941", t="Tauren have a passion for hunting; it is something that runs deep with our kind.", d=4.974, v="tauren-male-warrior" },
 	},
 	[3066] = {
 		{ f="3066-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=25.070, v="tauren-male-shaman" },
@@ -2154,71 +2211,71 @@ pack.gossip = {
 	},
 	[3069] = {
 		{ f="3069-03b30234", h="03b30234", t="We live and die, and the land remains, eternal, unmoved by our passage. Thus, land cannot belong to us, $n. Instead, we belong to it. Therefore we protect the land, for without it we cannot hope to survive.", d=18.360, v="tauren-male" },
-		{ f="3069-25740e0c", h="25740e0c", t="You have outgrown any teachings I could offer. Go with the blessing of the Earth Mother. Seek out the tauren Tarn in the northwestern shops of Thunder Bluff's central plateau. Be guided by his wisdom.", d=13.800, v="tauren-male" },
+		{ f="3069-25740e0c", h="25740e0c", t="You have outgrown any teachings I could offer. Go with the blessing of the Earth Mother. Seek out the tauren Tarn in the northwestern shops of Thunder Bluff's central plateau. Be guided by his wisdom.", d=13.200, v="tauren-male" },
 		{ f="3069-93940fbb", h="93940fbb", t="Meat, skin, bones... a good hunter lets nothing go to waste. Every scrap of leather can be salvaged, perhaps to reinforce an ally's armor. Thus, each of us is strong alone, but together we become invincible.", d=14.240, v="tauren-male" },
 	},
 	[3084] = {
-		{ f="3084-020a7c25", h="020a7c25", t="Innkeeper Pala will help you rest your body and spirit.  You can find her in the building just south of the bank on the lower rise.", d=7.690, v="tauren-male-warrior" },
-		{ f="3084-087a1e7e", h="087a1e7e", t="Then head over to Bena's Alchemy on the middle rise and talk to Bena herself.  She will be able to help you master the art of potion brewing.", d=8.350, v="tauren-male-warrior" },
-		{ f="3084-13ee0873", h="13ee0873", t="Metal, as with all things, should be used in balance with nature.  Karn Stonehoof has a smithy setup near the pond on the lower rise.  Seek out his wisdom.", d=10.896, v="tauren-male-warrior" },
-		{ f="3084-1c761d66", h="1c761d66", t="A fellowship of kindred spirits can be a powerful force.  Krumn will help you to achieve this.  You will find him at the Thunder Bluff Civic Information center on the lower rise next to the lifts.", d=10.680, v="tauren-male-warrior" },
-		{ f="3084-2d9bad33", h="2d9bad33", t="And to which battleground do you wish to journey?", d=2.901, v="tauren-male-warrior" },
-		{ f="3084-2dd00134", h="2dd00134", t="Look for Innkeeper Pala in the building just south of the Thunder Bluff Bank on the lower rise.", d=5.226, v="tauren-male-warrior" },
-		{ f="3084-32fdbb40", h="32fdbb40", t="Father Cobb will be the one you want to talk to. He can be found under the Spirit Rise in the Pools of Vision cave.", d=7.202, v="tauren-male-warrior" },
-		{ f="3084-3f6c5bac", h="3f6c5bac", t="Komin Winterhoof at Holistic Herbalism is the one you want to talk to then.  He can be found on the middle rise.", d=6.335, v="tauren-male-warrior" },
-		{ f="3084-4006c1de", h="4006c1de", t="Mooranta can help you learn skinning.  She can be found just outside the Thunder Bluff Armorers on the middle rise.", d=6.717, v="tauren-male-warrior" },
-		{ f="3084-4a2c96fb", h="4a2c96fb", t="Krumn is the bull you are looking for. He can be found on the lower rise at Thunder Bluff Civic Information.", d=6.310, v="tauren-male-warrior" },
-		{ f="3084-4d981406", h="4d981406", t="Go see Una at Thunder Bluff Armorers then.  It can be found on the middle rise.", d=5.085, v="tauren-male-warrior" },
-		{ f="3084-4f620ede", h="4f620ede", t="Very sad to think what has befallen those poor undead souls.  You can find Archmage Shymm reflecting near the Pools of Vision under the Spirit Rise.", d=8.560, v="tauren-male-warrior" },
-		{ f="3084-4f8156cd", h="4f8156cd", t="Clothing the tribe is as important a job as any other.  You should look for Tepa inside Thunder Bluff Armorers.  She has a natural way with the needle.", d=9.820, v="tauren-male-warrior" },
-		{ f="3084-5092cb45", h="5092cb45", t="Tepa is renown for her clothwork.  She can be found at Thunder Bluff Armorers on the middle rise.", d=5.818, v="tauren-male-warrior" },
-		{ f="3084-5206b4c5", h="5206b4c5", t="Which trainer do you seek?", d=1.845, v="tauren-male-warrior" },
-		{ f="3084-538d6d78", h="538d6d78", t="The Hall of Spirits is where our shamans call home.  You can find it on the Spirit Rise.  May your ancestors watch over you.", d=7.591, v="tauren-male-warrior" },
-		{ f="3084-54a52d11", h="54a52d11", t="It is found on the lowest section of Thunder Bluff.  Search near the bank.  It is not far from there.", d=6.135, v="tauren-male-warrior" },
-		{ f="3084-54dbec7c", h="54dbec7c", t="You wish to aid The Defilers in their fight against The League of Arathor in Arathi Basin?  Very well, you should ask Martin Lindsey for his assistance then.  Look for him in the Pools of Vision.", d=11.522, v="tauren-male-warrior" },
-		{ f="3084-5d6f0b28", h="5d6f0b28", t="What are you looking for?", d=1.648, v="tauren-male-warrior" },
-		{ f="3084-6611cf06", h="6611cf06", t="Every scrap used makes us less wasteful and brings us closer to the Earth Mother.  Mooranta can show you the way.  Seek her just outside the Thunder Bluff Armorers on the middle rise.", d=11.239, v="tauren-male-warrior" },
-		{ f="3084-6b3c7794", h="6b3c7794", t="The profession of Enchanting displays the cycle of destruction and creation that is at the heart of nature.  Teg at the Dawnstrider Enchanters on the middle rise will show you how.", d=10.362, v="tauren-male-warrior" },
-		{ f="3084-71ecabc9", h="71ecabc9", t="Kah Mistrunner at Mountaintop Bait & Tackle on the high rise will show you the way to find inner peace and serenity while fishing for your next meal.", d=7.761, v="tauren-male-warrior" },
-		{ f="3084-72077a95", h="72077a95", t="You may shed yourself of your worldly possessions at the Thunder Bluff Bank on the lower rise.", d=4.867, v="tauren-male-warrior" },
-		{ f="3084-73a86360", h="73a86360", t="Brek Stonehoof can be found at Stonehoof Geology on the lower rise and can teach you the proper way to harvest precious ores and gems.", d=8.258, v="tauren-male-warrior" },
-		{ f="3084-769ecbc7", h="769ecbc7", t="Looking to learn how to work an anvil and hammer, eh?  Karn Stonehoof can teach you how.  He has a smithy set up on the lower rise by the pond.", d=7.966, v="tauren-male-warrior" },
-		{ f="3084-76b58d7f", h="76b58d7f", t="The Earth Mother calls and you answer.  You will find the Hall of Spirits on the Spirit Rise.", d=5.601, v="tauren-male-warrior" },
-		{ f="3084-7d8f4b59", h="7d8f4b59", t="The concern that you show for the welfare of your animal companions is commendable.  Bulrug, on the lower rise, can help you with that.  Seek him out between the bank and the inn.", d=11.027, v="tauren-male-warrior" },
-		{ f="3084-808ec025", h="808ec025", t="You can find a mailbox just outside the Thunder Bluff Bank on the lower rise.", d=4.534, v="tauren-male-warrior" },
-		{ f="3084-80d64ce9", h="80d64ce9", t="The Wind Rider Roost is atop the totem stairway in the center of town.", d=4.150, v="tauren-male-warrior" },
-		{ f="3084-83bac852", h="83bac852", t="Greetings honored one.  Turak Runetotem and the other druids have been expecting you at the Hall of Elders on Elder Rise.", d=7.557, v="tauren-male-warrior" },
-		{ f="3084-842d3793", h="842d3793", t="Then it is to Taim Ragetotem that you must speak. Seek him out on the Hunter Rise.", d=5.916, v="tauren-male-warrior" },
-		{ f="3084-86e3802f", h="86e3802f", t="Strong of body and spirit.  There can be no stronger combination!  Find your destiny with Sark Ragetotem in the Hunter's Hall.", d=10.331, v="tauren-male-warrior" },
-		{ f="3084-88b3adee", h="88b3adee", t="There is a symmetry in the idea of the hide of your enemy providing you with protection.  To further your leatherworking skills look for Una inside the Thunder Bluff Armorers on the middle rise.", d=10.445, v="tauren-male-warrior" },
-		{ f="3084-8acb3829", h="8acb3829", t="It is the assistance of Bulrug that you need.  You will find him outside on the lower rise standing between the inn and the Thunder Bluff Bank.", d=8.038, v="tauren-male-warrior" },
-		{ f="3084-8c257f1a", h="8c257f1a", t="Aspiring to join our ranks one day?  Sark Ragetotem can help you on your way.  He's in the Hunter's Hall.", d=6.788, v="tauren-male-warrior" },
-		{ f="3084-8ecf23b9", h="8ecf23b9", t="None are as skilled in the use of weapons as Ansekhwa.  It is said that he is guided by the spirits of the finest warriors of our honored ancestors.  Seek him out on the lower rise and he will teach you what you want to know.", d=13.125, v="tauren-male-warrior" },
-		{ f="3084-9f5428d1", h="9f5428d1", t="Any friend of the animals is a friend of mine.  The Hunter's Hall is what you seek.  It sits atop the Hunter Rise.", d=6.783, v="tauren-male-warrior" },
-		{ f="3084-a194443a", h="a194443a", t="The Thunder Bluff Bank can be found on the lower rise.", d=3.354, v="tauren-male-warrior" },
-		{ f="3084-a56de79f", h="a56de79f", t="First Aid is always a nice skill to have.  Many a time during battle has it saved my hide.  Visit Spiritual Healing on the Spirit Rise.  Pand Stonebinder can teach you all you need to know to save your hide as well.", d=12.393, v="tauren-male-warrior" },
-		{ f="3084-a66cdbb7", h="a66cdbb7", t="Your interests would be best served by Sir Alodan. He is with the other members of the Undercity near the Pools of Vision.", d=7.487, v="tauren-male-warrior" },
-		{ f="3084-a93675fd", h="a93675fd", t="Ah, you seek the wisdom of Ansekhwa.  Look for him on the lower rise at Thunder Bluff Weapons.", d=7.074, v="tauren-male-warrior" },
-		{ f="3084-aa7b3716", h="aa7b3716", t="Such needless strife, but if the elves of Silverwing Hold will not speak to us in peace, then what alternative do they leave us? Seek out the aid of Kergul Bloodaxe on the Hunter Rise to get to Warsong Gulch.", d=12.597, v="tauren-male-warrior" },
-		{ f="3084-b2444ac7", h="b2444ac7", t="Don't blame you for taking up fishing.  Mulgore has some the best fishing spots in Southern Kalimdor and Mountaintop Bait & Tackle on the high rise has all of the gear you'll need to take advantage of it.  Tell Kah Mistrunner that I sent ya!", d=12.178, v="tauren-male-warrior" },
-		{ f="3084-b2b0d8c6", h="b2b0d8c6", t="Kergul Bloodaxe on the Hunter Rise stands ready to help you get to Warsong Gulch.", d=4.982, v="tauren-male-warrior" },
-		{ f="3084-b75feb84", h="b75feb84", t="Despite their tragedy the Undead have come all this way to aid us.  I only hope that we can be as helpful to them.  Seek out Father Cobb near the Pools of Vision under the Spirit Rise.", d=12.566, v="tauren-male-warrior" },
-		{ f="3084-bb30e786", h="bb30e786", t="Ah, to soar with the great birds of the sky.  Seek out Tal at the top of the Winder Rider Roost.  He will steer you toward where you're going.", d=9.021, v="tauren-male-warrior" },
-		{ f="3084-bb54e3ff", h="bb54e3ff", t="You may seek out Martin Lindsey inside the Pools of Vision, underneath the Spirit Rise.  He will assist you on your way to Arathi Basin.", d=7.130, v="tauren-male-warrior" },
-		{ f="3084-c099e991", h="c099e991", t="Check out Dawnstrider Enchanters on the middle rise then.  Teg will be more than happy to help you in whatever way he can.", d=7.308, v="tauren-male-warrior" },
-		{ f="3084-c52e88b9", h="c52e88b9", t="Seek out Turak Runetotem in the Hall of Elders on the Elder Rise.", d=4.281, v="tauren-male-warrior" },
-		{ f="3084-ce02508e", h="ce02508e", t="You honor the spirits of the animals you must slay by not letting them go to waste.  Aska Mistrunner will show you how.  She has a kitchen on the high rise.", d=8.278, v="tauren-male-warrior" },
-		{ f="3084-d541c897", h="d541c897", t="There is one that I know of here in Thunder Bluff that can aid you in your journey to Alterac Valley. On the Hunter Rise look for Taim Ragetotem. May you find what you are looking for $n.", d=12.396, v="tauren-male-warrior" },
-		{ f="3084-d8fc870d", h="d8fc870d", t="I believe I noticed a new shipment of mail being delivered not too long ago.  You'll find the mailbox just outside the Thunder Bluff Bank on the lower rise.", d=9.370, v="tauren-male-warrior" },
-		{ f="3084-da869047", h="da869047", t="Nature provides all that we need.  Speak to Komin Winterhoof at Holistic Herbalism on the middle rise.", d=6.610, v="tauren-male-warrior" },
-		{ f="3084-e3661ab0", h="e3661ab0", t="Ahh, you will need to make your way over to the Hunter's Hall then. Several great hunters like Holt Thunderhorn can be found there on the Hunter Rise.", d=7.632, v="tauren-male-warrior" },
-		{ f="3084-ea04b75c", h="ea04b75c", t="The Earth Mother holds many secrets and Brek Stonehoof can help you to discover some of them.  You will find him on the lower rise at Stonehoof Geology.", d=9.077, v="tauren-male-warrior" },
-		{ f="3084-ee61f1a6", h="ee61f1a6", t="The auction house can be found on the central spire of Thunder Bluff.  Search near the bottom of the Windrider's Tower. May your ancestors watch over you.", d=8.848, v="tauren-male-warrior" },
-		{ f="3084-ef767f20", h="ef767f20", t="Which profession?", d=1.427, v="tauren-male-warrior" },
-		{ f="3084-f6007f7a", h="f6007f7a", t="A follower of the arcane are you?  Hmph!  Very well then... you can find them around the Pools of Vision underneath the Spirit Rise.", d=7.383, v="tauren-male-warrior" },
-		{ f="3084-f7079359", h="f7079359", t="There is no finer cook in Thunder Bluff than Aska Mistrunner.  Mmmmm, I can smell what she is cooking from here.  Head over to her kitchen located on the high rise.  Drat... now I am hungry.", d=12.105, v="tauren-male-warrior" },
-		{ f="3084-f99c1e68", h="f99c1e68", t="The herbs found in nature can be a powerful ally when combined with respect.  You will want to seek out Bena at her alchemy shop on the middle rise to further your training.", d=9.184, v="tauren-male-warrior" },
-		{ f="3084-fcb23436", h="fcb23436", t="Life is a struggle, and the saying that which does not kill you makes you stronger is not always true.  Sometimes wounds act slowly, which is why we have bandages.  Pand Stonebinder of the Spirit Rise can teach you the art of First Aid.", d=14.757, v="tauren-male-warrior" },
+		{ f="3084-020a7c25", h="020a7c25", t="Innkeeper Pala will help you rest your body and spirit.  You can find her in the building just south of the bank on the lower rise.", d=7.690, v="tauren-male-warrior", s={ ["f"]=10.080 } },
+		{ f="3084-087a1e7e", h="087a1e7e", t="Then head over to Bena's Alchemy on the middle rise and talk to Bena herself.  She will be able to help you master the art of potion brewing.", d=8.350, v="tauren-male-warrior", s={ ["f"]=9.320 } },
+		{ f="3084-13ee0873", h="13ee0873", t="Metal, as with all things, should be used in balance with nature.  Karn Stonehoof has a smithy setup near the pond on the lower rise.  Seek out his wisdom.", d=10.896, v="tauren-male-warrior", s={ ["f"]=11.480 } },
+		{ f="3084-1c761d66", h="1c761d66", t="A fellowship of kindred spirits can be a powerful force.  Krumn will help you to achieve this.  You will find him at the Thunder Bluff Civic Information center on the lower rise next to the lifts.", d=10.680, v="tauren-male-warrior", s={ ["f"]=13.360 } },
+		{ f="3084-2d9bad33", h="2d9bad33", t="And to which battleground do you wish to journey?", d=2.901, v="tauren-male-warrior", s={ ["f"]=3.160 } },
+		{ f="3084-2dd00134", h="2dd00134", t="Look for Innkeeper Pala in the building just south of the Thunder Bluff Bank on the lower rise.", d=5.226, v="tauren-male-warrior", s={ ["f"]=5.960 } },
+		{ f="3084-32fdbb40", h="32fdbb40", t="Father Cobb will be the one you want to talk to. He can be found under the Spirit Rise in the Pools of Vision cave.", d=7.202, v="tauren-male-warrior", s={ ["f"]=6.800 } },
+		{ f="3084-3f6c5bac", h="3f6c5bac", t="Komin Winterhoof at Holistic Herbalism is the one you want to talk to then.  He can be found on the middle rise.", d=6.335, v="tauren-male-warrior", s={ ["f"]=7.600 } },
+		{ f="3084-4006c1de", h="4006c1de", t="Mooranta can help you learn skinning.  She can be found just outside the Thunder Bluff Armorers on the middle rise.", d=6.717, v="tauren-male-warrior", s={ ["f"]=8.240 } },
+		{ f="3084-4a2c96fb", h="4a2c96fb", t="Krumn is the bull you are looking for. He can be found on the lower rise at Thunder Bluff Civic Information.", d=6.310, v="tauren-male-warrior", s={ ["f"]=9.080 } },
+		{ f="3084-4d981406", h="4d981406", t="Go see Una at Thunder Bluff Armorers then.  It can be found on the middle rise.", d=5.085, v="tauren-male-warrior", s={ ["f"]=6.840 } },
+		{ f="3084-4f620ede", h="4f620ede", t="Very sad to think what has befallen those poor undead souls.  You can find Archmage Shymm reflecting near the Pools of Vision under the Spirit Rise.", d=8.560, v="tauren-male-warrior", s={ ["f"]=10.600 } },
+		{ f="3084-4f8156cd", h="4f8156cd", t="Clothing the tribe is as important a job as any other.  You should look for Tepa inside Thunder Bluff Armorers.  She has a natural way with the needle.", d=9.820, v="tauren-male-warrior", s={ ["f"]=10.440 } },
+		{ f="3084-5092cb45", h="5092cb45", t="Tepa is renown for her clothwork.  She can be found at Thunder Bluff Armorers on the middle rise.", d=5.818, v="tauren-male-warrior", s={ ["f"]=6.320 } },
+		{ f="3084-5206b4c5", h="5206b4c5", t="Which trainer do you seek?", d=1.845, v="tauren-male-warrior", s={ ["f"]=2.160 } },
+		{ f="3084-538d6d78", h="538d6d78", t="The Hall of Spirits is where our shamans call home.  You can find it on the Spirit Rise.  May your ancestors watch over you.", d=7.591, v="tauren-male-warrior", s={ ["f"]=9.160 } },
+		{ f="3084-54a52d11", h="54a52d11", t="It is found on the lowest section of Thunder Bluff.  Search near the bank.  It is not far from there.", d=6.135, v="tauren-male-warrior", s={ ["f"]=8.440 } },
+		{ f="3084-54dbec7c", h="54dbec7c", t="You wish to aid The Defilers in their fight against The League of Arathor in Arathi Basin?  Very well, you should ask Martin Lindsey for his assistance then.  Look for him in the Pools of Vision.", d=11.522, v="tauren-male-warrior", s={ ["f"]=12.680 } },
+		{ f="3084-5d6f0b28", h="5d6f0b28", t="What are you looking for?", d=1.648, v="tauren-male-warrior", s={ ["f"]=2.200 } },
+		{ f="3084-6611cf06", h="6611cf06", t="Every scrap used makes us less wasteful and brings us closer to the Earth Mother.  Mooranta can show you the way.  Seek her just outside the Thunder Bluff Armorers on the middle rise.", d=11.239, v="tauren-male-warrior", s={ ["f"]=12.760 } },
+		{ f="3084-6b3c7794", h="6b3c7794", t="The profession of Enchanting displays the cycle of destruction and creation that is at the heart of nature.  Teg at the Dawnstrider Enchanters on the middle rise will show you how.", d=10.362, v="tauren-male-warrior", s={ ["f"]=12.720 } },
+		{ f="3084-71ecabc9", h="71ecabc9", t="Kah Mistrunner at Mountaintop Bait & Tackle on the high rise will show you the way to find inner peace and serenity while fishing for your next meal.", d=7.761, v="tauren-male-warrior", s={ ["f"]=10.640 } },
+		{ f="3084-72077a95", h="72077a95", t="You may shed yourself of your worldly possessions at the Thunder Bluff Bank on the lower rise.", d=4.867, v="tauren-male-warrior", s={ ["f"]=6.800 } },
+		{ f="3084-73a86360", h="73a86360", t="Brek Stonehoof can be found at Stonehoof Geology on the lower rise and can teach you the proper way to harvest precious ores and gems.", d=8.258, v="tauren-male-warrior", s={ ["f"]=10.960 } },
+		{ f="3084-769ecbc7", h="769ecbc7", t="Looking to learn how to work an anvil and hammer, eh?  Karn Stonehoof can teach you how.  He has a smithy set up on the lower rise by the pond.", d=7.966, v="tauren-male-warrior", s={ ["f"]=9.120 } },
+		{ f="3084-76b58d7f", h="76b58d7f", t="The Earth Mother calls and you answer.  You will find the Hall of Spirits on the Spirit Rise.", d=5.601, v="tauren-male-warrior", s={ ["f"]=6.680 } },
+		{ f="3084-7d8f4b59", h="7d8f4b59", t="The concern that you show for the welfare of your animal companions is commendable.  Bulrug, on the lower rise, can help you with that.  Seek him out between the bank and the inn.", d=11.027, v="tauren-male-warrior", s={ ["f"]=12.000 } },
+		{ f="3084-808ec025", h="808ec025", t="You can find a mailbox just outside the Thunder Bluff Bank on the lower rise.", d=4.534, v="tauren-male-warrior", s={ ["f"]=6.360 } },
+		{ f="3084-80d64ce9", h="80d64ce9", t="The Wind Rider Roost is atop the totem stairway in the center of town.", d=4.150, v="tauren-male-warrior", s={ ["f"]=5.320 } },
+		{ f="3084-83bac852", h="83bac852", t="Greetings honored one.  Turak Runetotem and the other druids have been expecting you at the Hall of Elders on Elder Rise.", d=7.557, v="tauren-male-warrior", s={ ["f"]=9.880 } },
+		{ f="3084-842d3793", h="842d3793", t="Then it is to Taim Ragetotem that you must speak. Seek him out on the Hunter Rise.", d=5.916, v="tauren-male-warrior", s={ ["f"]=5.760 } },
+		{ f="3084-86e3802f", h="86e3802f", t="Strong of body and spirit.  There can be no stronger combination!  Find your destiny with Sark Ragetotem in the Hunter's Hall.", d=10.331, v="tauren-male-warrior", s={ ["f"]=9.720 } },
+		{ f="3084-88b3adee", h="88b3adee", t="There is a symmetry in the idea of the hide of your enemy providing you with protection.  To further your leatherworking skills look for Una inside the Thunder Bluff Armorers on the middle rise.", d=10.445, v="tauren-male-warrior", s={ ["f"]=14.160 } },
+		{ f="3084-8acb3829", h="8acb3829", t="It is the assistance of Bulrug that you need.  You will find him outside on the lower rise standing between the inn and the Thunder Bluff Bank.", d=8.038, v="tauren-male-warrior", s={ ["f"]=9.320 } },
+		{ f="3084-8c257f1a", h="8c257f1a", t="Aspiring to join our ranks one day?  Sark Ragetotem can help you on your way.  He's in the Hunter's Hall.", d=6.788, v="tauren-male-warrior", s={ ["f"]=7.440 } },
+		{ f="3084-8ecf23b9", h="8ecf23b9", t="None are as skilled in the use of weapons as Ansekhwa.  It is said that he is guided by the spirits of the finest warriors of our honored ancestors.  Seek him out on the lower rise and he will teach you what you want to know.", d=13.125, v="tauren-male-warrior", s={ ["f"]=15.800 } },
+		{ f="3084-9f5428d1", h="9f5428d1", t="Any friend of the animals is a friend of mine.  The Hunter's Hall is what you seek.  It sits atop the Hunter Rise.", d=6.783, v="tauren-male-warrior", s={ ["f"]=7.560 } },
+		{ f="3084-a194443a", h="a194443a", t="The Thunder Bluff Bank can be found on the lower rise.", d=3.354, v="tauren-male-warrior", s={ ["f"]=3.920 } },
+		{ f="3084-a56de79f", h="a56de79f", t="First Aid is always a nice skill to have.  Many a time during battle has it saved my hide.  Visit Spiritual Healing on the Spirit Rise.  Pand Stonebinder can teach you all you need to know to save your hide as well.", d=12.393, v="tauren-male-warrior", s={ ["f"]=15.920 } },
+		{ f="3084-a66cdbb7", h="a66cdbb7", t="Your interests would be best served by Sir Alodan. He is with the other members of the Undercity near the Pools of Vision.", d=7.487, v="tauren-male-warrior", s={ ["f"]=7.920 } },
+		{ f="3084-a93675fd", h="a93675fd", t="Ah, you seek the wisdom of Ansekhwa.  Look for him on the lower rise at Thunder Bluff Weapons.", d=7.074, v="tauren-male-warrior", s={ ["f"]=7.520 } },
+		{ f="3084-aa7b3716", h="aa7b3716", t="Such needless strife, but if the elves of Silverwing Hold will not speak to us in peace, then what alternative do they leave us? Seek out the aid of Kergul Bloodaxe on the Hunter Rise to get to Warsong Gulch.", d=12.597, v="tauren-male-warrior", s={ ["f"]=14.200 } },
+		{ f="3084-b2444ac7", h="b2444ac7", t="Don't blame you for taking up fishing.  Mulgore has some the best fishing spots in Southern Kalimdor and Mountaintop Bait & Tackle on the high rise has all of the gear you'll need to take advantage of it.  Tell Kah Mistrunner that I sent ya!", d=12.178, v="tauren-male-warrior", s={ ["f"]=15.160 } },
+		{ f="3084-b2b0d8c6", h="b2b0d8c6", t="Kergul Bloodaxe on the Hunter Rise stands ready to help you get to Warsong Gulch.", d=4.982, v="tauren-male-warrior", s={ ["f"]=6.920 } },
+		{ f="3084-b75feb84", h="b75feb84", t="Despite their tragedy the Undead have come all this way to aid us.  I only hope that we can be as helpful to them.  Seek out Father Cobb near the Pools of Vision under the Spirit Rise.", d=12.566, v="tauren-male-warrior", s={ ["f"]=13.920 } },
+		{ f="3084-bb30e786", h="bb30e786", t="Ah, to soar with the great birds of the sky.  Seek out Tal at the top of the Winder Rider Roost.  He will steer you toward where you're going.", d=9.021, v="tauren-male-warrior", s={ ["f"]=9.600 } },
+		{ f="3084-bb54e3ff", h="bb54e3ff", t="You may seek out Martin Lindsey inside the Pools of Vision, underneath the Spirit Rise.  He will assist you on your way to Arathi Basin.", d=7.130, v="tauren-male-warrior", s={ ["f"]=9.520 } },
+		{ f="3084-c099e991", h="c099e991", t="Check out Dawnstrider Enchanters on the middle rise then.  Teg will be more than happy to help you in whatever way he can.", d=7.308, v="tauren-male-warrior", s={ ["f"]=8.000 } },
+		{ f="3084-c52e88b9", h="c52e88b9", t="Seek out Turak Runetotem in the Hall of Elders on the Elder Rise.", d=4.281, v="tauren-male-warrior", s={ ["f"]=5.000 } },
+		{ f="3084-ce02508e", h="ce02508e", t="You honor the spirits of the animals you must slay by not letting them go to waste.  Aska Mistrunner will show you how.  She has a kitchen on the high rise.", d=8.278, v="tauren-male-warrior", s={ ["f"]=11.080 } },
+		{ f="3084-d541c897", h="d541c897", t="There is one that I know of here in Thunder Bluff that can aid you in your journey to Alterac Valley. On the Hunter Rise look for Taim Ragetotem. May you find what you are looking for $n.", d=12.396, v="tauren-male-warrior", s={ ["f"]=16.480 } },
+		{ f="3084-d8fc870d", h="d8fc870d", t="I believe I noticed a new shipment of mail being delivered not too long ago.  You'll find the mailbox just outside the Thunder Bluff Bank on the lower rise.", d=9.370, v="tauren-male-warrior", s={ ["f"]=9.800 } },
+		{ f="3084-da869047", h="da869047", t="Nature provides all that we need.  Speak to Komin Winterhoof at Holistic Herbalism on the middle rise.", d=6.610, v="tauren-male-warrior", s={ ["f"]=7.760 } },
+		{ f="3084-e3661ab0", h="e3661ab0", t="Ahh, you will need to make your way over to the Hunter's Hall then. Several great hunters like Holt Thunderhorn can be found there on the Hunter Rise.", d=7.632, v="tauren-male-warrior", s={ ["f"]=10.160 } },
+		{ f="3084-ea04b75c", h="ea04b75c", t="The Earth Mother holds many secrets and Brek Stonehoof can help you to discover some of them.  You will find him on the lower rise at Stonehoof Geology.", d=9.077, v="tauren-male-warrior", s={ ["f"]=10.800 } },
+		{ f="3084-ee61f1a6", h="ee61f1a6", t="The auction house can be found on the central spire of Thunder Bluff.  Search near the bottom of the Windrider's Tower. May your ancestors watch over you.", d=8.848, v="tauren-male-warrior", s={ ["f"]=11.320 } },
+		{ f="3084-ef767f20", h="ef767f20", t="Which profession?", d=1.427, v="tauren-male-warrior", s={ ["f"]=1.680 } },
+		{ f="3084-f6007f7a", h="f6007f7a", t="A follower of the arcane are you?  Hmph!  Very well then... you can find them around the Pools of Vision underneath the Spirit Rise.", d=7.383, v="tauren-male-warrior", s={ ["f"]=10.120 } },
+		{ f="3084-f7079359", h="f7079359", t="There is no finer cook in Thunder Bluff than Aska Mistrunner.  Mmmmm, I can smell what she is cooking from here.  Head over to her kitchen located on the high rise.  Drat... now I am hungry.", d=12.105, v="tauren-male-warrior", s={ ["f"]=15.080 } },
+		{ f="3084-f99c1e68", h="f99c1e68", t="The herbs found in nature can be a powerful ally when combined with respect.  You will want to seek out Bena at her alchemy shop on the middle rise to further your training.", d=9.184, v="tauren-male-warrior", s={ ["f"]=10.320 } },
+		{ f="3084-fcb23436", h="fcb23436", t="Life is a struggle, and the saying that which does not kill you makes you stronger is not always true.  Sometimes wounds act slowly, which is why we have bandages.  Pand Stonebinder of the Spirit Rise can teach you the art of First Aid.", d=14.757, v="tauren-male-warrior", s={ ["f"]=16.360 } },
 	},
 	[3087] = {
 		{ f="3087-0c543544", h="0c543544", t="Cooking is a life long pursuit and I see we share the same passion!", d=4.543, v="human-female-standard" },
@@ -2227,6 +2284,7 @@ pack.gossip = {
 		{ f="3087-b48f927f", h="b48f927f", t="I can teach you how to cook!", d=1.430, v="human-female-standard" },
 	},
 	[3136] = {
+		{ f="3136-2e231d45", h="2e231d45", t="Yeah, I've heard through the grapevine that I might be seeing you sooner or later. But I don't just take on anyone, I need to make sure you have what it takes first. You willing to take my little test and find out?", d=9.783, v="human-female-warrior" },
 		{ f="3136-a108af4b", h="a108af4b", t="Ever since the shadows claimed Duskwood I haven't been able to sleep. I am kept awake by the ghostly sounds of screaming on the breeze. It sounds almost like lambs screaming, and they won't stop.", d=9.130, v="human-female-warrior" },
 		{ f="3136-e91b638d", h="e91b638d", t="Don't come out of the shadows like that. Next time give a girl some warning. ", d=3.421, v="human-female-warrior" },
 	},
@@ -2304,7 +2362,9 @@ pack.gossip = {
 		{ f="3173-996eca9b", h="996eca9b", t="May the spirits be with you.", d=2.160, v="orc-male-standard" },
 	},
 	[3174] = {
+		{ f="3174-363380c0", h="363380c0", t="Not bad. Go talk with Snarl, he just moved to Orgrimmar to study under Saru. Look for him in the $C district near Saru's smithy. Oh and he'll test you, so you better be as ready as you think you are.", d=15.560, v="orc-male-shady" },
 		{ f="3174-7befd912", h="7befd912", t="I hear one comment about waterfowl, and you will be eating through a tube.", d=5.640, v="orc-male-shady" },
+		{ f="3174-cb2b8cd1", h="cb2b8cd1", t="Just swinging a hammer at an anvil doesn't make you a smith. Give me that and let me teach you something before you embarrass us all.", d=8.320, v="orc-male-shady" },
 	},
 	[3179] = {
 		{ f="3179-279d82d3", h="279d82d3", t="Your skill exceeds mine, though  I've heard that Old Man Heming in Booty Bay has copies of \"The Bass and You\".  That is sure to help you increase your skill.", d=10.174, v="human-male-standard" },
@@ -2778,6 +2838,9 @@ pack.gossip = {
 		{ f="3290-4bc86941", h="4bc86941", t="I would be delighted to aid you in the commencement of your pursuit! Let me grab my spinner and we'll get started...", d=5.547, v="gnome-male-standard" },
 		{ f="3290-eb2466e3", h="eb2466e3", t="Your current aptitude exceeds my instructional capabilities. You should enquire further with my fellow Gnome Trixie Quickswitch in Ironforge!", d=7.368, v="gnome-male-standard" },
 	},
+	[3293] = {
+		{ f="3293-5bfb096f", h="5bfb096f", t="I'm happy Gazlowe gave me the opportunity to be here and all, but this place is more dangerous than I thought it'd be. It's also really hot. And dusty. And it smells kinda weird. Ah, well! Hopefully it will be good for business.", d=14.360, v="goblin-male-gruff" },
+	},
 	[3296] = {
 		{ f="3296-00c2bccf", h="00c2bccf", t="We must eliminate the elves and their cowardly Alliance from Warsong Gulch. Go to the Hall of the Brave in the Valley of Honor and speak with Brakgul Deathbringer if you have what it takes to aid the Horde.", d=13.691, v="orc-male-guard", s={ ["f"]=11.000 } },
 		{ f="3296-0796d95f", h="0796d95f", t="Xon'cha will stable your extra pets.  Find him in the Valley of Honor at the stables between the arena and the Hunter's Hall.  Now begone!", d=9.105, v="orc-male-guard", s={ ["f"]=8.040 } },
@@ -2798,6 +2861,7 @@ pack.gossip = {
 		{ f="3296-4b7e1b08", h="4b7e1b08", t="You'll want to learn from Zamja.  Head to Borstan's Firepit on the upper level of The Drag by taking the stairs on the left as you enter from the Valley of Strength.", d=11.091, v="orc-male-guard", s={ ["f"]=9.600 } },
 		{ f="3296-5206b4c5", h="5206b4c5", t="Which trainer do you seek?", d=2.020, v="orc-male-guard", s={ ["f"]=1.920 } },
 		{ f="3296-532dc16b", h="532dc16b", t="Look for it high up on the west side of the Valley of Strength. They'll only let you in if you're an officer! Talk to Sergeant Ba'sha outside otherwise.", d=10.780, v="orc-male-guard", s={ ["f"]=7.880 } },
+		{ f="3296-5516f117", h="5516f117", t="In the cleft of shadow Kor'ghan is waiting with shears sharper than a guards sword.", d=6.067, v="orc-male-guard", s={ ["f"]=6.240 } },
 		{ f="3296-5d6f0b28", h="5d6f0b28", t="What are you looking for?", d=2.368, v="orc-male-guard", s={ ["f"]=1.080 } },
 		{ f="3296-652d280f", h="652d280f", t="You seek Kardris Dreamseeker.  She and the other shaman are in the entrance room to Thrall's Fortress in the Valley of Wisdom.", d=7.581, v="orc-male-guard", s={ ["f"]=8.240 } },
 		{ f="3296-665fea83", h="665fea83", t="Herbs... you need to speak to Jandi at her arboretum in The Drag.  There are some wooden steps behind Asoran's Market in the Valley of Wisdom.  Follow them to the upper level of The Drag and you'll find her.", d=10.392, v="orc-male-guard", s={ ["f"]=10.840 } },
@@ -2857,6 +2921,7 @@ pack.gossip = {
 	[3306] = {
 		{ f="3306-0e051c59", h="0e051c59", t="You've come for training in order to pass it on to your pets?", d=4.240, v="nightelf-male-standard" },
 		{ f="3306-4ef1d72e", h="4ef1d72e", t="Ah friend, I only help hunters and their pets.", d=3.880, v="nightelf-male-standard" },
+		{ f="3306-d56cf43b", h="d56cf43b", t="You can't teach an old dog new tricks.  At least that's what someone once told me.  Lucky for you, I've discovered it to be untrue.  However, pets do tend to get resistant to the technique, and I need more food each time to keep them happy.  What that means is that you'll owe me more money the more times I untrain the same pet.  Now then, would you like me to start untraining?", d=22.830, v="nightelf-male-standard" },
 	},
 	[3309] = {
 		{ f="3309-2f8d506f", h="2f8d506f", t="Besides the Grunts outside, my brothers and I fought at the battle of Hyjal. Any who seek to steal from the bank must face us first.", d=11.400, v="orc-male" },
@@ -2881,7 +2946,7 @@ pack.gossip = {
 		{ f="3320-ae78a458", h="ae78a458", t="Would you rather trust your goods with a goblin?", d=3.800, v="orc-male" },
 	},
 	[3324] = {
-		{ f="3324-031480cd", h="031480cd", t="You know enough to be dangerous, but you still look like you need training to me $n.", d=7.125, v="orc-male-guard" },
+		{ f="3324-031480cd", h="031480cd", t="You know enough to be dangerous, but you still look like you need training to me $N.", d=7.125, v="orc-male-guard" },
 		{ f="3324-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=24.536, v="orc-male-guard" },
 		{ f="3324-d70ae6af", h="d70ae6af", t="Your will is not strong enough to manipulate the forces we control $c.", d=6.022, v="orc-male-guard" },
 	},
@@ -2962,6 +3027,7 @@ pack.gossip = {
 	},
 	[3355] = {
 		{ f="3355-8b1e2f29", h="8b1e2f29", t="What is it you seek at my forge? Is it training? Do you perhaps seek the secrets of steel? The mysteries of the forge? Speak up Grunt!", d=9.335, v="orc-male-guard" },
+		{ f="3355-e97bc5d7", h="e97bc5d7", t="Welcome to my forge, Blacksmith. Let me share with you a little secret. No one, no one in the world can you trust. Not men, not women, not beasts ... this you can trust, Steel.", d=15.286, v="orc-male-guard" },
 	},
 	[3362] = {
 		{ f="3362-a6f9b46c", h="a6f9b46c", t="Zug zug, brave $c!  I have the finest bred wolf mounts for you to peruse.  You'll not find another animal with the level of endurance and survival instincts that the wolf has anywhere!  Please, inspect them for yourself.", d=19.280, v="orc-male" },
@@ -2976,7 +3042,7 @@ pack.gossip = {
 	[3365] = {
 		{ f="3365-0443423e", h="0443423e", t="The twists and turns of Orgrimmar are designed to thwart invaders. Can you imagine how quickly one of those puny gnomes would get lost in here? Ha! If it was lucky, I'd track it down and keep it as a pet.", d=13.676, v="orc-male-guard" },
 		{ f="3365-0b0697d2", h="0b0697d2", t="Am I busy? What's that supposed to mean? Do you think I just stand here all day, twiddling my thumbs? If you're here to buy something, talk to Handor.", d=10.244, v="orc-male-guard" },
-		{ f="3365-40134f65", h="40134f65", t="You won't learn anything new from me; you know too much already. If you want more training, talk to the tauren Una in the northwestern shops of Thunder Bluff's central plateau. Send her my regards, eh?", d=11.423, v="orc-male-guard" },
+		{ f="3365-40134f65", h="40134f65", t="You won't learn anything new from me; you know too much already. If you want more training, talk to the tauren Una in the northwestern shops of Thunder Bluff's central plateau. Send her my regards, eh?", d=11.354, v="orc-male-guard" },
 		{ f="3365-b90e9588", h="b90e9588", t="You can't study my techniques until you've learned the basics. Speak with Kamari if you are interested in training.", d=7.285, v="orc-male-guard" },
 	},
 	[3368] = {
@@ -3003,6 +3069,7 @@ pack.gossip = {
 		{ f="3391-8f749700", h="8f749700", t="Thrall paid me and my boys well for helping out with the construction of Orgrimmar, so I decided to set up a port here. We do most of our business through Booty Bay and Baron Revilgaz.", d=9.920, v="npc-7052" },
 	},
 	[3399] = {
+		{ f="3399-48c1c064", h="48c1c064", t="Wulan in Shadowprey Village can sell you the \"Expert Cookbook\".  You will need that if you are to better yourself.", d=7.800, v="troll-female" },
 		{ f="3399-da278450", h="da278450", t="Can Zamja help you, $r?", d=2.440, v="troll-female" },
 	},
 	[3401] = {
@@ -3051,6 +3118,7 @@ pack.gossip = {
 	},
 	[3430] = {
 		{ f="3430-0e16a4d2", h="0e16a4d2", t="You! $R! Come here. <snort>  Time is short, and my end <snort> is near. Mangletooth shall win; you will see. <snort>  My capture can still aid <snort> my people. The Razormane tribe is more powerful than the Bristlebacks!  The Horde looks to find out who leads the raids on their people. You <snort> shall aid Mangletooth in return for the information only I know. Mangletooth can help you! <snort> But you must help Mangletooth.", d=28.725, v="human-male", P={ { d=2.272 }, { d=0.873, n=true }, { d=3.208 }, { d=0.847, n=true }, { d=3.822 }, { d=0.649, n=true }, { d=2.261 }, { d=0.587, n=true }, { d=8.917 }, { d=0.994, n=true }, { d=6.437 }, { d=0.737, n=true }, { d=2.584 } }, nP={ [1]={ [2]=1.480, [4]=2.280, [6]=0.880, [8]=0.840, [10]=1.720, [12]=1.240 } } },
+		{ f="3430-71e13f0e", h="71e13f0e", t="My hatred is strong <snort>, but the time is right to tell you a tale, $r.  Long ago a battle took place between gods. Agamaggan, our great boar god, fell to the earth after being defeated in the War of the Ancients, his blood raining down and his bones torn asunder. <snort>  Great thorns reached up out of the earth where his blood touched the ground, and his skull adorns one of the caverns to the south.", d=27.699, v="human-male", P={ { d=2.154 }, { d=0.768, n=true }, { d=15.539 }, { d=0.958, n=true }, { d=7.529 } }, nP={ [1]={ [2]=0.840, [4]=1.960 } } },
 		{ f="3430-d6fdd5ef", h="d6fdd5ef", t="You have <snort> aided Mangletooth more than I would have dreamed, $r.$B$BThank you.$B$BAs long as I remain a captive here, you may bring me blood shards from the Bristleback quilboar and I will bless you with Agamaggan's power.", d=12.992, v="human-male", P={ { d=0.947 }, { d=0.992, n=true }, { d=13.902 } }, nP={ [1]={ [2]=1.040 } } },
 	},
 	[3432] = {
@@ -3058,7 +3126,8 @@ pack.gossip = {
 		{ f="3432-f6d45601", h="f6d45601", t="I thank you, $n. Your dedication to my plea gives rest to my lost wife's spirit, and for that I could never repay you enough.$B$BI cannot say that my hatred will ever cease for the quilboar, but it is satiated for now.$B$BNow I must begin to rebuild my life.", d=16.129, v="orc-male-guard" },
 	},
 	[3433] = {
-		{ f="3433-4ec00f6f", h="4ec00f6f", t="The Warchief has instructed me to study all kinds of weapons and armor. He has sent me here to the hub of both the tauren and orc cultures in the Barrens to meet as many travelers as possible, and to learn about the cultures of the Barrens.$B$BHe feels there's something to be learned from even the most pathetic of cultures... like the quilboar or centaur.", d=24.110, v="orc-male-standard" },
+		{ f="3433-4ec00f6f", h="4ec00f6f", t="The Warchief has instructed me to study all kinds of weapons and armor. He has sent me here to the hub of both the tauren and orc cultures in the Barrens to meet as many travelers as possible, and to learn about the cultures of the Barrens.$B$BHe feels there's something to be learned from even the most pathetic of cultures... like the quilboar or centaur.", d=22.870, v="orc-male-standard" },
+		{ f="3433-ac5dfa0b", h="ac5dfa0b", t="The Warchief has instructed me to study all kinds of weapons and armor. He has sent me here to the hub of both the tauren and orc cultures in the Barrens to meet as many travelers as possible, and to learn about the cultures of the Barrens.  He feels there's something to be learned from even the most pathetic of cultures... like the quilboar or centaur.", d=25.350, v="orc-male-standard" },
 	},
 	[3442] = {
 		{ f="3442-6812c5a7", h="6812c5a7", t="Interesting, interesting... I know of a druid that lives atop the hill above the Wailing Caverns, $N. She might be able to tell you more about this shard you have found.  Now, I must get back to work!", d=10.680, v="goblin-male-gruff" },
@@ -3083,6 +3152,7 @@ pack.gossip = {
 	},
 	[3484] = {
 		{ f="3484-6f0d2d99", h="6f0d2d99", t="Hey mon, what can I be doin' for you?", d=3.680, v="troll-male-dark" },
+		{ f="3484-e50c189b", h="e50c189b", t="At dis point you know as much as I do, mon. Maybe you go see Magar in Orgrimmar. He not be da happiest tailor around, but he help you anyway.", d=13.960, v="troll-male-dark" },
 	},
 	[3489] = {
 		{ f="3489-68d65f37", h="68d65f37", t="Have a look at my meats, friend.  You won't want to go out into the Barrens without a good stock of provisions.", d=8.040, v="orc-male" },
@@ -3110,6 +3180,9 @@ pack.gossip = {
 		{ f="3523-8c8d5804", h="8c8d5804", t="Pleased to make you acquaintance. May I help you?", d=5.640, v="scourge-male-standard" },
 		{ f="3523-a670d938", h="a670d938", t="So... you want to be a tailor? Very well, we'll see if you have what it takes.", d=9.400, v="scourge-male-standard" },
 		{ f="3523-c39c33e0", h="c39c33e0", t="I am knowledgable, but I am not an expert. You know who you should talk to? Rhiannon! She's not far. Ask around for her in Undercity", d=12.040, v="scourge-male-standard" },
+	},
+	[3537] = {
+		{ f="3537-f0d40663", h="f0d40663", t="What do you want?", d=1.120, v="goblin-male" },
 	},
 	[3539] = {
 		{ f="3539-8259246a", h="8259246a", t="My blades don't glisten, glitter, or gleam, and they'll sing no epic songs about my creations when I'm gone.     One thing you can be sure of though is that my weapons will cut down all the knights in Stormwind before losing their honed edge.", d=18.240, v="orc-male" },
@@ -3267,11 +3340,17 @@ pack.gossip = {
 	[3649] = {
 		{ f="3649-17d06d6c", h="17d06d6c", t="Dark forces encroach upon our borders, ancient taints resurface, and new evils emerge to topple the delicate balance of the land. In times of such darkness, we all must be vigilant.", d=13.240, v="nightelf-male-official" },
 	},
+	[3663] = {
+		{ f="3663-076bd90c", h="076bd90c", t="Good day, $C.", d=1.381, v="human-male-official" },
+	},
 	[3666] = {
 		{ f="3666-baf00edb", h="baf00edb", t="Hmm... I can plug this wire in here and that will power the fizzletan gear, but then the hydrophlange will need an alternate power source... Maybe I can... Oh, hello! Hey, want to help me try a new invention?", d=11.553, v="gnome-male-standard" },
 	},
 	[3678] = {
 		{ f="3678-0c2d241d", h="0c2d241d", t="Naralex sleeps again!$b$bLong ago, Naralex journeyed to this cavern with the honorable goal of entering the Emerald Dream and regrowing the Barrens into a lush forest. His focus waned and his thoughts became tainted by serpentine visions.$b$bNow, reptilian beasts seep from his dreams to the land. He must be awoken from the nightmare or he will be forever lost, and a great evil unleashed.$b$bOnly after his corrupted servants, the Fanglords, have been slain can I perform the awakening ritual.  ", d=39.630, v="tauren-male-shaman" },
+	},
+	[3682] = {
+		{ f="3682-960c6ca2", h="960c6ca2", t="Are you in need of a weapon, traveler? You'll not find a finer blade anywhere, I assure you.", d=6.880, v="orc-male" },
 	},
 	[3685] = {
 		{ f="3685-3bad330d", h="3bad330d", t="Greetings, $c. I am happy Anshe has guided you to me today. I would be proud to sell you one of our finest kodos once you have trained with Kar.    The kodo is a noble beast, but is prone to it's own behaviors that make it different than most steeds. Once you learn from Kar you will have no issues traversing the world with one at your side.", d=22.390, v="tauren-male" },
@@ -3284,7 +3363,7 @@ pack.gossip = {
 	},
 	[3690] = {
 		{ f="3690-98522534", h="98522534", t="I can teach you the finer points of Kodo Riding, provided you have enough gold to cover the lesson!", d=5.644, v="tauren-male-warrior" },
-		{ f="3690-9d6e9cec", h="9d6e9cec", t="You need to be exalted with the tauren of Thunder Bluff before I will teach you a riding skill, $c.", d=6.653, v="tauren-male-warrior" },
+		{ f="3690-9d6e9cec", h="9d6e9cec", t="You need to be exalted with the tauren of Thunder Bluff before I will teach you a riding skill, $c.", d=7.175, v="tauren-male-warrior" },
 	},
 	[3691] = {
 		{ f="3691-253755d9", h="253755d9", t="Yes, I expected that you would be back. I sent Korra out earlier and she came across Dartol's Rod, abandoned in the forest.$B$BWe worked so hard to recover it, $n. Please take care to see that you do not handle it so carelessly in the future.", d=17.680, v="nightelf-female-sentinel" },
@@ -3309,9 +3388,9 @@ pack.gossip = {
 		{ f="3702-5ae56d71", h="5ae56d71", t="Hello $r, it is a pleasure to make your acquaintance.  ", d=5.000, v="nightelf-female" },
 	},
 	[3703] = {
-		{ f="3703-5e0cfa89", h="5e0cfa89", t="I cannot aid you with further lessons: your skills have surpassed mine. Go and see the tauren Una in the northwestern shops of Thunder Bluff's central plateau. She offers more advanced training.", d=13.480, v="tauren-male" },
+		{ f="3703-5e0cfa89", h="5e0cfa89", t="I cannot aid you with further lessons: your skills have surpassed mine. Go and see the tauren Una in the northwestern shops of Thunder Bluff's central plateau. She offers more advanced training.", d=12.120, v="tauren-male" },
 		{ f="3703-61b74186", h="61b74186", t="The strongest hides come from those kodo that have laid themselves to rest in this wasteland.", d=6.280, v="tauren-male" },
-		{ f="3703-b494792c", h="b494792c", t="I do not offer apprentice training. Look for the tauren Waldor in the Wailing Caverns, here in the Barrens. He can assist you with whatever you need.", d=9.560, v="tauren-male" },
+		{ f="3703-b494792c", h="b494792c", t="I do not offer apprentice training. Look for the tauren Waldor in the Wailing Caverns, here in the Barrens. He can assist you with whatever you need.", d=10.160, v="tauren-male" },
 		{ f="3703-c3a4816f", h="c3a4816f", t="Have you come for further training? Shake the dust of the road from your garments, then, and let us get to work.", d=6.320, v="tauren-male" },
 	},
 	[3704] = {
@@ -3383,7 +3462,8 @@ pack.gossip = {
 		{ f="3934-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.280, v="tauren-male" },
 		{ f="3934-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=31.710, v="tauren-male" },
 		{ f="3934-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.840, v="tauren-male" },
-		{ f="3934-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.670, v="tauren-male" },
+		{ f="3934-886683cb", h="886683cb", t="The old kingdom of Lordaeron is perilous. We urge caution for anyone who dares to venture into the now decaying lands of Tirisfal Glades. If you must, find the Undercity and the upper courtyards are what you seek.", d=15.200, v="tauren-male" },
+		{ f="3934-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.910, v="tauren-male" },
 		{ f="3934-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=6.760, v="tauren-male" },
 		{ f="3934-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=28.190, v="tauren-male" },
 		{ f="3934-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.520, v="tauren-male" },
@@ -3396,15 +3476,20 @@ pack.gossip = {
 		{ f="3934-ca5fde90", h="ca5fde90", t="Maraudon is located in the middle of the western coast of Desolace, in the Valley of Spears.", d=6.680, v="tauren-male" },
 		{ f="3934-d352a290", h="d352a290", t="Once the greatest gold production center in the human lands, the Dead Mines are now inhabited by the Defias Brotherhood, who have turned the dark tunnels into their private sanctum. It is rumored that the thieves have conscripted the clever goblins to help them build something terrible at the bottom of the mines - but what that may be is still uncertain. Rumor has it that the way into the Deadmines lies through the quiet, unassuming village of Moonbrook. ", d=29.230, v="tauren-male" },
 		{ f="3934-e013de07", h="e013de07", t="As the wind on the plains, you are always welcome here.", d=4.520, v="tauren-male" },
+		{ f="3934-e0b9e88a", h="e0b9e88a", t="Our ancient lands in the north east of the Eastern Kingdom. Named after Lordain himself, it was once a proud and powerful kingdom. Its history is rich and serves as many lessons to upstart nobles and kings. One of its defining moments was assisting in the foundation of the Alliance that we know today.    Unfortunately its history is also dark, and its current inhabitants defile its lands day by day. There is still much of significance in the ruins that now rest above the Undercity but it is folly to attempt that journey and expect to return still among the living.", d=38.900, v="tauren-male" },
 		{ f="3934-e99614f5", h="e99614f5", t="The ruins of Zul'Farrak are located in the northwestern corner of the Tanaris Desert.", d=6.000, v="tauren-male" },
 		{ f="3934-f106f818", h="f106f818", t="Built twelve thousand years ago by a covert sect of night elf sorcerers, the ancient city of Eldre'Thalas was used to protect Queen Azshara's most prized arcane secrets. Though it was ravaged by the Great Sundering of the world, much of the wondrous city still stands as the imposing Dire Maul. The ruins' three distinct districts have been overrun by all manner of creatures - especially the spectral highborne, foul satyr and brutish ogres.  ", d=29.830, v="tauren-male" },
 		{ f="3934-f2218c4a", h="f2218c4a", t="Blackrock Mountain lies between Searing Gorge in the north and Burning Steppes in the south.", d=6.240, v="tauren-male" },
 		{ f="3934-f88f28f5", h="f88f28f5", t="Ragefire Chasm can be found beneath the Shadow Cleft in the center of Orgrimmar.", d=5.680, v="tauren-male" },
 		{ f="3934-f9fa0d11", h="f9fa0d11", t="When you give love tokens to townsfolk, you'll receive different gifts in return.  Some of those you'll want to keep and use, but others can be bundled together and given to your favorite hero!  Visit Kwee Q. Peddlefeet to turn them in.$B$BKwee can be found near Cairne, Sylvanas and Thrall.", d=19.160, v="tauren-male" },
 	},
+	[3955] = {
+		{ f="3955-58405dcd", h="58405dcd", t="Greetings.", d=2.280, v="nightelf-female" },
+	},
 	[3963] = {
 		{ f="3963-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=24.190, v="nightelf-male-warrior" },
 		{ f="3963-3a9ead82", h="3a9ead82", t="I train hunters in the ways and traditions of our ancestors.", d=4.040, v="nightelf-male-warrior" },
+		{ f="3963-c8a70fb5", h="c8a70fb5", t="What can I do for you my child?", d=2.560, v="nightelf-male-warrior" },
 		{ f="3963-f9b860f0", h="f9b860f0", t="I cannot train a $c such as yourself.", d=5.080, v="nightelf-male-warrior" },
 	},
 	[3964] = {
@@ -3814,13 +3899,15 @@ pack.gossip = {
 	[4596] = {
 		{ f="4596-49a65401", h="49a65401", t="Want to be a smith? Want to forge blades to gut your foe? Hammers to crush his skull? Aye I can help, and gladly too if there is blood to be shed from it.", d=12.600, v="scourge-male-dark" },
 		{ f="4596-60f0c131", h="60f0c131", t="You waste my time, go talk with my student Basil.", d=3.080, v="scourge-male-dark" },
+		{ f="4596-b22b0c37", h="b22b0c37", t="How is the edge of your steel? Good enough to cut through the belly of your enemy? Let me show you some things to make it even sharper.", d=8.800, v="scourge-male-dark" },
 	},
 	[4598] = {
-		{ f="4598-58405dcd", h="58405dcd", t="Greetings.", d=0.920, v="scourge-male" },
+		{ f="4598-58405dcd", h="58405dcd", t="Greetings.", d=1.211, v="human-male" },
 	},
 	[4605] = {
 		{ f="4605-1690954e", h="1690954e", t="I hope to one day forge weapons and armor from the bones of my enemies.", d=7.440, v="scourge-male-standard" },
 		{ f="4605-3a5f002e", h="3a5f002e", t="You are not trying to kill the anvil with your hammer, you are trying to create a weapon to kill your foes with. Let me show you what you are doing wrong.", d=13.560, v="scourge-male-standard" },
+		{ f="4605-e9a5758c", h="e9a5758c", t="You have learned much, more than I can teach. Go to James Van Brunt, he will teach you what I cannot.", d=8.400, v="scourge-male-standard" },
 	},
 	[4606] = {
 		{ f="4606-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=27.670, v="banshee-female" },
@@ -3909,7 +3996,7 @@ pack.gossip = {
 	[4773] = {
 		{ f="4773-0450da3d", h="0450da3d", t="I can teach you the finer points of Skeletal Horse Riding, provided you have enough gold to cover the lesson!", d=9.280, v="scourge-female" },
 		{ f="4773-b1016a65", h="b1016a65", t="You need to be exalted with the Forsaken of the Undercity before I will teach you a riding skill, $c.", d=9.640, v="scourge-female" },
-		{ f="4773-da441b39", h="da441b39", t="I am unable to teach a Tauren to ride a Skeletal Mount.  I am sorry but there is nothing I can do for you.", d=10.960, v="scourge-female" },
+		{ f="4773-da441b39", h="da441b39", t="I am unable to teach a Tauren to ride a Skeletal Mount.  I am sorry but there is nothing I can do for you.", d=10.160, v="scourge-female" },
 	},
 	[4885] = {
 		{ f="4885-f8288f6c", h="f8288f6c", t="Years of quality breeding techniques and plenty of care allow me the privilege of showing you these horses!  Please, take your time as you consider them for your mount.  A horse is a companion for the ages, friend.  Don't sell yourself short - get your steed here today!", d=17.322, v="human-male" },
@@ -3987,7 +4074,7 @@ pack.gossip = {
 		{ f="5111-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.800, v="dwarf-male" },
 		{ f="5111-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=30.710, v="dwarf-male" },
 		{ f="5111-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.200, v="dwarf-male" },
-		{ f="5111-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.070, v="dwarf-male" },
+		{ f="5111-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=31.950, v="dwarf-male" },
 		{ f="5111-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.520, v="dwarf-male" },
 		{ f="5111-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=27.350, v="dwarf-male" },
 		{ f="5111-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=9.320, v="dwarf-male" },
@@ -4104,6 +4191,7 @@ pack.gossip = {
 	[5157] = {
 		{ f="5157-299c1bec", h="299c1bec", t="Who are you? What do you want from me?", d=1.981, v="gnome-male-standard" },
 		{ f="5157-2d217d8f", h="2d217d8f", t="What do I look like, the Grand Poobah of enchanters? Your skills require the guidance of an Artisan! Go find Kitta Firewind at the Tower of Azora.", d=7.977, v="gnome-male-standard" },
+		{ f="5157-7805515d", h="7805515d", t="Great, let's get started... ha! Fooled you! Surely you didn't think it would be that simple. You'll need to prove your mettle just like everyone else!", d=5.883, v="gnome-male-standard" },
 		{ f="5157-dfaa46dd", h="dfaa46dd", t="You're joking, right? I believe you're looking for the OTHER short fellow, Thonys Pillarstone. He's downstairs. Now skedaddle!", d=5.864, v="gnome-male-standard" },
 		{ f="5157-ea76fa75", h="ea76fa75", t="Okay, well... don't get cocky! Since you have demonstrated  your competence though, we may now begin!", d=5.365, v="gnome-male-standard" },
 	},
@@ -4191,6 +4279,7 @@ pack.gossip = {
 		{ f="5480-c3d2f0f0", h="c3d2f0f0", t="Stormwind is the pillar of the human race, maintained through strength of will and the edge of a sturdy blade.", d=5.897, v="human-female-warrior" },
 	},
 	[5482] = {
+		{ f="5482-52392408", h="52392408", t="Seek out Shandrina in Silverwind Refuge.  She can sell you the \"Expert Cookbook\".", d=6.196, v="human-male" },
 		{ f="5482-8cd6b7fd", h="8cd6b7fd", t="I don't get too many cooks in here looking for training, but I guess I could teach you something if you're ready.", d=6.185, v="human-male" },
 		{ f="5482-aebd25b1", h="aebd25b1", t="Do I look like I have the time or energy to coddle every tourist that wanders through my door? Tell me what you need, and make it quick.", d=8.577, v="human-male" },
 	},
@@ -4270,6 +4359,7 @@ pack.gossip = {
 	},
 	[5504] = {
 		{ f="5504-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=20.270, v="nightelf-male-standard" },
+		{ f="5504-8fca8484", h="8fca8484", t="If you desire, in addition to training, I have it within my power to erase the knowledge of your talents from your mind.  Be warned that every time you undergo this procedure the more difficult it is to perform, and therefore the more expensive it becomes.", d=15.560, v="nightelf-male-standard" },
 		{ f="5504-cf843c85", h="cf843c85", t="Even within cold, stone walls such as the ones that shelter this town, one may find tranquility and peace.  In fact, you may find them everywhere you are... simply look inside yourself for such balance.", d=14.000, v="nightelf-male-standard" },
 		{ f="5504-e9881eb9", h="e9881eb9", t="Welcome, my $g brother : sister;.  If you are here to train, then I would be delighted to train you.$B$BThere will be a time soon where the call of the Emerald Dream will take hold in you.  You will hibernate for many years and walk amongst the purest of forms.  It is there and then that your ultimate training will take place.", d=19.630, v="nightelf-male-standard", g=true },
 	},
@@ -4324,6 +4414,7 @@ pack.gossip = {
 	[5518] = {
 		{ f="5518-637ac408", h="637ac408", t="Well, you're just zooming right along! I can't teach you anything you don't already know, but Springspindle Fizzlegear sure can! You can find Springspindle in Ironforge. Good luck!", d=8.240, v="gnome-male-zany" },
 		{ f="5518-6f4cdd8b", h="6f4cdd8b", t="Let's see... fourteen plus seven, carry the two... oh, yes?", d=3.333, v="gnome-male-zany" },
+		{ f="5518-741f51fb", h="741f51fb", t="Quid pro quo! I'll teach you what I know, but first I want you to perform a small task...", d=4.631, v="gnome-male-zany" },
 		{ f="5518-e81039e4", h="e81039e4", t="You certainly did not disappoint! Now that we've gotten that out of the way, your instruction may begin!", d=4.978, v="gnome-male-zany" },
 		{ f="5518-ed403611", h="ed403611", t="You can learn from me in time... but not yet! Why don't you start out by talking to Sprite Jumpsprocket to my right here. You can check in with me after you've gotten your feet wet!", d=8.080, v="gnome-male-zany" },
 	},
@@ -4440,6 +4531,7 @@ pack.gossip = {
 		{ f="5624-29be722f", h="29be722f", t="You look for Josef Gregorian.  He in Magic Quarter on inner ring side of green canal.", d=7.160, v="npc-10699" },
 		{ f="5624-2a268971", h="2a268971", t="Central ring.  You go!", d=4.520, v="npc-10699" },
 		{ f="5624-2f643e03", h="2f643e03", t="Innkeeper Norman on upper ring of Trade Quarter is one to talk to.", d=3.640, v="npc-10699" },
+		{ f="5624-305b5392", h="305b5392", t="Which trainer you seek?", d=2.240, v="npc-10699" },
 		{ f="5624-340a8815", h="340a8815", t="Michael Garrett on upper ring in Trade Quarter.", d=3.920, v="npc-10699" },
 		{ f="5624-3825601c", h="3825601c", t="Mailbox in middle of city, Trade Quarter, upper ring... next to inn.", d=8.400, v="npc-10699" },
 		{ f="5624-3ac28c5b", h="3ac28c5b", t="No rest for wicked, but us guess you ok.  You find Innkeeper Norman on upper ring of Trade Quarter.", d=7.760, v="npc-10699" },
@@ -4479,6 +4571,7 @@ pack.gossip = {
 		{ f="5624-d5c50bb8", h="d5c50bb8", t="They teach me to sneak good.  You find them in Rogues' Quarter on outer ring of Undercity.", d=6.800, v="npc-10699" },
 		{ f="5624-d5d5a9d1", h="d5d5a9d1", t="Us want felhound for pet.  We feed it and treat it good and teach it play fetch.  You find Warlocks in Magic Quarter on outer ring of city.", d=14.480, v="npc-10699" },
 		{ f="5624-d88cd76d", h="d88cd76d", t="Bank in Trade Quarter central tower.  You not miss it.", d=5.600, v="npc-10699" },
+		{ f="5624-dd3eed63", h="dd3eed63", t="We not so sure paladins safe to touch, but they at War Quarter in big building.", d=7.840, v="npc-10699" },
 		{ f="5624-ddc32579", h="ddc32579", t="Go to inner ring of War Quarter.  Brom Killian there.", d=6.600, v="npc-10699" },
 		{ f="5624-de27fccb", h="de27fccb", t="Lady teach you make magic items.  She at inner ring of The Apothecarium.", d=5.880, v="npc-10699" },
 		{ f="5624-e2112670", h="e2112670", t="Arthur Moore in Rogues' Quarter inner ring is one who teach leatherworking.", d=5.440, v="npc-10699" },
@@ -4582,7 +4675,7 @@ pack.gossip = {
 		{ f="5769-c9ae2675", h="c9ae2675", t="The earth keeps many secrets, $c; it is our duty to ensure that those that must remain a secret for the good of all stays as such.", d=10.800, v="tauren-male" },
 	},
 	[5784] = {
-		{ f="5784-1a4f8770", h="1a4f8770", t="Your understanding of leather is deeper than my own. Perhaps you should visit the tauren Krulmoo Fullmoon in Camp Taurajo of the Barrens. He has much knowledge to offer a student of your talents.", d=13.600, v="tauren-male" },
+		{ f="5784-1a4f8770", h="1a4f8770", t="Your understanding of leather is deeper than my own. Perhaps you should visit the tauren Krulmoo Fullmoon in Camp Taurajo of the Barrens. He has much knowledge to offer a student of your talents.", d=12.840, v="tauren-male" },
 		{ f="5784-3fc6ad9d", h="3fc6ad9d", t="The caverns below us are a source of strange and wondrous hides, but you must take care if you venture into their depths, $n. Remember that your own skin is far more valuable.", d=13.280, v="tauren-male" },
 		{ f="5784-8f9f7a5f", h="8f9f7a5f", t="Even here in the wilds, you seek out learning. Your drive for knowledge is an admirable trait.", d=7.920, v="tauren-male" },
 	},
@@ -4619,7 +4712,7 @@ pack.gossip = {
 		{ f="5814-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.840, v="orc-male" },
 		{ f="5814-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=36.590, v="orc-male" },
 		{ f="5814-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.880, v="orc-male" },
-		{ f="5814-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=40.230, v="orc-male" },
+		{ f="5814-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=37.150, v="orc-male" },
 		{ f="5814-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.280, v="orc-male" },
 		{ f="5814-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=33.910, v="orc-male" },
 		{ f="5814-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.560, v="orc-male" },
@@ -4642,7 +4735,7 @@ pack.gossip = {
 		{ f="5815-721fd095", h="721fd095", t="Want to make your demons more powerful?  It'll cost you, but you've come to the right place.", d=6.760, v="orc-male" },
 	},
 	[5819] = {
-		{ f="5819-9831b834", h="9831b834", t="If you're looking for plate armor, mail armor or shields, I've got the finest in all of Undercity. Most of these pieces made and repaired here locally, though some is scavenged.    Feel free to browse.", d=14.480, v="scourge-female" },
+		{ f="5819-9831b834", h="9831b834", t="If you're looking for plate armor, mail armor or shields, I've got the finest in all of Undercity. Most of these pieces made and repaired here locally, though some is scavenged.    Feel free to browse.", d=10.373, v="human-female" },
 	},
 	[5880] = {
 		{ f="5880-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=27.350, v="troll-male-dark" },
@@ -4656,6 +4749,7 @@ pack.gossip = {
 	},
 	[5883] = {
 		{ f="5883-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=25.150, v="troll-female-laidback" },
+		{ f="5883-8fca8484", h="8fca8484", t="If you desire, in addition to training, I have it within my power to erase the knowledge of your talents from your mind.  Be warned that every time you undergo this procedure the more difficult it is to perform, and therefore the more expensive it becomes.", d=20.160, v="troll-female-laidback" },
 		{ f="5883-e98c6c9e", h="e98c6c9e", t="Greetings, $c.  I pity your kind, for the secrets of true magic are beyond you...", d=7.040, v="troll-female-laidback" },
 		{ f="5883-f341dff7", h="f341dff7", t="Greetings, $c.  Are you here to learn of the hidden arts?", d=4.800, v="troll-female-laidback" },
 	},
@@ -4842,7 +4936,7 @@ pack.gossip = {
 		{ f="6272-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.545, v="human-female" },
 		{ f="6272-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=27.349, v="human-female" },
 		{ f="6272-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.293, v="human-female" },
-		{ f="6272-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=28.295, v="human-female" },
+		{ f="6272-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=27.745, v="human-female" },
 		{ f="6272-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.468, v="human-female" },
 		{ f="6272-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=22.869, v="human-female" },
 		{ f="6272-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=7.753, v="human-female" },
@@ -4864,6 +4958,9 @@ pack.gossip = {
 	[6286] = {
 		{ f="6286-f842f7e5", h="f842f7e5", t="Hello, $N. If you'd like to learn a thing or two about cooking, please visit me at any time.", d=6.560, v="nightelf-male-standard" },
 	},
+	[6297] = {
+		{ f="6297-58405dcd", h="58405dcd", t="Greetings.", d=2.080, v="dwarf-male-standard" },
+	},
 	[6299] = {
 		{ f="6299-0e8112d8", h="0e8112d8", t="Don't see many Blacksmiths this far from Ironforge. What can I do for ye?", d=6.800, v="dwarf-male-guard" },
 		{ f="6299-7df81952", h="7df81952", t="Now that's a piece of steel worth wearing. Form and function lad/lass, I am impressed. Only ever seen it's match once, a Master in the Great Forge named Grumnus Steelshaper. I bet he has learned a few things since then, could probably teach some to ye.", d=17.720, v="dwarf-male-guard" },
@@ -4874,10 +4971,11 @@ pack.gossip = {
 	},
 	[6301] = {
 		{ f="6301-021e8521", h="021e8521", t="Greetings lass, if you're looking for the best deals you'll find outside of Ironforge itself, then you've come to the right place.", d=7.440, v="dwarf-male" },
+		{ f="6301-7a1efc7f", h="7a1efc7f", t="Greetings lad, if you're looking for the best deals you'll find outside of Ironforge itself, then you've come to the right place.", d=7.480, v="dwarf-male" },
 		{ f="6301-a856200e", h="a856200e", t="Greetings $g lad : lass;, if you're looking for the best deals you'll find outside of Ironforge itself, then you've come to the right place.", d=7.520, v="dwarf-male", g=true },
 	},
 	[6306] = {
-		{ f="6306-924a66d4", h="924a66d4", t="How can I help you?", d=1.129, v="human-female" },
+		{ f="6306-924a66d4", h="924a66d4", t="How can I help you?", d=1.324, v="human-female" },
 	},
 	[6328] = {
 		{ f="6328-4bd37020", h="4bd37020", t="You're no warlock and I've no time for you.  Begone!", d=3.027, v="gnome-female-standard" },
@@ -4918,6 +5016,12 @@ pack.gossip = {
 	[6568] = {
 		{ f="6568-56a81353", h="56a81353", t="If tailoring is your thing, Vizzklick will most definitely have your supplies. Take a look around, $n, and let me know if you wish to purchase something!", d=5.720, v="goblin-male" },
 		{ f="6568-c872e7de", h="c872e7de", t="Grab your things, $n! I've just gotten word from Nilith Lokrav in the Searing Gorge that the Undermarket has set up operations in the heart of the Cauldron. Find Nilith Lokrav in the Searing Gorge and get the low down!", d=9.440, v="goblin-male" },
+	},
+	[6569] = {
+		{ f="6569-58cd03a1", h="58cd03a1", t="Where Troggs and Leper Gnomes roam stands our home - Gnomeregan.  Our families lost, our homes displaced. Scattered.  Oh how I long for the days of carefree Gnomeregan life, but those days are no more. We must make our stand! We must save Gnomeregan!", d=11.681, v="gnome-male-zany" },
+	},
+	[6579] = {
+		{ f="6579-8258874f", h="8258874f", t="For Gnomeregan!", d=0.872, v="gnome-female-nerdy" },
 	},
 	[6586] = {
 		{ f="6586-bb2626e8", h="bb2626e8", t="What's a young $c like you out visiting an old farmer like me?", d=4.880, v="orc-male-guard" },
@@ -4960,7 +5064,7 @@ pack.gossip = {
 		{ f="6727-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.797, v="human-female" },
 		{ f="6727-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=28.111, v="human-female" },
 		{ f="6727-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=4.956, v="human-female" },
-		{ f="6727-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=28.187, v="human-female" },
+		{ f="6727-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=27.305, v="human-female" },
 		{ f="6727-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.637, v="human-female" },
 		{ f="6727-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=24.102, v="human-female" },
 		{ f="6727-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=8.375, v="human-female" },
@@ -5009,7 +5113,7 @@ pack.gossip = {
 		{ f="6734-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.080, v="dwarf-male" },
 		{ f="6734-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=32.110, v="dwarf-male" },
 		{ f="6734-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.600, v="dwarf-male" },
-		{ f="6734-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=31.550, v="dwarf-male" },
+		{ f="6734-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=30.870, v="dwarf-male" },
 		{ f="6734-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.880, v="dwarf-male" },
 		{ f="6734-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=26.950, v="dwarf-male" },
 		{ f="6734-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.360, v="dwarf-male" },
@@ -5056,7 +5160,7 @@ pack.gossip = {
 		{ f="6735-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.680, v="nightelf-female" },
 		{ f="6735-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=35.310, v="nightelf-female" },
 		{ f="6735-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.680, v="nightelf-female" },
-		{ f="6735-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=37.190, v="nightelf-female" },
+		{ f="6735-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=38.270, v="nightelf-female" },
 		{ f="6735-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=8.080, v="nightelf-female" },
 		{ f="6735-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=31.830, v="nightelf-female" },
 		{ f="6735-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=11.600, v="nightelf-female" },
@@ -5111,7 +5215,7 @@ pack.gossip = {
 		{ f="6737-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.320, v="nightelf-female" },
 		{ f="6737-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=36.950, v="nightelf-female" },
 		{ f="6737-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.160, v="nightelf-female" },
-		{ f="6737-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=38.670, v="nightelf-female" },
+		{ f="6737-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=40.590, v="nightelf-female" },
 		{ f="6737-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.440, v="nightelf-female" },
 		{ f="6737-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=31.070, v="nightelf-female" },
 		{ f="6737-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=13.160, v="nightelf-female" },
@@ -5157,7 +5261,7 @@ pack.gossip = {
 		{ f="6738-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.200, v="nightelf-female" },
 		{ f="6738-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=35.670, v="nightelf-female" },
 		{ f="6738-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.160, v="nightelf-female" },
-		{ f="6738-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=36.230, v="nightelf-female" },
+		{ f="6738-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=36.910, v="nightelf-female" },
 		{ f="6738-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.240, v="nightelf-female" },
 		{ f="6738-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=28.910, v="nightelf-female" },
 		{ f="6738-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=11.880, v="nightelf-female" },
@@ -5202,7 +5306,7 @@ pack.gossip = {
 		{ f="6739-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.960, v="scourge-male" },
 		{ f="6739-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=35.070, v="scourge-male" },
 		{ f="6739-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.560, v="scourge-male" },
-		{ f="6739-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=37.910, v="scourge-male" },
+		{ f="6739-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=35.990, v="scourge-male" },
 		{ f="6739-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=6.720, v="scourge-male" },
 		{ f="6739-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=29.310, v="scourge-male" },
 		{ f="6739-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.080, v="scourge-male" },
@@ -5248,7 +5352,7 @@ pack.gossip = {
 		{ f="6740-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.247, v="human-female" },
 		{ f="6740-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=27.891, v="human-female" },
 		{ f="6740-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=5.724, v="human-female" },
-		{ f="6740-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=28.616, v="human-female" },
+		{ f="6740-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=28.535, v="human-female" },
 		{ f="6740-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=4.744, v="human-female" },
 		{ f="6740-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=24.575, v="human-female" },
 		{ f="6740-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=7.531, v="human-female" },
@@ -5294,7 +5398,8 @@ pack.gossip = {
 		{ f="6741-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.480, v="scourge-male-dark" },
 		{ f="6741-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=31.630, v="scourge-male-dark" },
 		{ f="6741-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.080, v="scourge-male-dark" },
-		{ f="6741-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.310, v="scourge-male-dark" },
+		{ f="6741-886683cb", h="886683cb", t="The old kingdom of Lordaeron is perilous. We urge caution for anyone who dares to venture into the now decaying lands of Tirisfal Glades. If you must, find the Undercity and the upper courtyards are what you seek.", d=14.480, v="scourge-male-dark" },
+		{ f="6741-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.150, v="scourge-male-dark" },
 		{ f="6741-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=6.320, v="scourge-male-dark" },
 		{ f="6741-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=27.710, v="scourge-male-dark" },
 		{ f="6741-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=8.640, v="scourge-male-dark" },
@@ -5306,6 +5411,7 @@ pack.gossip = {
 		{ f="6741-c2bfa0cf", h="c2bfa0cf", t="Gnomeregan can be found in western Dun Morogh.", d=3.440, v="scourge-male-dark" },
 		{ f="6741-ca5fde90", h="ca5fde90", t="Maraudon is located in the middle of the western coast of Desolace, in the Valley of Spears.", d=6.760, v="scourge-male-dark" },
 		{ f="6741-d352a290", h="d352a290", t="Once the greatest gold production center in the human lands, the Dead Mines are now inhabited by the Defias Brotherhood, who have turned the dark tunnels into their private sanctum. It is rumored that the thieves have conscripted the clever goblins to help them build something terrible at the bottom of the mines - but what that may be is still uncertain. Rumor has it that the way into the Deadmines lies through the quiet, unassuming village of Moonbrook. ", d=27.750, v="scourge-male-dark" },
+		{ f="6741-e0b9e88a", h="e0b9e88a", t="Our ancient lands in the north east of the Eastern Kingdom. Named after Lordain himself, it was once a proud and powerful kingdom. Its history is rich and serves as many lessons to upstart nobles and kings. One of its defining moments was assisting in the foundation of the Alliance that we know today.    Unfortunately its history is also dark, and its current inhabitants defile its lands day by day. There is still much of significance in the ruins that now rest above the Undercity but it is folly to attempt that journey and expect to return still among the living.", d=37.340, v="scourge-male-dark" },
 		{ f="6741-e99614f5", h="e99614f5", t="The ruins of Zul'Farrak are located in the northwestern corner of the Tanaris Desert.", d=6.240, v="scourge-male-dark" },
 		{ f="6741-f106f818", h="f106f818", t="Built twelve thousand years ago by a covert sect of night elf sorcerers, the ancient city of Eldre'Thalas was used to protect Queen Azshara's most prized arcane secrets. Though it was ravaged by the Great Sundering of the world, much of the wondrous city still stands as the imposing Dire Maul. The ruins' three distinct districts have been overrun by all manner of creatures - especially the spectral highborne, foul satyr and brutish ogres.  ", d=32.070, v="scourge-male-dark" },
 		{ f="6741-f2218c4a", h="f2218c4a", t="Blackrock Mountain lies between Searing Gorge in the north and Burning Steppes in the south.", d=5.600, v="scourge-male-dark" },
@@ -5340,7 +5446,7 @@ pack.gossip = {
 		{ f="6746-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.680, v="tauren-female" },
 		{ f="6746-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=36.070, v="tauren-female" },
 		{ f="6746-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=8.360, v="tauren-female" },
-		{ f="6746-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.390, v="tauren-female" },
+		{ f="6746-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=35.150, v="tauren-female" },
 		{ f="6746-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=8.120, v="tauren-female" },
 		{ f="6746-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=35.070, v="tauren-female" },
 		{ f="6746-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.960, v="tauren-female" },
@@ -5414,7 +5520,7 @@ pack.gossip = {
 		{ f="6790-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.525, v="human-female" },
 		{ f="6790-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=27.994, v="human-female" },
 		{ f="6790-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=5.754, v="human-female" },
-		{ f="6790-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=29.449, v="human-female" },
+		{ f="6790-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=27.311, v="human-female" },
 		{ f="6790-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.320, v="human-female" },
 		{ f="6790-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=23.700, v="human-female" },
 		{ f="6790-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=7.981, v="human-female" },
@@ -5461,7 +5567,7 @@ pack.gossip = {
 		{ f="6791-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.360, v="goblin-male" },
 		{ f="6791-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=23.510, v="goblin-male" },
 		{ f="6791-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=4.960, v="goblin-male" },
-		{ f="6791-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=23.830, v="goblin-male" },
+		{ f="6791-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=23.430, v="goblin-male" },
 		{ f="6791-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=4.440, v="goblin-male" },
 		{ f="6791-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=18.110, v="goblin-male" },
 		{ f="6791-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=6.160, v="goblin-male" },
@@ -5507,7 +5613,7 @@ pack.gossip = {
 		{ f="6807-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=2.760, v="goblin-male" },
 		{ f="6807-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=22.030, v="goblin-male" },
 		{ f="6807-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=4.760, v="goblin-male" },
-		{ f="6807-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=23.470, v="goblin-male" },
+		{ f="6807-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=23.670, v="goblin-male" },
 		{ f="6807-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=3.800, v="goblin-male" },
 		{ f="6807-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=20.830, v="goblin-male" },
 		{ f="6807-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=6.360, v="goblin-male" },
@@ -5565,7 +5671,7 @@ pack.gossip = {
 		{ f="6929-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.200, v="orc-female" },
 		{ f="6929-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=30.630, v="orc-female" },
 		{ f="6929-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.440, v="orc-female" },
-		{ f="6929-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=32.550, v="orc-female" },
+		{ f="6929-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=31.790, v="orc-female" },
 		{ f="6929-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=6.360, v="orc-female" },
 		{ f="6929-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=25.110, v="orc-female" },
 		{ f="6929-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=9.280, v="orc-female" },
@@ -5611,7 +5717,7 @@ pack.gossip = {
 		{ f="6930-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.080, v="orc-male-standard" },
 		{ f="6930-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=35.390, v="orc-male-standard" },
 		{ f="6930-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.960, v="orc-male-standard" },
-		{ f="6930-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=36.310, v="orc-male-standard" },
+		{ f="6930-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=37.230, v="orc-male-standard" },
 		{ f="6930-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.120, v="orc-male-standard" },
 		{ f="6930-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=29.830, v="orc-male-standard" },
 		{ f="6930-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=13.320, v="orc-male-standard" },
@@ -5750,7 +5856,7 @@ pack.gossip = {
 		{ f="7714-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.600, v="tauren-male" },
 		{ f="7714-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=31.830, v="tauren-male" },
 		{ f="7714-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.880, v="tauren-male" },
-		{ f="7714-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=35.030, v="tauren-male" },
+		{ f="7714-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.550, v="tauren-male" },
 		{ f="7714-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.120, v="tauren-male" },
 		{ f="7714-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=28.630, v="tauren-male" },
 		{ f="7714-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.040, v="tauren-male" },
@@ -5797,7 +5903,7 @@ pack.gossip = {
 		{ f="7731-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.400, v="orc-female-standard" },
 		{ f="7731-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=37.990, v="orc-female-standard" },
 		{ f="7731-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=9.880, v="orc-female-standard" },
-		{ f="7731-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=40.870, v="orc-female-standard" },
+		{ f="7731-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=39.270, v="orc-female-standard" },
 		{ f="7731-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=8.480, v="orc-female-standard" },
 		{ f="7731-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=33.750, v="orc-female-standard" },
 		{ f="7731-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.520, v="orc-female-standard" },
@@ -5889,7 +5995,7 @@ pack.gossip = {
 		{ f="7736-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.400, v="nightelf-female" },
 		{ f="7736-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=37.950, v="nightelf-female" },
 		{ f="7736-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.040, v="nightelf-female" },
-		{ f="7736-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.950, v="nightelf-female" },
+		{ f="7736-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=36.670, v="nightelf-female" },
 		{ f="7736-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.880, v="nightelf-female" },
 		{ f="7736-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=31.550, v="nightelf-female" },
 		{ f="7736-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=9.720, v="nightelf-female" },
@@ -5934,7 +6040,7 @@ pack.gossip = {
 		{ f="7737-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.520, v="tauren-female" },
 		{ f="7737-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=36.790, v="tauren-female" },
 		{ f="7737-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.640, v="tauren-female" },
-		{ f="7737-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.110, v="tauren-female" },
+		{ f="7737-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.190, v="tauren-female" },
 		{ f="7737-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.880, v="tauren-female" },
 		{ f="7737-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=34.430, v="tauren-female" },
 		{ f="7737-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.480, v="tauren-female" },
@@ -5980,7 +6086,7 @@ pack.gossip = {
 		{ f="7744-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.040, v="dwarf-male" },
 		{ f="7744-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=33.430, v="dwarf-male" },
 		{ f="7744-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.280, v="dwarf-male" },
-		{ f="7744-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=31.710, v="dwarf-male" },
+		{ f="7744-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=31.390, v="dwarf-male" },
 		{ f="7744-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.640, v="dwarf-male" },
 		{ f="7744-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=25.430, v="dwarf-male" },
 		{ f="7744-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=8.240, v="dwarf-male" },
@@ -6115,7 +6221,7 @@ pack.gossip = {
 		{ f="7952-fcb64345", h="fcb64345", t="And a good day to ya, brave $c.  I know ya be lookin' for a fine steed.  There's no finer steed than a raptor under your reigns, lemme tell you $g mon : sis;!  Take a look at the ones I got to offer - bred from the fiercest stock anywhere.", d=19.360, v="troll-male", g=true },
 	},
 	[7953] = {
-		{ f="7953-6d4ea044", h="6d4ea044", t="I cannot be teachin' a Tauren to ride a Raptor.", d=3.720, v="troll-female-standard" },
+		{ f="7953-6d4ea044", h="6d4ea044", t="I cannot be teachin' a Tauren to ride a Raptor.", d=3.480, v="troll-female-standard" },
 		{ f="7953-a3eec9a8", h="a3eec9a8", t="You need to be exalted with the trolls of the Darkspear tribe before I will teach you a riding skill, $c.", d=8.360, v="troll-female-standard" },
 		{ f="7953-de02093f", h="de02093f", t="I can teach you the finer points of Raptor Riding, provided you have enough gold to cover the lesson!", d=8.160, v="troll-female-standard" },
 	},
@@ -6132,6 +6238,7 @@ pack.gossip = {
 	},
 	[7999] = {
 		{ f="7999-3d397bbf", h="3d397bbf", t="Greetings, $c. I am Tyrande Whisperwind, High Priestess of Elune.", d=6.320, v="npc-7274" },
+		{ f="7999-ccf70497", h="ccf70497", t="It pleases me greatly to at last meet one of your people. I've heard much of the shen'dorei and your long history, and  I am glad to see our cousins return home to Kalimdor at long last.    I confess that our people have a... complicated relationship with the Highborne. Some amongst the Night Elves are quick to distrust those of Highborne descent such as those in your High Order. However, you have my assurance that you will be shown the utmost respect while a guest in our city.    Please, make yourself at home here. I'd encourage you to explore and familiarize yourself with our culture. It is, after all, your culture as well in a way.", d=45.940, v="npc-7274" },
 	},
 	[8018] = {
 		{ f="8018-c5ceacbe", h="c5ceacbe", t="Where would you like to fly to?", d=1.920, v="dwarf-male-standard" },
@@ -6290,6 +6397,7 @@ pack.gossip = {
 		{ f="8931-19cbe7de", h="19cbe7de", t="When you give love tokens to townsfolk, you'll receive different gifts in return.  Some of those you'll want to keep and use, but others can be bundled together and given to your favorite hero!  Visit Kwee Q. Peddlefeet to turn them in.$B$BKwee can be found near Bolvar, Magni, or Tyrande.", d=15.248, v="human-female" },
 		{ f="8931-1a6e2552", h="1a6e2552", t="This sun-blasted city is home to the Sandfury trolls, known for their particular ruthlessness and dark mysticism. Troll legends tell of a powerful sword called Sul'thraze the Lasher, a weapon capable of instilling fear and weakness in even the most formidable of foes. Long ago, the weapon was split in half. However, rumors have circulated that the two halves may be found somewhere within Zul'Farrak's walls. ", d=22.757, v="human-female" },
 		{ f="8931-22aa3fe4", h="22aa3fe4", t="Razorfen Downs can be found on the very southern tip of the Barrens on the east side of the road.", d=5.360, v="human-female" },
+		{ f="8931-29b91ff4", h="29b91ff4", t="The old Assembly of Thanes is a chamber below the great city of Ironforge, the ancestral home of the Bronzebeard clan. Its depths plunge to the deepest parts of the heart of Khaz Modan, and rumor has it immense geodes crown the chamber.", d=13.033, v="human-female" },
 		{ f="8931-2e88eda5", h="2e88eda5", t="Frustrated by the Dalaran wizards' lack of progress against the undead during the Third War, the Archmage Arugal elected to summon the extra-dimensional worgen to bolster his side's diminishing ranks. The wolf-men slaughtered the Scourge, then quickly turned on the wizards themselves and laid siege to the keep of the noble, Baron Silverlaine. The fort quickly fell into shadow and ruin. Driven mad with guilt, Arugal adopted the worgen as his children and retreated to the newly dubbed 'Shadowfang Keep'.  ", d=27.000, v="human-female" },
 		{ f="8931-3141b27b", h="3141b27b", t="Crafted from the same vines as Razorfen Kraul, Razorfen Downs is the traditional capital city of the quilboar race. The sprawling, thorn-ridden labyrinth houses a veritable army of loyal quilboar as well as their high priests - the Death's Head tribe. Recently, however, a looming shadow has fallen over the crude den. Agents of the undead Scourge - led by the lich, Amnennar the Coldbringer - have taken control over the quilboar race and turned the maze of thorns into a bastion of undead might.   ", d=28.321, v="human-female" },
 		{ f="8931-330cd2db", h="330cd2db", t="The mighty fortress carved within the fiery bowels of Blackrock Mountain was held by the sinister Dark Iron dwarves for centuries until Nefarian - the cunning son of the dragon, Deathwing - took control of the upper Spire and made war on the dwarves' holdings in the mountain's volcanic depths. Realizing that the dwarves were led by the mighty fire elemental, Ragnaros - Nefarian vowed to crush his enemies and claim the whole of Blackrock mountain for himself.  ", d=25.155, v="human-female" },
@@ -6309,7 +6417,9 @@ pack.gossip = {
 		{ f="8931-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.335, v="human-female" },
 		{ f="8931-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=27.155, v="human-female" },
 		{ f="8931-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=5.394, v="human-female" },
-		{ f="8931-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=28.249, v="human-female" },
+		{ f="8931-886683cb", h="886683cb", t="The old kingdom of Lordaeron is perilous. We urge caution for anyone who dares to venture into the now decaying lands of Tirisfal Glades. If you must, find the Undercity and the upper courtyards are what you seek.", d=11.066, v="human-female" },
+		{ f="8931-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=27.856, v="human-female" },
+		{ f="8931-a9b2021a", h="a9b2021a", t="The Hall of Thanes is sealed off. Those without audience to king Magni Bronzebeard must earn his trust and approval to venture into the depths of old Ironforge.", d=9.608, v="human-female" },
 		{ f="8931-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.325, v="human-female" },
 		{ f="8931-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=23.227, v="human-female" },
 		{ f="8931-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=7.680, v="human-female" },
@@ -6322,6 +6432,7 @@ pack.gossip = {
 		{ f="8931-c80041d2", h="c80041d2", t="Welcome to my Inn, weary traveler. What can I do for you?", d=4.405, v="human-female" },
 		{ f="8931-ca5fde90", h="ca5fde90", t="Maraudon is located in the middle of the western coast of Desolace, in the Valley of Spears.", d=4.949, v="human-female" },
 		{ f="8931-d352a290", h="d352a290", t="Once the greatest gold production center in the human lands, the Dead Mines are now inhabited by the Defias Brotherhood, who have turned the dark tunnels into their private sanctum. It is rumored that the thieves have conscripted the clever goblins to help them build something terrible at the bottom of the mines - but what that may be is still uncertain. Rumor has it that the way into the Deadmines lies through the quiet, unassuming village of Moonbrook. ", d=23.605, v="human-female" },
+		{ f="8931-e0b9e88a", h="e0b9e88a", t="Our ancient lands in the north east of the Eastern Kingdom. Named after Lordain himself, it was once a proud and powerful kingdom. Its history is rich and serves as many lessons to upstart nobles and kings. One of its defining moments was assisting in the foundation of the Alliance that we know today.    Unfortunately its history is also dark, and its current inhabitants defile its lands day by day. There is still much of significance in the ruins that now rest above the Undercity but it is folly to attempt that journey and expect to return still among the living.", d=31.781, v="human-female" },
 		{ f="8931-e99614f5", h="e99614f5", t="The ruins of Zul'Farrak are located in the northwestern corner of the Tanaris Desert.", d=4.599, v="human-female" },
 		{ f="8931-f106f818", h="f106f818", t="Built twelve thousand years ago by a covert sect of night elf sorcerers, the ancient city of Eldre'Thalas was used to protect Queen Azshara's most prized arcane secrets. Though it was ravaged by the Great Sundering of the world, much of the wondrous city still stands as the imposing Dire Maul. The ruins' three distinct districts have been overrun by all manner of creatures - especially the spectral highborne, foul satyr and brutish ogres.  ", d=24.914, v="human-female" },
 		{ f="8931-f2218c4a", h="f2218c4a", t="Blackrock Mountain lies between Searing Gorge in the north and Burning Steppes in the south.", d=4.773, v="human-female" },
@@ -6470,7 +6581,7 @@ pack.gossip = {
 		{ f="9356-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=6.440, v="orc-male" },
 		{ f="9356-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=37.350, v="orc-male" },
 		{ f="9356-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.560, v="orc-male" },
-		{ f="9356-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=40.910, v="orc-male" },
+		{ f="9356-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=38.390, v="orc-male" },
 		{ f="9356-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.320, v="orc-male" },
 		{ f="9356-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=30.870, v="orc-male" },
 		{ f="9356-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=11.720, v="orc-male" },
@@ -6532,7 +6643,7 @@ pack.gossip = {
 		{ f="9501-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.720, v="tauren-male" },
 		{ f="9501-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=33.950, v="tauren-male" },
 		{ f="9501-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.000, v="tauren-male" },
-		{ f="9501-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.070, v="tauren-male" },
+		{ f="9501-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=34.390, v="tauren-male" },
 		{ f="9501-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.960, v="tauren-male" },
 		{ f="9501-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=28.510, v="tauren-male" },
 		{ f="9501-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.040, v="tauren-male" },
@@ -6562,7 +6673,7 @@ pack.gossip = {
 	},
 	[9529] = {
 		{ f="9529-05a7fc0d", h="05a7fc0d", t="These once beautiful woods suffer under a terrible curse!  Corrupting forces twist the life here into shadows of their former selves.  If you are not an agent of this corruption, then perhaps you can aid me in reclaiming Felwood!", d=17.240, v="tauren-female" },
-		{ f="9529-147152eb", h="147152eb", t="\"Taurahe?\"$B$BThe tauren druid looks at you expectantly, but it is clear you cannot verbally communicate with her.  Undaunted, she points to herself and smiles.  She points at you and smiles once more.  She finally motions several times down the path to the south.$B$BPerhaps she is indicating that there is a druid you can speak to further down the road? ", d=27.150, v="tauren-female" },
+		{ f="9529-147152eb", h="147152eb", t="\"Taurahe?\"$B$BThe tauren druid looks at you expectantly, but it is clear you cannot verbally communicate with her.  Undaunted, she points to herself and smiles.  She points at you and smiles once more.  She finally motions several times down the path to the south.$B$BPerhaps she is indicating that there is a druid you can speak to further down the road? ", d=25.350, v="tauren-female" },
 		{ f="9529-cbf51359", h="cbf51359", t="There are plants in Felwood that may be saved from corruption when Cenarion plant salve is applied to them.  I know how to make the salve from several different kinds of items; based on your skill set, you may find that you have multiple options to assist me.$B$BYou will also need a Cenarion beacon for your work here; it is a device that allows you to see the taint and corruption of nature that the naked eye will miss.", d=32.110, v="tauren-female" },
 	},
 	[9543] = {
@@ -6778,7 +6889,7 @@ pack.gossip = {
 		{ f="10307-ddeae011", h="ddeae011", t="Ah, $r... I possess great knowledge a' da world and how ta create charms a' great power. ", d=8.080, v="troll-female-laidback" },
 	},
 	[10360] = {
-		{ f="10360-54d735c8", h="54d735c8", t="$n, the Silverwing Sentinels must be crushed!  Are you ready for Warsong Gulch?", d=6.488, v="orc-male-guard" },
+		{ f="10360-54d735c8", h="54d735c8", t="$N, the Silverwing Sentinels must be crushed!  Are you ready for Warsong Gulch?", d=6.488, v="orc-male-guard" },
 		{ f="10360-7e5b36ab", h="7e5b36ab", t="I am sorry $c, but you are not seasoned enough yet to enter Warsong Gulch.", d=6.979, v="orc-male-guard" },
 	},
 	[10378] = {
@@ -6821,8 +6932,8 @@ pack.gossip = {
 		{ f="10475-f2bf5cd8", h="f2bf5cd8", t="Watch your step in here, $gboy:girl;.  The master sees all...", d=3.216, v="human-female", g=true },
 	},
 	[10540] = {
-		{ f="10540-5004ab66", h="5004ab66", t="Ah yes, I heard of the Windshapers. It be good to be meetin' you now.    You know, my people been fighting elves for thousands of years. If you be half as fierce as your cousins from Darnassus or Quel'thalas, the Darkspear would be glad to call you friend.    I be wishin' you well in your travels, $c. We Darkspear know all too well what it's like to have no home, so I hope you be finding what your people need to save yours.", d=33.190, v="troll-male" },
-		{ f="10540-7c6995ef", h="7c6995ef", t="I am Vol'jin, of the Darkspear. Do you be friend, or enemy?", d=6.120, v="troll-male" },
+		{ f="10540-5004ab66", h="5004ab66", t="Ah yes, I heard of the Windshapers. It be good to be meetin' you now.    You know, my people been fighting elves for thousands of years. If you be half as fierce as your cousins from Darnassus or Quel'thalas, the Darkspear would be glad to call you friend.    I be wishin' you well in your travels, $c. We Darkspear know all too well what it's like to have no home, so I hope you be finding what your people need to save yours.", d=28.150, v="npc-10357" },
+		{ f="10540-7c6995ef", h="7c6995ef", t="I am Vol'jin, of the Darkspear. Do you be friend, or enemy?", d=5.000, v="npc-10357" },
 	},
 	[10578] = {
 		{ f="10578-4ad7f83c", h="4ad7f83c", t="Ya mon, I be Gadrin's assistant.  Dis here volunteer work be my way of gettin through Witch Doctor School.  Since you help him, I help ya for free.  Whatcha need fixin?", d=11.380, v="npc-9911" },
@@ -6864,7 +6975,7 @@ pack.gossip = {
 		{ f="10721-f8389317", h="f8389317", t="Are you ready to begin?", d=1.680, v="tauren-male", s={ ["f"]=1.840 } },
 	},
 	[10739] = {
-		{ f="10739-113c02eb", h="113c02eb", t="\"...\"$B$BThe body of the tauren druid lies still and unmoving.  It would seem as though he has finally passed from this world to his promised great beyond.", d=9.000, v="tauren-male" },
+		{ f="10739-113c02eb", h="113c02eb", t="\"...\"$B$BThe body of the tauren druid lies still and unmoving.  It would seem as though he has finally passed from this world to his promised great beyond.", d=9.880, v="tauren-male" },
 		{ f="10739-589ca318", h="589ca318", t="Please, help me $g brother : sister;...$B$BI will soon pass from this world, and though I suffer I know I shall not any more once I pass.  The wildlife though, my $g brother : sister;... the wildlife suffers too, and it knows no release.  I ask for your aid with my last breaths of life.", d=17.960, v="tauren-male", g=true },
 		{ f="10739-b71e2f40", h="b71e2f40", t="Yes, I speak a language you understand $r.  We are not animals, yet most of your kind continues to treat us as such!  Our differences though pale to the tragedy that has befallen this land.  Please, put aside your differences with my kind and hear my dying plea.$B$BI came to this land to mend what I could, and now that will be for naught unless you can aid me.  I ask for such aid with my last breaths of life.", d=28.030, v="tauren-male" },
 	},
@@ -7219,7 +7330,7 @@ pack.gossip = {
 		{ f="11103-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=4.720, v="nightelf-female" },
 		{ f="11103-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=37.830, v="nightelf-female" },
 		{ f="11103-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.040, v="nightelf-female" },
-		{ f="11103-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=37.190, v="nightelf-female" },
+		{ f="11103-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=36.390, v="nightelf-female" },
 		{ f="11103-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.480, v="nightelf-female" },
 		{ f="11103-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=30.230, v="nightelf-female" },
 		{ f="11103-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.840, v="nightelf-female" },
@@ -7264,7 +7375,7 @@ pack.gossip = {
 		{ f="11106-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.000, v="tauren-female" },
 		{ f="11106-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=37.150, v="tauren-female" },
 		{ f="11106-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.920, v="tauren-female" },
-		{ f="11106-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=35.910, v="tauren-female" },
+		{ f="11106-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=35.270, v="tauren-female" },
 		{ f="11106-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.760, v="tauren-female" },
 		{ f="11106-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=32.710, v="tauren-female" },
 		{ f="11106-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=11.760, v="tauren-female" },
@@ -7310,7 +7421,7 @@ pack.gossip = {
 		{ f="11116-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.560, v="tauren-male" },
 		{ f="11116-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=32.550, v="tauren-male" },
 		{ f="11116-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=6.520, v="tauren-male" },
-		{ f="11116-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.270, v="tauren-male" },
+		{ f="11116-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=32.750, v="tauren-male" },
 		{ f="11116-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=7.080, v="tauren-male" },
 		{ f="11116-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=28.230, v="tauren-male" },
 		{ f="11116-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.000, v="tauren-male" },
@@ -7357,7 +7468,7 @@ pack.gossip = {
 		{ f="11118-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.000, v="goblin-female-s107" },
 		{ f="11118-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=34.390, v="goblin-female-s107" },
 		{ f="11118-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.320, v="goblin-female-s107" },
-		{ f="11118-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=32.710, v="goblin-female-s107" },
+		{ f="11118-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=33.910, v="goblin-female-s107" },
 		{ f="11118-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=5.880, v="goblin-female-s107" },
 		{ f="11118-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=28.910, v="goblin-female-s107" },
 		{ f="11118-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=10.200, v="goblin-female-s107" },
@@ -7615,7 +7726,7 @@ pack.gossip = {
 		{ f="11800-2051e10a", h="2051e10a", t="Would you like a flight to Rut'theran Village, courtesy of the Cenarion Circle?", d=6.600, v="nightelf-female-priestess" },
 		{ f="11800-d1f50557", h="d1f50557", t="In the northeastern Barrens lies a pool of water sickened by pollution.  The locals call it the Sludge Fen; the Venture Company has turned the once crystal-blue waters into a mire of industrial byproducts and waste.  In the heart of this fen lies what you seek, $n.$B$BBe warned - the Venture Company does not tolerate trespassers, and they consider anyone who does not work for them as such.  You'll especially be a target as a protector of nature, something they vehemently oppose.", d=37.950, v="nightelf-female-priestess" },
 		{ f="11800-d5d73f6c", h="d5d73f6c", t="In the northern part of Darkshore runs the Cliffspring River, flowing down from the lands now known as Felwood.  As the river flows out and empties out into the Mist's Edge, travel north to where the deepest parts of the ocean begin.  A stone formation that some call the Stone Claw due to its shape is where you may find what you seek.$B$BBe warned - threshers gather by the Stone Claw, and will attack those who trespass on their territory.", d=34.630, v="nightelf-female-priestess" },
-		{ f="11800-fd86ada1", h="fd86ada1", t="If you're looking for a flight back to Thunder Bluff, then you should talk to my tauren counterpart, Bunthen Plainswind.", d=9.560, v="nightelf-female-priestess" },
+		{ f="11800-fd86ada1", h="fd86ada1", t="If you're looking for a flight back to Thunder Bluff, then you should talk to my tauren counterpart, Bunthen Plainswind.", d=9.840, v="nightelf-female-priestess" },
 	},
 	[11801] = {
 		{ f="11801-56e4b018", h="56e4b018", t="I... cannot begin to imagine, $n.  All I know is that I am not going to allow it to happen.  It will be destroyed - if not for our continued safety from demonic taint, then for the memory of Millicent Serene... Milli...$B$BThis, my friend, this is where I hope you will come in.", d=17.840, v="nightelf-male-standard" },
@@ -7633,6 +7744,9 @@ pack.gossip = {
 		{ f="11811-a2b3f45f", h="a2b3f45f", t="Don't tell me! Shhh! You are here about the Ashbringer?!? Yes... Yes... No! My bad.$B$BWhat can I help you with, $r?", d=5.333, v="gnome-male-zany" },
 		{ f="11811-ea7ea300", h="ea7ea300", t="Narain Soothfancy, at your service! Retired engineer and master soothsayer! I can tell your future before it even happens!", d=7.045, v="gnome-male-zany" },
 		{ f="11811-f82e07d8", h="f82e07d8", t="It... It's foggy, $N. I can't see anything! Wait... Wait a minute. I see... I see Doctor Weavil's hideout. It... YES! I believe he is holding a chapter of the book!$B$BLet me see if I can zoom this thing out to get a better vantage point.$B$B<Narain appears to be going cross-eyed.>$B$BAlcaz Island! That devious bastard is on Alcaz Island!", d=13.680, v="gnome-male-zany", P={ { d=11.515 }, { d=2.707, n=true }, { d=3.379 } }, nP={ [1]={ [2]=3.400 } } },
+	},
+	[11832] = {
+		{ f="11832-550c4a52", h="550c4a52", t="Greetings, traveler.", d=1.560, v="keeperofthegrove-male" },
 	},
 	[11833] = {
 		{ f="11833-383e75cd", h="383e75cd", t="Please, feel free to speak to me anytime, $N. You have served Magatha well. I am sure she will call upon you in the future.", d=8.948, v="tauren-male-warrior", s={ ["f"]=9.760 } },
@@ -7662,7 +7776,7 @@ pack.gossip = {
 	},
 	[11868] = {
 		{ f="11868-48da0bbc", h="48da0bbc", t="Here to learn how to wield a new weapon, or just to waste my time?", d=5.494, v="orc-male-guard" },
-		{ f="11868-a545ee73", h="a545ee73", t="Ansekhwa, the tauren weapon master, is on Thunder Bluff's lower rise.  He can train one and two-handed maces, staves and guns.  Hanashi, standing next to me here, can instruct in the use of bows, one and two-handed axes, staves and all manner of thrown weapons.  Archibald, the undead weapon master in the War Quarter of the Undercity, can teach the use of crossbows, daggers, one and two-handed swords and polearms.", d=31.154, v="orc-male-guard" },
+		{ f="11868-a545ee73", h="a545ee73", t="Ansekhwa, the tauren weapon master, is on Thunder Bluff's lower rise.  He can train one and two-handed maces, staves and guns.  Hanashi, standing next to me here, can instruct in the use of bows, one and two-handed axes, staves and all manner of thrown weapons.  Archibald, the undead weapon master in the War Quarter of the Undercity, can teach the use of crossbows, daggers, one and two-handed swords and polearms.", d=28.982, v="orc-male-guard" },
 	},
 	[11869] = {
 		{ f="11869-49ff395c", h="49ff395c", t="I would be honored to train you in the use of the weapons that I have mastered should you have the ability to learn within you.", d=6.825, v="tauren-male-warrior" },
@@ -7670,7 +7784,7 @@ pack.gossip = {
 	},
 	[11870] = {
 		{ f="11870-3a5c3d7e", h="3a5c3d7e", t="I suppose you are here to be trained in the use of a new weapon?  Make it fast, I'm very busy!", d=9.000, v="scourge-male-warrior" },
-		{ f="11870-a5868f28", h="a5868f28", t="Sayoc is the orc weapon master.  He is located in Orgrimmar's Valley of Honor.  He can train the use of bows, daggers, fist weapons, one and two-handed axes and thrown weapons.  Hanashi, the troll weapon master in the Valley of Honor of Orgrimmar, can instruct in the use of bows, one and two-handed axes, staves and all thrown weapons.  Ansekhwa, the tauren weapon master, is on Thunder Bluff's lower rise.  He teaches the use of one and two-handed maces, staves and guns. ", d=35.550, v="scourge-male-warrior" },
+		{ f="11870-a5868f28", h="a5868f28", t="Sayoc is the orc weapon master.  He is located in Orgrimmar's Valley of Honor.  He can train the use of bows, daggers, fist weapons, one and two-handed axes and thrown weapons.  Hanashi, the troll weapon master in the Valley of Honor of Orgrimmar, can instruct in the use of bows, one and two-handed axes, staves and all thrown weapons.  Ansekhwa, the tauren weapon master, is on Thunder Bluff's lower rise.  He teaches the use of one and two-handed maces, staves and guns. ", d=38.950, v="scourge-male-warrior" },
 	},
 	[11872] = {
 		{ f="11872-a76f6bcc", h="a76f6bcc", t="These are dangerous times, adventurer. Walk lightly.", d=3.179, v="gnome-female-nerdy" },
@@ -7703,6 +7817,9 @@ pack.gossip = {
 		{ f="12018-6a1f358f", h="6a1f358f", t="The Firelord and his brethren once held sway over this entire world, mortal. As a servant of the Old Gods, he fought against the Titans for domination of this planet. The victorious Titans banished my master and his brethren to the Elemental Plane - there to remain imprisoned until the end of time.", d=20.374, v="human-male" },
 		{ f="12018-aed2736f", h="aed2736f", t="A mere three hundred years ago, a reckless dwarf named Thaurissan summoned the master from his fiery realm. His return to this paltry world devastated the surrounding lands and created this volcanic Core. Mighty Ragnaros has slept under this mountain ever since.  ", d=18.399, v="human-male" },
 		{ f="12018-ecff1016", h="ecff1016", t="We, his sworn servants, do his bidding and enforce his iron-rule. Cut off from the energies of his fiery realm, Ragnaros is but a shadow of his true self. However, he has more than enough strength to be your end.       ", d=15.420, v="human-male" },
+	},
+	[12022] = {
+		{ f="12022-e6856f0e", h="e6856f0e", t="How may I aid you?", d=2.000, v="nightelf-female" },
 	},
 	[12031] = {
 		{ f="12031-eab06e19", h="eab06e19", t="I should find some hired help; I don't like sitting here all day selling fish supplies. I'd much rather go fishing, and then sell supplies.", d=10.560, v="troll-female" },
@@ -8328,7 +8445,7 @@ pack.gossip = {
 		{ f="14470-637e94b9", h="637e94b9", t="Some call me... Impsy?", d=1.890, v="human-male" },
 	},
 	[14494] = {
-		{ f="14494-14a438f1", h="14a438f1", t="I know you will, $n.$B$BI myself am a priestess, though, unlike you I am long since gone from this world. My spirit, however, remains here, as do the spirits of the thousands who were brutally slain by the mad Prince, Arthas Menethil and his legion of undeath.", d=15.069, v="human-female" },
+		{ f="14494-14a438f1", h="14a438f1", t="I know you will, $n.$B$BI myself am a priestess, though, unlike you I am long since gone from this world. My spirit, however, remains here, as do the spirits of the thousands who were brutally slain by the mad Prince, Arthas Menethil and his legion of undeath.", d=15.617, v="human-female" },
 		{ f="14494-1719742b", h="1719742b", t="You were. The Eye is never wrong.$B$BYou are a $g priest:priestess;, after all. A powerful $g priest:priestess;, if the Eye showed you this horrible memory.$B$BYou have come for redemption, yet you yourself do not even realize this... Do you?", d=12.270, v="human-female", g=true },
 		{ f="14494-37e56e23", h="37e56e23", t="Praise the Light, one has finally answered the calling.", d=3.173, v="human-female" },
 		{ f="14494-83d3afc9", h="83d3afc9", t="<Eris nods.>$B$BThe Eye has seen so many horrors and so many wonders.$B$BIt displays what it feels the one looking into it is most suited to see.", d=7.870, v="human-female", P={ { d=1.202, n=true }, { d=7.793 } }, nP={ [1]={ [1]=2.000 } } },
@@ -8417,8 +8534,8 @@ pack.gossip = {
 		{ f="14727-5457bc8c", h="5457bc8c", t="Aye, you there!  If you want to earn the respect of the Darkspear, then you can start by donating valuable resources for those in need!  Textiles and bandages don't grow on trees, ya know.  Rather than cash in various cloth pieces you find adventuring, donate them!  Doing so will earn you the recognition of the Darkspear!", d=23.350, v="troll-female-laidback" },
 	},
 	[14728] = {
-		{ f="14728-614f66b2", h="614f66b2", t="Hail $g brother : sister;... I'd like a moment of your time, if I may.$B$BWe tauren have endured much in our trials and tribulations in establishing our homeland.  We now find ourselves in a dire shortage of cloth.  If you have the materials to spare, I ask that you please donate them.  You certainly would earn the gratitude of tauren everywhere in helping us out!", d=19.967, v="tauren-male-warrior", g=true },
-		{ f="14728-9fb0176c", h="9fb0176c", t="Hail sister... I'd like a moment of your time, if I may.  We tauren have endured much in our trials and tribulations in establishing our homeland.  We now find ourselves in a dire shortage of cloth.  If you have the materials to spare, I ask that you please donate them.  You certainly would earn the gratitude of tauren everywhere in helping us out!", d=19.341, v="tauren-male-warrior" },
+		{ f="14728-614f66b2", h="614f66b2", t="Hail $g brother : sister;... I'd like a moment of your time, if I may.$B$BWe tauren have endured much in our trials and tribulations in establishing our homeland.  We now find ourselves in a dire shortage of cloth.  If you have the materials to spare, I ask that you please donate them.  You certainly would earn the gratitude of tauren everywhere in helping us out!", d=22.528, v="tauren-male-warrior", g=true },
+		{ f="14728-9fb0176c", h="9fb0176c", t="Hail sister... I'd like a moment of your time, if I may.  We tauren have endured much in our trials and tribulations in establishing our homeland.  We now find ourselves in a dire shortage of cloth.  If you have the materials to spare, I ask that you please donate them.  You certainly would earn the gratitude of tauren everywhere in helping us out!", d=21.086, v="tauren-male-warrior" },
 	},
 	[14729] = {
 		{ f="14729-9e055276", h="9e055276", t="You there... it is in your best interest to aid the Forsaken during these dire times.  Listen closely, as I dislike repeating myself.$B$BWe currently find ourselves in a dire shortage of cloth.  Bandages and simple textiles are running low, and donations are being accepted to bolster sagging inventories.  While you'll not receive financial compensation - hence what donation means - your aid will not go unnoticed.", d=27.710, v="scourge-male-dark" },
@@ -8451,7 +8568,7 @@ pack.gossip = {
 		{ f="14731-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=37.550, v="ogre-male" },
 		{ f="14731-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.600, v="ogre-male" },
 		{ f="14731-9507b89f", h="9507b89f", t="Lard keep peace here. Lard also sell fish. Want fish?", d=7.920, v="ogre-male" },
-		{ f="14731-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=37.310, v="ogre-male" },
+		{ f="14731-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=42.310, v="ogre-male" },
 		{ f="14731-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=8.680, v="ogre-male" },
 		{ f="14731-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=32.270, v="ogre-male" },
 		{ f="14731-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.400, v="ogre-male" },
@@ -8691,7 +8808,7 @@ pack.gossip = {
 		{ f="15011-c09ac14a", h="c09ac14a", t="Greetings, $c.  It is the time of the Harvest Festival - a time of great bounties and a time of remembrance.  We partake of feasts to celebrate all we have to be thankful of, and we remember our ancestors and past heroes to give thanks to the legacy they gave us.$B$BPlease feel free to partake of the feast being offered here.  Also, I am offering some fireworks to help celebrate this joyous time of year.", d=29.750, v="dwarf-male-standard" },
 	},
 	[15012] = {
-		{ f="15012-c09ac14a", h="c09ac14a", t="Greetings, $c.  It is the time of the Harvest Festival - a time of great bounties and a time of remembrance.  We partake of feasts to celebrate all we have to be thankful of, and we remember our ancestors and past heroes to give thanks to the legacy they gave us.$B$BPlease feel free to partake of the feast being offered here.  Also, I am offering some fireworks to help celebrate this joyous time of year.", d=29.430, v="orc-male-standard" },
+		{ f="15012-c09ac14a", h="c09ac14a", t="Greetings, $c.  It is the time of the Harvest Festival - a time of great bounties and a time of remembrance.  We partake of feasts to celebrate all we have to be thankful of, and we remember our ancestors and past heroes to give thanks to the legacy they gave us.  Please feel free to partake of the feast being offered here.  Also, I am offering some fireworks to help celebrate this joyous time of year.", d=29.430, v="orc-male-standard" },
 	},
 	[15021] = {
 		{ f="15021-ddd52957", h="ddd52957", t="We must not allow the Alliance to expand their power base in Arathi!  Even their miniscule Refuge Pointe may one day grow to threaten us.", d=11.880, v="scourge-female-warrior" },
@@ -8808,7 +8925,7 @@ pack.gossip = {
 		{ f="15174-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.760, v="nightelf-female" },
 		{ f="15174-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=37.070, v="nightelf-female" },
 		{ f="15174-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=7.120, v="nightelf-female" },
-		{ f="15174-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=39.950, v="nightelf-female" },
+		{ f="15174-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=39.630, v="nightelf-female" },
 		{ f="15174-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=8.160, v="nightelf-female" },
 		{ f="15174-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=29.230, v="nightelf-female" },
 		{ f="15174-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=11.840, v="nightelf-female" },
@@ -9558,14 +9675,14 @@ pack.gossip = {
 	},
 	[16113] = {
 		{ f="16113-48e74ca4", h="48e74ca4", t="The Lich King is attempting to make his presence known in our world. This must not be allowed to occur. ", d=7.401, v="human-male-standard" },
-		{ f="16113-a5779e7f", h="a5779e7f", t="Faith... Some have lost it, others have found it. It cannot be destroyed and it cannot be created.$B$BOr perhaps you speak of the vestments of Faith? Armor worn by our priests and most devout warriors into battle against the Scourge during the last war.$B$BAye, much of it is lost... Stolen by the fiends of Naxxramas.", d=21.227, v="human-male-standard" },
+		{ f="16113-a5779e7f", h="a5779e7f", t="Faith... Some have lost it, others have found it. It cannot be destroyed and it cannot be created.$B$BOr perhaps you speak of the vestments of Faith? Armor worn by our priests and most devout warriors into battle against the Scourge during the last war.$B$BAye, much of it is lost... Stolen by the fiends of Naxxramas.", d=20.478, v="human-male-standard" },
 	},
 	[16114] = {
 		{ f="16114-28c4ec25", h="28c4ec25", t="The Argent Dawn might be impotent idealists but their delusional leader knows that they are outmatched. I have been sent here as an emissary of the Scarlet Crusade. An ambassador, if you will... It is doubtful that we could even dent the armies of Kel'Thuzad - united or not - but we might be able to contain them long enough for some sort of miracle to happen.$B$BAs for me? I'll die in battle...$B$B<Marjhan shrugs.> ", d=22.029, v="human-female-warrior", P={ { d=22.138 }, { d=1.707, n=true } }, nP={ [1]={ [2]=1.800 } } },
 	},
 	[16115] = {
 		{ f="16115-0d3455c6", h="0d3455c6", t="Watch your step, $r. We of the Brotherhood of the Light are not as lenient as our brethren when it comes to meting justice to those that would do this world wrong.$B$BWoe unto those that would anger Korfax.$B$BNow if you have no business with me or the other members of the Brotherhood, please leave so that we may continue our meeting.  ", d=21.642, v="human-male" },
-		{ f="16115-c150953f", h="c150953f", t="The armor of Redemption was worn by our most pious knights - armor worthy of the Lightbringer himself!$B$BThousands fell in the last war; their vestments stripped from their corpses and taken to the dread citadel of Naxxramas.$B$BIt is said that the death knights of Naxxramas corrupt the Redemption plate mail for their own use.$B$BSuch tragedy... ", d=21.457, v="human-male" },
+		{ f="16115-c150953f", h="c150953f", t="The armor of Redemption was worn by our most pious knights - armor worthy of the Lightbringer himself!$B$BThousands fell in the last war; their vestments stripped from their corpses and taken to the dread citadel of Naxxramas.$B$BIt is said that the death knights of Naxxramas corrupt the Redemption plate mail for their own use.$B$BSuch tragedy... ", d=20.391, v="human-male" },
 	},
 	[16116] = {
 		{ f="16116-0a2b36bb", h="0a2b36bb", t="There is not much more to tell. Dalaran was nearly wholly destroyed by Archimonde, the staff lost, presumably shattered by the barrier's fail-safe mechanisms.$B$BThere are those that believe the staff to be the cause of Archimonde's reprisal.", d=12.881, v="human-female-warrior" },
@@ -9594,7 +9711,7 @@ pack.gossip = {
 		{ f="16131-f54be640", h="f54be640", t="I'm as sane as the next guy, $g fella:lady;. Believe what you will, but I AM capable of fashioning this armor. If you're interested, maybe we can make a deal. The sooner I can get out of the assassination business, the better.", d=14.548, v="human-male", g=true },
 	},
 	[16132] = {
-		{ f="16132-08e77b7d", h="08e77b7d", t="I have discovered a use for the carapace of the crypt fiend and its various body parts. I am able to fashion an extremely light and very deadly set of armor by combining the fragments with some of the desecrated magical armors lost in Naxxramas.", d=16.988, v="human-male" },
+		{ f="16132-08e77b7d", h="08e77b7d", t="I have discovered a use for the carapace of the crypt fiend and its various body parts. I am able to fashion an extremely light and very deadly set of armor by combining the fragments with some of the desecrated magical armors lost in Naxxramas.", d=17.667, v="human-male" },
 		{ f="16132-d2e7ad21", h="d2e7ad21", t="Those filthy beasts are all over the place.$B$BIf you prefer hunting outdoors, you'll find most of them around Plaguewood and Terrordale, with a good concentration of them in the Terrorweb tunnel. They are also likely to appear at almost any Scourge encampment in the Eastern Plaguelands.$B$BIf you're a hearty dungeon crawler, you'll find a good lot of them in Stratholme and a few of the necrofiend variety in Scholomance.", d=25.127, v="human-male" },
 		{ f="16132-e644f960", h="e644f960", t="The preternatural ability of the crypt fiend to hunt and kill its foe is one studied and vaunted by men in my profession. I, myself, have slain thousands of the beasts in my crusade to rid this world of Scourge.$B$BWhile I loathe the crypt fiend for its merciless nature, its abilities must be admired. It has a job and it does it - very well.", d=24.287, v="human-male" },
 		{ f="16132-f1b48e22", h="f1b48e22", t="They almost sent my brother, Loksey, to this gathering. He cannot even take care of his hounds, let alone represent the Scarlet Crusade in a competent manner.", d=9.507, v="human-male" },
@@ -9602,17 +9719,17 @@ pack.gossip = {
 	[16133] = {
 		{ f="16133-02d4cc60", h="02d4cc60", t="I make no pretenses, maggot. The darkness such items hold could very well destroy the both of us. That is why the price is so high. If I'm going to die, it's going to be as a rich man.$B$BAnd I don't give an ounce of gnoll spit how you die, only that you do as I ask. Bring me what I require and we will both benefit - or die, but I've already explained this...", d=24.061, v="human-male-standard" },
 		{ f="16133-5f30e8b7", h="5f30e8b7", t="What is it that you want, lemming? Get out of my sight before you find out why I am known as the Wrathcaster.", d=6.566, v="human-male-standard" },
-		{ f="16133-ce86f7b5", h="ce86f7b5", t="It is power, imbecile.$B$B<Mataus's eyes darken.>$B$BThese fools send idiots like you into Naxxramas to retrieve desecrated armor so that they may purify it and restore the pieces to their former glory.$B$B<Mataus spits.>$B$BJust the thought of such utter stupidity brings the bile up to my throat.$B$BI too seek that armor, but in its most foul and desecrated form.", d=22.421, v="human-male-standard", P={ { d=2.377 }, { d=2.120, n=true }, { d=9.800 }, { d=0.547, n=true }, { d=10.347 } }, nP={ [1]={ [2]=2.640, [4]=1.720 } } },
+		{ f="16133-ce86f7b5", h="ce86f7b5", t="It is power, imbecile.$B$B<Mataus's eyes darken.>$B$BThese fools send idiots like you into Naxxramas to retrieve desecrated armor so that they may purify it and restore the pieces to their former glory.$B$B<Mataus spits.>$B$BJust the thought of such utter stupidity brings the bile up to my throat.$B$BI too seek that armor, but in its most foul and desecrated form.", d=22.973, v="human-male-standard", P={ { d=2.377 }, { d=2.120, n=true }, { d=10.349 }, { d=0.547, n=true }, { d=10.347 } }, nP={ [1]={ [2]=2.640, [4]=1.720 } } },
 	},
 	[16134] = {
-		{ f="16134-2674ded0", h="2674ded0", t="In the last war, tauren fought. Shaman were sent in defense of this world against the Scourge invasion. Most lost their lives. Many were otherwise ripped asunder, their body parts used for foul experiments in that cursed citadel. I mourn their passing but my heart swells with pride at their courage.", d=20.400, v="tauren-male" },
+		{ f="16134-2674ded0", h="2674ded0", t="In the last war, tauren fought. Shaman were sent in defense of this world against the Scourge invasion. Most lost their lives. Many were otherwise ripped asunder, their body parts used for foul experiments in that cursed citadel. I mourn their passing but my heart swells with pride at their courage.", d=21.000, v="tauren-male" },
 		{ f="16134-4ff34eb5", h="4ff34eb5", t="The name of Earthshatter has been one held by my family for hundreds of years. And like my father and his father before him, I too have inherited the right to create the vestments of my namesake. ", d=13.040, v="tauren-male" },
-		{ f="16134-5d8c8885", h="5d8c8885", t="I was a young tauren, barely having reached adolescence at the time, but I knew that those that would brave the battles for our freedom were well protected in my namesake's vestments.", d=10.480, v="tauren-male" },
+		{ f="16134-5d8c8885", h="5d8c8885", t="I was a young tauren, barely having reached adolescence at the time, but I knew that those that would brave the battles for our freedom were well protected in my namesake's vestments.", d=11.280, v="tauren-male" },
 		{ f="16134-ca9aee41", h="ca9aee41", t="I've been expec...$B$B<Rimblat coughs.>$B$BExcuse me, old habit. I am Rimblat of the Earthen Ring. ", d=6.640, v="tauren-male", P={ { d=2.600 }, { d=2.146, n=true }, { d=4.640 } }, nP={ [1]={ [2]=1.840 } } },
 	},
 	[16135] = {
 		{ f="16135-10ad3aad", h="10ad3aad", t="If you are one that prefers to hunt in the outdoor world, both Felwood's treants and Un'Goro's lashers are an excellent source of fronds.$B$BIf you are more of a risk-taker, the eastern and western wings of Dire Maul will provide you with a nearly limitless supply of savage fronds.", d=22.520, v="nightelf-female-priestess" },
-		{ f="16135-33e9e62c", h="33e9e62c", t="I think not. Rimblat has already proven that new life can grow from the sundered earth. Now we must find a way to reproduce and, more importantly, sustain the growth.$B$BWhile I am here, I am also offering my services to adventurers entering Naxxramas.", d=22.800, v="nightelf-female-priestess" },
+		{ f="16135-33e9e62c", h="33e9e62c", t="I think not. Rimblat has already proven that new life can grow from the sundered earth. Now we must find a way to reproduce and, more importantly, sustain the growth.$B$BWhile I am here, I am also offering my services to adventurers entering Naxxramas.", d=20.480, v="nightelf-female-priestess" },
 		{ f="16135-422c16fb", h="422c16fb", t="I am a crafter of some renown, $c. With the proper materials, I am able to craft an armor known as Dreamwalker. Druids - and even some shaman - are drawn to this armor due to its magical properties. Are you interested?", d=21.520, v="nightelf-female-priestess" },
 		{ f="16135-5c91891c", h="5c91891c", t="We are all drawn here for different reasons, $c.$B$B<Rayne smiles.>$B$BI am here to meet with Rimblat of the Earthen Ring. He has some interesting theories on cleansing these lands.", d=14.200, v="nightelf-female-priestess", P={ { d=5.520 }, { d=1.535, n=true }, { d=10.280 } }, nP={ [1]={ [2]=1.880 } } },
 		{ f="16135-dfd2cf25", h="dfd2cf25", t="Hello, $c. Please excuse me as I am having a conversation with Rimblat. He believes that even this land is not beyond saving.", d=12.200, v="nightelf-female-priestess" },
@@ -9660,7 +9777,7 @@ pack.gossip = {
 		{ f="16256-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=3.831, v="human-female" },
 		{ f="16256-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=26.506, v="human-female" },
 		{ f="16256-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=5.834, v="human-female" },
-		{ f="16256-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=28.003, v="human-female" },
+		{ f="16256-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=26.803, v="human-female" },
 		{ f="16256-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=4.850, v="human-female" },
 		{ f="16256-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=23.131, v="human-female" },
 		{ f="16256-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=7.792, v="human-female" },
@@ -9780,7 +9897,7 @@ pack.gossip = {
 		{ f="16458-7b1bcef4", h="7b1bcef4", t="The Deadmines can be found beneath Moonbrook in the south of Westfall.", d=5.440, v="nightelf-female-sentinel" },
 		{ f="16458-7de88db1", h="7de88db1", t="Located in Dun Morogh, Gnomeregan has been the gnomes' capital city for generations, though it was recently infested by mutant troggs. In a desperate attempt to retaliate, High Tinker Mekkatorque ordered the emergency venting of the city's radioactive waste tanks. Though the troggs became irradiated, their siege continued unabated and the gnomes were forced to seek refuge in the dwarven city of Ironforge, where the High Tinker now enlists brave souls to help his people reclaim their beloved city.  ", d=38.670, v="nightelf-female-sentinel" },
 		{ f="16458-864c5566", h="864c5566", t="The Wailing Caverns has its entrance at the Lushwater Oasis southwest of Crossroads in the Barrens.   ", d=8.000, v="nightelf-female-sentinel" },
-		{ f="16458-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=40.590, v="nightelf-female-sentinel" },
+		{ f="16458-95351c86", h="95351c86", t="Once the jewel of northern Lordaeron, the city of Stratholme is where Prince Arthas turned against his mentor, Uther Lightbringer, and slaughtered hundreds of his own subjects who were believed to have contracted the plague of undeath. Arthas' surrender to the Lich King soon followed. The broken city is now inhabited by the undead Scourge - led by the powerful lich, Kel'Thuzad, and a contingent of Scarlet Crusaders, led by Grand Crusader Dathrohan. The two sides are locked in constant, violent combat.  ", d=43.390, v="nightelf-female-sentinel" },
 		{ f="16458-a9df0aa1", h="a9df0aa1", t="Blackfathom Deeps can be found at the north end of Zoram Strand along the coast of Ashenvale.", d=8.080, v="nightelf-female-sentinel" },
 		{ f="16458-ab572ddf", h="ab572ddf", t="The monastery was once a center for learning and enlightenment. With the rise of the undead Scourge during the Third War, the peaceful Monastery was converted into a stronghold of the fanatical Scarlet Crusade. The Crusaders are intolerant of all non-human races, regardless of alliance or affiliation. They believe that any and all outsiders are potential carriers of the undead plague - and must be destroyed.  ", d=34.750, v="nightelf-female-sentinel" },
 		{ f="16458-ad5ec0ca", h="ad5ec0ca", t="No, I'm not, but lots of others are looking for love.  You should buy my love tokens, put on some cologne or perfume, and then pass them around!", d=12.400, v="nightelf-female-sentinel" },
@@ -9809,8 +9926,8 @@ pack.gossip = {
 		{ f="16818-a52ed1a8", h="a52ed1a8", t="Enjoying the festival, $c?$b$bWhile the Flamekeeper tends to the fires of the present, I am more of a historian, keeping close the festivals past. I'm also, of course, documenting this year's festivities. Things are going well thus far, don't you think?$b$bYou know, $n, there is power inherent in all festival fires burning throughout the holiday. We're taking care of ours, but I'm certain there are sacred flames burning deep within our enemy's cities...", d=30.470, v="scourge-male-dark" },
 	},
 	[16999] = {
-		{ f="16999-88e41217", h="88e41217", t="Greetings, $n. I am Johnny McWeaksauce. I am used as a tool by developers to carry out specific functions for the purpose of testing. For this test period, I am set to do two specific things:$B$B(1) Flag you as having done the Naxxramas attunement quest so that you are able to accept the next quest, \"Echoes of War\" from Commander Eligor Dawnbringer. You must first complete that quest to be able to access the quests for your Tier 3 armor set.$B$B(2) Teleport you to Naxxramas.$B$BWhat is it that you require?", d=38.865, v="human-male" },
-		{ f="16999-9f6fb3b0", h="9f6fb3b0", t="Greetings, $n. I see that you are already flagged as having completed the quest to gain entry to Naxxramas. Be sure to speak with Commander Eligor Dawnbringer at Light's Hope Chapel in the Eastern Plaguelands to acquire the quest, \"Echoes of War.\" You must first complete that quest to be able to access the quests for your Tier 3 armor set.$B$BI am able to teleport you directly to Naxxramas or you may use the portal found in Plaguewood, to the west.", d=31.028, v="human-male" },
+		{ f="16999-88e41217", h="88e41217", t="Greetings, $n. I am Johnny McWeaksauce. I am used as a tool by developers to carry out specific functions for the purpose of testing. For this test period, I am set to do two specific things:$B$B(1) Flag you as having done the Naxxramas attunement quest so that you are able to accept the next quest, \"Echoes of War\" from Commander Eligor Dawnbringer. You must first complete that quest to be able to access the quests for your Tier 3 armor set.$B$B(2) Teleport you to Naxxramas.$B$BWhat is it that you require?", d=37.772, v="human-male" },
+		{ f="16999-9f6fb3b0", h="9f6fb3b0", t="Greetings, $n. I see that you are already flagged as having completed the quest to gain entry to Naxxramas. Be sure to speak with Commander Eligor Dawnbringer at Light's Hope Chapel in the Eastern Plaguelands to acquire the quest, \"Echoes of War.\" You must first complete that quest to be able to access the quests for your Tier 3 armor set.$B$BI am able to teleport you directly to Naxxramas or you may use the portal found in Plaguewood, to the west.", d=30.176, v="human-male" },
 	},
 	[17209] = {
 		{ f="17209-2628f23d", h="2628f23d", t="Don't be alarmed... while my gryphons may not be entirely whole, they will still carry you faithfully to your destination. Tell me... which tower do you seek?", d=9.696, v="human-male-standard" },
@@ -9825,7 +9942,7 @@ pack.gossip = {
 		{ f="49808-54d44412", h="54d44412", t="Great ta meet ya.", d=1.680, v="dwarf-female" },
 	},
 	[123456] = {
-		{ f="123456-927dcf86", h="927dcf86", t="The winds favor you, $n.", d=2.360, v="skyborne-female" },
+		{ f="123456-927dcf86", h="927dcf86", t="The winds favor you, $n.", d=2.880, v="skyborne-female" },
 	},
 	[210845] = {
 		{ f="210845-172a35bd", h="172a35bd", t="Yo, $c, what's good?", d=1.680, v="goblin-male" },
@@ -9834,8 +9951,8 @@ pack.gossip = {
 		{ f="227853-066d9580", h="066d9580", t="Impulse purchases are the most fun kind of purchases!", d=3.440, v="goblin-female" },
 	},
 	[244808] = {
-		{ f="244808-3f8410df", h="3f8410df", t="Welcome back to the light, friend. Do you require training?", d=3.900, v="human-male" },
-		{ f="244808-942bf955", h="942bf955", t="You may not be a paladin, but you may yet find solace in the light should you seek it.", d=5.939, v="human-male" },
+		{ f="244808-3f8410df", h="3f8410df", t="Welcome back to the light, friend. Do you require training?", d=6.240, v="scourge-male" },
+		{ f="244808-942bf955", h="942bf955", t="You may not be a paladin, but you may yet find solace in the light should you seek it.", d=5.760, v="scourge-male" },
 	},
 	[246143] = {
 		{ f="246143-0c0fbd1e", h="0c0fbd1e", t="No! No, no, no! This can't be. I'd rather be dead than Forsaken!     <The Frightened $C raises her weapon, preparing to attack!>", d=8.240, v="scourge-female", P={ { d=8.360 }, { d=4.075, n=true } }, nP={ [1]={ [2]=4.960 } } },
@@ -9849,22 +9966,29 @@ pack.gossip = {
 		{ f="246344-3f8410df", h="3f8410df", t="Welcome back to the light, friend. Do you require training?", d=4.080, v="scourge-male" },
 	},
 	[246349] = {
-		{ f="246349-da04ef25", h="da04ef25", t="If you've come seeking the fellowship of your fellow paladins, you've come to the right place.     Welcome home.", d=10.600, v="scourge-male" },
+		{ f="246349-da04ef25", h="da04ef25", t="If you've come seeking the fellowship of your fellow paladins, you've come to the right place.     Welcome home.", d=6.484, v="human-male" },
 	},
 	[246378] = {
-		{ f="246378-2369eee7", h="2369eee7", t="Welcome to Bandarion Keep, $c.", d=4.200, v="scourge-female" },
+		{ f="246378-2369eee7", h="2369eee7", t="Welcome to Bandarion Keep, $c.", d=3.250, v="human-female" },
 	},
 	[246389] = {
-		{ f="246389-8e0ab317", h="8e0ab317", t="Why do they call me \"The Breaker\"?    Trust me, you don't want to know.", d=5.200, v="scourge-female" },
-		{ f="246389-b676ae27", h="b676ae27", t="A little bit of a lot of things. Mostly I take the soft and weak and reshape them into hardened fighters once again.    It's a tough world out there, and even our own people mistrust us. We need to be tough and self-reliant if we are to fit into this \"horde\" with the rest of our people.", d=23.320, v="scourge-female" },
+		{ f="246389-8e0ab317", h="8e0ab317", t="Why do they call me \"The Breaker\"?    Trust me, you don't want to know.", d=4.042, v="human-female" },
+		{ f="246389-b676ae27", h="b676ae27", t="A little bit of a lot of things. Mostly I take the soft and weak and reshape them into hardened fighters once again.    It's a tough world out there, and even our own people mistrust us. We need to be tough and self-reliant if we are to fit into this \"horde\" with the rest of our people.", d=13.275, v="human-female" },
 	},
 	[246393] = {
-		{ f="246393-a5383807", h="a5383807", t="There are many things lurking out there in the dark and the light is needed now more than ever. If only these poor souls could see that just because our world has changed, that doesn't mean we have to be the monsters that the living think we are.", d=17.920, v="scourge-male" },
-		{ f="246393-af07d724", h="af07d724", t="I make sure we are provisioned and that the scant resources we do are distributed properly.     If this were a proper order, I'd be something of a quartermaster. Such as we are however, I just do my best to make sure we are at least somewhat equipped to deal with the dangers all around us.", d=20.760, v="scourge-male" },
+		{ f="246393-a5383807", h="a5383807", t="There are many things lurking out there in the dark and the light is needed now more than ever. If only these poor souls could see that just because our world has changed, that doesn't mean we have to be the monsters that the living think we are.", d=14.000, v="human-male" },
+		{ f="246393-af07d724", h="af07d724", t="I make sure we are provisioned and that the scant resources we do are distributed properly.     If this were a proper order, I'd be something of a quartermaster. Such as we are however, I just do my best to make sure we are at least somewhat equipped to deal with the dangers all around us.", d=18.011, v="human-male" },
 	},
 	[246394] = {
 		{ f="246394-63539e70", h="63539e70", t="In my previous life, I lived nearby here. I still wander the fields of my childhood farmstead occasionally. It fills me with sadness to see those I knew and loved, shambling around as mindless thralls. It pains me, but its that very pain that gives me strength and purpose.", d=18.840, v="scourge-male" },
 		{ f="246394-82d61c10", h="82d61c10", t="Mostly the usual. Murloc attacks, the occasional Scarlet Crusade skirmish. There are even some paladins that can't quite adjust to life as a Forsaken. Far too often we have to put those down that turn their blades upon their brothers.     By far the worst is when some mindless thrall wanders too close. I can kill murlocs all day, but some of the scourge I've had to destroy were former friends of mine. Some were even family members.    I'd rather it be me who puts them down than some random adventurer, but it still stings.", d=38.710, v="scourge-male" },
+	},
+	[246752] = {
+		{ f="246752-21834042", h="21834042", t="Unfortunately the rumor of our plight is true. Disruptions to our ley lines have unveiled a disturbance amongst the arcane forces of our city.    With Dalaran on the cusp of reopening its borders to our allies, we are in dire need of immediate solutions.", d=15.998, v="human-male" },
+	},
+	[246848] = {
+		{ f="246848-93d3f9d1", h="93d3f9d1", t="Greetings $N. Welcome to the kingdom of Dalaran. There are restrictions in place while the city remains under construction. If you have important matters that must be presented to the Kirin Tor you may speak with Arcanist Ginsberg in the overlook to the east.", d=14.224, v="human-female" },
+		{ f="246848-ae06472b", h="ae06472b", t="It is still under construction and only a short walk up the northeast road. The Alterac mountains have brought unneeded attention from some wild creatures and our recent interest in Silverpine Forest has kept our patrols quite busy.  Some small rumors have even spread about a juvenile drake soaring over the mountains with a full eye.", d=18.247, v="human-female" },
 	},
 	[247226] = {
 		{ f="247226-58a0ba23", h="58a0ba23", t="Blast these kobolds. I can't get any work done with them running back and forth, getting in my way. Well, I've got nothing better to do, would you like to learn about mining techniques? Or perhaps you just need some new tools?", d=12.040, v="human-female" },
@@ -9885,7 +10009,7 @@ pack.gossip = {
 		{ f="248197-cc5aee35", h="cc5aee35", t="You won't find better equipment anywhere else!", d=4.000, v="orc-male" },
 	},
 	[248199] = {
-		{ f="248199-4ee395b7", h="4ee395b7", t="Oh! Greetings, friend. Feel free to browse my wares.", d=4.360, v="skyborne-male" },
+		{ f="248199-4ee395b7", h="4ee395b7", t="Oh! Greetings, friend. Feel free to browse my wares.", d=4.640, v="skyborne-male" },
 	},
 	[248200] = {
 		{ f="248200-fa94e10d", h="fa94e10d", t="Yo, what do you need?", d=1.360, v="goblin-male" },
@@ -9893,17 +10017,23 @@ pack.gossip = {
 	[248201] = {
 		{ f="248201-b9df183f", h="b9df183f", t="Greetings, friend! I have ample supply of leather and hides, and I know a few techniques I might be willing to share. Interested in doing business?", d=10.360, v="tauren-female" },
 	},
+	[248202] = {
+		{ f="248202-055d4e51", h="055d4e51", t="<Jim'bek locks eyes with you as he takes a deep puff from his hookah.>    'Ello, mon. Need a rug? A blanket? Or just some cloth for your next project? I got you.", d=5.999, v="human-male", P={ { d=4.838, n=true }, { d=6.042 } }, nP={ [1]={ [1]=6.200 } } },
+	},
 	[248415] = {
-		{ f="248415-72040e11", h="72040e11", t="I kinnae help ye with trainin'. Ye should look fer a $c trainer.", d=4.840, v="dwarf-male" },
-		{ f="248415-a665cdb8", h="a665cdb8", t="Wot kin I do fer ye?", d=1.800, v="dwarf-male" },
-		{ f="248415-bdfaa98c", h="bdfaa98c", t="I heard ol' Marshal McBride was sendin' ye' my way.", d=3.520, v="dwarf-male" },
+		{ f="248415-72040e11", h="72040e11", t="I kinnae help ye with trainin'. Ye should look fer a $c trainer.", d=6.118, v="human-male" },
+		{ f="248415-a665cdb8", h="a665cdb8", t="Wot kin I do fer ye?", d=2.517, v="human-male" },
+		{ f="248415-bdfaa98c", h="bdfaa98c", t="I heard ol' Marshal McBride was sendin' ye' my way.", d=3.347, v="human-male" },
 	},
 	[248840] = {
-		{ f="248840-280b51d5", h="280b51d5", t="In the darkest of nights, trust in the light to protect you. Of course, having a nice, sturdy mace doesn't hurt either.", d=9.520, v="scourge-male" },
-		{ f="248840-f221cbc0", h="f221cbc0", t="The Son of Argual that attacked Lumina is known as Old Fire-Eye. He's not only well-known for his ferocity, but for his stubborn refusal to die. I've been doing a fair amount of research and I think that we can forge a blade that will do the trick and put him down for good.    Here, I've prepared a list of materials and information about how to get them for you. When you've gathered what we need, return to me and we'll get started.", d=31.030, v="scourge-male" },
+		{ f="248840-280b51d5", h="280b51d5", t="In the darkest of nights, trust in the light to protect you. Of course, having a nice, sturdy mace doesn't hurt either.", d=8.619, v="human-male" },
+		{ f="248840-f221cbc0", h="f221cbc0", t="The Son of Argual that attacked Lumina is known as Old Fire-Eye. He's not only well-known for his ferocity, but for his stubborn refusal to die. I've been doing a fair amount of research and I think that we can forge a blade that will do the trick and put him down for good.    Here, I've prepared a list of materials and information about how to get them for you. When you've gathered what we need, return to me and we'll get started.", d=28.318, v="human-male" },
 	},
 	[249363] = {
-		{ f="249363-260391fc", h="260391fc", t="The Wind Spirits have left us.     Now, only mindless echoes now remain. Be wary, however. These winds are neither kind, nor gentle.", d=9.600, v="skyborne-female" },
+		{ f="249363-260391fc", h="260391fc", t="The Wind Spirits have left us.     Now, only mindless echoes now remain. Be wary, however. These winds are neither kind, nor gentle.", d=11.280, v="skyborne-female" },
+	},
+	[249713] = {
+		{ f="249713-0c768ee1", h="0c768ee1", t="Shhh! You'll give away my hiding spot!", d=3.160, v="humanfemalekid-female" },
 	},
 	[250686] = {
 		{ f="250686-3c4152a4", h="3c4152a4", t="Praise to the Banshee Queen, it isn't often I have visitors out here.", d=6.040, v="scourge-female" },
@@ -9912,45 +10042,48 @@ pack.gossip = {
 		{ f="250929-4b2429f8", h="4b2429f8", t="<As you approach the enormous cyclone construct, you hear a faint buzzing emanating from beneath its massive armor plates. If you listen carefully you think you might be able to hear a few words being formed but they are too distorted to make out.>", d=14.764, v="narrator", n={ [1]=19.600 } },
 	},
 	[251001] = {
-		{ f="251001-379c835f", h="379c835f", t="Please do see that he reads it at once. I fear our Scourge problem has only just begun.    Come see me again in due time. I believe I have nearly uncovered something I could use a willing blade to help with.", d=17.240, v="scourge-male" },
-		{ f="251001-5d6f0b28", h="5d6f0b28", t="What are you looking for?", d=1.720, v="scourge-male" },
+		{ f="251001-379c835f", h="379c835f", t="Please do see that he reads it at once. I fear our Scourge problem has only just begun.    Come see me again in due time. I believe I have nearly uncovered something I could use a willing blade to help with.", d=14.618, v="human-male" },
+		{ f="251001-5d6f0b28", h="5d6f0b28", t="What are you looking for?", d=1.600, v="human-male" },
 	},
 	[251361] = {
-		{ f="251361-d8b5b5c2", h="d8b5b5c2", t="What do you need of me, child of Zephras?", d=3.360, v="skyborne-male" },
+		{ f="251361-d8b5b5c2", h="d8b5b5c2", t="What do you need of me, child of Zephras?", d=3.000, v="skyborne-male" },
 	},
 	[251362] = {
-		{ f="251362-0f923099", h="0f923099", t="Hello, $c.", d=1.440, v="skyborne-female" },
+		{ f="251362-0f923099", h="0f923099", t="Hello, $c.", d=1.520, v="skyborne-female" },
 	},
 	[251371] = {
-		{ f="251371-01050762", h="01050762", t="Greetings... Windshaper.    Those that call themselves members of the Windshapers find little common cause with most members of the High Order, as I'm sure you are aware. Outside the relative harmony of Thendal Grove, you may find that these divisions run deep indeed and rivalry can give way to outright violence, in some cases.    I'll say nothing more on this, save that you should mind your own business and do not interfere with the High Order's goals once you leave the grove. This is likely the only warning you'll recieve.", d=35.300, v="skyborne-male" },
-		{ f="251371-645a98fa", h="645a98fa", t="Zephras is in great danger. The elemental wind spirits that brought us here to Skywall so many thousands of years ago have abandoned us, leaving us vulnerable in this unstable realm. Our once-robust society spanned multiple island sanctuaries in our corner of Skywall, but now we are not even sure if any other shen'dorei remain outside of this small island.    Things are dire, but the High Order is committed to rising to this challenge.", d=30.910, v="skyborne-male" },
-		{ f="251371-7b3bdf9a", h="7b3bdf9a", t="Magic can accomplish almost anything, but stagnation and inaction have caused us to lose so much of ourselves in the thousands of years since we left Kalimdor. The High Order seeks to reclaim the Highborne heritage that we've left behind and become the masters of our own destiny once again.    The Windshapers think we are simply reckless and arrogant. Hypocrisy at its finest, if you ask me. The Windshapers will entertain no ideas but their own when it comes to this crisis. Who, I wonder, is truly arrogant?", d=39.070, v="skyborne-male" },
-		{ f="251371-c4bcd3c9", h="c4bcd3c9", t="Greetings to you, fellow High Order initiate.", d=3.000, v="skyborne-male" },
+		{ f="251371-01050762", h="01050762", t="Greetings... Windshaper.    Those that call themselves members of the Windshapers find little common cause with most members of the High Order, as I'm sure you are aware. Outside the relative harmony of Thendal Grove, you may find that these divisions run deep indeed and rivalry can give way to outright violence, in some cases.    I'll say nothing more on this, save that you should mind your own business and do not interfere with the High Order's goals once you leave the grove. This is likely the only warning you'll recieve.", d=36.300, v="skyborne-male" },
+		{ f="251371-645a98fa", h="645a98fa", t="Zephras is in great danger. The elemental wind spirits that brought us here to Skywall so many thousands of years ago have abandoned us, leaving us vulnerable in this unstable realm. Our once-robust society spanned multiple island sanctuaries in our corner of Skywall, but now we are not even sure if any other shen'dorei remain outside of this small island.    Things are dire, but the High Order is committed to rising to this challenge.", d=29.550, v="skyborne-male" },
+		{ f="251371-7b3bdf9a", h="7b3bdf9a", t="Magic can accomplish almost anything, but stagnation and inaction have caused us to lose so much of ourselves in the thousands of years since we left Kalimdor. The High Order seeks to reclaim the Highborne heritage that we've left behind and become the masters of our own destiny once again.    The Windshapers think we are simply reckless and arrogant. Hypocrisy at its finest, if you ask me. The Windshapers will entertain no ideas but their own when it comes to this crisis. Who, I wonder, is truly arrogant?", d=37.430, v="skyborne-male" },
+		{ f="251371-c4bcd3c9", h="c4bcd3c9", t="Greetings to you, fellow High Order initiate.", d=3.320, v="skyborne-male" },
 	},
 	[251373] = {
-		{ f="251373-86bf8d52", h="86bf8d52", t="If you have the aptitude for the druidic arts, I can train you.", d=3.600, v="skyborne-male" },
+		{ f="251373-86bf8d52", h="86bf8d52", t="If you have the aptitude for the druidic arts, I can train you.", d=4.320, v="skyborne-male" },
+	},
+	[251374] = {
+		{ f="251374-70bfd38d", h="70bfd38d", t="The spirits of the wind may have left us, but the power of the elements is not entirely out of reach for those with the patience to seek them out.    If you are initiated in the ways of the $c, I can help you grasp them.", d=13.800, v="skyborne-male" },
 	},
 	[251376] = {
-		{ f="251376-2becf397", h="2becf397", t="The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.    If you have the proper aptitude as a $c, I can give you the tools to survive the wilds.", d=19.110, v="skyborne-female" },
+		{ f="251376-2becf397", h="2becf397", t="The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.    If you have the proper aptitude as a $c, I can give you the tools to survive the wilds.", d=27.430, v="skyborne-female" },
 	},
 	[251379] = {
-		{ f="251379-ed4232c7", h="ed4232c7", t="The followers of the old Highborne ways have never been more hungry for knowledge and to reclaim what we've lost. If you would seek to wield the power of the arcane and have the aptitude, I can help you take your next steps.", d=15.200, v="skyborne-female" },
+		{ f="251379-ed4232c7", h="ed4232c7", t="The followers of the old Highborne ways have never been more hungry for knowledge and to reclaim what we've lost. If you would seek to wield the power of the arcane and have the aptitude, I can help you take your next steps.", d=15.480, v="skyborne-female" },
 	},
 	[251389] = {
-		{ f="251389-a046a01a", h="a046a01a", t="Slay your enemies and swoon your paramours with this one weird trick.    If you follow the path of the $c, I can teach you... for a cost, of course.", d=9.800, v="skyborne-male" },
+		{ f="251389-a046a01a", h="a046a01a", t="Slay your enemies and swoon your paramours with this one weird trick.    If you follow the path of the $c, I can teach you... for a cost, of course.", d=10.840, v="skyborne-male" },
 	},
 	[251487] = {
-		{ f="251487-06790c88", h="06790c88", t="Zephras is in a state of decline, unfortunately. The elemental wind spirits that brought us here to Skywall so many thousands of years ago have vanished, causing us to lose much of the magic on which we've depended for millennia.    The island itself is also dangerously unstable, and we've even lost contact with the other island provinces of the shen'dorei. The few Windshapers that still possess the gift of skysight have attempted to contact our brothers and sisters on the other islands, but we have had no response.    Many among us are worried that the shen'dorei here on Zephras are all that is left of our people.", d=35.220, v="skyborne-female" },
-		{ f="251487-4a2bfdee", h="4a2bfdee", t="I can tell by your aura that you are of Highborne lineage, yes? Those that call themselves members of the High Order find very little common ground with the members of my order, the Windshapers. Outside the relative harmony of Thendal Grove, you may find that these divisions run very deep, deep enough to drive division and even violence.    Be mindful of this as you move throughout Zephras Isle. I'll offer you this one warning... do not cross the Windshapers.", d=32.790, v="skyborne-female" },
-		{ f="251487-ba1aa782", h="ba1aa782", t="The shen'dorei will always owe the spirits a debt for their aid, and the Windshapers have sworn an oath to repay that debt and restore things to the way they were before. Unfortunately, we are dangerously blind to what is happening around us within Skywall without the spirits to guide us.    The High Order are shortsighted and arrogant, just like their Highborne ancestors. They seek to master and control the magic of this place. This is very path that led us to flee from Kalimdor and reside here in the first place. I fear that much like our forebears their confidence has vastly outpaced their competence and the end result could be disastrous.", d=39.620, v="skyborne-female" },
-		{ f="251487-e92a645e", h="e92a645e", t="What may I do for you, fellow windshaper?", d=2.560, v="skyborne-female" },
+		{ f="251487-06790c88", h="06790c88", t="Zephras is in a state of decline, unfortunately. The elemental wind spirits that brought us here to Skywall so many thousands of years ago have vanished, causing us to lose much of the magic on which we've depended for millennia.    The island itself is also dangerously unstable, and we've even lost contact with the other island provinces of the shen'dorei. The few Windshapers that still possess the gift of skysight have attempted to contact our brothers and sisters on the other islands, but we have had no response.    Many among us are worried that the shen'dorei here on Zephras are all that is left of our people.", d=40.980, v="skyborne-female" },
+		{ f="251487-4a2bfdee", h="4a2bfdee", t="I can tell by your aura that you are of Highborne lineage, yes? Those that call themselves members of the High Order find very little common ground with the members of my order, the Windshapers. Outside the relative harmony of Thendal Grove, you may find that these divisions run very deep, deep enough to drive division and even violence.    Be mindful of this as you move throughout Zephras Isle. I'll offer you this one warning... do not cross the Windshapers.", d=35.230, v="skyborne-female" },
+		{ f="251487-ba1aa782", h="ba1aa782", t="The shen'dorei will always owe the spirits a debt for their aid, and the Windshapers have sworn an oath to repay that debt and restore things to the way they were before. Unfortunately, we are dangerously blind to what is happening around us within Skywall without the spirits to guide us.    The High Order are shortsighted and arrogant, just like their Highborne ancestors. They seek to master and control the magic of this place. This is very path that led us to flee from Kalimdor and reside here in the first place. I fear that much like our forebears their confidence has vastly outpaced their competence and the end result could be disastrous.", d=47.140, v="skyborne-female" },
+		{ f="251487-e92a645e", h="e92a645e", t="What may I do for you, fellow windshaper?", d=3.400, v="skyborne-female" },
 	},
 	[251507] = {
 		{ f="251507-af6809a8", h="af6809a8", t="Greetings $c, I can teach you skills and techniques.", d=3.833, v="human-female" },
 	},
 	[251523] = {
 		{ f="251523-14e578ce", h="14e578ce", t="<Constable Aonda wears an intense look on her face, clearly deep in thought.>", P={ { d=5.348, n=true } }, nP={ [1]={ [1]=6.480 } } },
-		{ f="251523-191d4b60", h="191d4b60", t="More than I'd like, I'm afraid. We've been harassed by a group of bandits camping out in a cave to the north, and the Al'Aketh cult recently took over Falaath Village to the south of us. I trust every peacekeeper and citizen here, but we are far too few to keep the village secure.     If the cult decides to continue their expansion here, there's little we can do to stop them.", d=22.350, v="skyborne-female" },
+		{ f="251523-191d4b60", h="191d4b60", t="More than I'd like, I'm afraid. We've been harassed by a group of bandits camping out in a cave to the north, and the Al'Aketh cult recently took over Falaath Village to the south of us. I trust every peacekeeper and citizen here, but we are far too few to keep the village secure.     If the cult decides to continue their expansion here, there's little we can do to stop them.", d=24.550, v="skyborne-female" },
 	},
 	[251662] = {
 		{ f="251662-18bda9db", h="18bda9db", t="<The roiling cloud of living lightning before you seems to crackle menacingly as you approach. It might be best to leave. Quickly.>", d=8.817, v="narrator", n={ [1]=10.680 } },
@@ -9962,145 +10095,164 @@ pack.gossip = {
 		{ f="251684-ff48bdd6", h="ff48bdd6", t="Oh, that's okay. I-I'll be here if you want to learn some other time. T-Thank you for talking to me!", d=7.680, v="gnome-male" },
 	},
 	[251902] = {
-		{ f="251902-1e4f0028", h="1e4f0028", t="In all of our years dealing with the wind spirits, at no point did they speak of the Windlord as a figure of reverence. They acknowledged the existence of a being named Al'Akir, but they avoided invoking his name, almost as if they feared him.     Even if this Al'Akir is an all-powerful \"Windlord\" or ruler of the wind elementals, my centuries of communion with the spirits has convinced me that at the very least he is not universally loved amongst the denizens of Skywall. I fear that attempting to treat with Al'Akir could merely hasten our doom.", d=34.300, v="skyborne-female" },
-		{ f="251902-243962a6", h="243962a6", t="The Cult? They are zealots and killers. They believe that we are being punished for some unspecific sin. The reality is that those that lead them are opportunists leftover from a dubious order of so-called \"Priests\" of Al'Akir, the Windlord.     They now find themselves in a position to weaponize the fear of our people to consolidate their own power... and they have been quick to do so.", d=23.470, v="skyborne-female" },
-		{ f="251902-3fda086f", h="3fda086f", t="Many disagree on this point.  I believe that simple communication is the key. The songs of the wind rang so clearly to us when the spirits where still here. Since they left, its grown quiet and our power as windshapers has weakened.     However, there are those of us who can still hear something. A hushed tone. Fragments of a melody. Those that can still hear and see into the elemental planes must grow in strength. I believe that is the key to our salvation.", d=29.350, v="skyborne-female" },
-		{ f="251902-9162c2da", h="9162c2da", t="Where to begin? Our home is failing. The wards have fallen and the three provinces have begun to drift apart. There was a time not long ago when the spires of Shen'dramar were visible from the western watchtower. No longer. The anchor pylons are weakening, and if the chains finally break...", d=17.160, v="skyborne-female" },
-		{ f="251902-96f13309", h="96f13309", t="Why is this happening? Put simply, the spirits of the wind just... vanished. They were there one day, and they were gone the next. I can't quite describe the feeling that we windshapers felt when it happened. It was as if a great silence fell over all of us and then... a profound absence.    The petty wraiths you've likely encountered out there are just shades of the glory of the true spirits of wind. Non-sentient, aimless, and a far cry from the kindly spirits we lived in harmony alongside for thousands of years.", d=30.230, v="skyborne-female" },
-		{ f="251902-c0af861a", h="c0af861a", t="Alas, I have prattled on long enough. Seek out my apprentice Ayessa Dawnsinger in the port of Valanaar if you find yourself out that way. She still hears the song--if only faintly.  I am old and much of my power has left me. Ayessa represents the future of our people and the path we must now walk to survive. It's up to her and young skyborne such as yourself to carry the hopes for our people forward.", d=26.030, v="skyborne-female" },
-		{ f="251902-dd8cdee4", h="dd8cdee4", t="You must remember that while this realm has been our home for millennia, we will always be somewhat alien to this place. We are not in the terrestrial world that birthed our people. We are in the realm of Skywall, a part of the elemental plane.    We arrived here as the guests of spirits with whom we found common cause in ages past. Now that we Shen'dorei find ourselves bereft of their presence--and potentially--their protection, there's no telling how the other denizens of this plane may perceive us.", d=30.510, v="skyborne-female" },
-		{ f="251902-f56638d6", h="f56638d6", t="Greetings, child. I am Illaya Amberwind and I am the Elder Windshaper here on Zephras Isle. It's always nice to meet young new faces that make their way down from the grove.    Don't let this old shaman hold you up, no doubt you've got many adventures to see to. Do feel free to stop by later if you'd like.", d=18.110, v="skyborne-female" },
+		{ f="251902-1e4f0028", h="1e4f0028", t="In all of our years dealing with the wind spirits, at no point did they speak of the Windlord as a figure of reverence. They acknowledged the existence of a being named Al'Akir, but they avoided invoking his name, almost as if they feared him.     Even if this Al'Akir is an all-powerful \"Windlord\" or ruler of the wind elementals, my centuries of communion with the spirits has convinced me that at the very least he is not universally loved amongst the denizens of Skywall. I fear that attempting to treat with Al'Akir could merely hasten our doom.", d=40.180, v="skyborne-female" },
+		{ f="251902-243962a6", h="243962a6", t="The Cult? They are zealots and killers. They believe that we are being punished for some unspecific sin. The reality is that those that lead them are opportunists leftover from a dubious order of so-called \"Priests\" of Al'Akir, the Windlord.     They now find themselves in a position to weaponize the fear of our people to consolidate their own power... and they have been quick to do so.", d=30.390, v="skyborne-female" },
+		{ f="251902-3fda086f", h="3fda086f", t="Many disagree on this point.  I believe that simple communication is the key. The songs of the wind rang so clearly to us when the spirits where still here. Since they left, its grown quiet and our power as windshapers has weakened.     However, there are those of us who can still hear something. A hushed tone. Fragments of a melody. Those that can still hear and see into the elemental planes must grow in strength. I believe that is the key to our salvation.", d=35.510, v="skyborne-female" },
+		{ f="251902-9162c2da", h="9162c2da", t="Where to begin? Our home is failing. The wards have fallen and the three provinces have begun to drift apart. There was a time not long ago when the spires of Shen'dramar were visible from the western watchtower. No longer. The anchor pylons are weakening, and if the chains finally break...", d=23.240, v="skyborne-female" },
+		{ f="251902-96f13309", h="96f13309", t="Why is this happening? Put simply, the spirits of the wind just... vanished. They were there one day, and they were gone the next. I can't quite describe the feeling that we windshapers felt when it happened. It was as if a great silence fell over all of us and then... a profound absence.    The petty wraiths you've likely encountered out there are just shades of the glory of the true spirits of wind. Non-sentient, aimless, and a far cry from the kindly spirits we lived in harmony alongside for thousands of years.", d=38.510, v="skyborne-female" },
+		{ f="251902-c0af861a", h="c0af861a", t="Alas, I have prattled on long enough. Seek out my apprentice Ayessa Dawnsinger in the port of Valanaar if you find yourself out that way. She still hears the song--if only faintly.  I am old and much of my power has left me. Ayessa represents the future of our people and the path we must now walk to survive. It's up to her and young skyborne such as yourself to carry the hopes for our people forward.", d=28.790, v="skyborne-female" },
+		{ f="251902-dd8cdee4", h="dd8cdee4", t="You must remember that while this realm has been our home for millennia, we will always be somewhat alien to this place. We are not in the terrestrial world that birthed our people. We are in the realm of Skywall, a part of the elemental plane.    We arrived here as the guests of spirits with whom we found common cause in ages past. Now that we Shen'dorei find ourselves bereft of their presence--and potentially--their protection, there's no telling how the other denizens of this plane may perceive us.", d=34.750, v="skyborne-female" },
+		{ f="251902-f56638d6", h="f56638d6", t="Greetings, child. I am Illaya Amberwind and I am the Elder Windshaper here on Zephras Isle. It's always nice to meet young new faces that make their way down from the grove.    Don't let this old shaman hold you up, no doubt you've got many adventures to see to. Do feel free to stop by later if you'd like.", d=21.550, v="skyborne-female" },
 	},
 	[251903] = {
-		{ f="251903-243962a6", h="243962a6", t="The Cult? They are zealots and killers. They believe that we are being punished for some unspecific sin. The reality is that those that lead them are opportunists leftover from a dubious order of so-called \"Priests\" of Al'Akir, the Windlord.     They now find themselves in a position to weaponize the fear of our people to consolidate their own power... and they have been quick to do so.", d=26.670, v="skyborne-male" },
-		{ f="251903-4cf13d24", h="4cf13d24", t="You must remember that while this realm has been our home for millennia, we will always be somewhat alien to this place. We are not in the terrestrial world that birthed our people. We are in the realm of Skywall, the elemental plane of air.     We arrived here as the guests of spirits with whom we found kinship in ages past. Now that we Shen'dorei find ourselves bereft of their presence--and potentially--their protection, there's no telling how the other denizens of this plane may perceive us.", d=35.870, v="skyborne-male" },
-		{ f="251903-614c99de", h="614c99de", t="Alas, I have prattled on long enough. Should you find yourself in the port of Valanaar, seek out Elaadrin Evengale. Elaadrin was once my student, but now he serves as the Chief Magister of the High Order. He is headstrong and capable, and it's now up to him and young $R such as yourself to carry the hopes for our people forward.", d=25.230, v="skyborne-male" },
-		{ f="251903-6e10b87b", h="6e10b87b", t="Where to begin? Our home is failing. The wards have fallen and the three provinces have begun to drift apart. There was a time not long ago when the spires of Shen'dramar were visible from the western watchtower. No longer. Day by day the wind pylons that anchor our home to this plane weaken...", d=22.040, v="skyborne-male" },
-		{ f="251903-777ae0ec", h="777ae0ec", t="Hello there, young $c. I am Rathiril Sunlance and I am an elder Magister of the High Order here on Zephras Isle. It's always good to see bright-eyed young shen'dorei, ready to do their duty in service to their homeland.    Don't let this dusty old mage hold you up however, no doubt you've got many adventures to see to. Feel free to stop by later if you'd like to speak more.", d=22.470, v="skyborne-male" },
-		{ f="251903-7f6ee31d", h="7f6ee31d", t="Even the Windshapers would tell you that the spirits never spoke highly of any supreme being amongst them. They acknowledged the existence of a being named Al'Akir, but they avoided invoking his name, almost as if they feared him.    Even if this Al'Akir is an all-powerful \"Windlord\" or ruler of the wind elementals, relying upon elementals is what got us into this mess. We must now see ourselves out of it.", d=29.590, v="skyborne-male" },
-		{ f="251903-b7c70fc4", h="b7c70fc4", t="Many disagree on this point. The Windshapers would have you believe that joining hands and merely hoping for the spirits' return will be sufficient. Their order's power has waned however, and their path relies on putting us back on the cycle of dependence that got us to this point. The High Order on the other hand... we believe in a more direct approach.", d=24.230, v="skyborne-male" },
-		{ f="251903-bbdd6b3f", h="bbdd6b3f", t="Why is this happening? Put simply, the spirits of the wind just... vanished.     The petty sprites and lesser elementals you've likely encountered out there are a pale imitation of the true spirits of wind. Non-sentient, aimless, and a far cry from the kindly spirits we lived in harmony alongside for thousands of years.", d=23.710, v="skyborne-male" },
+		{ f="251903-243962a6", h="243962a6", t="The Cult? They are zealots and killers. They believe that we are being punished for some unspecific sin. The reality is that those that lead them are opportunists leftover from a dubious order of so-called \"Priests\" of Al'Akir, the Windlord.     They now find themselves in a position to weaponize the fear of our people to consolidate their own power... and they have been quick to do so.", d=28.550, v="skyborne-male" },
+		{ f="251903-4cf13d24", h="4cf13d24", t="You must remember that while this realm has been our home for millennia, we will always be somewhat alien to this place. We are not in the terrestrial world that birthed our people. We are in the realm of Skywall, the elemental plane of air.     We arrived here as the guests of spirits with whom we found kinship in ages past. Now that we Shen'dorei find ourselves bereft of their presence--and potentially--their protection, there's no telling how the other denizens of this plane may perceive us.", d=34.990, v="skyborne-male" },
+		{ f="251903-614c99de", h="614c99de", t="Alas, I have prattled on long enough. Should you find yourself in the port of Valanaar, seek out Elaadrin Evengale. Elaadrin was once my student, but now he serves as the Chief Magister of the High Order. He is headstrong and capable, and it's now up to him and young $R such as yourself to carry the hopes for our people forward.", d=24.230, v="skyborne-male" },
+		{ f="251903-6e10b87b", h="6e10b87b", t="Where to begin? Our home is failing. The wards have fallen and the three provinces have begun to drift apart. There was a time not long ago when the spires of Shen'dramar were visible from the western watchtower. No longer. Day by day the wind pylons that anchor our home to this plane weaken...", d=21.440, v="skyborne-male" },
+		{ f="251903-777ae0ec", h="777ae0ec", t="Hello there, young $c. I am Rathiril Sunlance and I am an elder Magister of the High Order here on Zephras Isle. It's always good to see bright-eyed young shen'dorei, ready to do their duty in service to their homeland.    Don't let this dusty old mage hold you up however, no doubt you've got many adventures to see to. Feel free to stop by later if you'd like to speak more.", d=26.230, v="skyborne-male" },
+		{ f="251903-7f6ee31d", h="7f6ee31d", t="Even the Windshapers would tell you that the spirits never spoke highly of any supreme being amongst them. They acknowledged the existence of a being named Al'Akir, but they avoided invoking his name, almost as if they feared him.    Even if this Al'Akir is an all-powerful \"Windlord\" or ruler of the wind elementals, relying upon elementals is what got us into this mess. We must now see ourselves out of it.", d=29.950, v="skyborne-male" },
+		{ f="251903-b7c70fc4", h="b7c70fc4", t="Many disagree on this point. The Windshapers would have you believe that joining hands and merely hoping for the spirits' return will be sufficient. Their order's power has waned however, and their path relies on putting us back on the cycle of dependence that got us to this point. The High Order on the other hand... we believe in a more direct approach.", d=23.790, v="skyborne-male" },
+		{ f="251903-bbdd6b3f", h="bbdd6b3f", t="Why is this happening? Put simply, the spirits of the wind just... vanished.     The petty sprites and lesser elementals you've likely encountered out there are a pale imitation of the true spirits of wind. Non-sentient, aimless, and a far cry from the kindly spirits we lived in harmony alongside for thousands of years.", d=24.350, v="skyborne-male" },
 	},
 	[251904] = {
-		{ f="251904-202faeeb", h="202faeeb", t="Greetings, $c. Do you come seeking the blessings of the Windlord?", d=4.320, v="skyborne-female" },
+		{ f="251904-202faeeb", h="202faeeb", t="Greetings, $c. Do you come seeking the blessings of the Windlord?", d=5.680, v="skyborne-female" },
 	},
 	[251905] = {
-		{ f="251905-3541aa81", h="3541aa81", t="If you need training as a cook, I have a few tips and tricks I could pass on! Ho ho! Throw on an apron and let's get started!", d=8.360, v="skyborne-male" },
-		{ f="251905-48ad85dc", h="48ad85dc", t="Ho there, traveler! New to town? Well, once you get settled in come see me if you'd like some work. I've been working overtime preparing for the Festival of Winds and I'll take all the help I can get keeping the larders full!", d=15.160, v="skyborne-male" },
+		{ f="251905-3541aa81", h="3541aa81", t="If you need training as a cook, I have a few tips and tricks I could pass on! Ho ho! Throw on an apron and let's get started!", d=9.960, v="skyborne-male" },
+		{ f="251905-48ad85dc", h="48ad85dc", t="Ho there, traveler! New to town? Well, once you get settled in come see me if you'd like some work. I've been working overtime preparing for the Festival of Winds and I'll take all the help I can get keeping the larders full!", d=14.240, v="skyborne-male" },
 	},
 	[251906] = {
-		{ f="251906-e9380575", h="e9380575", t="Unless you are here on business pertaining to V.L.O., I'm afraid I won't have a lot of time for chatter. If you want to pitch in and help out around town, I'll certainly put you to work though.    Oh, what does V.L.O. stand for? Village Live Operations, of course. Even frontier towns like these don't manage themselves. Between major incidents, unplanned wind power outages, and bug infestations, keeping this place moving forward is no joke.", d=27.230, v="skyborne-female" },
+		{ f="251906-e9380575", h="e9380575", t="Unless you are here on business pertaining to V.L.O., I'm afraid I won't have a lot of time for chatter. If you want to pitch in and help out around town, I'll certainly put you to work though.    Oh, what does V.L.O. stand for? Village Live Operations, of course. Even frontier towns like these don't manage themselves. Between major incidents, unplanned wind power outages, and bug infestations, keeping this place moving forward is no joke.", d=32.270, v="skyborne-female" },
 	},
 	[251913] = {
-		{ f="251913-70e7404c", h="70e7404c", t="I can teach you to swing a blacksmith's hammer, if you are willing to learn.", d=4.080, v="skyborne-male" },
-		{ f="251913-8622dd6f", h="8622dd6f", t="You're not bad, but let me show you a few tricks you might find handy. ", d=3.920, v="skyborne-male" },
+		{ f="251913-70e7404c", h="70e7404c", t="I can teach you to swing a blacksmith's hammer, if you are willing to learn.", d=4.560, v="skyborne-male" },
+		{ f="251913-8622dd6f", h="8622dd6f", t="You're not bad, but let me show you a few tricks you might find handy. ", d=4.520, v="skyborne-male" },
 	},
 	[251964] = {
-		{ f="251964-caa7ddf7", h="caa7ddf7", t="The $c who flinches is the $c who dies. If you would look death in the face as a $c, I will teach you how not to flinch.", d=11.160, v="skyborne-female" },
+		{ f="251964-caa7ddf7", h="caa7ddf7", t="The $c who flinches is the $c who dies. If you would look death in the face as a $c, I will teach you how not to flinch.", d=11.600, v="skyborne-female" },
 	},
 	[251968] = {
-		{ f="251968-4f475817", h="4f475817", t="<Ayessa Dawnsinger eyes you with barely-contained fury.>     You are either very bold, or very stupid to so brazenly step foot into our domain after spilling Windshaper blood. We are slow to forgive, and we never forget.     You should remove yourself from here at once. If we weren't in the center of Zephras, you would already be dead.", d=22.200, v="skyborne-female", P={ { d=4.614, n=true }, { d=17.120 } }, nP={ [1]={ [1]=5.920 } } },
-		{ f="251968-51e58459", h="51e58459", t="Hmm, I see. Very well then, $c. The Windshapers will provide aid. Please inform Valennia that she can count on us for this fight.    <Ayessa lowers her voice dangerously.>     Do not mistake our cooperation for any sort of forgiveness. You owe the Windshapers blood, and someday we will collect.", d=20.920, v="skyborne-female", P={ { d=11.080 }, { d=2.814, n=true }, { d=10.520 } }, nP={ [1]={ [2]=3.760 } } },
-		{ f="251968-88447c8b", h="88447c8b", t="Greetings, I am Ayessa Dawnsinger, the current Grand Skyseer of the Windshapers. What may I do for you?", d=7.800, v="skyborne-female" },
-		{ f="251968-97b43995", h="97b43995", t="If the High Order gave any mind at all to actually solving the problems we face and spent less time obsessing over the old magic, we'd be in a far better position as a people. It was Highborne magic that brought about the ruin of the kaldorei to begin with. Those self-absorbed fools seek to repeat those mistakes!    The fact that they attempted to make peace with the cult is bad enough, but spilling Windshaper blood is what is truly unforgivable. Were it not for the imminent threat of the cult, I'd gather up our forces and go put an end to Elaadrin and the High Order once and for all.", d=35.740, v="skyborne-female" },
-		{ f="251968-ca320a53", h="ca320a53", t="Hmm, I see. Very well then, $c. The Windshapers will provide aid. Please inform Valennia that she can count on us for this fight.", d=9.520, v="skyborne-female" },
+		{ f="251968-4f475817", h="4f475817", t="<Ayessa Dawnsinger eyes you with barely-contained fury.>     You are either very bold, or very stupid to so brazenly step foot into our domain after spilling Windshaper blood. We are slow to forgive, and we never forget.     You should remove yourself from here at once. If we weren't in the center of Zephras, you would already be dead.", d=21.120, v="skyborne-female", P={ { d=4.614, n=true }, { d=19.960 } }, nP={ [1]={ [1]=5.920 } } },
+		{ f="251968-51e58459", h="51e58459", t="Hmm, I see. Very well then, $c. The Windshapers will provide aid. Please inform Valennia that she can count on us for this fight.    <Ayessa lowers her voice dangerously.>     Do not mistake our cooperation for any sort of forgiveness. You owe the Windshapers blood, and someday we will collect.", d=19.440, v="skyborne-female", P={ { d=11.840 }, { d=2.814, n=true }, { d=9.360 } }, nP={ [1]={ [2]=3.760 } } },
+		{ f="251968-88447c8b", h="88447c8b", t="Greetings, I am Ayessa Dawnsinger, the current Grand Skyseer of the Windshapers. What may I do for you?", d=10.040, v="skyborne-female" },
+		{ f="251968-97b43995", h="97b43995", t="If the High Order gave any mind at all to actually solving the problems we face and spent less time obsessing over the old magic, we'd be in a far better position as a people. It was Highborne magic that brought about the ruin of the kaldorei to begin with. Those self-absorbed fools seek to repeat those mistakes!    The fact that they attempted to make peace with the cult is bad enough, but spilling Windshaper blood is what is truly unforgivable. Were it not for the imminent threat of the cult, I'd gather up our forces and go put an end to Elaadrin and the High Order once and for all.", d=41.620, v="skyborne-female" },
+		{ f="251968-ca320a53", h="ca320a53", t="Hmm, I see. Very well then, $c. The Windshapers will provide aid. Please inform Valennia that she can count on us for this fight.", d=10.520, v="skyborne-female" },
 	},
 	[251991] = {
-		{ f="251991-8173c391", h="8173c391", t="The clothcraft of the Shen'dorei is a harmonious imitation of the flowing, carefree currents of the winds. While the spirits have left us, and I know not when I may see them dance once more... I find great comfort in my art, if only as a distraction.    I can teach you to work the cloth as well, if you'd like to learn?", d=18.270, v="skyborne-female" },
+		{ f="251991-8173c391", h="8173c391", t="The clothcraft of the Shen'dorei is a harmonious imitation of the flowing, carefree currents of the winds. While the spirits have left us, and I know not when I may see them dance once more... I find great comfort in my art, if only as a distraction.    I can teach you to work the cloth as well, if you'd like to learn?", d=23.190, v="skyborne-female" },
 	},
 	[251992] = {
-		{ f="251992-f5ff5fa7", h="f5ff5fa7", t="Welcome to Shen'dar Village, some of the best fishing this side of the mountain range. If you are looking to catch fish I can teach you, for a price.", d=9.200, v="skyborne-male" },
+		{ f="251992-f5ff5fa7", h="f5ff5fa7", t="Welcome to Shen'dar Village, some of the best fishing this side of the mountain range. If you are looking to catch fish I can teach you, for a price.", d=10.240, v="skyborne-male" },
 	},
 	[251993] = {
-		{ f="251993-453a25ae", h="453a25ae", t="I can teach you to craft fine leather armor, if you have the aptitude.", d=4.160, v="skyborne-male" },
+		{ f="251993-453a25ae", h="453a25ae", t="I can teach you to craft fine leather armor, if you have the aptitude.", d=4.760, v="skyborne-male" },
 	},
 	[252068] = {
-		{ f="252068-528b5824", h="528b5824", t="Have you heard the good news about Al'Akir, the Windlord?", d=3.680, v="skyborne-male", s={ ["f"]=4.280 } },
-		{ f="252068-63df4aea", h="63df4aea", t="Soon all Shen'dorei will see the truth... and those that refuse will be swept away in the coming storm!", d=6.720, v="skyborne-male", s={ ["f"]=9.640 } },
-		{ f="252068-7763c9f1", h="7763c9f1", t="The Windlord's blessings flow through me!", d=3.040, v="skyborne-male", s={ ["f"]=4.040 } },
-		{ f="252068-7bf8836d", h="7bf8836d", t="Why are you asking me, unshaven novice?", d=3.560, v="skyborne-male", s={ ["f"]=4.960 } },
-		{ f="252068-8cd3381f", h="8cd3381f", t="Why are you bothering me, recruit? If you want to talk to other doe-eyed fools, try the inn on the north side of town.  The recruits that congregate there tend to have brains as smooth as their freshly shaved heads.    Oh, and shave that head of yours. The only thing the windlord abhors more than chatty recruits is chatty recruits with a full head of hair.    Now, be gone from my sight.", d=27.350, v="skyborne-male", s={ ["f"]=26.950 } },
-		{ f="252068-a66e8a24", h="a66e8a24", t="Does your heart beat in rhythm with the winds?", d=2.640, v="skyborne-male", s={ ["f"]=3.800 } },
-		{ f="252068-aed1b76a", h="aed1b76a", t="Do not trouble me, recruit. Submit yourself to Commander Cyclas or Skypriest Aanders if your hands are idle.", d=6.920, v="skyborne-male", s={ ["f"]=8.600 } },
-		{ f="252068-b26bb011", h="b26bb011", t="Are you new here? I have nothing to say to unshaven recruits save that you should sublimate your youthful eagerness into supplication and prayer.", d=9.560, v="skyborne-male", s={ ["f"]=13.400 } },
-		{ f="252068-d0d4acaa", h="d0d4acaa", t="You'll need to speak with Skypriest Aanders for instruction, there is no guidance I can provide. Be gone with you, recruit.", d=7.160, v="skyborne-male", s={ ["f"]=8.560 } },
-		{ f="252068-eb4156a9", h="eb4156a9", t="The non-believers will be purged in our glorious storms! Praise the Windlord!", d=5.320, v="skyborne-male", s={ ["f"]=6.800 } },
+		{ f="252068-528b5824", h="528b5824", t="Have you heard the good news about Al'Akir, the Windlord?", d=4.320, v="skyborne-male", s={ ["f"]=4.920 } },
+		{ f="252068-63df4aea", h="63df4aea", t="Soon all Shen'dorei will see the truth... and those that refuse will be swept away in the coming storm!", d=8.640, v="skyborne-male", s={ ["f"]=8.240 } },
+		{ f="252068-7763c9f1", h="7763c9f1", t="The Windlord's blessings flow through me!", d=3.160, v="skyborne-male", s={ ["f"]=3.480 } },
+		{ f="252068-7bf8836d", h="7bf8836d", t="Why are you asking me, unshaven novice?", d=3.240, v="skyborne-male", s={ ["f"]=4.760 } },
+		{ f="252068-8cd3381f", h="8cd3381f", t="Why are you bothering me, recruit? If you want to talk to other doe-eyed fools, try the inn on the north side of town.  The recruits that congregate there tend to have brains as smooth as their freshly shaved heads.    Oh, and shave that head of yours. The only thing the windlord abhors more than chatty recruits is chatty recruits with a full head of hair.    Now, be gone from my sight.", d=27.150, v="skyborne-male", s={ ["f"]=31.190 } },
+		{ f="252068-a66e8a24", h="a66e8a24", t="Does your heart beat in rhythm with the winds?", d=3.120, v="skyborne-male", s={ ["f"]=3.600 } },
+		{ f="252068-aed1b76a", h="aed1b76a", t="Do not trouble me, recruit. Submit yourself to Commander Cyclas or Skypriest Aanders if your hands are idle.", d=8.160, v="skyborne-male", s={ ["f"]=8.920 } },
+		{ f="252068-b26bb011", h="b26bb011", t="Are you new here? I have nothing to say to unshaven recruits save that you should sublimate your youthful eagerness into supplication and prayer.", d=9.800, v="skyborne-male", s={ ["f"]=10.720 } },
+		{ f="252068-d0d4acaa", h="d0d4acaa", t="You'll need to speak with Skypriest Aanders for instruction, there is no guidance I can provide. Be gone with you, recruit.", d=7.520, v="skyborne-male", s={ ["f"]=8.680 } },
+		{ f="252068-eb4156a9", h="eb4156a9", t="The non-believers will be purged in our glorious storms! Praise the Windlord!", d=6.120, v="skyborne-male", s={ ["f"]=6.760 } },
 	},
 	[252155] = {
 		{ f="252155-82bfc17b", h="82bfc17b", t="<The corpse lying before you is covered in scorches and burn marks. He seems to be clutching something in his hand.>", P={ { d=7.524, n=true } }, nP={ [1]={ [1]=8.080 } } },
 	},
 	[252359] = {
-		{ f="252359-80b579b6", h="80b579b6", t="Our kind are rare these days, but there are those who still dream in emerald amongst the Shen'dorei.", d=6.520, v="skyborne-male" },
+		{ f="252359-80b579b6", h="80b579b6", t="Our kind are rare these days, but there are those who still dream in emerald amongst the Shen'dorei.", d=6.560, v="skyborne-male" },
 	},
 	[252373] = {
-		{ f="252373-ed4232c7", h="ed4232c7", t="The followers of the old Highborne ways have never been more hungry for knowledge and to reclaim what we've lost. If you would seek to wield the power of the arcane and have the aptitude, I can help you take your next steps.", d=14.600, v="skyborne-male" },
+		{ f="252373-ed4232c7", h="ed4232c7", t="The followers of the old Highborne ways have never been more hungry for knowledge and to reclaim what we've lost. If you would seek to wield the power of the arcane and have the aptitude, I can help you take your next steps.", d=14.880, v="skyborne-male" },
 	},
 	[252376] = {
 		{ f="252376-9f7cb8ed", h="9f7cb8ed", t="Do you seek training as a leatherworker?", d=2.680, v="skyborne-male" },
 	},
+	[252377] = {
+		{ f="252377-caa7ddf7", h="caa7ddf7", t="The $c who flinches is the $c who dies. If you would look death in the face as a $c, I will teach you how not to flinch.", d=10.720, v="skyborne-female" },
+	},
 	[252378] = {
-		{ f="252378-22fc14cb", h="22fc14cb", t="Storms curse these Al'Aketh fanatics!", d=3.440, v="skyborne-female" },
+		{ f="252378-22fc14cb", h="22fc14cb", t="Storms curse these Al'Aketh fanatics!", d=4.120, v="skyborne-female" },
 	},
 	[252379] = {
-		{ f="252379-a046a01a", h="a046a01a", t="Slay your enemies and swoon your paramours with this one weird trick.    If you follow the path of the $c, I can teach you... for a cost, of course.", d=12.560, v="skyborne-female" },
+		{ f="252379-a046a01a", h="a046a01a", t="Slay your enemies and swoon your paramours with this one weird trick.    If you follow the path of the $c, I can teach you... for a cost, of course.", d=12.360, v="skyborne-female" },
 	},
 	[252380] = {
-		{ f="252380-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=2.600, v="skyborne-female" },
-		{ f="252380-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=4.120, v="skyborne-female" },
+		{ f="252380-82211412", h="82211412", t="Welcome to my shop, it's good to see another Tailor here in Valanaar. Are you here for a lesson perhaps?", d=7.120, v="skyborne-female" },
+		{ f="252380-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.840, v="skyborne-female" },
+		{ f="252380-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=5.840, v="skyborne-female" },
+	},
+	[252382] = {
+		{ f="252382-70bfd38d", h="70bfd38d", t="The spirits of the wind may have left us, but the power of the elements is not entirely out of reach for those with the patience to seek them out.    If you are initiated in the ways of the $c, I can help you grasp them.", d=14.440, v="skyborne-female" },
 	},
 	[252383] = {
-		{ f="252383-28d94b03", h="28d94b03", t="I suppose that is true. I and the rest of my elites used to belong to an order known as the Empyrean Blades. We were the personal guard of our former leader, the Shal'nan.     In the current, uncertain times we do what we can to help lead the peacekeepers citizen militia, since we are the closest thing to professional soldiers left on Zephras.", d=19.750, v="skyborne-female" },
-		{ f="252383-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=1.480, v="skyborne-female" },
-		{ f="252383-8d2a94b9", h="8d2a94b9", t="If I knew that then I suspect that life here on Zephras would be much, much easier. So many of our struggles and conflicts revolve around that very mystery.    I appreciate your curiosity on this matter but I'm afraid that is all I have to say about this for today.", d=15.880, v="skyborne-female" },
-		{ f="252383-e7690d8a", h="e7690d8a", t="The Peacekeepers can't hope to muster the numbers needed for an outright assault on the shrine. Without the Windshapers and the High Order bolstering our numbers, we stand no chance. They both pledged their aid when we need it. Now is the time.    Unfortunately some recent events have led to outright bloodshed between the two factions, and tensions are high.    How do you feel about a bit of diplomacy?", d=23.710, v="skyborne-female" },
-		{ f="252383-f5d2c665", h="f5d2c665", t="I might be the only living shen'dorei left amongst our people who had more than a handful of words with him.    I served him as the captain of his Empyrean Blades for nearly nine centuries, right up until... he left us.    Even still, I can't rightly claim that I \"knew\" him. He was ever a reserved and solitary man. He spent most of his time alone or in communion with the spirits in the spires high above the Shrine of the Four Winds... the place that the cult now calls the 'Shrine of Akir'.", d=29.870, v="skyborne-female" },
-		{ f="252383-fff71a00", h="fff71a00", t="<Valenna looks away briefly before looking hesitantly back in your direction.>    The Shal'nan was the very best of us. It was he who stood up for our people against madness and oppression in Eldre'Thalas nearly ten thousand years ago. It was the Shal'nan who led us across the uncharted sea to escape the murderous vengeance of our ancient enemies.    It was the Shal'nan who brokered the pact of friendship with the wind spirits that allowed us to ascend to Skywall... and survive.    He was ever the servant leader to his people, even after he abdicated his position of power and retired.", d=33.950, v="skyborne-female", P={ { d=4.847, n=true }, { d=33.390 } }, nP={ [1]={ [1]=6.040 } } },
+		{ f="252383-28d94b03", h="28d94b03", t="I suppose that is true. I and the rest of my elites used to belong to an order known as the Empyrean Blades. We were the personal guard of our former leader, the Shal'nan.     In the current, uncertain times we do what we can to help lead the peacekeepers citizen militia, since we are the closest thing to professional soldiers left on Zephras.", d=23.910, v="skyborne-female" },
+		{ f="252383-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=2.000, v="skyborne-female" },
+		{ f="252383-8d2a94b9", h="8d2a94b9", t="If I knew that then I suspect that life here on Zephras would be much, much easier. So many of our struggles and conflicts revolve around that very mystery.    I appreciate your curiosity on this matter but I'm afraid that is all I have to say about this for today.", d=21.240, v="skyborne-female" },
+		{ f="252383-e7690d8a", h="e7690d8a", t="The Peacekeepers can't hope to muster the numbers needed for an outright assault on the shrine. Without the Windshapers and the High Order bolstering our numbers, we stand no chance. They both pledged their aid when we need it. Now is the time.    Unfortunately some recent events have led to outright bloodshed between the two factions, and tensions are high.    How do you feel about a bit of diplomacy?", d=27.630, v="skyborne-female" },
+		{ f="252383-f5d2c665", h="f5d2c665", t="I might be the only living shen'dorei left amongst our people who had more than a handful of words with him.    I served him as the captain of his Empyrean Blades for nearly nine centuries, right up until... he left us.    Even still, I can't rightly claim that I \"knew\" him. He was ever a reserved and solitary man. He spent most of his time alone or in communion with the spirits in the spires high above the Shrine of the Four Winds... the place that the cult now calls the 'Shrine of Akir'.", d=37.550, v="skyborne-female" },
+		{ f="252383-fff71a00", h="fff71a00", t="<Valenna looks away briefly before looking hesitantly back in your direction.>    The Shal'nan was the very best of us. It was he who stood up for our people against madness and oppression in Eldre'Thalas nearly ten thousand years ago. It was the Shal'nan who led us across the uncharted sea to escape the murderous vengeance of our ancient enemies.    It was the Shal'nan who brokered the pact of friendship with the wind spirits that allowed us to ascend to Skywall... and survive.    He was ever the servant leader to his people, even after he abdicated his position of power and retired.", d=33.750, v="skyborne-female", P={ { d=4.847, n=true }, { d=35.190 } }, nP={ [1]={ [1]=6.040 } } },
 	},
 	[252388] = {
-		{ f="252388-4fed1ed6", h="4fed1ed6", t="You might think that just because we live on a floating island, there would be no need for miners like me. After so many thousands of years however, we still manage to dig up a lot of interesting things.     It's almost like there's some invisible force, constantly creating new mineral deposits every so often. That's magic for you though, right?    Regardless, if you need training as a miner them I'm your shen'dorei.", d=32.430, v="skyborne-male" },
+		{ f="252388-4fed1ed6", h="4fed1ed6", t="You might think that just because we live on a floating island, there would be no need for miners like me. After so many thousands of years however, we still manage to dig up a lot of interesting things.     It's almost like there's some invisible force, constantly creating new mineral deposits every so often. That's magic for you though, right?    Regardless, if you need training as a miner them I'm your shen'dorei.", d=29.870, v="skyborne-male" },
 	},
 	[252389] = {
-		{ f="252389-2becf397", h="2becf397", t="The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.    If you have the proper aptitude as a $c, I can give you the tools to survive the wilds.", d=22.310, v="skyborne-male" },
+		{ f="252389-2becf397", h="2becf397", t="The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.    If you have the proper aptitude as a $c, I can give you the tools to survive the wilds.", d=22.670, v="skyborne-male" },
 	},
 	[252392] = {
-		{ f="252392-720694b4", h="720694b4", t="Greetings, young $c. Welcome to the hall of the Tradesman's Guild. Resources are tight on Zephras right now, but you should be able to find a variety of materials and wares here to keep you in top adventuring form.    Please let me know if you have any questions.", d=17.160, v="skyborne-male" },
+		{ f="252392-720694b4", h="720694b4", t="Greetings, young $c. Welcome to the hall of the Tradesman's Guild. Resources are tight on Zephras right now, but you should be able to find a variety of materials and wares here to keep you in top adventuring form.    Please let me know if you have any questions.", d=17.800, v="skyborne-male" },
 	},
 	[252448] = {
-		{ f="252448-14de7cf6", h="14de7cf6", t="It's always great to see you, $N.", d=2.480, v="skyborne-male" },
+		{ f="252448-14de7cf6", h="14de7cf6", t="It's always great to see you, $N.", d=2.880, v="skyborne-male" },
+		{ f="252448-1e1e1370", h="1e1e1370", t="Hmm, what an odd question? Not much, I suppose. My mother used to use it as a powder for babies to prevent diaper rash, but past that, I don't know of any other good use for it.    Why do you ask?", d=13.960, v="skyborne-male" },
 		{ f="252448-aadf0ebc", h="aadf0ebc", t="<The man lying before you shifts uncomfortably. He's recovering from some very nasty wounds.>", P={ { d=6.341, n=true } }, nP={ [1]={ [1]=8.240 } } },
 	},
 	[252475] = {
-		{ f="252475-3e3dd1cf", h="3e3dd1cf", t="<Elaadrin eyes you with barely-contained hatred.>     You would dare step foot into our sanctum after spilling High Order blood? You are very brave, or very stupid. The High Order does not forgive, nor do we forget.    Someday, you will pay for your crimes in blood.", d=12.080, v="skyborne-male", P={ { d=3.721, n=true }, { d=13.080 } }, nP={ [1]={ [1]=5.120 } } },
-		{ f="252475-53576371", h="53576371", t="I see. This seems dangerous in the extreme, but the situation seems to demand that risks be taken.    Very well, the High Order will provide aid. Please inform Valennia that she can count on us for this fight.", d=17.080, v="skyborne-male" },
-		{ f="252475-58724dc1", h="58724dc1", t="The Windshapers are almost wholly to blame for everything that has happened. Their refusal to change has damaged our ability to save ourselves from our current peril. They speak in absolutes and treat assumptions and superstitious hope as fact.    Do you know who else deals only absolutes? The Al'Aketh.     I for one do not intend to let blind adherence to dangerous beliefs doom our people. If it weren't for the threat of the cult, I'd march our mages over to the other side of Valnaar and wipe the Windshapers out.", d=35.270, v="skyborne-male" },
-		{ f="252475-8b2299ed", h="8b2299ed", t="Greetings, I am Elaadrin Evengale, the current Supreme Magister of the High Order. How can I help you?", d=6.760, v="skyborne-male" },
-		{ f="252475-b7dd6ea5", h="b7dd6ea5", t="Hmm, I see. Very well then, $c. The High Order will assist the Peacekeepers. Please inform Valennia that she can count on us for this fight.    <Elaadrin lowers his voice dangerously.>    Do not mistake our willing cooperation for any sort of clemency. You owe the High Order blood, and we always collect on our debts.", d=16.760, v="skyborne-male", P={ { d=9.480 }, { d=2.738, n=true }, { d=8.080 } }, nP={ [1]={ [2]=3.840 } } },
+		{ f="252475-3e3dd1cf", h="3e3dd1cf", t="<Elaadrin eyes you with barely-contained hatred.>     You would dare step foot into our sanctum after spilling High Order blood? You are very brave, or very stupid. The High Order does not forgive, nor do we forget.    Someday, you will pay for your crimes in blood.", d=14.560, v="skyborne-male", P={ { d=3.721, n=true }, { d=15.400 } }, nP={ [1]={ [1]=5.120 } } },
+		{ f="252475-53576371", h="53576371", t="I see. This seems dangerous in the extreme, but the situation seems to demand that risks be taken.    Very well, the High Order will provide aid. Please inform Valennia that she can count on us for this fight.", d=14.520, v="skyborne-male" },
+		{ f="252475-58724dc1", h="58724dc1", t="The Windshapers are almost wholly to blame for everything that has happened. Their refusal to change has damaged our ability to save ourselves from our current peril. They speak in absolutes and treat assumptions and superstitious hope as fact.    Do you know who else deals only absolutes? The Al'Aketh.     I for one do not intend to let blind adherence to dangerous beliefs doom our people. If it weren't for the threat of the cult, I'd march our mages over to the other side of Valnaar and wipe the Windshapers out.", d=38.230, v="skyborne-male" },
+		{ f="252475-8b2299ed", h="8b2299ed", t="Greetings, I am Elaadrin Evengale, the current Supreme Magister of the High Order. How can I help you?", d=8.400, v="skyborne-male" },
+		{ f="252475-b7dd6ea5", h="b7dd6ea5", t="Hmm, I see. Very well then, $c. The High Order will assist the Peacekeepers. Please inform Valennia that she can count on us for this fight.    <Elaadrin lowers his voice dangerously.>    Do not mistake our willing cooperation for any sort of clemency. You owe the High Order blood, and we always collect on our debts.", d=20.960, v="skyborne-male", P={ { d=12.040 }, { d=2.738, n=true }, { d=8.480 } }, nP={ [1]={ [2]=3.840 } } },
 	},
 	[252476] = {
-		{ f="252476-a1c9a9ba", h="a1c9a9ba", t="Welcome to Valanaar, $c.", d=2.400, v="skyborne-male" },
-		{ f="252476-fcd03afb", h="fcd03afb", t="It is vital that we learn more about what the cult is planning, and with the turncoat dead the information may have died with him...", d=7.640, v="skyborne-male" },
+		{ f="252476-a1c9a9ba", h="a1c9a9ba", t="Welcome to Valanaar, $c.", d=2.960, v="skyborne-male" },
+		{ f="252476-fcd03afb", h="fcd03afb", t="It is vital that we learn more about what the cult is planning, and with the turncoat dead the information may have died with him...", d=9.400, v="skyborne-male" },
 	},
 	[252477] = {
-		{ f="252477-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=1.640, v="skyborne-female" },
-		{ f="252477-8b1fd97e", h="8b1fd97e", t="What are you looking for, citizen?", d=2.560, v="skyborne-female" },
+		{ f="252477-37e215b2", h="37e215b2", t="Which class trainer are you looking for?", d=2.720, v="skyborne-male", s={ ["f"]=2.920 } },
+		{ f="252477-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=1.680, v="skyborne-male", s={ ["f"]=1.920 } },
+		{ f="252477-7fc1d917", h="7fc1d917", t="May I help you locate something, citizen?", d=3.000, v="skyborne-male", s={ ["f"]=3.680 } },
+		{ f="252477-80396915", h="80396915", t="That trainer can be found in a house near the High Order dock, on the southeastern edge of town.", d=6.080, v="skyborne-male", s={ ["f"]=7.040 } },
+		{ f="252477-8b1fd97e", h="8b1fd97e", t="What are you looking for, citizen?", d=2.200, v="skyborne-male", s={ ["f"]=2.960 } },
+		{ f="252477-ef767f20", h="ef767f20", t="Which profession?", d=2.320, v="skyborne-male", s={ ["f"]=1.480 } },
+		{ f="252477-ff26e6d3", h="ff26e6d3", t="The $c trainer can be found over in the High Order's lodge, on the southeastern edge of town.", d=6.000, v="skyborne-male", s={ ["f"]=6.800 } },
 	},
 	[252478] = {
-		{ f="252478-1e95a038", h="1e95a038", t="The skycutters and ferries haven't run in years at this point. For all we know, there are no other islands left for us to get imports from. Still though, I'm here... just in case.", d=10.560, v="skyborne-female" },
+		{ f="252478-1e95a038", h="1e95a038", t="The skycutters and ferries haven't run in years at this point. For all we know, there are no other islands left for us to get imports from. Still though, I'm here... just in case.", d=12.320, v="skyborne-female" },
 	},
 	[252479] = {
-		{ f="252479-8622dd6f", h="8622dd6f", t="You're not bad, but let me show you a few tricks you might find handy. ", d=4.400, v="skyborne-male" },
-		{ f="252479-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.400, v="skyborne-male" },
+		{ f="252479-1a6886aa", h="1a6886aa", t="Ah, hello. You look as though you have a question for me.", d=3.400, v="skyborne-male" },
+		{ f="252479-8622dd6f", h="8622dd6f", t="You're not bad, but let me show you a few tricks you might find handy. ", d=4.520, v="skyborne-male" },
+		{ f="252479-a7a421b8", h="a7a421b8", t="A far better blacksmith than I am, that's for sure. Though I'll deny it if you tell anyone I said that. You should go speak with Therum Deepforge. If anyone can teach you more, it's him.", d=12.680, v="skyborne-male" },
+		{ f="252479-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.480, v="skyborne-male" },
+		{ f="252479-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=4.320, v="skyborne-male" },
+		{ f="252479-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=6.360, v="skyborne-male" },
 	},
 	[252800] = {
-		{ f="252800-d3392a1d", h="d3392a1d", t="The Windfield Orchard has seen better days...", d=2.440, v="skyborne-female" },
+		{ f="252800-d3392a1d", h="d3392a1d", t="The Windfield Orchard has seen better days...", d=3.280, v="skyborne-female" },
 	},
 	[253002] = {
 		{ f="253002-2c28162e", h="2c28162e", t="<The $R lying before you is unconscious.>", P={ { d=3.314, n=true } }, nP={ [1]={ [1]=4.240 } } },
+		{ f="253002-47b188db", h="47b188db", t="<The Skyborne lying before you is unconscious.>", P={ { d=3.237, n=true } }, nP={ [1]={ [1]=4.080 } } },
 	},
 	[253004] = {
-		{ f="253004-1a6886aa", h="1a6886aa", t="Ah, hello. You look as though you have a question for me.", d=4.880, v="skyborne-female" },
-		{ f="253004-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.200, v="skyborne-female" },
-		{ f="253004-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=4.840, v="skyborne-female" },
+		{ f="253004-1a6886aa", h="1a6886aa", t="Ah, hello. You look as though you have a question for me.", d=4.640, v="skyborne-female" },
+		{ f="253004-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.720, v="skyborne-female" },
+		{ f="253004-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=5.640, v="skyborne-female" },
+		{ f="253004-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=7.680, v="skyborne-female" },
 	},
 	[253092] = {
 		{ f="253092-e0247c5d", h="e0247c5d", t="I am told the farms of Westfall once supplied a bounty of crops for Stormwind. But now, the soil is barren and most of the farmers have fled.    On behalf of Darnassus I would like to offer my aid in replenishing this land. Will you assist me?", d=18.560, v="nightelf-female" },
@@ -10109,101 +10261,108 @@ pack.gossip = {
 		{ f="253372-4b6a69db", h="4b6a69db", t="<This cultist is dead. Upon close inspection, you notice that he seems to be clutching something to his chest, almost as if he was protecting it.>", P={ { d=9.574, n=true } }, nP={ [1]={ [1]=11.360 } } },
 	},
 	[253474] = {
-		{ f="253474-00bdfcec", h="00bdfcec", t="That trainer can be found on the southeastern edge of town, near the High Order's dock.", d=6.600, v="skyborne-female", s={ ["m"]=5.720 } },
-		{ f="253474-08807185", h="08807185", t="The bank and auction house can be found on the western side of Valanaar, near the Windshapers' skycutter dock.", d=7.680, v="skyborne-female", s={ ["m"]=6.360 } },
-		{ f="253474-28030f47", h="28030f47", t="You can find the cooking trainer in a small house on the north end of town.", d=5.320, v="skyborne-female", s={ ["m"]=5.280 } },
-		{ f="253474-37e215b2", h="37e215b2", t="Which class trainer are you looking for?", d=3.280, v="skyborne-female", s={ ["m"]=2.760 } },
-		{ f="253474-404ff1f4", h="404ff1f4", t="That trainer can be found in the Crafter's Hall, on the west side of Valanaar.", d=5.440, v="skyborne-female", s={ ["m"]=5.520 } },
-		{ f="253474-4d63cc9b", h="4d63cc9b", t="You'll want to head over to the Hall of Arms on the north side of Valanaar.", d=4.640, v="skyborne-female", s={ ["m"]=5.000 } },
-		{ f="253474-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=2.920, v="skyborne-female", s={ ["m"]=2.080 } },
-		{ f="253474-7fc1d917", h="7fc1d917", t="May I help you locate something, citizen?", d=3.600, v="skyborne-female", s={ ["m"]=2.600 } },
-		{ f="253474-80396915", h="80396915", t="That trainer can be found in a house near the High Order dock, on the southeastern edge of town.", d=6.560, v="skyborne-female", s={ ["m"]=6.120 } },
-		{ f="253474-823817d9", h="823817d9", t="Engineer? What in Skywall is that?    Now that you mention it... I think I may have heard that drunk Sirrocas over at the inn talking about some sort of forest spirit that he claimed to have encountered that called itself an \"engineer.\"    That was the first I'd ever heard of such a thing.    I believe he said that this particular spirit could be found somewhere in Shadowgale Forest, but I can't recommend you go to that cursed place!", d=29.190, v="skyborne-female", s={ ["m"]=29.310 } },
-		{ f="253474-8957496f", h="8957496f", t="Be on your guard here in the highlands, citizen. There are many dangers between the beasts roaming the wild, murderous bandits, and the looming threat of the Al'Aketh.", d=11.880, v="skyborne-female", s={ ["m"]=10.720 } },
-		{ f="253474-8b1fd97e", h="8b1fd97e", t="What are you looking for, citizen?", d=2.760, v="skyborne-female", s={ ["m"]=2.600 } },
-		{ f="253474-96433e66", h="96433e66", t="A mailbox can be located just outside of the Inn, near the road leading north out of town.", d=6.880, v="skyborne-female", s={ ["m"]=6.520 } },
-		{ f="253474-9d79190e", h="9d79190e", t="The Inn can be found on the east side of the road leading northward out of town.", d=5.920, v="skyborne-female", s={ ["m"]=5.120 } },
-		{ f="253474-aa6ba0a9", h="aa6ba0a9", t="Is there something I can help you find?", d=3.200, v="skyborne-female", s={ ["m"]=2.640 } },
-		{ f="253474-db018659", h="db018659", t="The town medic can be found inside the tower on the northeast edge of Valanaar.", d=6.080, v="skyborne-female", s={ ["m"]=6.760 } },
-		{ f="253474-ef767f20", h="ef767f20", t="Which profession?", d=1.560, v="skyborne-female", s={ ["m"]=1.960 } },
-		{ f="253474-ff26e6d3", h="ff26e6d3", t="The $c trainer can be found over in the High Order's lodge, on the southeastern edge of town.", d=7.360, v="skyborne-female", s={ ["m"]=6.160 } },
+		{ f="253474-00bdfcec", h="00bdfcec", t="That trainer can be found on the southeastern edge of town, near the High Order's dock.", d=5.840, v="skyborne-female", s={ ["m"]=5.400 } },
+		{ f="253474-08807185", h="08807185", t="The bank and auction house can be found on the western side of Valanaar, near the Windshapers' skycutter dock.", d=7.240, v="skyborne-female", s={ ["m"]=7.480 } },
+		{ f="253474-0eb9c156", h="0eb9c156", t="The High Order's transport to Azeroth can be found at the furthest dock on the southeastern edge of Valanaar.", d=7.600, v="skyborne-female", s={ ["m"]=7.280 } },
+		{ f="253474-28030f47", h="28030f47", t="You can find the cooking trainer in a small house on the north end of town.", d=6.000, v="skyborne-female", s={ ["m"]=5.120 } },
+		{ f="253474-37e215b2", h="37e215b2", t="Which class trainer are you looking for?", d=3.160, v="skyborne-female", s={ ["m"]=2.520 } },
+		{ f="253474-404ff1f4", h="404ff1f4", t="That trainer can be found in the Crafter's Hall, on the west side of Valanaar.", d=5.960, v="skyborne-female", s={ ["m"]=6.000 } },
+		{ f="253474-4d63cc9b", h="4d63cc9b", t="You'll want to head over to the Hall of Arms on the north side of Valanaar.", d=4.560, v="skyborne-female", s={ ["m"]=5.000 } },
+		{ f="253474-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=2.560, v="skyborne-female", s={ ["m"]=1.680 } },
+		{ f="253474-7fc1d917", h="7fc1d917", t="May I help you locate something, citizen?", d=3.720, v="skyborne-female", s={ ["m"]=4.000 } },
+		{ f="253474-80396915", h="80396915", t="That trainer can be found in a house near the High Order dock, on the southeastern edge of town.", d=5.960, v="skyborne-female", s={ ["m"]=6.240 } },
+		{ f="253474-823817d9", h="823817d9", t="Engineer? What in Skywall is that?    Now that you mention it... I think I may have heard that drunk Sirrocas over at the inn talking about some sort of forest spirit that he claimed to have encountered that called itself an \"engineer.\"    That was the first I'd ever heard of such a thing.    I believe he said that this particular spirit could be found somewhere in Shadowgale Forest, but I can't recommend you go to that cursed place!", d=31.470, v="skyborne-female", s={ ["m"]=28.310 } },
+		{ f="253474-8957496f", h="8957496f", t="Be on your guard here in the highlands, citizen. There are many dangers between the beasts roaming the wild, murderous bandits, and the looming threat of the Al'Aketh.", d=10.080, v="skyborne-female", s={ ["m"]=10.160 } },
+		{ f="253474-8b1fd97e", h="8b1fd97e", t="What are you looking for, citizen?", d=2.920, v="skyborne-female", s={ ["m"]=2.160 } },
+		{ f="253474-96433e66", h="96433e66", t="A mailbox can be located just outside of the Inn, near the road leading north out of town.", d=7.120, v="skyborne-female", s={ ["m"]=5.880 } },
+		{ f="253474-9d79190e", h="9d79190e", t="The Inn can be found on the east side of the road leading northward out of town.", d=5.960, v="skyborne-female", s={ ["m"]=5.320 } },
+		{ f="253474-aa6ba0a9", h="aa6ba0a9", t="Is there something I can help you find?", d=3.200, v="skyborne-female", s={ ["m"]=2.720 } },
+		{ f="253474-db018659", h="db018659", t="The town medic can be found inside the tower on the northeast edge of Valanaar.", d=5.920, v="skyborne-female", s={ ["m"]=5.640 } },
+		{ f="253474-ef767f20", h="ef767f20", t="Which profession?", d=1.800, v="skyborne-female", s={ ["m"]=1.200 } },
+		{ f="253474-ff26e6d3", h="ff26e6d3", t="The $c trainer can be found over in the High Order's lodge, on the southeastern edge of town.", d=6.760, v="skyborne-female", s={ ["m"]=7.120 } },
 	},
 	[253576] = {
-		{ f="253576-82c78bf7", h="82c78bf7", t="Most of the cultists at the Sanctum of Storms seem to have come out to respond to our attack. I never would have expected this to go so well. This was almost too easy...    I think that the Windshapers and High Order have made their push. Valennia should be with them. You should head inside and find her. We'll stay here and and keep watch while Valennia and the others finish what they came here to do.", d=22.750, v="skyborne-female" },
+		{ f="253576-febbe4e4", h="febbe4e4", t="Most of the cultists at the Sanctum of Storms seem to have come out to respond to our attack. I never would have expected this to go so well. This was almost too easy...    I think that the Windshapers and High Order have made their push. Valennia should be with them. You should head inside and find her. We'll stay here and keep watch while Valennia and the others finish what they came here to do.", d=26.590, v="skyborne-female" },
 	},
 	[253590] = {
 		{ f="253590-2061ff16", h="2061ff16", t="<Valennia is severely wounded and is barely holding on to consciousness.>", P={ { d=4.830, n=true } }, nP={ [1]={ [1]=5.760 } } },
 	},
 	[253844] = {
-		{ f="253844-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=1.520, v="skyborne-female" },
+		{ f="253844-6d6f2083", h="6d6f2083", t="Greetings, citizen.", d=2.640, v="skyborne-female" },
 	},
 	[253847] = {
-		{ f="253847-6ace422f", h="6ace422f", t="Lorthuna is performing some sort of ritual up there. She may be trying to bring down the wards!    The help we sent for has not yet arrived, but we'll just have to manage with what we have. When you are ready, let me know and we'll go confront her.", d=14.480, v="skyborne-male" },
+		{ f="253847-6ace422f", h="6ace422f", t="Lorthuna is performing some sort of ritual up there. She may be trying to bring down the wards!    The help we sent for has not yet arrived, but we'll just have to manage with what we have. When you are ready, let me know and we'll go confront her.", d=15.200, v="skyborne-male" },
 	},
 	[253849] = {
-		{ f="253849-6ace422f", h="6ace422f", t="Lorthuna is performing some sort of ritual up there. She may be trying to bring down the wards!    The help we sent for has not yet arrived, but we'll just have to manage with what we have. When you are ready, let me know and we'll go confront her.", d=16.360, v="skyborne-female" },
+		{ f="253849-6ace422f", h="6ace422f", t="Lorthuna is performing some sort of ritual up there. She may be trying to bring down the wards!    The help we sent for has not yet arrived, but we'll just have to manage with what we have. When you are ready, let me know and we'll go confront her.", d=15.600, v="skyborne-female" },
 	},
 	[254081] = {
-		{ f="254081-86bf8d52", h="86bf8d52", t="If you have the aptitude for the druidic arts, I can train you.", d=3.400, v="skyborne-female" },
+		{ f="254081-86bf8d52", h="86bf8d52", t="If you have the aptitude for the druidic arts, I can train you.", d=5.160, v="skyborne-female" },
 	},
 	[254082] = {
-		{ f="254082-4d87d665", h="4d87d665", t="The spirits of the wind may have left us, but the power of the elements is not entirely out of reach for those with the patience to seek them out.    If you are initiated in the ways of the shaman, I can help you grasp them.", d=12.400, v="skyborne-male" },
+		{ f="254082-70bfd38d", h="70bfd38d", t="The spirits of the wind may have left us, but the power of the elements is not entirely out of reach for those with the patience to seek them out.    If you are initiated in the ways of the $c, I can help you grasp them.", d=13.800, v="skyborne-male" },
 	},
 	[254084] = {
-		{ f="254084-2becf397", h="2becf397", t="The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.    If you have the proper aptitude as a $c, I can give you the tools to survive the wilds.", d=20.430, v="skyborne-female" },
+		{ f="254084-2becf397", h="2becf397", t="The hunters and rangers of Zephras have never been more needed. The winds grow ever harsher, and the magic that sustains our island is fading. The wilds have never been more wild and people like me are needed to keep our people safe.    If you have the proper aptitude as a $c, I can give you the tools to survive the wilds.", d=26.550, v="skyborne-female" },
 	},
 	[254086] = {
-		{ f="254086-ed4232c7", h="ed4232c7", t="The followers of the old Highborne ways have never been more hungry for knowledge and to reclaim what we've lost. If you would seek to wield the power of the arcane and have the aptitude, I can help you take your next steps.", d=15.960, v="skyborne-male" },
+		{ f="254086-ed4232c7", h="ed4232c7", t="The followers of the old Highborne ways have never been more hungry for knowledge and to reclaim what we've lost. If you would seek to wield the power of the arcane and have the aptitude, I can help you take your next steps.", d=14.280, v="skyborne-male" },
 	},
 	[254087] = {
-		{ f="254087-a046a01a", h="a046a01a", t="Slay your enemies and swoon your paramours with this one weird trick.    If you follow the path of the $c, I can teach you... for a cost, of course.", d=12.520, v="skyborne-female" },
+		{ f="254087-a046a01a", h="a046a01a", t="Slay your enemies and swoon your paramours with this one weird trick.    If you follow the path of the $c, I can teach you... for a cost, of course.", d=11.280, v="skyborne-female" },
 	},
 	[254088] = {
-		{ f="254088-caa7ddf7", h="caa7ddf7", t="The $c who flinches is the $c who dies. If you would look death in the face as a $c, I will teach you how not to flinch.", d=11.280, v="skyborne-male" },
+		{ f="254088-caa7ddf7", h="caa7ddf7", t="The $c who flinches is the $c who dies. If you would look death in the face as a $c, I will teach you how not to flinch.", d=10.480, v="skyborne-male" },
 	},
 	[254089] = {
-		{ f="254089-9cc50b7d", h="9cc50b7d", t="Welcome to the Calmbreeze Inn, traveler. Would you like some refreshment?", d=4.080, v="skyborne-female" },
+		{ f="254089-9cc50b7d", h="9cc50b7d", t="Welcome to the Calmbreeze Inn, traveler. Would you like some refreshment?", d=5.960, v="skyborne-female" },
 	},
 	[254100] = {
-		{ f="254100-157bb7b8", h="157bb7b8", t="Have you seen them? The skycutters are running again! I've heard that we still have no contact with the other shen'dorei islands, though.    I hope we re-establish contact with Shen'dramar and Eldranaar soon... if they are even still out there.", d=14.680, v="skyborne-male" },
-		{ f="254100-609c70df", h="609c70df", t="The Windshapers and the High Order are up to something. There are rumors floating around that both groups plan to get the skycutters running again and use them to leave the Skywall. LEAVE SKYWALL? How ridiculous. Where would they even go?", d=17.920, v="skyborne-male" },
-		{ f="254100-6be7d7dd", h="6be7d7dd", t="The Al'Aketh cult claims that Al'Akir the \"Windlord\" will save us from our current woes here on Zephras. If Al'Akir is real and really is the ruler of Skywall, why did the wind spirits refuse to speak of him for so long?    Either he isn't real, or even worse, he's real and he's not as benevolent as the cult claims him to be. Either way, nothing about what the cult is doing is good for us normal folk.", d=30.670, v="skyborne-male" },
-		{ f="254100-7446d030", h="7446d030", t="I've seen the skycutters sailing through the sky more and more recently. It's good to know that they are running again. If only the elders would tell us what is going on. They only tell us that nothing has changed and we still have no contact with the other islands.    I can't help but wonder what this means...", d=18.670, v="skyborne-male" },
-		{ f="254100-eae86ee8", h="eae86ee8", t="Be wary of anyone you meet with grey robes and a shaved head. The Al'Aketh they call themselves, and they are a menace.     I even heard that they've been doing things to the anchor pylons around the island.    If the Windshapers are to be believed, those pylons are the only thing keeping Zephras afloat here in the elemental plane. It would be madness to tamper with them!", d=26.350, v="skyborne-male" },
+		{ f="254100-10e89f38", h="10e89f38", t="If the Al'Aketh cult isn't stopped soon, we'll all be press-ganged into joining those fanatics. I will NOT look good with a shaved head.", d=10.120, v="skyborne-male" },
+		{ f="254100-157bb7b8", h="157bb7b8", t="Have you seen them? The skycutters are running again! I've heard that we still have no contact with the other shen'dorei islands, though.    I hope we re-establish contact with Shen'dramar and Eldranaar soon... if they are even still out there.", d=15.760, v="skyborne-male" },
+		{ f="254100-609c70df", h="609c70df", t="The Windshapers and the High Order are up to something. There are rumors floating around that both groups plan to get the skycutters running again and use them to leave the Skywall. LEAVE SKYWALL? How ridiculous. Where would they even go?", d=17.520, v="skyborne-male" },
+		{ f="254100-6be7d7dd", h="6be7d7dd", t="The Al'Aketh cult claims that Al'Akir the \"Windlord\" will save us from our current woes here on Zephras. If Al'Akir is real and really is the ruler of Skywall, why did the wind spirits refuse to speak of him for so long?    Either he isn't real, or even worse, he's real and he's not as benevolent as the cult claims him to be. Either way, nothing about what the cult is doing is good for us normal folk.", d=29.190, v="skyborne-male" },
+		{ f="254100-7446d030", h="7446d030", t="I've seen the skycutters sailing through the sky more and more recently. It's good to know that they are running again. If only the elders would tell us what is going on. They only tell us that nothing has changed and we still have no contact with the other islands.    I can't help but wonder what this means...", d=20.510, v="skyborne-male" },
+		{ f="254100-eae86ee8", h="eae86ee8", t="Be wary of anyone you meet with grey robes and a shaved head. The Al'Aketh they call themselves, and they are a menace.     I even heard that they've been doing things to the anchor pylons around the island.    If the Windshapers are to be believed, those pylons are the only thing keeping Zephras afloat here in the elemental plane. It would be madness to tamper with them!", d=24.830, v="skyborne-male" },
 	},
 	[254128] = {
 		{ f="254128-8cbd94ac", h="8cbd94ac", t="<The two cultists nearby are talking. You might be able to learn something if you hide behind this wardrobe and eavesdrop.>", d=7.860, v="narrator", n={ [1]=10.040 } },
 	},
 	[254149] = {
-		{ f="254149-50d3b408", h="50d3b408", t="Shadowgale Forest!    It's haunted! Haunted as the sky is blue! Terrible forest spirits, terror birds with talons as big as yer arm! It's... a nightmare!    <Swimmers turns to Donaal and belches loudly.>     IT'S NOT CRAZY TALK, DONAAL!", d=15.200, v="skyborne-male", P={ { d=12.000 }, { d=3.718, n=true }, { d=3.440 } }, nP={ [1]={ [2]=4.040 } } },
-		{ f="254149-f642f017", h="f642f017", t="<The $r before you sways unsteadily, clearly very inebriated.>    I used to be a sailor you know? Before the trouble started. The skycutters used to run between the islands. Now its unsafe or some such, or so they say.    I see the High Order and the Windshapers have their skycutters running again, but I'm stuck here, grounded!     What aren't we being told!    <He turns and yells loudly at the innkeeper.>    WHAT AREN'T WE BEING TOLD, DONAAL!?", d=22.590, v="skyborne-male", P={ { d=5.608, n=true }, { d=19.280 }, { d=3.249, n=true }, { d=3.480 } }, nP={ [1]={ [1]=7.240, [3]=3.720 } } },
+		{ f="254149-50d3b408", h="50d3b408", t="Shadowgale Forest!    It's haunted! Haunted as the sky is blue! Terrible forest spirits, terror birds with talons as big as yer arm! It's... a nightmare!    <Swimmers turns to Donaal and belches loudly.>     IT'S NOT CRAZY TALK, DONAAL!", d=16.680, v="skyborne-male", P={ { d=12.120 }, { d=3.718, n=true }, { d=2.480 } }, nP={ [1]={ [2]=4.040 } } },
+		{ f="254149-f642f017", h="f642f017", t="<The $r before you sways unsteadily, clearly very inebriated.>    I used to be a sailor you know? Before the trouble started. The skycutters used to run between the islands. Now its unsafe or some such, or so they say.    I see the High Order and the Windshapers have their skycutters running again, but I'm stuck here, grounded!     What aren't we being told!    <He turns and yells loudly at the innkeeper.>    WHAT AREN'T WE BEING TOLD, DONAAL!?", d=23.310, v="skyborne-male", P={ { d=5.608, n=true }, { d=18.600 }, { d=3.249, n=true }, { d=3.080 } }, nP={ [1]={ [1]=7.240, [3]=3.720 } } },
 	},
 	[254151] = {
-		{ f="254151-197a65c0", h="197a65c0", t="The Nightclaw do not take kindly to reckless intruders. Tread carefully while in Shadowgale, $c.", d=6.640, v="skyborne-male" },
-		{ f="254151-20a1483e", h="20a1483e", t="You've earned a degree of trust amongst the Nightclaw, $c. We don't have much to offer you as a reward, but we have managed to scavenge a number of crafting plans from the ruins of Ban'aethal.    The magesmiths of Ban'aethal were widely regarded to be the best artisans in all of the Skyborne Isles. The Nightclaw are naturalists, not crafters, so these records are of little use to us.    Continue to prove yourself to be a valuable ally, and I would make these secrets available to you.", d=33.270, v="skyborne-male" },
+		{ f="254151-197a65c0", h="197a65c0", t="The Nightclaw do not take kindly to reckless intruders. Tread carefully while in Shadowgale, $c.", d=9.040, v="skyborne-male" },
+		{ f="254151-20a1483e", h="20a1483e", t="You've earned a degree of trust amongst the Nightclaw, $c. We don't have much to offer you as a reward, but we have managed to scavenge a number of crafting plans from the ruins of Ban'aethal.    The magesmiths of Ban'aethal were widely regarded to be the best artisans in all of the $R Isles. The Nightclaw are naturalists, not crafters, so these records are of little use to us.    Continue to prove yourself to be a valuable ally, and I would make these secrets available to you.", d=31.910, v="skyborne-male" },
 	},
 	[254345] = {
-		{ f="254345-bb901712", h="bb901712", t="Another Herbalist, hmm. I doubt your skill is as great as my own so perhaps I can train you in a few proper techniques.", d=8.840, v="skyborne-male" },
+		{ f="254345-bb901712", h="bb901712", t="Another Herbalist, hmm. I doubt your skill is as great as my own so perhaps I can train you in a few proper techniques.", d=8.880, v="skyborne-male" },
+		{ f="254345-bedfc7be", h="bedfc7be", t="Nostyec Regenthor, mod. E wirsh ador eynes re an tiras an lo vil va novaedi E gol melka ras re y bor rothas aelgestron.", d=12.760, v="skyborne-male" },
+		{ f="254345-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.040, v="skyborne-male" },
 	},
 	[254411] = {
-		{ f="254411-0e051c59", h="0e051c59", t="You've come for training in order to pass it on to your pets?", d=3.360, v="skyborne-female" },
-		{ f="254411-d56cf43b", h="d56cf43b", t="You can't teach an old dog new tricks.  At least that's what someone once told me.  Lucky for you, I've discovered it to be untrue.  However, pets do tend to get resistant to the technique, and I need more food each time to keep them happy.  What that means is that you'll owe me more money the more times I untrain the same pet.  Now then, would you like me to start untraining?", d=25.150, v="skyborne-female" },
+		{ f="254411-0e051c59", h="0e051c59", t="You've come for training in order to pass it on to your pets?", d=4.520, v="skyborne-female" },
+		{ f="254411-d56cf43b", h="d56cf43b", t="You can't teach an old dog new tricks.  At least that's what someone once told me.  Lucky for you, I've discovered it to be untrue.  However, pets do tend to get resistant to the technique, and I need more food each time to keep them happy.  What that means is that you'll owe me more money the more times I untrain the same pet.  Now then, would you like me to start untraining?", d=26.910, v="skyborne-female" },
 	},
 	[255853] = {
 		{ f="255853-b64f61e0", h="b64f61e0", t="The spirit of strength does not always allude to physical strength. To face adversity both from within and without is what it means to take my shape.", d=9.638, v="narrator", n={ [1]=11.880 } },
 	},
 	[255940] = {
-		{ f="255940-9cc50b7d", h="9cc50b7d", t="Welcome to the Calmbreeze Inn, traveler. Would you like some refreshment?", d=4.640, v="skyborne-male" },
+		{ f="255940-9cc50b7d", h="9cc50b7d", t="Welcome to the Calmbreeze Inn, traveler. Would you like some refreshment?", d=4.960, v="skyborne-male" },
+	},
+	[255993] = {
+		{ f="255993-91e62151", h="91e62151", t="As experienced as one might be, I urge you to travel with caution. These plains are home to ferocious beasts and others who seek to remove us from these lands. Even the skies have become too dangerous for our wyverns.", d=12.680, v="orc-female" },
 	},
 	[256076] = {
 		{ f="256076-f046599c", h="f046599c", t="<A faint whirring sound can be heard coming from underneath the constructs metal armor plates. The wind powering this machine is present but is listless and only faintly churning. You don't need to know much about air constructs to know that this unit is clearly not in good repair.>", d=18.546, v="narrator", n={ [1]=22.320 } },
 	},
 	[256083] = {
-		{ f="256083-35f76b60", h="35f76b60", t="Have you found what we need yet?", d=2.480, v="skyborne-male" },
+		{ f="256083-35f76b60", h="35f76b60", t="Have you found what we need yet?", d=2.120, v="skyborne-male" },
 		{ f="256083-6571d699", h="6571d699", t="<Riaani seems to be intently focused on his work on the wind construct.>", P={ { d=4.770, n=true } }, nP={ [1]={ [1]=5.800 } } },
 	},
 	[256247] = {
-		{ f="256247-c69f0372", h="c69f0372", t="What are you doing here? Quickly, leave this place now. You are going to ruin everything!", d=5.800, v="skyborne-male" },
+		{ f="256247-c69f0372", h="c69f0372", t="What are you doing here? Quickly, leave this place now. You are going to ruin everything!", d=6.080, v="skyborne-male" },
 	},
 	[256252] = {
 		{ f="256252-6d79dea5", h="6d79dea5", t="<The spinning column of wind before you seems to hum with contentment. It clearly cannot speak, but you have a clear sense of the sensations it feels. It seems... happy to provide you with the blessing of the winds.>", d=14.473, v="narrator", n={ [1]=16.280 } },
@@ -10222,15 +10381,35 @@ pack.gossip = {
 	[256391] = {
 		{ f="256391-209fae46", h="209fae46", t="Not every order goes according to plan. While we strive to ensure that each delivery arrives intact and efficiently, a recent rise of beasts, bandits, and even Horde attacks, unfortunately cause some unavoidable loss of goods.    Should you find any lost shipments and are feeling particularly helpful, you can take a look over the label and identify its expected contents. It is not your responsibility to deal with our shortcomings of course, but if you completed the shipment, you will be rewarded in kind.    Ms. Baker near the crates will handle your compensation, and we will take care of the logistics from there.", d=32.217, v="human-female" },
 		{ f="256391-3090047f", h="3090047f", t="Oh goodness, you snuck up on me! Glad to see you, $N, the Azeroth Commerce Authority is always in need of new contractors.    If you are the sort to enjoy a stroll through the forest gathering useful materials or possess the skills to craft something from scratch, well, you have found yourself right at home!    Please let me know if you have any questions.", d=19.531, v="human-female" },
+		{ f="256391-4f7887c0", h="4f7887c0", t="Of course we trade in gold! It is a universal currency, after all.    However, we have our own system for exchanges made amongst ourselves. It is known as Merchant's Favor, and it effectively abstracts away the ever-fluctuating value of gold and silver. This ensures consistent, fair, and equitable trade between members of the Azeroth Commerce Authority. Before you ask, no, it cannot be liquidated into gold.    We still use gold for simple trades such as basic threads or alchemy vials, you know - everyday crafts. Otherwise we rely on Merchant's Favor.    The more you help with our lost shipments and influx of crafting orders, the more Favor you will earn!", d=38.973, v="human-female" },
+		{ f="256391-8595984c", h="8595984c", t="We have rapidly expanded our business in recent months, but we are still developing the means to ensure swift communication between clients across all corners of the world. As such, we have to keep our eyes out for opportunities to keep our craftsmen's hands busy. We depend on couriers or other brave souls to bring crafting orders directly to us.    You can probably imagine that business model brings about challenges. In the meantime, we strongly encourage our crafters to satisfy these orders and deliver the goods directly to the customers themselves, wherever they may currently be. Fret not friend, you will be fairly compensated for your troubles and earn our respect!", d=36.064, v="human-female" },
 	},
 	[256514] = {
-		{ f="256514-4f344806", h="4f344806", t="Anyway, I should probably get back to work. Speaking of, do you have any food or valuables that I could lift off of you? Maybe some windstones? Could always use more windstones?", d=12.040, v="skyborne-male" },
-		{ f="256514-5198072d", h="5198072d", t="Look around you. There's so much beauty here. The wind on your face, the blue skies overhead. It's so bright and alive, but yes, it's also quite dark. It feels like a prison. A prison where the guards have all left the prisoners in their cells to fend for themselves.", d=19.400, v="skyborne-male" },
-		{ f="256514-6387fa8c", h="6387fa8c", t="Just thinking. It's scary out here these days, you know? Any minute this section of the island could drop out from under me and I'd go tumbling... somewhere? Tell me, do you even know what happens to $r who fall off the island?", d=13.800, v="skyborne-male" },
+		{ f="256514-4f344806", h="4f344806", t="Anyway, I should probably get back to work. Speaking of, do you have any food or valuables that I could lift off of you? Maybe some windstones? Could always use more windstones?", d=12.760, v="skyborne-male" },
+		{ f="256514-5198072d", h="5198072d", t="Look around you. There's so much beauty here. The wind on your face, the blue skies overhead. It's so bright and alive, but yes, it's also quite dark. It feels like a prison. A prison where the guards have all left the prisoners in their cells to fend for themselves.", d=18.480, v="skyborne-male" },
+		{ f="256514-6387fa8c", h="6387fa8c", t="Just thinking. It's scary out here these days, you know? Any minute this section of the island could drop out from under me and I'd go tumbling... somewhere? Tell me, do you even know what happens to $r who fall off the island?", d=14.120, v="skyborne-male" },
 		{ f="256514-64ae14a6", h="64ae14a6", t="<A solitary bandit sits on the edge of the precipice, clearly deep in thought. If he notices you, he doesn't seem interested in attacking you.>", P={ { d=9.315, n=true } }, nP={ [1]={ [1]=10.680 } } },
-		{ f="256514-8851d200", h="8851d200", t="You don't look like much, but something tells me you are right. I think I'll just sit here a bit longer. Thanks for the chat, stranger.", d=8.880, v="skyborne-male" },
-		{ f="256514-bde78361", h="bde78361", t="No one does. Because the only people who've done it have never come back. When the skycutters used to run between Valanaar and New Eldranaar or Shen'dramar, sometimes an accident or other misfortune would cause someone to go overboard. When it happened, they wouldn't even slow the ship down. No point.    For all we know, anyone who fell off is still out there... tumbling endlessly forever.", d=25.750, v="skyborne-male" },
-		{ f="256514-f0d40663", h="f0d40663", t="What do you want?", d=1.880, v="skyborne-male" },
+		{ f="256514-8851d200", h="8851d200", t="You don't look like much, but something tells me you are right. I think I'll just sit here a bit longer. Thanks for the chat, stranger.", d=7.760, v="skyborne-male" },
+		{ f="256514-bde78361", h="bde78361", t="No one does. Because the only people who've done it have never come back. When the skycutters used to run between Valanaar and New Eldranaar or Shen'dramar, sometimes an accident or other misfortune would cause someone to go overboard. When it happened, they wouldn't even slow the ship down. No point.    For all we know, anyone who fell off is still out there... tumbling endlessly forever.", d=27.030, v="skyborne-male" },
+		{ f="256514-f0d40663", h="f0d40663", t="What do you want?", d=1.440, v="skyborne-male" },
+	},
+	[256635] = {
+		{ f="256635-824cc722", h="824cc722", t="Adventurer! The wind bridge leading to the other spire is unstable. You may need to wait here with me until it returns.", d=8.760, v="skyborne-female", s={ ["m"]=9.520 } },
+	},
+	[256655] = {
+		{ f="256655-0c543544", h="0c543544", t="Cooking is a life long pursuit and I see we share the same passion!", d=5.560, v="orc-male" },
+	},
+	[256657] = {
+		{ f="256657-5ac8f650", h="5ac8f650", t="Orcs don't kill humans. Weapons do. And I make weapons.", d=4.840, v="orc-female" },
+	},
+	[256658] = {
+		{ f="256658-dab68b20", h="dab68b20", t="Crafting a battle-ready blade is the key to victory. I won't rest until I've mastered my craft.", d=9.200, v="orc-male" },
+	},
+	[256675] = {
+		{ f="256675-472c8799", h="472c8799", t="You must be tired from your travels. Take rest while you can.", d=3.840, v="orc-female" },
+		{ f="256675-4a0923b3", h="4a0923b3", t="Are you interested in exploring one of these dungeons?", d=3.680, v="orc-female" },
+		{ f="256675-886683cb", h="886683cb", t="The old kingdom of Lordaeron is perilous. We urge caution for anyone who dares to venture into the now decaying lands of Tirisfal Glades. If you must, find the Undercity and the upper courtyards are what you seek.", d=13.440, v="orc-female" },
+		{ f="256675-e0b9e88a", h="e0b9e88a", t="Our ancient lands in the north east of the Eastern Kingdom. Named after Lordain himself, it was once a proud and powerful kingdom. Its history is rich and serves as many lessons to upstart nobles and kings. One of its defining moments was assisting in the foundation of the Alliance that we know today.    Unfortunately its history is also dark, and its current inhabitants defile its lands day by day. There is still much of significance in the ruins that now rest above the Undercity but it is folly to attempt that journey and expect to return still among the living.", d=37.460, v="orc-female" },
 	},
 	[256729] = {
 		{ f="256729-06bc17cb", h="06bc17cb", t="I know what you're thinking, but don't worry, we keep our cooking and alchemy ingredients separate!    How can I help you?", d=5.901, v="human-female" },
@@ -10239,7 +10418,7 @@ pack.gossip = {
 		{ f="256730-fb965f91", h="fb965f91", t="The ingots are for display only!", d=2.280, v="dwarf-male" },
 	},
 	[256732] = {
-		{ f="256732-9285f4a0", h="9285f4a0", t="You look like you could use a few enchants. You have come to the right place!", d=7.000, v="skyborne-female" },
+		{ f="256732-9285f4a0", h="9285f4a0", t="You look like you could use a few enchants. You have come to the right place!", d=7.640, v="skyborne-female" },
 	},
 	[256733] = {
 		{ f="256733-8265ab1b", h="8265ab1b", t="Pleased to meet you! If you like to tinker, you have come to the right place!", d=4.880, v="gnome-female" },
@@ -10250,67 +10429,77 @@ pack.gossip = {
 	[256735] = {
 		{ f="256735-8db10840", h="8db10840", t="<Mivin gestures toward his wares and back at you again with a smile, but says nothing.>", P={ { d=5.566, n=true } }, nP={ [1]={ [1]=6.920 } } },
 	},
+	[256742] = {
+		{ f="256742-424df33e", h="424df33e", t="Ah, I am afraid you and I have no business at this time.    If you end up fulfilling some contracts with the trade authority then perhaps we will have something to discuss later.", d=8.993, v="human-female" },
+	},
 	[256930] = {
-		{ f="256930-341966bb", h="341966bb", t="Most of my outfit did. Displaced from the ground falling out from under our feet. Some came from other islands entirely. I came from the city of Shen'dramar, on the big island. Well, what used to be the big island, I suppose.    My family and I managed to get on one of the last skycutters out of there before the entire island broke apart. We thought that Zephras would save us. Well, it didn't. They are all long dead and now I'm here, awaiting execution.", d=32.070, v="skyborne-male" },
-		{ f="256930-70ce7a83", h="70ce7a83", t="Desperation? Hunger? I'm not exactly here doing this because I like robbing and murdering. I lost my home, had no where to go, and I don't much care to shave my head and worship some imaginary wind god, so I became a bandit. The rest is obvious.", d=15.560, v="skyborne-male" },
-		{ f="256930-a5bd8b56", h="a5bd8b56", t="What are you looking at?", d=1.200, v="skyborne-male" },
-		{ f="256930-b893349b", h="b893349b", t="Largely, yes. The thing we all have in common is that we have nowhere else to go and that we prefer thieving over enslaving ourselves to some insane cult.", d=10.640, v="skyborne-male" },
-		{ f="256930-d07034d1", h="d07034d1", t="Killed a peacekeeper and stole some windstones.", d=3.120, v="skyborne-male" },
-		{ f="256930-dc9d79f6", h="dc9d79f6", t="Why bother denying it, the constable already passed her judgement. No point lying.", d=6.080, v="skyborne-male" },
+		{ f="256930-341966bb", h="341966bb", t="Most of my outfit did. Displaced from the ground falling out from under our feet. Some came from other islands entirely. I came from the city of Shen'dramar, on the big island. Well, what used to be the big island, I suppose.    My family and I managed to get on one of the last skycutters out of there before the entire island broke apart. We thought that Zephras would save us. Well, it didn't. They are all long dead and now I'm here, awaiting execution.", d=33.150, v="skyborne-male" },
+		{ f="256930-70ce7a83", h="70ce7a83", t="Desperation? Hunger? I'm not exactly here doing this because I like robbing and murdering. I lost my home, had no where to go, and I don't much care to shave my head and worship some imaginary wind god, so I became a bandit. The rest is obvious.", d=17.960, v="skyborne-male" },
+		{ f="256930-a5bd8b56", h="a5bd8b56", t="What are you looking at?", d=1.440, v="skyborne-male" },
+		{ f="256930-b893349b", h="b893349b", t="Largely, yes. The thing we all have in common is that we have nowhere else to go and that we prefer thieving over enslaving ourselves to some insane cult.", d=10.920, v="skyborne-male" },
+		{ f="256930-d07034d1", h="d07034d1", t="Killed a peacekeeper and stole some windstones.", d=3.440, v="skyborne-male" },
+		{ f="256930-dc9d79f6", h="dc9d79f6", t="Why bother denying it, the constable already passed her judgement. No point lying.", d=6.160, v="skyborne-male" },
 	},
 	[257003] = {
-		{ f="257003-ec1a6e0b", h="ec1a6e0b", t="I don't get too many Skinners in here looking for training, but I guess I could teach you something if you're ready.", d=5.400, v="skyborne-female" },
+		{ f="257003-ec1a6e0b", h="ec1a6e0b", t="I don't get too many Skinners in here looking for training, but I guess I could teach you something if you're ready.", d=6.440, v="skyborne-female" },
 	},
 	[257004] = {
-		{ f="257004-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=3.960, v="skyborne-female" },
+		{ f="257004-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=5.720, v="skyborne-female" },
+		{ f="257004-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=6.520, v="skyborne-female" },
 	},
 	[257005] = {
-		{ f="257005-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.320, v="skyborne-female" },
+		{ f="257005-45c78ce3", h="45c78ce3", t="Nostyec Aetwinter, mod. E wirsh ador eynes re an tiras an lo vil va novaedi E gol melka ras re y bor rothas aelgestron.", d=13.240, v="skyborne-female" },
+		{ f="257005-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=4.440, v="skyborne-female" },
 	},
 	[257006] = {
-		{ f="257006-8cd6b7fd", h="8cd6b7fd", t="I don't get too many cooks in here looking for training, but I guess I could teach you something if you're ready.", d=5.360, v="skyborne-female" },
-		{ f="257006-8fa53a5b", h="8fa53a5b", t="Cooking on Zephras may seem difficult to the untrained eye, but I enjoy the creation of every dish. Even though our dwindling home is lacking many of our traditional Kaldorei ingredients, it has been fun to create new variations of the recipes of our ancestors.    I hope that no matter where the winds take you, these recipes remind you of home.", d=21.710, v="skyborne-female" },
-		{ f="257006-cc01e817", h="cc01e817", t="It appears the winds have brought you my way! I am happy to train you in the ways of cooking if you have the inclination to learn.", d=9.680, v="skyborne-female" },
-		{ f="257006-d682c422", h="d682c422", t="E borne hir ash nuff garde re ruff vassild lon thorniss, far E regen E majis barad ras aetwinter lo ruftos ergin.", d=11.240, v="skyborne-female" },
+		{ f="257006-8cd6b7fd", h="8cd6b7fd", t="I don't get too many cooks in here looking for training, but I guess I could teach you something if you're ready.", d=6.560, v="skyborne-female" },
+		{ f="257006-8fa53a5b", h="8fa53a5b", t="Cooking on Zephras may seem difficult to the untrained eye, but I enjoy the creation of every dish. Even though our dwindling home is lacking many of our traditional Kaldorei ingredients, it has been fun to create new variations of the recipes of our ancestors.    I hope that no matter where the winds take you, these recipes remind you of home.", d=25.110, v="skyborne-female" },
+		{ f="257006-cc01e817", h="cc01e817", t="It appears the winds have brought you my way! I am happy to train you in the ways of cooking if you have the inclination to learn.", d=9.480, v="skyborne-female" },
+		{ f="257006-d682c422", h="d682c422", t="E borne hir ash nuff garde re ruff vassild lon thorniss, far E regen E majis barad ras aetwinter lo ruftos ergin.", d=13.600, v="skyborne-female" },
 	},
 	[257007] = {
-		{ f="257007-5c5556b1", h="5c5556b1", t="Va, y ealdor Gloinador. E majis ko dana ne barad ras thorniss lars majis gol ador endirvis.", d=8.560, v="skyborne-female" },
+		{ f="257007-2957a3a0", h="2957a3a0", t="Oh, a fellow Physician. I would be glad to teach you anything that would aid your journeys.", d=6.840, v="skyborne-female" },
+		{ f="257007-5c5556b1", h="5c5556b1", t="Va, y ealdor Gloinador. E majis ko dana ne barad ras thorniss lars majis gol ador endirvis.", d=10.360, v="skyborne-female" },
+		{ f="257007-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=7.840, v="skyborne-female" },
 	},
 	[257008] = {
-		{ f="257008-1a6886aa", h="1a6886aa", t="Ah, hello. You look as though you have a question for me.", d=4.120, v="skyborne-male" },
-		{ f="257008-358b7a1a", h="358b7a1a", t="Re, y ealdor Regenthor. Hir ras novaedi re uden va y vandar thorniss? Melka E gol ruff ras y garde va vil?", d=11.520, v="skyborne-male" },
-		{ f="257008-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.440, v="skyborne-male" },
-		{ f="257008-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=3.960, v="skyborne-male" },
-		{ f="257008-e332eb6d", h="e332eb6d", t="Ah, a fellow Fisherman. Are you perhaps in need of a little training? Maybe I can show you a thing or two?", d=6.120, v="skyborne-male" },
-		{ f="257008-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=5.880, v="skyborne-male" },
+		{ f="257008-1a6886aa", h="1a6886aa", t="Ah, hello. You look as though you have a question for me.", d=4.360, v="skyborne-male" },
+		{ f="257008-358b7a1a", h="358b7a1a", t="Re, y ealdor Regenthor. Hir ras novaedi re uden va y vandar thorniss? Melka E gol ruff ras y garde va vil?", d=10.360, v="skyborne-male" },
+		{ f="257008-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=2.920, v="skyborne-male" },
+		{ f="257008-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=4.440, v="skyborne-male" },
+		{ f="257008-e332eb6d", h="e332eb6d", t="Ah, a fellow Fisherman. Are you perhaps in need of a little training? Maybe I can show you a thing or two?", d=6.840, v="skyborne-male" },
+		{ f="257008-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=7.360, v="skyborne-male" },
 	},
 	[257018] = {
-		{ f="257018-1a6886aa", h="1a6886aa", t="Ah, hello. You look as though you have a question for me.", d=5.160, v="skyborne-female" },
-		{ f="257018-2957a3a0", h="2957a3a0", t="Oh, a fellow Physician. I would be glad to teach you anything that would aid your journeys.", d=7.920, v="skyborne-female" },
-		{ f="257018-5c5556b1", h="5c5556b1", t="Va, y ealdor Gloinador. E majis ko dana ne barad ras thorniss lars majis gol ador endirvis.", d=8.040, v="skyborne-female" },
-		{ f="257018-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=3.760, v="skyborne-female" },
-		{ f="257018-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=6.480, v="skyborne-female" },
+		{ f="257018-1a6886aa", h="1a6886aa", t="Ah, hello. You look as though you have a question for me.", d=5.320, v="skyborne-female" },
+		{ f="257018-2957a3a0", h="2957a3a0", t="Oh, a fellow Physician. I would be glad to teach you anything that would aid your journeys.", d=7.560, v="skyborne-female" },
+		{ f="257018-5c5556b1", h="5c5556b1", t="Va, y ealdor Gloinador. E majis ko dana ne barad ras thorniss lars majis gol ador endirvis.", d=10.080, v="skyborne-female" },
+		{ f="257018-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=4.080, v="skyborne-female" },
+		{ f="257018-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=4.920, v="skyborne-female" },
+		{ f="257018-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=6.920, v="skyborne-female" },
 	},
 	[257019] = {
-		{ f="257019-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=4.040, v="skyborne-female" },
-		{ f="257019-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=5.680, v="skyborne-female" },
+		{ f="257019-45c78ce3", h="45c78ce3", t="Nostyec Aetwinter, mod. E wirsh ador eynes re an tiras an lo vil va novaedi E gol melka ras re y bor rothas aelgestron.", d=14.280, v="skyborne-female" },
+		{ f="257019-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.760, v="skyborne-female" },
+		{ f="257019-d62b45b0", h="d62b45b0", t="Gales greetings, friend. Is there something I can help you with?", d=4.880, v="skyborne-female" },
 	},
 	[257020] = {
-		{ f="257020-7ce0aa5e", h="7ce0aa5e", t="Welcome to my shop, it's good to see another Enchanter here in Shen'dar. Are you here for a lesson perhaps?", d=7.320, v="skyborne-female" },
+		{ f="257020-7ce0aa5e", h="7ce0aa5e", t="Welcome to my shop, it's good to see another Enchanter here in Shen'dar. Are you here for a lesson perhaps?", d=9.400, v="skyborne-female" },
 	},
 	[257021] = {
-		{ f="257021-bb901712", h="bb901712", t="Another Herbalist, hmm. I doubt your skill is as great as my own so perhaps I can train you in a few proper techniques.", d=9.200, v="skyborne-female" },
-		{ f="257021-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=6.840, v="skyborne-female" },
+		{ f="257021-bb901712", h="bb901712", t="Another Herbalist, hmm. I doubt your skill is as great as my own so perhaps I can train you in a few proper techniques.", d=10.000, v="skyborne-female" },
+		{ f="257021-bedfc7be", h="bedfc7be", t="Nostyec Regenthor, mod. E wirsh ador eynes re an tiras an lo vil va novaedi E gol melka ras re y bor rothas aelgestron.", d=12.840, v="skyborne-female" },
+		{ f="257021-fb513610", h="fb513610", t="I hope that your interruption is for a good cause, I was in the middle of some important work.", d=7.640, v="skyborne-female" },
 	},
 	[257022] = {
-		{ f="257022-4fed1ed6", h="4fed1ed6", t="You might think that just because we live on a floating island, there would be no need for miners like me. After so many thousands of years however, we still manage to dig up a lot of interesting things.     It's almost like there's some invisible force, constantly creating new mineral deposits every so often. That's magic for you though, right?    Regardless, if you need training as a miner them I'm your shen'dorei.", d=28.790, v="skyborne-female" },
+		{ f="257022-4fed1ed6", h="4fed1ed6", t="You might think that just because we live on a floating island, there would be no need for miners like me. After so many thousands of years however, we still manage to dig up a lot of interesting things.     It's almost like there's some invisible force, constantly creating new mineral deposits every so often. That's magic for you though, right?    Regardless, if you need training as a miner them I'm your shen'dorei.", d=29.710, v="skyborne-female" },
 	},
 	[257024] = {
-		{ f="257024-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.440, v="skyborne-male" },
-		{ f="257024-ec1a6e0b", h="ec1a6e0b", t="I don't get too many Skinners in here looking for training, but I guess I could teach you something if you're ready.", d=5.240, v="skyborne-male" },
+		{ f="257024-c65683ed", h="c65683ed", t="Winds tidings. What can I help you with?", d=3.640, v="skyborne-male" },
+		{ f="257024-ec1a6e0b", h="ec1a6e0b", t="I don't get too many Skinners in here looking for training, but I guess I could teach you something if you're ready.", d=7.080, v="skyborne-male" },
 	},
 	[257036] = {
-		{ f="257036-a6bb08a8", h="a6bb08a8", t="Welcome to the Bank of Valanaar. We can secure your belongings and valuables here should you so desire. Do you wish to access your deposit box?", d=9.040, v="skyborne-male" },
+		{ f="257036-a6bb08a8", h="a6bb08a8", t="Welcome to the Bank of Valanaar. We can secure your belongings and valuables here should you so desire. Do you wish to access your deposit box?", d=10.320, v="skyborne-male" },
 	},
 	[257065] = {
 		{ f="257065-819f44a1", h="819f44a1", t="Do you seek the blessings of the Windlord?", d=2.720, v="skyborne-male" },
@@ -10328,7 +10517,7 @@ pack.gossip = {
 		{ f="257655-9f0fb116", h="9f0fb116", t="<Deathguard Billmuth absentmindedly fidgets as he looks around nervously. He is clearly very uncomfortable being here.>", P={ { d=8.043, n=true } }, nP={ [1]={ [1]=8.360 } } },
 	},
 	[257944] = {
-		{ f="257944-37940c1f", h="37940c1f", t="I cannot believe we were taken by surprise by the Al'Aketh. They have never been hostile to us before, but with their ambush they injured many of my kin.I swear I will get revenge for the fallen and wounded druids of my den. Mark my words, they will pay.", d=15.160, v="skyborne-female" },
+		{ f="257944-37940c1f", h="37940c1f", t="I cannot believe we were taken by surprise by the Al'Aketh. They have never been hostile to us before, but with their ambush they injured many of my kin.I swear I will get revenge for the fallen and wounded druids of my den. Mark my words, they will pay.", d=19.920, v="skyborne-female" },
 	},
 	[258043] = {
 		{ f="258043-c6710551", h="c6710551", t="Ye've come further than many, $N. Respect the elements around ye and ye shall fare far greater than most.", d=7.360, v="dwarf-male" },
@@ -10343,50 +10532,66 @@ pack.gossip = {
 		{ f="258130-c2f6629b", h="c2f6629b", t="<Before you lies the corpse Jorel Windsinger.    Deep lacerations are cut into his legs, and lightning burns scorch his fur.    It is clear he put up a fight before succombing to his wounds.>", d=12.584, v="narrator", n={ [1]=16.000 } },
 	},
 	[258568] = {
+		{ f="258568-ed056522", h="ed056522", t="Best deals in all of Stormwind my friend, won't find any better. Now, what can I help you with?", d=7.180, v="human-male" },
 		{ f="258568-fe52f4ea", h="fe52f4ea", t="Just browsing my wares or is there something specific I can help you find today?", d=5.097, v="human-male" },
+	},
+	[258572] = {
+		{ f="258572-cad23935", h="cad23935", t="Many of the supplies that tradesmen need can be found in the world. For those that cannot, I provide a limited selection for fair price.", d=8.680, v="nightelf-male" },
 	},
 	[258930] = {
 		{ f="258930-0e051c59", h="0e051c59", t="You've come for training in order to pass it on to your pets?", d=3.170, v="human-male" },
 	},
 	[259012] = {
-		{ f="259012-517aef13", h="517aef13", t="All of the $r islands became destabilized and began to move apart a few years ago. If that wasn't bad enough, now large pieces of Zephras are beginning to fall away. It's hard to imagine your home falling into the sky, but that is my reality now.", d=17.960, v="skyborne-female" },
+		{ f="259012-517aef13", h="517aef13", t="All of the $r islands became destabilized and began to move apart a few years ago. If that wasn't bad enough, now large pieces of Zephras are beginning to fall away. It's hard to imagine your home falling into the sky, but that is my reality now.", d=18.200, v="skyborne-female" },
 	},
 	[259013] = {
-		{ f="259013-70e3f54c", h="70e3f54c", t="<Before you lies an skyborne; his body is mangled and bruised but still recognizable. It is clear he met a gruesome end while attempting to flee.    It appears that all of his belongings are still on his body, and a half filled crate nearby lays spilled on the ground.>", P={ { d=16.519, n=true } }, nP={ [1]={ [1]=22.240 } } },
+		{ f="259013-70e3f54c", h="70e3f54c", t="<Before you lies an $r; his body is mangled and bruised but still recognizable. It is clear he met a gruesome end while attempting to flee.    It appears that all of his belongings are still on his body, and a half filled crate nearby lays spilled on the ground.>", P={ { d=17.646, n=true } }, nP={ [1]={ [1]=21.400 } } },
 	},
 	[259084] = {
-		{ f="259084-637067e7", h="637067e7", t="Wind's greetings, friend. I've been authorized to offer fellow $R quick passage to the city of Stormwind. Please feel free to utilize this portal at your leisure.", d=11.200, v="skyborne-male" },
+		{ f="259084-637067e7", h="637067e7", t="Wind's greetings, friend. I've been authorized to offer fellow $R quick passage to the city of Stormwind. Please feel free to utilize this portal at your leisure.", d=11.080, v="skyborne-male" },
 	},
 	[259118] = {
 		{ f="259118-b3bb7fbb", h="b3bb7fbb", t="I am Muln Earthfury of the Earthen Ring. What brings you before me today?", d=5.680, v="tauren-male" },
 	},
 	[259190] = {
-		{ f="259190-364e1d5b", h="364e1d5b", t="Oi, what do you want?", d=2.800, v="scourge-male" },
+		{ f="259190-364e1d5b", h="364e1d5b", t="Oi, what do you want?", d=1.893, v="human-male" },
 	},
 	[259620] = {
-		{ f="259620-334a03a9", h="334a03a9", t="When it was over I was stunned. He knew what would happen and he threw himself in front of that creature anyway to shield me.    We windshapers always pay our debts, and I owe him a debt. We've already avenged his death, but we can still avenge what was done to him by that monster, if you are still willing to lend me aid.", d=19.350, v="skyborne-female" },
-		{ f="259620-5469c573", h="5469c573", t="There are no words to describe what happened. Banon twisted and contorted horribly. It sounded like every bone in his body was breaking. His mouth filled with razors and his hands became deadly claws. It took twenty gnolls to fell him, and he killed half of them before it was done.", d=15.960, v="skyborne-female" },
-		{ f="259620-a831a213", h="a831a213", t="As I said, the creature that attacked us fled when I singed its backside with lightning, but not before biting Banon. On our way back to town, the Gnolls surrounded us and took us captive.     It wasn't until they started to pull us out of the boat on Fenris Isle that... the change started.", d=16.160, v="skyborne-female" },
-		{ f="259620-cd848994", h="cd848994", t="Winds blessings, $c.", d=2.440, v="skyborne-female" },
+		{ f="259620-334a03a9", h="334a03a9", t="When it was over I was stunned. He knew what would happen and he threw himself in front of that creature anyway to shield me.    We windshapers always pay our debts, and I owe him a debt. We've already avenged his death, but we can still avenge what was done to him by that monster, if you are still willing to lend me aid.", d=23.630, v="skyborne-female" },
+		{ f="259620-5469c573", h="5469c573", t="There are no words to describe what happened. Banon twisted and contorted horribly. It sounded like every bone in his body was breaking. His mouth filled with razors and his hands became deadly claws. It took twenty gnolls to fell him, and he killed half of them before it was done.", d=18.920, v="skyborne-female" },
+		{ f="259620-a831a213", h="a831a213", t="As I said, the creature that attacked us fled when I singed its backside with lightning, but not before biting Banon. On our way back to town, the Gnolls surrounded us and took us captive.     It wasn't until they started to pull us out of the boat on Fenris Isle that... the change started.", d=20.880, v="skyborne-female" },
+		{ f="259620-cd848994", h="cd848994", t="Winds blessings, $c.", d=3.440, v="skyborne-female" },
 	},
 	[260093] = {
-		{ f="260093-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=23.918, v="human-male" },
-		{ f="260093-58279558", h="58279558", t="Do you require training in the ways of the light?", d=3.380, v="human-male" },
+		{ f="260093-08830bac", h="08830bac", t="Through rigorous retraining I have had to break many students of all they had previously learned so that I might teach them anew.  The service I offer becomes increasingly difficult to perform each time it is done.  It is for that reason that it becomes increasingly expensive with each retraining.  Do you desire that I break you of the talents you have learned?", d=23.710, v="scourge-male" },
+		{ f="260093-58279558", h="58279558", t="Do you require training in the ways of the light?", d=3.360, v="scourge-male" },
 	},
 	[260628] = {
-		{ f="260628-e754d42e", h="e754d42e", t="<Valennia winces in pain as she shifts to look at you.>    Don't look at me like that. I'll be fine. Despite the best efforts of the High Elder's fretful healers, I'll be up and ready to fight again in no time.    Now be gone with you... don't let this old soldier hold you up. The winds will bring you good fortune on your journey, I know it.", d=19.640, v="skyborne-female", P={ { d=3.569, n=true }, { d=19.920 } }, nP={ [1]={ [1]=4.480 } } },
+		{ f="260628-e754d42e", h="e754d42e", t="<Valennia winces in pain as she shifts to look at you.>    Don't look at me like that. I'll be fine. Despite the best efforts of the High Elder's fretful healers, I'll be up and ready to fight again in no time.    Now be gone with you... don't let this old soldier hold you up. The winds will bring you good fortune on your journey, I know it.", d=21.440, v="skyborne-female", P={ { d=3.569, n=true }, { d=21.520 } }, nP={ [1]={ [1]=4.480 } } },
+	},
+	[261366] = {
+		{ f="261366-f0cf26c5", h="f0cf26c5", t="What do you need, $r?", d=1.866, v="human-male" },
 	},
 	[262502] = {
 		{ f="262502-a7fc18c4", h="a7fc18c4", t="Another fresh face! Welcome to Azeroth, pal. Come back and see me if you need help setting yourself up for success.    Bring money.", d=6.080, v="goblin-male" },
 	},
 	[262558] = {
-		{ f="262558-165bbe08", h="165bbe08", t="What has brought you to the Earthen Ring?", d=2.416, v="human-male" },
+		{ f="262558-165bbe08", h="165bbe08", t="What has brought you to the Earthen Ring?", d=2.880, v="tauren-male" },
+	},
+	[262560] = {
+		{ f="262560-297f06b6", h="297f06b6", t="Many serve the Earth Mother in different ways. The Earthen Ring and the Cenarion Circle share many similarities and are often aligned in goals, if not methods and customs.", d=9.866, v="human-female" },
 	},
 	[263113] = {
-		{ f="263113-81449513", h="81449513", t="It can get boring up here, you know. I can only annoy that stuffy wretch Halaan so much before even that gets old.", d=6.320, v="skyborne-female" },
+		{ f="263113-81449513", h="81449513", t="It can get boring up here, you know. I can only annoy that stuffy wretch Halaan so much before even that gets old.", d=10.120, v="skyborne-female" },
+	},
+	[263349] = {
+		{ f="263349-f9f7abf6", h="f9f7abf6", t="Greetings, $N.  Do you wish to enter a battle at Darkspear Islands?", d=5.030, v="human-male" },
 	},
 	[263399] = {
 		{ f="263399-b37c4e4d", h="b37c4e4d", t="Howdy there, traveler!", d=1.612, v="human-male" },
+	},
+	[263569] = {
+		{ f="263569-85179f46", h="85179f46", t="Greetings, traveler! I am Bryanna Embreeze. I am the main supplier for the Theramore Expeditionary Force.  As you improve your standing with the Theramore Expeditionary Force, I can offer you an additional selection of goods that you can use inside Darkspear Islands.", d=14.958, v="human-female" },
 	},
 	[263570] = {
 		{ f="263570-954d4e6d", h="954d4e6d", t="Greetings, traveler! I am Creeg Bothunk, the main supplier for the Darkspear Raiders.  As you improve your standing with the  Darkspear Raiders, I will be able to provide a selection of goods that you can use inside Darkspear Islands.  Should you find yourself in need of item repair, I also provide those services.", d=25.350, v="troll-male" },
@@ -10394,42 +10599,45 @@ pack.gossip = {
 	[263644] = {
 		{ f="263644-f9f7abf6", h="f9f7abf6", t="Greetings, $N.  Do you wish to enter a battle at Darkspear Islands?", d=5.287, v="human-male" },
 	},
+	[263646] = {
+		{ f="263646-fb408f08", h="fb408f08", t="Well, well...are you ready to fight for the Horde in Darkspear Islands?", d=6.680, v="orc-male" },
+	},
 	[263664] = {
-		{ f="263664-550c4a52", h="550c4a52", t="Greetings, traveler.", d=1.480, v="skyborne-male" },
+		{ f="263664-550c4a52", h="550c4a52", t="Greetings, traveler.", d=1.440, v="skyborne-male" },
 	},
 	[263930] = {
-		{ f="263930-8b1fd97e", h="8b1fd97e", t="What are you looking for, citizen?", d=2.000, v="skyborne-female" },
+		{ f="263930-8b1fd97e", h="8b1fd97e", t="What are you looking for, citizen?", d=2.520, v="skyborne-female" },
 	},
 	[264078] = {
 		{ f="264078-adb68b1b", h="adb68b1b", t="It is my honor to handle supply and provisioning for the Earthen Ring.     My stock is limited at present, but check back with me often and I may have new equipment and supplies available for purchase.", d=14.440, v="tauren-female" },
 	},
 	[264936] = {
-		{ f="264936-6ba63b30", h="6ba63b30", t="On a clear day, you can even see Blackrock Mountain from here. It's both beautiful and terrifying at the same time.", d=8.109, v="human-male" },
+		{ f="264936-6ba63b30", h="6ba63b30", t="On a clear day, you can even see Blackrock Mountain from here. It's both beautiful and terrifying at the same time.", d=7.080, v="dwarf-male" },
 	},
 	[265654] = {
-		{ f="265654-32c7384b", h="32c7384b", t="Welcome to the guild registrar of Valanaar. How may I assist you today?", d=5.200, v="skyborne-male" },
+		{ f="265654-32c7384b", h="32c7384b", t="Welcome to the guild registrar of Valanaar. How may I assist you today?", d=6.480, v="skyborne-male" },
 	},
 	[265756] = {
-		{ f="265756-0cf2d0bd", h="0cf2d0bd", t="Welcome to Fairweather Stables! I would love to provide you one of our fine galestriders, but it seems like you may not yet have enough experience to ride one.    They are temperamental at times and are prone to toss newer riders if not handled correctly. I would be more than happy to provide the training for you once you are a more seasoned adventurer and have enough coin!", d=25.710, v="skyborne-male" },
+		{ f="265756-0cf2d0bd", h="0cf2d0bd", t="Welcome to Fairweather Stables! I would love to provide you one of our fine galestriders, but it seems like you may not yet have enough experience to ride one.    They are temperamental at times and are prone to toss newer riders if not handled correctly. I would be more than happy to provide the training for you once you are a more seasoned adventurer and have enough coin!", d=25.590, v="skyborne-male" },
 	},
 	[265809] = {
 		{ f="265809-550c4a52", h="550c4a52", t="Greetings, traveler.", d=2.440, v="orc-male" },
 	},
 	[265810] = {
-		{ f="265810-550c4a52", h="550c4a52", t="Greetings, traveler.", d=1.680, v="tauren-female" },
+		{ f="265810-550c4a52", h="550c4a52", t="Greetings, traveler.", d=1.287, v="human-female" },
 	},
 	[265811] = {
 		{ f="265811-550c4a52", h="550c4a52", t="Greetings, traveler.", d=2.400, v="nightelf-female" },
 	},
 	[265812] = {
-		{ f="265812-550c4a52", h="550c4a52", t="Greetings, traveler.", d=1.356, v="human-female" },
+		{ f="265812-550c4a52", h="550c4a52", t="Greetings, traveler.", d=2.640, v="scourge-female" },
 	},
 	[265813] = {
 		{ f="265813-550c4a52", h="550c4a52", t="Greetings, traveler.", d=1.920, v="dwarf-male" },
 	},
 	[265944] = {
-		{ f="265944-0c543544", h="0c543544", t="Cooking is a life long pursuit and I see we share the same passion!", d=5.680, v="scourge-male" },
-		{ f="265944-b48f927f", h="b48f927f", t="I can teach you how to cook!", d=1.600, v="scourge-male" },
+		{ f="265944-0c543544", h="0c543544", t="Cooking is a life long pursuit and I see we share the same passion!", d=5.567, v="human-male" },
+		{ f="265944-b48f927f", h="b48f927f", t="I can teach you how to cook!", d=2.155, v="human-male" },
 	},
 	[266484] = {
 		{ f="266484-e94c420f", h="e94c420f", t="We paladins must earn our place amongst our Forsaken kin each day, lest we be judged as fanatics like the Scarlet Crusade. The light is not simply a tool of our foes, but a conduit for our righteous fury! It is in our devotion to the Dark Lady and the love of our home that we may channel the light to bring justice to our enemies.    The Banshee Queen keeps a close eye on us. Let her. She will see that our resolve shall never waver. We are Forsaken!", d=34.510, v="scourge-male" },
@@ -10438,15 +10646,16 @@ pack.gossip = {
 		{ f="266881-932ae4f0", h="932ae4f0", t="What business do you have in the Echo Isles, $c?", d=3.880, v="troll-female" },
 	},
 	[267007] = {
-		{ f="267007-37e215b2", h="37e215b2", t="Which class trainer are you looking for?", d=2.196, v="human-female", s={ ["m"]=3.029 } },
-		{ f="267007-9e9bec9c", h="9e9bec9c", t="What do you need directions to?", d=2.048, v="human-female", s={ ["m"]=2.371 } },
-		{ f="267007-dabedb39", h="dabedb39", t="Warlocks, eh.  Well, you didn't hear it from me, but I've heard rumors that those types gather at a bar called the Slaughtered Lamb in the Mage Quarter.  ", d=7.540, v="human-female", s={ ["m"]=9.100 } },
+		{ f="267007-37e215b2", h="37e215b2", t="Which class trainer are you looking for?", d=3.023, v="human-male", s={ ["f"]=2.160 } },
+		{ f="267007-7d21b53a", h="7d21b53a", t="You can find Stormwind Harbor if you head through the Canals, between the Cathedral District and the Park.    Were you looking for a specific destination?", d=9.131, v="human-male", s={ ["f"]=6.947 } },
+		{ f="267007-9e9bec9c", h="9e9bec9c", t="What do you need directions to?", d=2.186, v="human-male", s={ ["f"]=1.824 } },
+		{ f="267007-dabedb39", h="dabedb39", t="Warlocks, eh.  Well, you didn't hear it from me, but I've heard rumors that those types gather at a bar called the Slaughtered Lamb in the Mage Quarter.  ", d=9.612, v="human-male", s={ ["f"]=7.473 } },
 	},
 	[267008] = {
-		{ f="267008-b4ea9d59", h="b4ea9d59", t="They named it Bandarion Keep. I wonder what Garek would make of that?", d=6.120, v="scourge-male" },
+		{ f="267008-b4ea9d59", h="b4ea9d59", t="They named it Bandarion Keep. I wonder what Garek would make of that?", d=4.413, v="human-male" },
 	},
 	[267009] = {
-		{ f="267009-6f316d7a", h="6f316d7a", t="Be careful, $c. There are cultists nearby.", d=6.120, v="scourge-male" },
+		{ f="267009-6f316d7a", h="6f316d7a", t="Be careful, $c. There are cultists nearby.", d=4.000, v="human-male" },
 	},
 	[267216] = {
 		{ f="267216-225cf7a5", h="225cf7a5", t="<This kodo watches you with sharp intelligent eyes.>", d=4.819, v="narrator", n={ [1]=5.720 } },
@@ -10462,8 +10671,16 @@ pack.gossip = {
 		{ f="267321-b3334d4d", h="b3334d4d", t="Of course! Which profession would you like me to guide you towards?    I will mark your map with the location of a local trainer of your choice. Remember that you can visit trainers in capital cities for more thorough training.", d=12.600, v="tauren-male" },
 		{ f="267321-e9b56518", h="e9b56518", t="Great choice. I have marked that location on your map.", d=4.080, v="tauren-male" },
 	},
+	[267323] = {
+		{ f="267323-83e0509a", h="83e0509a", t="Hello, $N! Have you considered taking up a tradeskill?    I would be happy to answer any questions you might have, or point you toward the local trainers.    If this feels overwhelming, that's okay! You can always return here or visit trainers in capital cities to get started on your crafting journey at any time.", d=25.030, v="scourge-male" },
+		{ f="267323-b3334d4d", h="b3334d4d", t="Of course! Which profession would you like me to guide you towards?    I will mark your map with the location of a local trainer of your choice. Remember that you can visit trainers in capital cities for more thorough training.", d=13.880, v="scourge-male" },
+		{ f="267323-e9b56518", h="e9b56518", t="Great choice. I have marked that location on your map.", d=3.760, v="scourge-male" },
+	},
 	[267324] = {
 		{ f="267324-d8b814ea", h="d8b814ea", t="Agol ne wirsh ver ne vandar novaedi veld algos nevren? Va se ras uden vrum bor garde?", d=8.280, v="scourge-female" },
+	},
+	[267325] = {
+		{ f="267325-924a66d4", h="924a66d4", t="How can I help you?", d=3.080, v="scourge-male" },
 	},
 	[267327] = {
 		{ f="267327-d8b814ea", h="d8b814ea", t="Agol ne wirsh ver ne vandar novaedi veld algos nevren? Va se ras uden vrum bor garde?", d=10.080, v="orc-male" },
@@ -10478,13 +10695,16 @@ pack.gossip = {
 		{ f="267331-924a66d4", h="924a66d4", t="How can I help you?", d=2.120, v="tauren-female" },
 	},
 	[267333] = {
-		{ f="267333-0371bf6f", h="0371bf6f", t="Care to learn how to gather leather from slain beasts? Or do you need some new tools?", d=4.960, v="nightelf-male" },
+		{ f="267333-0371bf6f", h="0371bf6f", t="Care to learn how to gather leather from slain beasts? Or do you need some new tools?", d=5.816, v="human-male" },
+	},
+	[267334] = {
+		{ f="267334-924a66d4", h="924a66d4", t="How can I help you?", d=1.280, v="nightelf-male" },
 	},
 	[267336] = {
 		{ f="267336-0371bf6f", h="0371bf6f", t="Care to learn how to gather leather from slain beasts? Or do you need some new tools?", d=5.960, v="dwarf-female" },
 	},
 	[267337] = {
-		{ f="267337-924a66d4", h="924a66d4", t="How can I help you?", d=0.960, v="gnome-female" },
+		{ f="267337-924a66d4", h="924a66d4", t="How can I help you?", d=1.210, v="human-female" },
 	},
 	[267354] = {
 		{ f="267354-ac69d40c", h="ac69d40c", t="<It snaps its teeth together, chomping at its bit.>", d=3.496, v="narrator", n={ [1]=4.120 } },
@@ -10498,52 +10718,91 @@ pack.gossip = {
 	[268511] = {
 		{ f="268511-ee845bad", h="ee845bad", t="Harbor work is open to everyone, but your personal safety is your own responsibility.", d=6.300, v="human-male" },
 	},
+	[268679] = {
+		{ f="268679-72aa6da2", h="72aa6da2", t="<The Braizer of Eternal Flame awaits your offering.>", d=3.683, v="narrator", n={ [1]=4.840 } },
+	},
 	[269152] = {
 		{ f="269152-644ccfaa", h="644ccfaa", t="You are not known to my people.  A kodo is a mighty steed, and it is the product of love and care by my people; such is not given onto strangers.  Until the elders of Thunder Bluff consider you to be exalted, I cannot offer you the sale of a kodo.", d=19.320, v="tauren-female" },
 	},
+	[269153] = {
+		{ f="269153-dab85bcc", h="dab85bcc", t="<The mountaineer clearly fought bravely before meeting her end at the weapons of the troggs.>", P={ { d=5.711, n=true } }, nP={ [1]={ [1]=6.000 } } },
+	},
+	[270459] = {
+		{ f="270459-35e7520b", h="35e7520b", t="I was invited to visit Dalaran on behalf of the Cenarion Circle. I find this place equal parts wondrous... and unsettling.    As for you, young $C--If you have not yet done so, seek out Sheldras Moontree in Stormwind. He will teach you to reach the Cenarion Circle enclave at Moonglade.", d=22.240, v="nightelf-female" },
+	},
+	[270513] = {
+		{ f="270513-e6b98502", h="e6b98502", t="Greetings, $c.    I can show you how to weave magic about yourself to change the appearance of your equipment, if you so desire. Do you wish to utilize my services?", d=9.720, v="nightelf-male" },
+	},
 	[270581] = {
-		{ f="270581-e6b98502", h="e6b98502", t="Greetings, $c.    I can show you how to weave magic about yourself to change the appearance of your equipment, if you so desire. Do you wish to utilize my services?", d=13.400, v="nightelf-female" },
+		{ f="270581-e6b98502", h="e6b98502", t="Greetings, $c.    I can show you how to weave magic about yourself to change the appearance of your equipment, if you so desire. Do you wish to utilize my services?", d=9.180, v="human-female" },
 	},
 	[270582] = {
-		{ f="270582-e6b98502", h="e6b98502", t="Greetings, $c.    I can show you how to weave magic about yourself to change the appearance of your equipment, if you so desire. Do you wish to utilize my services?", d=12.200, v="troll-female" },
+		{ f="270582-e6b98502", h="e6b98502", t="Greetings, $c.    I can show you how to weave magic about yourself to change the appearance of your equipment, if you so desire. Do you wish to utilize my services?", d=9.399, v="human-female" },
 	},
 	[271465] = {
-		{ f="271465-92b9fbbb", h="92b9fbbb", t="Greetings, $c. Are you in need of arms?    I was trained by Antarion of Ban'aethal, using secrets handed down from the ancient master magesmiths of Kalimdor.    You'll find no finer weapons on Zephras Isle than mine.", d=14.600, v="skyborne-male" },
+		{ f="271465-92b9fbbb", h="92b9fbbb", t="Greetings, $c. Are you in need of arms?    I was trained by Antarion of Ban'aethal, using secrets handed down from the ancient master magesmiths of Kalimdor.    You'll find no finer weapons on Zephras Isle than mine.", d=16.520, v="skyborne-male" },
 	},
 	[271546] = {
-		{ f="271546-7dbe534f", h="7dbe534f", t="Lookin' fer the courier? Just flew off like a wee bird.    Can't say I blame the poor sod. These wendigos are nasty business.", d=7.920, v="dwarf-female" },
+		{ f="271546-7dbe534f", h="7dbe534f", t="Lookin' fer the courier? Just flew off like a wee bird.    Can't say I blame the poor sod. These wendigos are nasty business.", d=7.093, v="human-female" },
 	},
 	[271613] = {
 		{ f="271613-0980e046", h="0980e046", t="<The body looks incomplete and awaiting a head.>", d=3.526, v="narrator", n={ [1]=4.560 } },
 		{ f="271613-cd85d6bf", h="cd85d6bf", t="<Othmar's head looks at you from nearby.>    What... You... Want...    Filthy... $r...", d=5.861, v="narrator", n={ [1]=7.960 } },
+		{ f="271613-f87677dc", h="f87677dc", t="<The body looks incomplete and appears to be awaiting a head.>", d=4.074, v="narrator", n={ [1]=5.160 } },
+	},
+	[272045] = {
+		{ f="272045-5a3e1b84", h="5a3e1b84", t="Why are you looking at me like that. Do you expect me to shoot bolts of lightning at you, or threaten you with the wrath of the Windlord?    Its fair enough if you do. However, not all of us are quite so... zealous.", d=13.880, v="skyborne-male" },
+		{ f="272045-d5d1dc84", h="d5d1dc84", t="Tailor, by trade.     Here stranger, I'll tell you what. Bring me any spare windstones you come across and I'll share my wares with you. I've got quite the stockpile of Al'Aketh garments here. Say what you will about the insanity of the cult, you've got to admit, they have some sense of style.    Or rather, I do, considering I designed most of their attire.", d=23.550, v="skyborne-male" },
+		{ f="272045-fac7c2e1", h="fac7c2e1", t="Not much story to tell. I lived in Falaath Village and when the cult moved in, I saw the winds turning. I shaved my head, donned the grey robes, and said the words they wanted to hear.     Now I'm just trying to survive. Mostly I keep my head down and ply my trade for that crackpot, Lorthuna.", d=21.040, v="skyborne-male" },
+	},
+	[272101] = {
+		{ f="272101-5d6f0b28", h="5d6f0b28", t="What are you looking for?", d=2.360, v="scourge-female" },
+		{ f="272101-e7cb64ec", h="e7cb64ec", t="There's a Bat Handler inside the Undercity.  Head south down the road out of Brill, then west at the T-intersection.  The Ruins of Lordaeron will be on your left.  Go into them and then down into the Undercity.  You can ask an Undercity Guardian there for further assistance.", d=21.640, v="scourge-female" },
+	},
+	[272450] = {
+		{ f="272450-7118ac39", h="7118ac39", t="My darlings... my darlings...", d=2.308, v="human-female" },
 	},
 	[272526] = {
-		{ f="272526-bf500b92", h="bf500b92", t="Yes, I am the renowned trader who magnanimously fed the uh, starving... children...? ...of the Undercity during the recent war with the Scourge. Yes, I am the visionary businessgob and logistical genius who single-handedly armed the resistance and allowed our Dark Lady to found her nation of smelly corpses... um, I mean, \"Forsaken.\"    Yep, I'm him. Glix Xizzix. I'd be happy to sign an autograph. For a small fee, of course.    What am I doing here running a barbershop, you ask? Well I got one word for you, bub--diversification. You've got to keep your revenue streams diversified!", d=27.980, v="goblin-male" },
+		{ f="272526-bf500b92", h="bf500b92", t="Yes, I am the renowned trader who magnanimously fed the uh, starving... children...? ...of the Undercity during the recent war with the Scourge. Yes, I am the visionary businessgob and logistical genius who single-handedly armed the resistance and allowed our Dark Lady to found her nation of smelly corpses... um, I mean, \"Forsaken.\"    Yep, I'm him. Glix Xizzix. I'd be happy to sign an autograph. For a small fee, of course.    What am I doing here running a barbershop, you ask? Well I got one word for you, bub--diversification. You've got to keep your revenue streams diversified!", d=41.294, v="human-male" },
+	},
+	[272633] = {
+		{ f="272633-4a619efb", h="4a619efb", t="The ebb and flow of magic has been disrupted, of late. I hear that even the mages of Dalaran are perplexed. Is this disturbance arcane in nature, or are the elements themselves in unrest?", d=12.200, v="tauren-female" },
+	},
+	[274757] = {
+		{ f="274757-21ab523d", h="21ab523d", t="Here in Darnassus you will find skilled trainers who have perfected the skills of their chosen class through ages of training and dedication.  I will guide you to one who can become your mentor, you have but to name your chosen path.", d=16.240, v="nightelf-female" },
+		{ f="274757-4979e51a", h="4979e51a", t="Ever vigilant in their protection of the natural world, the druids are guided by Arch $C Fandral Staghelm who resides in the Cenarion Enclave.  You will find him and the other $C trainers in the northern section of Darnassus.", d=17.280, v="nightelf-female" },
+		{ f="274757-ce424d00", h="ce424d00", t="Of all the wondrous places within Darnassus, which would you have me direct you to?", d=6.440, v="nightelf-female" },
+		{ f="274757-d3a25a4e", h="d3a25a4e", t="Alegorn is a masterful chef who has had centuries with which to perfect his cooking.  You should consider yourself blessed should he decide to teach you.  If you believe you are worthy, you can find him in the Craftsmen's Terrace.", d=15.560, v="nightelf-female" },
+		{ f="274757-e07232c6", h="e07232c6", t="Here among the craftsmen of Darnassus, there is a millenium of knowledge for the benefit of your chosen craft.  Now tell me, which craft do you find the most intriguing?", d=12.440, v="nightelf-female" },
 	},
 	[274781] = {
 		{ f="274781-ce6a7b9d", h="ce6a7b9d", t="What do ye need directions to?", d=1.880, v="dwarf-female" },
 	},
+	[275243] = {
+		{ f="275243-c50a1c3f", h="c50a1c3f", t="No matter how many times I tell them the bank isn't open yet, they continue to wait and complain. It's almost like that's what they came here to do.", d=10.803, v="human-male" },
+	},
 	[275269] = {
-		{ f="275269-d9943d35", h="d9943d35", t="Board here for transport to Dalaran City, nestled in the Alterac Mountains.", d=5.400, v="skyborne-male" },
+		{ f="275269-8059976c", h="8059976c", t="The skycutter that arrives here will take you right to Dalaran City.", d=4.760, v="skyborne-male" },
+		{ f="275269-d9943d35", h="d9943d35", t="Board here for transport to Dalaran City, nestled in the Alterac Mountains.", d=5.680, v="skyborne-male" },
 	},
 	[275270] = {
-		{ f="275270-fb00a823", h="fb00a823", t="All travelers bound for Mulgore should depart here.", d=3.560, v="skyborne-male" },
+		{ f="275270-fb00a823", h="fb00a823", t="All travelers bound for Mulgore should depart here.", d=3.640, v="skyborne-male" },
 	},
 	[275491] = {
 		{ f="275491-0edd6da8", h="0edd6da8", t="Greetings, citizen. How may I help you today?", d=3.926, v="human-male" },
 		{ f="275491-9fd8120c", h="9fd8120c", t="Ah yes, he mentioned that an agent of the High Order would be arriving in Stormwind soon. He asked me to draft instructions for you.    <Randal hands you a neatly sealed note.>    This should give you all the information you need. You are in for quite the journey, $N. I wish you luck on behalf of Stormwind and the Alliance.", d=18.400, v="human-male", P={ { d=9.208 }, { d=3.125, n=true }, { d=10.078 } }, nP={ [1]={ [2]=3.880 } } },
 	},
 	[276067] = {
-		{ f="276067-2af62916", h="2af62916", t="It's my job to get the Paladins of Bandarion Keep set up with proper arms and armor. It's not much, but it's honest work.    I've got a thing or two for sale as well, should you need gear.", d=13.920, v="scourge-male" },
+		{ f="276067-2af62916", h="2af62916", t="It's my job to get the Paladins of Bandarion Keep set up with proper arms and armor. It's not much, but it's honest work.    I've got a thing or two for sale as well, should you need gear.", d=11.164, v="human-male" },
 	},
 	[276110] = {
 		{ f="276110-2fc3ff64", h="2fc3ff64", t="My oath binds me to this place. What brings you here, to this light-forsaken place?", d=5.674, v="human-male" },
 	},
 	[276170] = {
-		{ f="276170-e50e47b5", h="e50e47b5", t="I am Belanaa Windveil and I am an agent of the High Order here on Azeroth. If you'd like to make a donation of cloth to our organization, we would be most grateful.", d=13.360, v="skyborne-female" },
+		{ f="276170-e50e47b5", h="e50e47b5", t="I am Belanaa Windveil and I am an agent of the High Order here on Azeroth. If you'd like to make a donation of cloth to our organization, we would be most grateful.", d=13.840, v="skyborne-female" },
 	},
 	[276171] = {
-		{ f="276171-1e85fa3a", h="1e85fa3a", t="We shen'dorei have need of additional cloth to replenish our supplies. Any donations you make would be put to good use, and surely raise your esteem with the Windshapers.", d=12.520, v="skyborne-female" },
+		{ f="276171-1e85fa3a", h="1e85fa3a", t="We shen'dorei have need of additional cloth to replenish our supplies. Any donations you make would be put to good use, and surely raise your esteem with the Windshapers.", d=11.360, v="skyborne-female" },
 	},
 	[276316] = {
 		{ f="276316-1b05d5c3", h="1b05d5c3", t="If ye want to see the elven port of Auberdine and all its mysterious mist, you've come to the right dock. If ye also want to see the beauty and glory of Menethil Harbor, even better--same ship'll take ye there, too!    It ain't a journey for the weak, but if you've got the spirit of adventure in yer gullet then yer in luck!", d=20.798, v="human-male" },

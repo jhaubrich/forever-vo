@@ -9,11 +9,16 @@ proxy settings so the saved values stay readable strings/numbers.
 local SettingsPanel = {}
 ns.SettingsPanel = SettingsPanel
 
-local GOSSIP_FREQUENCIES = {
-    { "always",          "Every time" },
-    { "oncePerQuestNPC", "Once per NPC that offers quests" },
-    { "oncePerNPC",      "Once per NPC" },
-    { "never",           "Never" },
+-- The third field is the tooltip on that entry of the dropdown
+local GOSSIP_REPEAT = {
+    { "always",      "Every time",
+      "Greetings and gossip are read every time you talk to an NPC." },
+    { "gossipOnce",  "Gossip once, greetings always",
+      "An NPC's gossip is read the first time you talk to them and not after. Greetings are read every time." },
+    { "once",        "Both once per NPC",
+      "An NPC's greeting and their gossip are each read the first time and not after." },
+    { "questGivers", "Once for quest givers",
+      "NPCs with a quest for you have their greeting and gossip read once; everyone else every time." },
 }
 local SOUND_CHANNELS = { "Master", "Dialog", "SFX", "Music", "Ambience" }
 
@@ -33,8 +38,7 @@ local function Checkbox(category, key, name, tooltip, onChange)
             onChange(value)
         end)
     end
-    Settings.CreateCheckbox(category, setting, tooltip)
-    return setting
+    return setting, Settings.CreateCheckbox(category, setting, tooltip)
 end
 
 local function Dropdown(category, key, name, tooltip, choices, onChange)
@@ -65,7 +69,7 @@ local function Dropdown(category, key, name, tooltip, choices, onChange)
     local function GetOptions()
         local container = Settings.CreateControlTextContainer()
         for index, choice in ipairs(Choices()) do
-            container:Add(index, choice[2])
+            container:Add(index, choice[2], choice[3])
         end
         return container:GetData()
     end
@@ -97,6 +101,140 @@ local function Slider(category, key, name, tooltip, minValue, maxValue, step, fo
     return setting
 end
 
+-- The Versions section is a table under a native section header: label left in
+-- the settings' gold, version right in white. The labels start where every
+-- settings row's label does; the versions line up a gap past the longest
+-- label, because a pack's full title is too long for Blizzard's control column
+-- (80 px left of the row's centre) and would run under it.
+local HEADER_HEIGHT = 45     -- SettingsListSectionHeaderTemplate
+local VERSION_LEFT = 37      -- SettingsListElementMixin's label inset
+local VERSION_TOP = 7        -- first row as far below the title as a setting's
+local VERSION_ROW = 20
+local VERSION_GAP = 24
+local VERSION_BOTTOM = 4
+
+--- { label, version } for the addon, then each installed voice pack by its
+--- full title. Read when the page is shown: the packs register after this panel.
+local function VersionRows()
+    local rows = { { "Forever Voiceover", ns.version or "dev" } }
+    for _, pack in ns.Packs:Iterate() do
+        local title = C_AddOns.GetAddOnMetadata(pack.folder, "Title") or pack.name
+        table.insert(rows, { title, pack.version or "" })
+    end
+    if #rows == 1 then
+        table.insert(rows, { "Voice packs", "None installed" })
+    end
+    return rows
+end
+
+--- The "Versions" header with the table drawn on its own frame, so the section
+--- scrolls and reflows as one list row. Header frames are pooled with every
+--- other header in the Settings list, so the table is hidden again whenever the
+--- frame is reused for another one.
+local function VersionsInitializer()
+    local initializer = CreateSettingsListSectionHeaderInitializer("Versions")
+    function initializer:GetExtent()
+        return HEADER_HEIGHT + VERSION_TOP + #VersionRows() * VERSION_ROW + VERSION_BOTTOM
+    end
+    local baseInit = initializer.InitFrame
+    function initializer:InitFrame(frame)
+        if not frame.FVOVersions then
+            frame.FVOVersions = { labels = {}, values = {} }
+            hooksecurefunc(frame, "Init", function(header, other)
+                local parts = header.FVOVersions
+                for i = 1, #parts.labels do
+                    parts.labels[i]:SetShown(other == initializer)
+                    parts.values[i]:SetShown(other == initializer)
+                end
+            end)
+        end
+        baseInit(self, frame)
+        local parts = frame.FVOVersions
+        local rows = VersionRows()
+        local widest = 0
+        for i, row in ipairs(rows) do
+            if not parts.labels[i] then
+                local top = -(HEADER_HEIGHT + VERSION_TOP + (i - 1) * VERSION_ROW)
+                local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                label:SetJustifyH("LEFT")
+                label:SetWordWrap(false)
+                label:SetPoint("TOPLEFT", VERSION_LEFT, top)
+                local value = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+                value:SetJustifyH("LEFT")
+                value:SetWordWrap(false)
+                parts.labels[i], parts.values[i] = label, value
+            end
+            parts.labels[i]:SetText(row[1])
+            parts.values[i]:SetText(row[2])
+            parts.labels[i]:Show()
+            parts.values[i]:Show()
+            widest = math.max(widest, parts.labels[i]:GetStringWidth())
+        end
+        local column = VERSION_LEFT + math.ceil(widest) + VERSION_GAP
+        for i = 1, #parts.labels do
+            local shown = i <= #rows
+            parts.labels[i]:SetShown(shown)
+            parts.values[i]:SetShown(shown)
+            parts.values[i]:SetPoint("TOPLEFT", column, -(HEADER_HEIGHT + VERSION_TOP + (i - 1) * VERSION_ROW))
+        end
+    end
+    return initializer
+end
+
+-- A button alone in a list row, left-aligned with the settings' labels
+local BUTTON_ROW_HEIGHT = 26
+local BUTTON_HEIGHT = 22
+local BUTTON_PADDING = 40    -- beside the text, as Blizzard's panel buttons have
+local BUTTON_MIN_WIDTH = 160
+
+--- A list row holding only a button: Blizzard's button row puts a label left
+--- and the button in the control column, and the label only repeated the
+--- button. The row is a section header with no name, whose frames are pooled
+--- with every other header, so the button is hidden when another one reuses it.
+--- text is a function, read each time the row is shown. opens, if given, says
+--- whether onClick will open a window; when it will not (an export with nothing
+--- in it only prints to chat), Options stays open.
+local function ButtonRow(layout, text, tooltip, onClick, opens)
+    local initializer = CreateSettingsListSectionHeaderInitializer("")
+    initializer.fvoButton = true
+    function initializer:GetExtent()
+        return BUTTON_ROW_HEIGHT
+    end
+    local baseInit = initializer.InitFrame
+    function initializer:InitFrame(frame)
+        if not frame.FVOButton then
+            local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+            button:SetHeight(BUTTON_HEIGHT)
+            button:SetPoint("LEFT", VERSION_LEFT, 0)
+            button:SetScript("OnLeave", GameTooltip_Hide)
+            frame.FVOButton = button
+            hooksecurefunc(frame, "Init", function(header, other)
+                header.FVOButton:SetShown(other.fvoButton == true)
+            end)
+        end
+        baseInit(self, frame)
+        local button = frame.FVOButton
+        button:SetText(text())
+        button:SetWidth(math.max(BUTTON_MIN_WIDTH, math.ceil(button:GetFontString():GetStringWidth()) + BUTTON_PADDING))
+        button:SetScript("OnClick", function()
+            -- the window it opens would sit behind Options
+            if not opens or opens() then
+                _G.SettingsPanel:Close(true)
+            end
+            onClick()
+        end)
+        button:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(self:GetText(), 1, 0.82, 0)
+            GameTooltip:AddLine(tooltip, 1, 1, 1, true)
+            GameTooltip:Show()
+        end)
+        button:Show()
+    end
+    layout:AddInitializer(initializer)
+    return initializer
+end
+
 function SettingsPanel:Open()
     if self.category then
         Settings.OpenToCategory(self.category:GetID())
@@ -104,7 +242,7 @@ function SettingsPanel:Open()
 end
 
 ns.OnInit(function()
-    local category = Settings.RegisterVerticalLayoutCategory("Forever Voiceover")
+    local category, layout = Settings.RegisterVerticalLayoutCategory("Forever Voiceover")
     SettingsPanel.category = category
     local head = ns.UI.TalkingHead
 
@@ -112,84 +250,32 @@ ns.OnInit(function()
         head:ApplySettings()
     end
 
-    -- On the addon's own page, where a player looking to opt back in lands first
-    Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
+    -- The addon's own page: the ways to help the project, where a player looking
+    -- to opt back in lands first, then the versions a bug report asks for
+    layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Contribute"))
+    local send = ButtonRow(layout, function() return ns.Export:SendLabel() end,
+        "Copy a link that opens a GitHub issue with the quest and NPC lines you have heard since your last export that the voice pack does not have yet. The same as /fvo export.",
+        function() ns.Export:Show(false) end,
+        function() return ns.Export:HasLines(false) end)
+    -- Under Send, indented and small as Blizzard draws a sub-option: it turns
+    -- off the login window that offers the same export
+    local _, optOut = Checkbox(category, "crowdsourceOptOut", "Opt out of crowdsourcing", "Stop the window at login that offers to send quests and NPC lines the voice pack does not have yet. Clear it to be asked again. /fvo export works either way.")
+    optOut:SetParentInitializer(send)
+    ButtonRow(layout, function() return "Report Bug" end,
+        "Say what went wrong and copy a link that opens a GitHub issue with your addon and voice pack versions filled in.",
+        function() ns.Report:ShowGeneral() end)
+    layout:AddInitializer(VersionsInitializer())
 
     -- What to voice
     local voiced = Settings.RegisterVerticalLayoutSubcategory(category, "What to voice")
     Checkbox(voiced, "playAccept", "Quest offers", "Read the quest text when a quest is offered.")
     Checkbox(voiced, "playComplete", "Quest turn-ins", "Read the reward text when handing in a quest.")
     Checkbox(voiced, "playProgress", "Quest progress", "Read the 'not yet complete' text when returning early. Usually best left off.")
-    Checkbox(voiced, "playGreeting", "Greetings", "Read the greeting of NPCs that offer quests.")
-    local gossip = Checkbox(voiced, "playGossip", "Gossip", "Read NPC conversation text.")
-    -- Not its own row: it sits to the right of Gossip, and greys out when that box is clear.
-    local gossipOnce = Settings.RegisterAddOnSetting(voiced, "FVO_gossipOnce", "gossipOnce", ns.db, Settings.VarType.Boolean, "First gossip only", ns.defaults.gossipOnce)
-    local gossipOnceTip = "Read an NPC's gossip the first time you talk to them this session, and not again. Greetings and quest text are unchanged."
-    local gossipRow
-    local function ApplyGossipOnce(row)
-        local enabled = gossip:GetValue() and true or false
-        row.FirstGossip:SetEnabled(enabled)
-        row.FirstGossip:SetChecked(gossipOnce:GetValue() and true or false)
-        local color = enabled and NORMAL_FONT_COLOR or GRAY_FONT_COLOR
-        row.FirstGossipLabel:SetTextColor(color:GetRGB())
-    end
-    local function ShowGossipOnce(row)
-        if not row.FirstGossip then
-            local label = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-            label:SetText("First gossip only")
-            label:SetPoint("LEFT", row.Checkbox, "RIGHT", 28, 0)
-            local box = CreateFrame("CheckButton", nil, row, "SettingsCheckboxTemplate")
-            box:SetPoint("LEFT", label, "RIGHT", 4, 0)
-            box:SetScript("OnClick", function(self)
-                if not self:IsEnabled() then
-                    self:SetChecked(gossipOnce:GetValue() and true or false)
-                    return
-                end
-                gossipOnce:SetValue(self:GetChecked() and true or false)
-                PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
-            end)
-            box:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                GameTooltip:SetText("First gossip only", 1, 0.82, 0)
-                GameTooltip:AddLine(gossipOnceTip, 1, 1, 1, true)
-                GameTooltip:Show()
-            end)
-            box:SetScript("OnLeave", GameTooltip_Hide)
-            row.FirstGossip = box
-            row.FirstGossipLabel = label
-            row.Checkbox:HookScript("OnClick", function()
-                if row.FirstGossip:IsShown() then
-                    ApplyGossipOnce(row)
-                end
-            end)
-        end
-        row.FirstGossip:Show()
-        row.FirstGossipLabel:Show()
-        ApplyGossipOnce(row)
-    end
-    hooksecurefunc(SettingsCheckboxControlMixin, "Init", function(self, initializer)
-        if initializer:GetSetting() == gossip then
-            gossipRow = self
-            ShowGossipOnce(self)
-        elseif self.FirstGossip then
-            self.FirstGossip:Hide()
-            self.FirstGossipLabel:Hide()
-            if gossipRow == self then
-                gossipRow = nil
-            end
-        end
-    end)
-    gossip:SetValueChangedCallback(function()
-        if gossipRow and gossipRow.FirstGossip and gossipRow.FirstGossip:IsShown() then
-            ApplyGossipOnce(gossipRow)
-        end
-    end)
-    gossipOnce:SetValueChangedCallback(function(_, value)
-        if gossipRow and gossipRow.FirstGossip:IsShown() then
-            gossipRow.FirstGossip:SetChecked(value and true or false)
-        end
-    end)
-    Dropdown(voiced, "gossipFrequency", "Repeat gossip", "How often the same NPC's gossip is read again.", GOSSIP_FREQUENCIES)
+    Checkbox(voiced, "playGreeting", "Greetings", "Read the greeting an NPC with more than one quest opens with, above the list of their quests.")
+    Checkbox(voiced, "playGossip", "Gossip", "Read what an NPC says when you talk to them, above the conversation options.")
+    Dropdown(voiced, "gossipRepeat", "Repeat greetings and gossip",
+        "Whether an NPC's greeting and gossip are read again the next time you talk to them. \"Once\" is remembered on each character. Quest text is always read.",
+        GOSSIP_REPEAT)
 
     -- Audio
     local audio = Settings.RegisterVerticalLayoutSubcategory(category, "Audio")
@@ -216,7 +302,7 @@ ns.OnInit(function()
     Checkbox(display, "lockMinimapButton", "Lock minimap button", "Prevent the minimap button from being dragged.")
 
     -- Data
-    local data = Settings.RegisterVerticalLayoutSubcategory(category, "Voice packs")
+    local data = Settings.RegisterVerticalLayoutSubcategory(category, "Voice Pack Debug")
     Checkbox(data, "capture", "Record lines that have no audio", "Save every quest and gossip text you see so new voice lines can be generated from them.")
     Checkbox(data, "notifyUnvoiced", "Say when a line has no voice", "Print a chat line whenever a quest or gossip text has no audio yet. The line is saved for your next export either way.")
     Checkbox(data, "debug", "Debug messages", "Print matching details to chat.")

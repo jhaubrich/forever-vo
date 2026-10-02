@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "265809": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Brakk",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-510",
+ "quests": {
+  "97899-accept": {
+   "build": "70170",
+   "class": "Warlock",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Brakk",
+   "npc": "265809",
+   "questID": 97899,
+   "race": "Troll",
+   "sex": "f",
+   "source": "community",
+   "text": "So, you chose to cook up brews and potions as an Alchemist. I'm sure that'll come in handy in your travels.\r\n\r\nI reckon I know someone that can teach you how to craft a Mana Well for your camp. Build one of these and all of the healers and spellcaster types will come running to get a refreshing taste.",
+   "time": 1790929651,
+   "title": "Camping 101: Alchemy",
+   "wanted": true,
+   "zone": "Durotar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

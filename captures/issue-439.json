@@ -1,0 +1,156 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "3296|5516f117": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Orgrimmar Grunt",
+   "npc": "3296",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "In the cleft of shadow Kor'ghan is waiting with shears sharper than a guards sword.",
+   "time": 1790736293,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "2948": {
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Mull Thunderhorn",
+   "sex": 2
+  },
+  "3057": {
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Cairne Bloodhoof",
+   "sex": 2
+  },
+  "3296": {
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Orgrimmar Grunt",
+   "sex": 3
+  },
+  "3441": {
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Melor Stonehoof",
+   "sex": 2
+  },
+  "5769": {
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Arch Druid Hamuul Runetotem",
+   "sex": 2
+  }
+ },
+ "origin": "issue-439",
+ "quests": {
+  "759-progress": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Mull Thunderhorn",
+   "npc": "2948",
+   "questID": 759,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "$N.  Do you have the teeth I asked for?",
+   "time": 1790739139,
+   "title": "Wildmane Totem",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "776-progress": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Cairne Bloodhoof",
+   "npc": "3057",
+   "questID": 776,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you tracked down Arra'chea yet?",
+   "time": 1790738974,
+   "title": "Rites of the Earthmother",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "861-progress": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Melor Stonehoof",
+   "npc": "3441",
+   "questID": 861,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings.  There is an air about you that tells me much.  Do we have business, you and I?",
+   "time": 1790735934,
+   "title": "The Hunter's Way",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "98435-accept": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Mull Thunderhorn",
+   "npc": "2948",
+   "questID": 98435,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Our elders in Thunder Bluff must know of the progress we have made here, thanks to your aid.\r\n\r\nPlease, take this to Arch $C Hamuul Runetotem in Thunder Bluff. You will find him in the Elder Rise, on the east side of the city. You must take the lifts up to the center of the city, then cross the bridges to reach it.",
+   "time": 1790740278,
+   "title": "Thunderhorn's Report",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "98435-complete": {
+   "build": "70124",
+   "class": "Druid",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Arch Druid Hamuul Runetotem",
+   "npc": "5769",
+   "questID": 98435,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, no wonder there is such joy running through the streams of Mulgore. You have done a great service today. The wells provide much for not only our people, but to the wildlife we depend on for food, clothing, and companionship.\r\n\r\nIt is my humble pleasure to honor Mull's request. Please, accept this token of my gratitude.",
+   "time": 1790740558,
+   "title": "Thunderhorn's Report",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

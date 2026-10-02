@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "2995": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Tal",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3483": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Jahan Hawkwing",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-499",
+ "quests": {
+  "6363-progress": {
+   "build": "70170",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Tal",
+   "npc": "2995",
+   "questID": 6363,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, $c.  What can I do for you?",
+   "time": 1790852643,
+   "title": "Tal the Wind Rider Master",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "6364-progress": {
+   "build": "70170",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Jahan Hawkwing",
+   "npc": "3483",
+   "questID": 6364,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "$N, you are back from Thunder Bluff?  Did you deliver the hides to Ahanu?",
+   "time": 1790852875,
+   "title": "Return to Jahan",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

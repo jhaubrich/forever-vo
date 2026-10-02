@@ -1,0 +1,100 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "260093": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Garen Largo",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3390": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Apothecary Helbrim",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3429": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Thork",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3449": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Darsok Swiftdagger",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-483",
+ "quests": {
+  "5041-progress": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Thork",
+   "npc": "3429",
+   "questID": 5041,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "How goes your search for the supplies, $N? I trust the quilboar fall under your strength easily.",
+   "time": 1790802316,
+   "title": "Supplies for the Crossroads",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "848-progress": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Apothecary Helbrim",
+   "npc": "3390",
+   "questID": 848,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have the spores, $N?  There is a concoction I must send to my associate in Thunder Bluff, which requires the spores...",
+   "time": 1790802291,
+   "title": "Fungal Spores",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "867-progress": {
+   "build": "70124",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Darsok Swiftdagger",
+   "npc": "3449",
+   "questID": 867,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Cut up enough of them yet? Keep slicing and taking trophies. I want 8 Witchwing talons.",
+   "time": 1790802336,
+   "title": "Harpy Raiders",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

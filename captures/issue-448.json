@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "1937": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Apothecary Renferrel",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-448",
+ "quests": {
+  "91920-progress": {
+   "build": "70124",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh. You're back?",
+   "time": 1790836309,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -1,0 +1,54 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "250686": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Tabitha Heartweaver",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "270582": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Mon'ye",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "2934": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Keeper Bel'dugur",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-516",
+ "quests": {
+  "1013-progress": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Keeper Bel'dugur",
+   "npc": "2934",
+   "questID": 1013,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Did you find the book, $N?",
+   "time": 1790938734,
+   "title": "The Book of Ur",
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

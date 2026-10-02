@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "5887": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1022938,
+   "name": "Canaga Earthcaller",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-453",
+ "quests": {
+  "1518-complete": {
+   "build": "70124",
+   "class": "Shaman",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Canaga Earthcaller",
+   "npc": "5887",
+   "questID": 1518,
+   "race": "Troll",
+   "sex": "f",
+   "source": "community",
+   "text": "Excellent!\n\nThe totem I will craft for you is more than a symbol of your status among $c--it has abilities beyond that. One use of the totem is as a focus for spells. Those spells are tied to the earth, and as you earn greater and greater wisdom, more of the earth's abilities will be made accessible to you.\n\nThe trainers will know when you are ready for greater knowledge.\n\nBut for now, take this earth totem...",
+   "time": 1790811863,
+   "title": "Call of Earth",
+   "wanted": true,
+   "zone": "Durotar"
+  },
+  "1518-progress": {
+   "build": "70124",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Canaga Earthcaller",
+   "npc": "5887",
+   "questID": 1518,
+   "race": "Troll",
+   "sex": "f",
+   "source": "community",
+   "text": "I wish to be the first to welcome you fully to the first of four paths that will forever lead you in your destiny.\n\nIf you have the stone the earth gave to you, I will give you the totem it promised.\n\nIf not, then be gone with you until you have found your way.",
+   "time": 1790811861,
+   "title": "Call of Earth",
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
