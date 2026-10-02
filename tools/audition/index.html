@@ -1004,10 +1004,15 @@ $("stop").addEventListener("click", async () => {
 });
 
 function onEvent(ev) {
-  if (ev.event === "start") { runSession = ev.session; $("progress").textContent = `spoken as: “${ev.spoken}”`; return; }
+  // the spoken text is in the Line box above already; the line under Takes only says
+  // how the run is going
+  if (ev.event === "start") { runSession = ev.session; return; }
   if (ev.event === "stopped") { $("progress").textContent = `stopped · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   if (ev.event === "error") { toast(ev.message, "warn"); $("progress").textContent = ev.message; return; }
-  if (ev.event === "done") { $("progress").textContent += ` · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
+  if (ev.event === "done") { $("progress").textContent = `${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
+  // a take: the count so far, keeping a Stop already asked for
+  const stopping = $("progress").textContent.includes("stopping") ? " · stopping after the sentence in progress…" : "";
+  $("progress").textContent = `${ev.n} take${ev.n === 1 ? "" : "s"} so far…${stopping}`;
   const tr = document.createElement("tr");
   const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
     (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "");
