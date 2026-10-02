@@ -1047,12 +1047,21 @@ async function loadClips(refresh) {
         if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
         busy($("clips-load"), false);
       }
-    } else if (d.status === "loading") {
-      if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 1000);
     } else {
-      // finished with nothing to offer ("0 clips"): stop polling, or the button spins for good
-      if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
-      busy($("clips-load"), false);
+      // Nothing to list: a voice with no candidates of its own (spirithealer-female)
+      // whose last borrowed source was just dropped, or one still loading. The table
+      // is emptied, or the dropped source's rows would stay on screen for good.
+      clipsRows = []; clipsGroups = []; clipsAbout = {};
+      picks = picks.filter(f => d.picked.includes(f));
+      $("clips-group").hidden = true; $("clips-group").innerHTML = "";
+      renderClips();
+      if (d.status === "loading" || d.pending.length) {
+        if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 1000);
+      } else {
+        // finished with nothing to offer ("0 clips"): stop polling, or the button spins for good
+        if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
+        busy($("clips-load"), false);
+      }
     }
   } catch (e) { toast(e.message, "warn"); busy($("clips-load"), false); }
 }
@@ -1087,7 +1096,9 @@ function renderAlso() {
     (folders.length ? `<optgroup label="Sound folders">` +
       folders.map(f => `<option value="${f}">${esc(f.slice(7))}</option>`).join("") + "</optgroup>" : "") +
     `<optgroup label="Voices">` +
-    rows.filter(r => r.voice !== voice && !list.includes(r.voice))
+    // only voices with clips of their own to lend: a species with no clip, or a race
+    // that borrows another's and has no speech or sets, would add nothing
+    rows.filter(r => r.voice !== voice && !list.includes(r.voice) && !r.species && (!r.borrows || r.offers))
       .map(r => `<option value="${r.voice}">${esc(labelOf(r.voice))}</option>`).join("") + "</optgroup>";
   $("clips-also-list").innerHTML = list.map(v =>
     `<span class="pill">${esc(labelOf(v))}<button data-drop="${v}" title="Stop offering ${v}'s clips">×</button></span>`).join("");

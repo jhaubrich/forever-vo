@@ -996,6 +996,7 @@ class Studio:
         # <race>-<gender>.wav is what takes its speakers off the borrowed voice, since
         # VoiceCatalog prefers a voice's own clip to its fallback.
         listed = {r["voice"] for r in rows}
+        speaking = speech_voices()
         for race, borrowed in self.config().voices.fallbacks.items():
             if race == "narrator":
                 continue
@@ -1011,6 +1012,9 @@ class Studio:
                             "label": None,
                             "lines": spoken.get(name, 0),
                             "borrows": f"{borrowed}-{gender}",
+                            # has clips to offer of its own: spoken emotes here or in
+                            # retail (nightborne, an allied race), or sets it is cast with
+                            "offers": name in speaking or name in counts,
                         }
                     )
         return sorted(rows, key=lambda r: r["voice"])
@@ -1194,6 +1198,21 @@ def local_clip(voice: str, fdid: int, build: str | None) -> Path | None:
     except OSError:
         shutil.copyfile(found, dest)
     return dest
+
+
+@functools.cache
+def speech_voices() -> frozenset[str]:
+    """Every race-gender with spoken emotes in this client or in retail, which is what
+    refclips.speech_candidates offers a voice with no sets of its own."""
+    from tools.build_voice_references import emote_speech_fdids
+    from tools.config import RETAIL_BUILD
+
+    found: set[str] = set()
+    for build in (BETA_BUILD, RETAIL_BUILD):
+        # a table that cannot be had offers nothing, rather than failing /api/state
+        with contextlib.suppress(Exception):
+            found.update(emote_speech_fdids(build))
+    return frozenset(found)
 
 
 def indexed_voices() -> set[str]:

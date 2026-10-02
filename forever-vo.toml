@@ -27,7 +27,9 @@ narrator_alternates = ["skyborne-female"]
 # Legion lines here, connected speech that no orc set has; the night elf ones are
 # for nightelf-male, whose 1.x emotes are thin (Legion's demon hunter player set, a
 # Legion ghost, Jarod Shadowsong for the warrior archetype, and the nightborne
-# player and citizen sets, who read from nightelf-male.wav). `fvo-soundpaths
+# player and citizen sets, who read from nightelf-male.wav; and Legion's weeping
+# banshee, the one banshee speech this client ships: the WC3 banshee clip comes from
+# the Reforged install, and banshee_sylvanas_no_loc is all empty files). `fvo-soundpaths
 # --folders --only <folder>` lists a new one's real lines in
 # tools/data/named_folders.json.
 clip_folders = [
@@ -37,6 +39,7 @@ clip_folders = [
     "commander_jarod_shadowsong",
     "pc_-_nightborne_elf_male",
     "nightborne_male_citizen",
+    "weeping_banshee",
 ]
 
 # Races without a reference clip borrow a related one; the narrator without a
