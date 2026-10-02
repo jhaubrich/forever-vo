@@ -1,0 +1,85 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "68|331b73f2": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Stormwind City Guard",
+   "npc": "68",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "f",
+   "source": "community",
+   "text": "The sharpest shears and most delicate hands are found at Curls and Furls here in the trade district. Take a gander if you have some spare time and are interested in taking a little off the top.",
+   "time": 1790974385,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "253092": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Alba Fairmoon",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "68": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Stormwind City Guard",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-569",
+ "quests": {
+  "92742-progress": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Alba Fairmoon",
+   "npc": "253092",
+   "questID": 92742,
+   "race": "Dwarf",
+   "sex": "f",
+   "source": "community",
+   "text": "Did you collect the samples?",
+   "time": 1790978541,
+   "title": "Testing the Wells",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "92744-progress": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Alba Fairmoon",
+   "npc": "253092",
+   "questID": 92744,
+   "race": "Dwarf",
+   "sex": "f",
+   "source": "community",
+   "text": "I hope the murlocs did not give you too much trouble?",
+   "time": 1790978544,
+   "title": "Murloc Gills",
+   "wanted": null,
+   "zone": "Westfall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
