@@ -161,7 +161,7 @@ clips = [
 ]
 
 [voices.sources.human-female]
-clips = [540633, 540639, 540622, 540643, 540617]
+clips = [7744888, 7744889, 7744890]
 
 [voices.sources.human-male]
 clips = [540710]
@@ -523,6 +523,9 @@ clips = [
 
 [voices.sources.orc-male-shady]
 clips = [541421, 541413, 541426, 541420]
+
+[voices.sources.spirithealer-female]
+clips = [1730301, 1730302, 1730303, 1730304]
 
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
@@ -886,7 +889,6 @@ gnome-female = "clip=gnome-female,clips=f2415ebc"
 gnome-male = "clip=gnome-male,clips=a41a46f0"
 goblin-female = "clip=goblin-female,clips=f760aa03,exaggeration=0.7"
 goblin-male = "cfg_weight=0.8,clip=goblin-male,clips=0a3bacfb,exaggeration=0.9"
-human-female = "cfg_weight=0.3,clip=human-female,clips=2a9f3a90,exaggeration=0.7,tempo=1.1"
 human-male = "cfg_weight=0.3,clip=human-male,clips=8d721fa3,exaggeration=0.5,tempo=1.1"
 npc-11657 = "cfg_weight=0.4,clip=npc-11657,clips=a7539b2a,exaggeration=0.7,tempo=0.9"
 npc-11658 = "clip=npc-11658,clips=f55260b3,exaggeration=0.8,pitch=-3.0"
@@ -929,3 +931,4 @@ orc-male-guard = "cfg_weight=0.3,clip=orc-male-guard,clips=af44c428,exaggeration
 orc-male-shady = "cfg_weight=0.2,clip=orc-male-shady,clips=4c1a666d,exaggeration=0.6,pitch=-1.0"
 nightelf-female = "cfg_weight=0.3,clip=nightelf-female,clips=ac26026c,exaggeration=0.6"
 nightelf-male = "clip=nightelf-male,clips=0a424923"
+spirithealer-female = "clip=spirithealer-female,clips=93c960c1"
