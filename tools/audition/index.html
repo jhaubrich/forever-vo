@@ -58,6 +58,13 @@
   #results li { display: flex; gap: 8px; align-items: flex-start; }
   /* the speakers read in the chosen voice, linked to wowhead */
   #npcs h2 .note { text-transform: none; letter-spacing: 0; font-weight: 400; margin-left: 0.5em; }
+  /* collapsible, with the caret the clip groups use; open or shut is remembered */
+  #npcs { margin-top: 18px; }
+  #npcs summary { cursor: pointer; list-style: none; user-select: none; }
+  #npcs summary::-webkit-details-marker { display: none; }
+  #npcs summary h2 { display: inline-block; margin: 0 0 8px; }
+  #npcs summary h2::before { content: "▾"; display: inline-block; width: 1.1em; color: var(--dim); }
+  #npcs:not([open]) summary h2::before { content: "▸"; }
   #npcs-filter { width: 100%; margin-bottom: 6px; }
   #npcs-list { list-style: none; margin: 0; padding: 0; max-height: 30vh; overflow: auto; columns: 16em; column-gap: 18px; }
   #npcs-list li { break-inside: avoid; padding: 2px 0; }
@@ -262,18 +269,18 @@
         same voice from &ldquo;sounds like a gnome&rdquo; to level with the shipped pack.</p>
     </div>
     <p class="note" id="resolved"></p>
-    <div id="npcs">
-      <h2>NPCs in this voice <span class="note" id="npcs-status"></span></h2>
-      <input id="npcs-filter" type="search" placeholder="filter by name or ID…" autocomplete="off" hidden>
-      <ul id="npcs-list"></ul>
-    </div>
-
     <h2>Takes</h2>
     <table>
       <thead><tr><th>#</th><th>Recipe</th><th>Take</th><th>Length</th><th></th></tr></thead>
       <tbody id="takes-body"></tbody>
     </table>
     <p class="note" id="progress"></p>
+
+    <details id="npcs" open>
+      <summary><h2>NPCs in this voice <span class="note" id="npcs-status"></span></h2></summary>
+      <input id="npcs-filter" type="search" placeholder="filter by name or ID…" autocomplete="off" hidden>
+      <ul id="npcs-list"></ul>
+    </details>
 
   </section>
   <section id="clips-col">
@@ -689,6 +696,11 @@ function renderNpcs() {
   }).join("");
 }
 $("npcs-filter").addEventListener("input", renderNpcs);
+// open or shut, remembered in this browser; the counts in the heading show either way
+try { if (localStorage.getItem("fvo-npcs-open") === "0") $("npcs").open = false; } catch (e) { /* this browser only */ }
+$("npcs").addEventListener("toggle", () => {
+  try { localStorage.setItem("fvo-npcs-open", $("npcs").open ? "1" : "0"); } catch (e) { /* this browser only */ }
+});
 
 function showResolved() {
   if (!state) return;
