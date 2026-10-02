@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "257551": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1100258,
+   "name": "Valreaa Valewind",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-544",
+ "quests": {
+  "92473-complete": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Valreaa Valewind",
+   "npc": "257551",
+   "questID": 92473,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Well done, $c. The Rangers of the Grove are in your debt.",
+   "time": 1790964849,
+   "title": "Aggressive Encroachment",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
