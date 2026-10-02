@@ -1,0 +1,81 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "248197": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Gor'mak",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "259620": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Lumina Windsinger",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "270582": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Mon'ye",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "5819": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Mirelle Tremayne",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-579",
+ "quests": {
+  "95140-complete": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Lumina Windsinger",
+   "npc": "259620",
+   "questID": 95140,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Thank you, $N. Banon may now rest in peace.\r\n\r\nIf you would be willing to allow it, I believe that I can impart some magic upon your freshly blooded blade to infuse it with a small measure of the magic of my people.\r\n\r\n<Lumina Windsinger's eyes begin to glow a vibrant blue as she touches the bloodstained blade in your hand.>\r\n\r\nIt is done. It's a small thing, and I could scarcely improve such a magnificent blade. Regardless, I will pray to the winds that it serves you well, $c.",
+   "time": 1790972697,
+   "title": "Old Fire-Eye",
+   "wanted": true,
+   "zone": "Silverpine Forest"
+  },
+  "95140-progress": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Lumina Windsinger",
+   "npc": "259620",
+   "questID": 95140,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Is it done? Is the beast slain?",
+   "time": 1790972689,
+   "title": "Old Fire-Eye",
+   "wanted": true,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
