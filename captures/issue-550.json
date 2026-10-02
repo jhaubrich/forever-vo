@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "263664": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Raan Wildwind",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-550",
+ "quests": {
+  "96101-accept": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 96101,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Greetings, $c. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "time": 1790966279,
+   "title": "The Great Outdoors",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "96101-progress": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 96101,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Having the skills needed to survive the outdoors is critical. A well-rested and well-prepared adventurer has a much higher chance of surviving this lifestyle.",
+   "time": 1790966364,
+   "title": "The Great Outdoors",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
