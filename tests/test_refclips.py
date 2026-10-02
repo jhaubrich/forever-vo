@@ -7,7 +7,9 @@ from pathlib import Path
 
 import pytest
 
+from tools import refclips
 from tools.build_voice_references import concat_to_wav, write_concat
+from tools.config import Voices
 
 
 def tone(path: Path, seconds: float, hz: int) -> Path:
@@ -125,3 +127,26 @@ def test_clip_seconds_probes_once_per_build_and_survives_a_restart(
     merged = refclips.ClipSeconds(tmp_path / "casc")
     assert merged.get(456, "1.0.0.1", clip) == first
     assert len(probes) == 3
+
+
+def test_a_race_voice_leaves_out_other_sexes_and_characters_kits(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from collections import Counter
+
+    # skyborne-female as the client has her: her own set, Sylvanas's kit on two
+    # displays, and a night elf male set on one
+    monkeypatch.setattr(refclips, "speech_candidates", lambda voice: [])
+    monkeypatch.setattr(
+        refclips,
+        "sound_set_displays",
+        lambda: {"skyborne-female": Counter({3773: 86, 175: 2, 54: 1})},
+    )
+    monkeypatch.setattr(refclips, "named_sets", lambda: {175: [2, 3]})
+    monkeypatch.setattr(
+        refclips, "other_sex_set", lambda sound_id, voice: sound_id == 54
+    )
+    monkeypatch.setattr(refclips, "set_fdids", lambda sound_id: [sound_id * 10])
+    monkeypatch.setattr(refclips, "_fetched", lambda found, voice: found)
+    found = refclips.candidates("skyborne-female", Voices())
+    assert [c.group for c in found] == ["set 3773"]

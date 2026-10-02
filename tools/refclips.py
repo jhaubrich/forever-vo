@@ -49,6 +49,7 @@ from tools.build_voice_references import (
     emote_speech_fdids,
     files_by_kit,
     named_npc_fdids,
+    named_sets,
     set_fdids,
 )
 from tools.config import (
@@ -273,9 +274,15 @@ def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
         if own
         else counts.most_common()
     )
+    # a character's own kit, cast on a display or two of the race (Sylvanas's 175 on
+    # two skyborne, Fandral's 174 on a night elf), is that character's voice and is
+    # offered as npc-<displayID>, not as one of the race's
+    characters = set(named_sets()) if not own else set()
     for sound_id, displays in wanted_sets:
         if other_sex_set(sound_id, race_gender):
             continue  # the other sex's recordings, cast on a few displays
+        if sound_id in characters:
+            continue
         for fdid in set_fdids(sound_id):
             found.append(
                 Candidate(
