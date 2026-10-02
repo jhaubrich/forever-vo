@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.8
 
 - The second **Narrator voice** is Skyborne female instead of Orc male, so
   the menu has a male and a female voice. If you picked Orc male, narrated
