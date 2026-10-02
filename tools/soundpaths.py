@@ -189,15 +189,23 @@ def _probe_or_error(fdid: int, where: Path) -> float | None | Exception:
         return e
 
 
-def refresh_folders(voices: Voices) -> dict[str, list[list]]:
-    """Writes named_folders.json: every real line in each named set's folder.
+def refresh_folders(
+    voices: Voices, only: set[str] | None = None
+) -> dict[str, list[list]]:
+    """Writes named_folders.json: every real line in each named set's folder, the
+    folders [voices.named_folders] adds, and [voices] clip_folders.
 
     Files that fail in the pool are tried once more, one at a time, at the end; if any
-    still fail, nothing is written and they are listed, so a rerun is the fix.
+    still fail, nothing is written and they are listed, so a rerun is the fix. `only`
+    probes just those folders and keeps every other one as the file has it: a full run
+    is 3,500 files on wago, a new clip folder a few hundred.
     """
     wanted = set(named_set_folders().values())
     for extras in voices.named_folders.values():
         wanted.update(folder.lower() for folder in extras)
+    wanted.update(voices.clip_folders)
+    if only is not None:
+        wanted = {folder.lower() for folder in only}
     print(
         f"looking up {len(wanted)} folders in the community listfile", file=sys.stderr
     )
@@ -227,6 +235,9 @@ def refresh_folders(voices: Voices) -> dict[str, list[list]]:
     # a wanted folder the listfile does not have stays out, so the audition page keeps
     # warning about a mistyped [voices.named_folders] entry
     kept: dict[str, list[list]] = {folder: [] for folder in entries}
+    if only is not None and NAMED_FOLDERS.exists():
+        previous = json.loads(NAMED_FOLDERS.read_text(encoding="utf-8"))
+        kept = {**{f: r for f, r in previous.items() if f not in wanted}, **kept}
     for (folder, fdid, stem), seconds in zip(files, lengths, strict=True):
         if isinstance(seconds, float):
             kept[folder].append([fdid, stem, round(seconds, 3)])
@@ -235,7 +246,7 @@ def refresh_folders(voices: Voices) -> dict[str, list[list]]:
     )
     missing = sorted(wanted - set(entries))
     print(
-        f"{sum(map(len, kept.values()))} of {len(files)} files are real audio, "
+        f"{sum(len(kept[f]) for f in entries)} of {len(files)} files are real audio, "
         f"written to {NAMED_FOLDERS}"
         + (f"; not in the listfile: {', '.join(missing)}" if missing else ""),
         file=sys.stderr,
@@ -299,13 +310,19 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="list the named sets' folders file by file (probes each on wago)",
     )
+    parser.add_argument(
+        "--only",
+        action="append",
+        metavar="FOLDER",
+        help="with --folders: probe just this folder, keeping the others (repeatable)",
+    )
     args = parser.parse_args(argv if argv is not None else sys.argv[1:])
     if args.refresh:
         refresh()
     if args.folders:
         from tools.config import load_config
 
-        refresh_folders(load_config().voices)
+        refresh_folders(load_config().voices, set(args.only) if args.only else None)
         return 0
     from tools.wowdata import load_db2
 

@@ -68,11 +68,14 @@ S3GEN_SECONDS = (
 CONCAT_SLACK_SECONDS = 0.3
 
 
+@functools.cache
 def files_by_kit(build: str = BETA_BUILD) -> dict[int, list[int]]:
+    """SoundKitID -> its files. Cached: one audition load asked for it 18 times, and
+    each pass over SoundKitEntry cost 40 ms. Callers only read it."""
     result: dict[int, list[int]] = defaultdict(list)
     for entry in load_db2("SoundKitEntry", build).values():
         result[int(entry["SoundKitID"])].append(int(entry["FileDataID"]))
-    return result
+    return dict(result)
 
 
 # A race has only so many spoken emote lines to hand out - scourge-male has 11 -

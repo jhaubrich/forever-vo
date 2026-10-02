@@ -86,3 +86,42 @@ def _seconds(path: Path) -> float:
         check=True,
     )
     return float(out.stdout.strip())
+
+
+def test_clip_seconds_probes_once_per_build_and_survives_a_restart(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from tools import refclips
+
+    clip = tone(tmp_path / "a.ogg", 1.5, 300)
+    probes: list[Path] = []
+    real = refclips.duration
+
+    def counted(path: Path) -> float:
+        probes.append(path)
+        return real(path)
+
+    monkeypatch.setattr(refclips, "duration", counted)
+    cache = refclips.ClipSeconds(tmp_path / "casc")
+    first = cache.get(123, "1.0.0.1", clip)
+    assert abs(first - 1.5) < 0.1
+    assert cache.get(123, "1.0.0.1", clip) == first
+    assert len(probes) == 1
+    cache.save()
+
+    # a new process reads the lengths back and probes nothing; another build is
+    # another table, since a FileDataID's file can differ between builds
+    again = refclips.ClipSeconds(tmp_path / "casc")
+    assert again.get(123, "1.0.0.1", clip) == first
+    assert len(probes) == 1
+    again.get(123, "2.0.0.2", clip)
+    assert len(probes) == 2
+
+    # saving merges into what another process wrote meanwhile
+    other = refclips.ClipSeconds(tmp_path / "casc")
+    other.get(456, "1.0.0.1", clip)
+    other.save()
+    again.save()
+    merged = refclips.ClipSeconds(tmp_path / "casc")
+    assert merged.get(456, "1.0.0.1", clip) == first
+    assert len(probes) == 3

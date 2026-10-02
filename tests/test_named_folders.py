@@ -103,7 +103,8 @@ def test_candidates_fetches_each_fdid_once(
     monkeypatch.setattr(refclips.Candidate, "fetch", fetch)
     found = refclips.candidates("npc-11657", Voices())
     assert [c.fdid for c in found] == [561297, 561327, 561286, 561278, 561280]
-    assert fetched == [c.fdid for c in found]
+    # fetched side by side, so in any order, but each FileDataID once
+    assert sorted(fetched) == sorted(c.fdid for c in found)
     assert found[0].group == "greetings"
 
 
@@ -195,3 +196,76 @@ def test_fetch_file_caches_nothing_it_could_not_get(
         wowdata.fetch_file(1, tmp_path / "v" / "1.ogg")
     assert not (tmp_path / "v" / "1.ogg").exists()
     assert not list((tmp_path / "casc").rglob("*.ogg"))
+
+
+def test_a_clip_folder_is_a_voice_of_its_own_barks_last(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        refclips,
+        "named_folder_files",
+        lambda: {
+            "guldan": [
+                (1055242, "vo_60_guldan_attack_01", 0.8),
+                (1358509, "vo_701_guldan_12", 26.0),
+                (1055281, "vo_60_fr_guldan_revealed_02", 11.4),
+            ]
+        },
+    )
+
+    def fetch(self: refclips.Candidate, voice: str) -> bool:
+        assert voice == "folder-guldan"  # its own raw folder, like any voice
+        self.seconds = 1.0
+        return True
+
+    monkeypatch.setattr(refclips.Candidate, "fetch", fetch)
+    found = refclips.candidates("folder-guldan", Voices())
+    assert [(c.group, c.fdid) for c in found] == [
+        ("guldan", 1055281),
+        ("guldan", 1358509),
+        ("guldan", 1055242),  # the attack bark last
+    ]
+
+
+def test_only_probes_one_folder_and_keeps_the_rest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+
+    listed = tmp_path / "named_folders.json"
+    listed.write_text(
+        json.dumps({"thrall": [[562136, "wg_thrall_hor16", 7.02]]}), encoding="utf-8"
+    )
+    monkeypatch.setattr(soundpaths, "NAMED_FOLDERS", listed)
+    monkeypatch.setattr(soundpaths, "named_set_folders", lambda: {1: "thrall"})
+    monkeypatch.setattr(
+        soundpaths,
+        "_listfile_lines",
+        lambda: iter(
+            [
+                "562136;sound/creature/thrall/wg_thrall_hor16.ogg",
+                "1358509;sound/creature/guldan/vo_701_guldan_12.ogg",
+                "1055242;sound/creature/guldan/vo_60_guldan_attack_01.ogg",
+            ]
+        ),
+    )
+    probed: list[int] = []
+
+    def probe(fdid: int, where: Path) -> float | None:
+        probed.append(fdid)
+        return None if fdid == 1055242 else 26.0  # a dud, left out
+
+    monkeypatch.setattr(soundpaths, "_probe_or_error", probe)
+    kept = soundpaths.refresh_folders(Voices(clip_folders=["guldan"]), {"guldan"})
+    assert sorted(probed) == [1055242, 1358509]  # Thrall's folder is not probed again
+    assert kept == {
+        "thrall": [[562136, "wg_thrall_hor16", 7.02]],
+        "guldan": [[1358509, "vo_701_guldan_12", 26.0]],
+    }
+    assert json.loads(listed.read_text(encoding="utf-8")) == kept
+
+
+def test_clip_folders_must_be_spelled_as_the_listfile_keys_them() -> None:
+    assert Voices(clip_folders=["guldan", "image_of_guldan"]).clip_folders
+    with pytest.raises(ValueError):
+        Voices(clip_folders=["Guldan"])
