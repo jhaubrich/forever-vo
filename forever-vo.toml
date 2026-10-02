@@ -468,10 +468,23 @@ clips = [
 clips = [541941, 550784, 550786, 550772, 550782]
 
 [voices.sources.orc-male-guard]
-clips = [541394, 541413, 541426, 541420, 541421]
+clips = [
+    562151,
+    541397,
+    557806,
+    557800,
+    557807,
+    557803,
+    557809,
+    557799,
+    557802,
+    557805,
+    557814,
+    557804,
+]
 
 [voices.sources.orc-male-shady]
-clips = [541394, 541413, 541426, 541420, 541421]
+clips = [541421, 541413, 541426, 541420]
 
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
@@ -634,10 +647,10 @@ tempo = 1.1
 pitch = 1.0
 
 [tts.voices.orc-male-guard]
-exaggeration = 0.5
+exaggeration = 0.6
 cfg_weight = 0.3
-tempo = 1.2
-pitch = -1.0
+tempo = 1.1
+pitch = -0.5
 
 [tts.voices.npc-11657]
 exaggeration = 0.7
@@ -716,6 +729,11 @@ pitch = 1.0
 [tts.voices.dwarf-male]
 exaggeration = 0.7
 cfg_weight = 0.3
+
+[tts.voices.orc-male-shady]
+exaggeration = 0.6
+cfg_weight = 0.2
+pitch = -1.0
 [pronunciations]
 "Ahn'Qiraj" = "Ahn Kih-rahj"
 Gnomeregan = "Nomer-gahn"
@@ -864,3 +882,5 @@ tauren-female-official = "cfg_weight=0.2,clip=tauren-female-official,exaggeratio
 dwarf-female = "cfg_weight=0.3,clip=dwarf-female,clips=16e7fa8f,exaggeration=0.75"
 dwarf-male = "cfg_weight=0.3,clip=dwarf-male,clips=264d8895,exaggeration=0.7"
 orc-male = "cfg_weight=0.2,clip=orc-male,clips=e8326d21,exaggeration=0.6,tempo=1.1"
+orc-male-guard = "cfg_weight=0.3,clip=orc-male-guard,clips=af44c428,exaggeration=0.6,pitch=-0.5,tempo=1.1"
+orc-male-shady = "cfg_weight=0.2,clip=orc-male-shady,clips=4c1a666d,exaggeration=0.6,pitch=-1.0"
