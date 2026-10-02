@@ -145,7 +145,8 @@
   #clips-reference { margin: 10px 0 12px; border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; background: var(--panel); padding: 8px 10px; }
   #clips-reference .ref-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
   #clips-reference .ref-head .spacer { flex: 1; }
-  #clips-reference .ref-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 8px; }
+  /* the built reference's player sits at the right, under the picks' own controls */
+  #clips-reference .ref-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 10px; margin-top: 8px; }
   #clips-reference .ref-foot audio { flex: 0 1 260px; min-width: 0; }
   #clips-history { margin: 6px 0 0; }
   #clips-history:empty { display: none; }
