@@ -1,0 +1,62 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "257020|fb513610": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Nasalanna Windsinger",
+   "npc": "257020",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I hope that your interruption is for a good cause, I was in the middle of some important work.",
+   "time": 1790788380,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "257020": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Nasalanna Windsinger",
+   "sex": 3
+  },
+  "263664": {
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Raan Wildwind",
+   "sex": 2
+  }
+ },
+ "origin": "issue-521",
+ "quests": {
+  "96646-accept": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 96646,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "So you want to learn more about camping, huh? Good for you, $c. The first step any adventurer needs to take is to become a cook and learn how to make a campfire.\r\n\r\nCooking's not just about making tasty foods. It's also the foundation for your camp.",
+   "time": 1790788280,
+   "title": "Camping 101: Cooking",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
