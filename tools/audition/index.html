@@ -140,6 +140,11 @@
   #clips-also-list .pill { border-color: var(--borrow); color: var(--borrow); background: rgba(143, 179, 224, 0.12); padding: 2px 4px 2px 8px; }
   #clips-also-list .pill button { font-size: 11px; padding: 0 4px; margin-left: 4px; line-height: 1.2;
     color: var(--borrow); background: transparent; border-color: rgba(143, 179, 224, 0.45); }
+  /* downloads from wago, one bar per voice while it loads */
+  #clips-progress { margin: 2px 0 8px; }
+  #clips-progress .bar { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 3px 0; }
+  #clips-progress .who { min-width: 10em; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #clips-progress progress { flex: 0 1 14em; height: 8px; accent-color: var(--borrow); }
   #clips-also-list .pill button:hover { background: var(--borrow); color: var(--bg); }
   button.help { flex: 0 0 auto; width: 22px; height: 22px; padding: 0; border-radius: 50%; line-height: 1; color: var(--gold); border-color: var(--gold); }
   #clips-help, #knobs-help { border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; padding: 10px 14px; margin: 8px 0; background: var(--panel); }
@@ -306,6 +311,7 @@
         </ul>
       </div>
       <p class="note" id="clips-status"></p>
+      <div id="clips-progress" hidden></div>
       <p class="note" id="clips-warn"></p>
       <p class="note" id="clips-budget"></p>
       <div id="clips-history"></div>
@@ -1106,6 +1112,28 @@ function renderHistory(history, picked) {
   }));
 }
 
+// One bar per voice still downloading its candidates from wago: files settled of the
+// total, those that could not be had, and how long it has been. A first load is mostly
+// waiting on wago, and an uncached retail file can take minutes when it is slow.
+function renderClipsProgress(progress, pending) {
+  const box = $("clips-progress");
+  const rows = pending.filter(v => progress[v]).map(v => {
+    const p = progress[v];
+    const left = p.total - p.done;
+    const note = p.total
+      ? `${p.done} of ${p.total} file${p.total === 1 ? "" : "s"}` + (p.failed ? `, ${p.failed} could not be had` : "") +
+        ` · ${p.elapsed}s` + (left && p.elapsed > 60 ? " · wago is slow" : "")
+      : "listing candidates…";
+    return `<div class="bar"><span class="who">${esc(v)}</span><progress max="${Math.max(p.total, 1)}" value="${p.done}"></progress>` +
+      `<span class="note">${note}</span></div>`;
+  });
+  // a voice still listing its candidates has no counts yet
+  const waiting = pending.filter(v => !progress[v]);
+  if (waiting.length) rows.push(`<div class="bar"><span class="who">${esc(waiting.join(", "))}</span><progress></progress><span class="note">starting…</span></div>`);
+  box.innerHTML = rows.join("");
+  box.hidden = !rows.length;
+}
+
 async function loadClips(refresh) {
   const voice = $("voice").value;
   clipsVoice = voice;
@@ -1119,6 +1147,7 @@ async function loadClips(refresh) {
     clipsWindows = d.windows;
     $("clips-status").textContent = `${voice}: ${d.status}` +
       (d.pending.length ? ` · still loading ${d.pending.join(", ")}…` : "");
+    renderClipsProgress(d.progress || {}, d.pending);
     if (d.status.startsWith("failed")) busy($("clips-load"), false);
     $("clips-warn").innerHTML = d.warnings.map(w => `<span class="warn">${esc(w)}</span>`).join("<br>");
     $("clips-ref").src = d.reference_url || "";

@@ -170,3 +170,22 @@ def test_retail_speech_is_fetched_from_the_beta_build_first(
         (7, refclips.RETAIL_BUILD),
     ]
     assert {c.group for c in found} == {"retail speech"}
+
+
+def test_a_load_reports_its_progress_file_by_file(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fetch(self: refclips.Candidate, voice: str) -> bool:
+        return self.fdid != 2  # wago could not give the second file
+
+    monkeypatch.setattr(refclips.Candidate, "fetch", fetch)
+    monkeypatch.setattr(refclips.CLIP_SECONDS, "save", lambda: None)
+    seen: list[tuple[int, int, int]] = []
+    found = [refclips.Candidate("line", fdid, "1.0") for fdid in (1, 2, 3)]
+    kept = refclips._fetched(
+        found, "nightborne-female", progress=lambda *p: seen.append(p)
+    )
+    assert [c.fdid for c in kept] == [1, 3]
+    assert seen[0] == (0, 3, 0)  # before anything settles: the bar can show 0 of 3
+    assert max(seen) == (3, 3, 1)
+    assert len(seen) == 4

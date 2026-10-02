@@ -778,6 +778,8 @@ class Studio:
         self.clips_lock = threading.Lock()
         self._clips: dict[str, list[dict[str, Any]]] = {}
         self.clips_status: dict[str, str] = {}
+        # voice -> {done, total, failed, since} while its candidates download
+        self.clips_progress: dict[str, dict[str, float]] = {}
         # session -> set by the page's Stop button; a run checks it between takes
         self.stops: dict[str, threading.Event] = {}
         threading.Thread(target=self.rows, daemon=True).start()
@@ -872,6 +874,17 @@ class Studio:
     def _load_clips(self, voice: str) -> None:
         from tools import refclips
 
+        def progress(done: int, total: int, failed: int) -> None:
+            # the page's progress bar while wago is slow: files settled of the
+            # voice's candidates, and how many could not be had
+            self.clips_progress[voice] = {
+                "done": done,
+                "total": total,
+                "failed": failed,
+                "since": started,
+            }
+
+        started = time.time()
         try:
             found = [
                 {
@@ -884,7 +897,8 @@ class Studio:
                 }
                 # the page's config, not the repository's: --config may name another
                 for i, c in enumerate(
-                    refclips.candidates(voice, self.config().voices), 1
+                    refclips.candidates(voice, self.config().voices, progress=progress),
+                    1,
                 )
             ]
         except Exception as e:  # noqa: BLE001 - the status line is the error report
@@ -892,10 +906,12 @@ class Studio:
                 self.clips_status[voice] = (
                     f"failed: {e} (press Load candidates to retry)"
                 )
+                self.clips_progress.pop(voice, None)
             return
         with self.clips_lock:
             self._clips[voice] = found
             self.clips_status[voice] = f"{len(found)} clips"
+            self.clips_progress.pop(voice, None)
 
     def forget_corpus(self) -> None:
         """After a config change the spoken text or voices may differ; reload lazily."""
@@ -1932,6 +1948,12 @@ def create_app(
             "status": status,
             "clips": rows,
             "pending": pending,
+            # for each voice still loading, how far its downloads have got
+            "progress": {
+                v: {**p, "elapsed": round(time.time() - p["since"])}
+                for v in pending
+                if (p := getattr(studio, "clips_progress", {}).get(v))
+            },
             # in first-seen order, for the page's folder select
             "groups": list(dict.fromkeys(c["group"] for c in rows)),
             # one line on each, for the table's group headings

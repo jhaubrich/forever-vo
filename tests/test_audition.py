@@ -717,6 +717,9 @@ def test_borrowed_clips_are_listed_while_the_voice_still_loads(
     studio.config_path = CONFIG_TOML
     studio._rows = None
     studio.clips_status = {"nightborne-female": "loading"}
+    studio.clips_progress = {
+        "nightborne-female": {"done": 3, "total": 13, "failed": 1, "since": 0.0}
+    }
     monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: loaded[voice])
     monkeypatch.setattr(studio, "config", load_config)
     monkeypatch.setattr(audition, "seed_recipe_history", lambda voice: None)
@@ -731,6 +734,8 @@ def test_borrowed_clips_are_listed_while_the_voice_still_loads(
     assert d["status"] == "loading"
     assert d["pending"] == ["nightborne-female"]
     assert [c["fdid"] for c in d["clips"]] == [1243396]  # not an empty table
+    progress = d["progress"]["nightborne-female"]
+    assert (progress["done"], progress["total"], progress["failed"]) == (3, 13, 1)
 
 
 def test_a_voice_is_filed_under_its_races_expansion() -> None:
