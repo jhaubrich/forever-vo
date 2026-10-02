@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "4551|d37b59d0": {
+   "build": "70170",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Michael Garrett",
+   "npc": "4551",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "How may I be of service?",
+   "time": 1790969886,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "4556|3dfe0528": {
+   "build": "70170",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Gordon Wendham",
+   "npc": "4556",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, and welcome.  I am not very good at smiling, but trust me; I am happy to serve you.",
+   "time": 1790969832,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "4551": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Michael Garrett",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4556": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Gordon Wendham",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-557",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
