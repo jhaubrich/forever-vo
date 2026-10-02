@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "2214": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Deathstalker Lesh",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-560",
+ "quests": {
+  "494-accept": {
+   "build": "70170",
+   "class": "Mage",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Deathstalker Lesh",
+   "npc": "2214",
+   "questID": 494,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Be silent and pay attention, $c.\n\nI was sent to this position in order to survey the town of Hillsbrad.  My mission is one of reconnaissance.  It is imperative that you send word to High Executor Darthalia in Tarren Mill at once.  Let her know that I, Deathstalker Lesh, send the following message:\n\n\"The raven's cry from the west doth beckon.\"\n\nFollow the road to the east and pay close attention to the signs.  Now, hurry!  Off you go to Tarren Mill, and with urgency I might add!",
+   "time": 1790970653,
+   "title": "Time To Strike",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
