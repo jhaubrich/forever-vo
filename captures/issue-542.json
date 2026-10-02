@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "249363": {
+   "addon": "0.1.8",
+   "creatureType": "Not specified",
+   "modelFileID": 7478494,
+   "name": "Yala Windwatcher",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-542",
+ "quests": {
+  "92465-accept": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Yala Windwatcher",
+   "npc": "249363",
+   "questID": 92465,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "The Al'Aketh cult is a blight upon this island. These cultists are surely the ones responsible for agitating the simple wind sprites that reside here and turning them violent.\r\n\r\nRegrettably, we'll need to disperse these roiling winds here before they harm someone. We also need to send a clear message to the cult that they are not welcome in the grove.\r\n\r\nWill you lend me your aid, $c?",
+   "time": 1790964000,
+   "title": "Agitators",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "92469-accept": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Yala Windwatcher",
+   "npc": "249363",
+   "questID": 92469,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "You've done enough here, $c. I'll stay and clean up any stragglers down there.\r\n\r\nHead back to the Village and tell Rorian about the cult's presence. He will not be pleased.",
+   "time": 1790964284,
+   "title": "Return to Rorian",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
