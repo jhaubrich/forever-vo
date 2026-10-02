@@ -653,14 +653,24 @@ def line_rows(items: list[Item]) -> list[LineRow]:
     return rows
 
 
+def _in_voice(row: LineRow, voice: str, moving: frozenset[str]) -> bool:
+    """Spoken in `voice`, or by a speaker who moves to it once its clip exists (a
+    species voice no one is cast on yet: the spirit healer for spirithealer-female)."""
+    return row.voice == voice or (bool(row.speaker_key) and row.speaker_key in moving)
+
+
 def random_line(
-    rows: list[LineRow], voice: str, rng: random.Random | None = None
+    rows: list[LineRow],
+    voice: str,
+    rng: random.Random | None = None,
+    moving: frozenset[str] = frozenset(),
 ) -> LineRow | None:
     """A random line spoken in `voice` (the resolved race-gender or npc voice):
     a quest line when the voice has any, else a gossip line, else None."""
     rng = rng or random.Random()
-    quests = [row for row in rows if row.voice == voice and row.subfolder == "Quests"]
-    pool = quests or [row for row in rows if row.voice == voice]
+    mine = [row for row in rows if _in_voice(row, voice, moving)]
+    quests = [row for row in mine if row.subfolder == "Quests"]
+    pool = quests or mine
     return rng.choice(pool) if pool else None
 
 
@@ -684,7 +694,12 @@ def search(rows: list[LineRow], query: str, limit: int = 40) -> list[LineRow]:
     return hits[:limit]
 
 
-def lines_in_voice(rows: list[LineRow], voice: str, limit: int = 60) -> list[LineRow]:
+def lines_in_voice(
+    rows: list[LineRow],
+    voice: str,
+    limit: int = 60,
+    moving: frozenset[str] = frozenset(),
+) -> list[LineRow]:
     """That voice's own lines, the longest first.
 
     Auditioning a voice on the words it will actually say beats free text, and beats one
@@ -692,7 +707,7 @@ def lines_in_voice(rows: list[LineRow], voice: str, limit: int = 60) -> list[Lin
     paragraph. Longest first because those are the ones that show a delivery - and
     because the pack's own long lines are what the owner notices in play.
     """
-    hits = [row for row in rows if row.voice == voice]
+    hits = [row for row in rows if _in_voice(row, voice, moving)]
     hits.sort(key=lambda r: (-len(r.spoken), r.base))
     return hits[:limit]
 
@@ -809,6 +824,11 @@ class Studio:
 
     def species_want(self, voice: str) -> SpeciesWant | None:
         return self._species_wanted.get(voice)
+
+    def moving_to(self, voice: str) -> frozenset[str]:
+        """The speakers who move to this species voice once its clip exists."""
+        want = self.species_want(voice)
+        return want.speakers if want else frozenset()
 
     def spoken_if_loaded(self) -> dict[str, int]:
         """lines_per_voice, or {} while the corpus is still loading, so a request that
@@ -1376,8 +1396,9 @@ def create_app(
         rows = studio.rows()
         if voice:
             _safe(voice)
-            found = lines_in_voice(rows, voice)
-            total = sum(1 for row in rows if row.voice == voice)
+            moving = studio.moving_to(voice)
+            found = lines_in_voice(rows, voice, moving=moving)
+            total = sum(1 for row in rows if _in_voice(row, voice, moving))
             return {
                 "rows": [payload(row) for row in found],
                 "total": total,
@@ -1395,7 +1416,7 @@ def create_app(
 
     @app.get("/api/random")
     def random_in_voice(voice: str = Query(min_length=1)) -> dict[str, Any]:
-        row = random_line(studio.rows(), _safe(voice))
+        row = random_line(studio.rows(), _safe(voice), moving=studio.moving_to(voice))
         if row is None:
             raise HTTPException(404, f"no lines are spoken in {voice}")
         return payload(row)
@@ -1701,8 +1722,7 @@ def create_app(
         rows = studio.rows_if_loaded()
         if rows is None:
             return {"voice": voice, "status": "loading", "npcs": []}
-        want = studio.species_want(voice)
-        moving = want.speakers if want else frozenset()
+        moving = studio.moving_to(voice)
         found: dict[str, dict[str, Any]] = {}
         for row in rows:
             key = row.speaker_key

@@ -651,3 +651,21 @@ def test_npcs_lists_the_voices_speakers_most_lines_first(
     assert [(n["name"], n["now"]) for n in d["npcs"]] == [
         ("Spirit Healer", "human-female")
     ]
+
+
+def test_a_species_voice_offers_the_lines_that_will_move_to_it() -> None:
+    from tools import audition
+
+    healer = audition.LineRow(
+        base="6491-22357dc5", subfolder="Gossip", title="Spirit Healer",
+        speaker="Spirit Healer", voice="human-female", raw="It is not yet your time.",
+        spoken="It is not yet your time.", level=1, source="capture",
+        speaker_key="6491",
+    )  # fmt: skip
+    rows = [healer]
+    assert audition.lines_in_voice(rows, "spirithealer-female") == []
+    moving = frozenset({"6491"})
+    assert audition.lines_in_voice(rows, "spirithealer-female", moving=moving) == [
+        healer
+    ]
+    assert audition.random_line(rows, "spirithealer-female", moving=moving) is healer
