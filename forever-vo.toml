@@ -732,6 +732,12 @@ naxxramas = "naxRAMuss"
 Arthas = "Arthus"
 Arathor = "Airathor"
 Arathi = "Arathi"
+Tauren = "Toren"
+Thatsh = "That's"
+Sho = "So"
+exshellent = "excellent"
+newsh = "news"
+Goldshire = "Gold-shire"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
