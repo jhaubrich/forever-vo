@@ -1,0 +1,84 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "252095": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1100258,
+   "name": "Hanaa Nightwind",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "263664": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Raan Wildwind",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-549",
+ "quests": {
+  "92544-complete": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Hanaa Nightwind",
+   "npc": "252095",
+   "questID": 92544,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "It was all I could do to stop myself from going over and joining you from my position here. I can only hope that these louts got the message and clear out of here soon. \r\n\r\nThank you, $c. You have the gratitude of the Rangers of Thendal Grove.",
+   "time": 1790966016,
+   "title": "Al'Aketh Thugs",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "96101-accept": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 96101,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Greetings, $c. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+   "time": 1790966133,
+   "title": "The Great Outdoors",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "96101-progress": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 96101,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Having the skills needed to survive the outdoors is critical. A well-rested and well-prepared adventurer has a much higher chance of surviving this lifestyle.",
+   "time": 1790966215,
+   "title": "The Great Outdoors",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
