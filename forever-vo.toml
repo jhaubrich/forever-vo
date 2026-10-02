@@ -21,12 +21,23 @@
 narrator = "narrator"
 narrator_alternates = ["skyborne-female"]
 
-# Sound folders (under sound/creature/) that any voice may borrow clips from in
-# the audition page's "Also offer clips from": characters this client ships
-# recordings of but casts no NPC with. Gul'dan has 156 real Warlords and Legion
-# lines here, connected speech that no orc set has. `fvo-soundpaths --folders --only
-# <folder>` lists a new one's real lines in tools/data/named_folders.json.
-clip_folders = ["guldan"]
+# Sound folders (under sound/creature/ or sound/character/) that any voice may
+# borrow clips from in the audition page's "Also offer clips from": characters this
+# client ships recordings of but casts no NPC with. Gul'dan has 156 real Warlords and
+# Legion lines here, connected speech that no orc set has; the night elf ones are
+# for nightelf-male, whose 1.x emotes are thin (Legion's demon hunter player set, a
+# Legion ghost, Jarod Shadowsong for the warrior archetype, and the nightborne
+# player and citizen sets, who read from nightelf-male.wav). `fvo-soundpaths
+# --folders --only <folder>` lists a new one's real lines in
+# tools/data/named_folders.json.
+clip_folders = [
+    "guldan",
+    "pcdhnightelfmale",
+    "night_elf_male_ghost",
+    "commander_jarod_shadowsong",
+    "pc_-_nightborne_elf_male",
+    "nightborne_male_citizen",
+]
 
 # Races without a reference clip borrow a related one; the narrator without a
 # tools/voices/narrator.wav borrows human-male. A borrowed clip brings its
@@ -92,6 +103,14 @@ voljin = ["warchief_voljin"]  # Legion and Battle for Azeroth, long speeches
 [voices.speakers]
 "248200" = "goblin-male"
 
+# NPCSounds set -> voice, for a creature whose display the client tables give no
+# race and no species clip covers: the set Blizzard cast it with still says who it
+# is. Only reached after the species step, so it never overrides a species clip.
+# Set 66 is goblinMaleZany: Gryfe, Bragok, Kwee Q. Peddlefeet and Wizzlecrank's
+# Shredder are goblins on models the tables give no race.
+[voices.sound_sets]
+"66" = "goblin-male-zany"
+
 [voices.sources.bloodelf-female]
 clips = [539351, 539211, 539423]
 
@@ -148,7 +167,21 @@ clips = [540710]
 clips = [556536, 541059, 541035, 541067]
 
 [voices.sources.nightelf-male]
-clips = [541134, 556577, 556574, 556587]
+clips = [
+    1730262,
+    556587,
+    556574,
+    556579,
+    556573,
+    556582,
+    556589,
+    556588,
+    556578,
+    556576,
+    556577,
+    556583,
+    556581,
+]
 
 [voices.sources.orc-male]
 clips = [
@@ -737,7 +770,7 @@ exaggeration = 0.6
 cfg_weight = 0.2
 pitch = -1.0
 [pronunciations]
-"Ahn'Qiraj" = "Ahn Kih-rahj"
+"Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
 Kharanos = "Karranos"
 "Quel'Thalas" = "Quell Thalas"
@@ -758,6 +791,11 @@ Sho = "So"
 exshellent = "excellent"
 newsh = "news"
 Goldshire = "Gold-shire"
+Gnarlpines = "Gnarl Pines"
+furbolgs = "fur bolgs"
+"Ban'ethil" = "Bahnethyl"
+Athridas = "Athridos"
+Gnarlpine = "Gnarl pine"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
@@ -886,3 +924,5 @@ dwarf-male = "cfg_weight=0.3,clip=dwarf-male,clips=264d8895,exaggeration=0.7"
 orc-male = "cfg_weight=0.2,clip=orc-male,clips=e8326d21,exaggeration=0.6,tempo=1.1"
 orc-male-guard = "cfg_weight=0.3,clip=orc-male-guard,clips=af44c428,exaggeration=0.6,pitch=-0.5,tempo=1.1"
 orc-male-shady = "cfg_weight=0.2,clip=orc-male-shady,clips=4c1a666d,exaggeration=0.6,pitch=-1.0"
+nightelf-female = "cfg_weight=0.3,clip=nightelf-female,clips=ac26026c,exaggeration=0.6"
+nightelf-male = "clip=nightelf-male,clips=0a424923"
