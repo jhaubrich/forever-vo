@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "2980": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Grull Hawkwind",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2981": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Chief Hawkwind",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3059": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Harutt Thunderhorn",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-548",
+ "quests": {
+  "3091-progress": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Harutt Thunderhorn",
+   "npc": "3059",
+   "questID": 3091,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, at last, you've arrived, $c. I did not lie in my note, $N. We are a special breed also, not unlike the druids or shamans of our tribe. You are just as important. We are the ones called upon to defend our borders, to hunt the centaur, and to go to war.",
+   "time": 1790965421,
+   "title": "Simple Note",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "747-progress": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Grull Hawkwind",
+   "npc": "2980",
+   "questID": 747,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Providing meat and feathers for the tribe is the first step in proving yourself as a hunter before the Chief.",
+   "time": 1790965320,
+   "title": "The Hunt Begins",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "750-progress": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Grull Hawkwind",
+   "npc": "2980",
+   "questID": 750,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "If you can provide pelts for the tribe I will pass word along to my father, Chief Hawkwind, of your generous deeds.",
+   "time": 1790965354,
+   "title": "The Hunt Continues",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "753-progress": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Chief Hawkwind",
+   "npc": "2981",
+   "questID": 753,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "You look as though you have returned from the plains. Do you have any word from Greatmother Hawkwind?",
+   "time": 1790965379,
+   "title": "A Humble Task",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
