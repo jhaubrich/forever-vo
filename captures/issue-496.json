@@ -1,0 +1,119 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "12719": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1018060,
+   "name": "Marukai",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "12724": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 119369,
+   "name": "Pixel",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "5767": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Nalpak",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "8582": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Kadrak",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-496",
+ "quests": {
+  "1486-progress": {
+   "build": "70170",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1414,
+   "name": "Nalpak",
+   "npc": "5767",
+   "questID": 1486,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "I am very interested in examining the hides from the deviate creatures who have infested these caves. Have you had any luck in collecting some, $c?",
+   "time": 1790906244,
+   "title": "Deviate Hides",
+   "wanted": null,
+   "zone": "The Wailing Caverns"
+  },
+  "6442-progress": {
+   "build": "70170",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Marukai",
+   "npc": "12719",
+   "questID": 6442,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "The naga increase in numbers, $N. Please complete this task for me.",
+   "time": 1790907153,
+   "title": "Naga at the Zoram Strand",
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "6543-progress": {
+   "build": "70170",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Kadrak",
+   "npc": "8582",
+   "questID": 6543,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Hurry, $N. They must receive their reports; it is urgent.",
+   "time": 1790906719,
+   "title": "The Warsong Reports",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "6581-progress": {
+   "build": "70170",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Pixel",
+   "npc": "12724",
+   "questID": 6581,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Direct from Ratchet, the Warsong saw blades! Yep, I have them right here.\n\n..But what sort of payment do you have for me? You can't just take them, you know! My time isn't cheap!\n\nWhat I really need is a good gun to carry with me on my travels. A girl's gotta protect herself, you know? There's a gun I really like that I'm sure an engineer would have no problem making.\n\nSo, if you bring me a deadly blunderbuss, I'll give you the saw blade shipment. Do we have a deal?",
+   "time": 1790906931,
+   "title": "Warsong Saw Blades",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
