@@ -1,0 +1,103 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "211022": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Owen Thadd",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "7825": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Oran Snakewrithe",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-518",
+ "quests": {
+  "78145-complete": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Owen Thadd",
+   "npc": "211022",
+   "questID": 78145,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Thank you, $N. Our knowledge expands through your efforts.\r\n\r\nIf you discover more magical works that might benefit the library, please bring them to me.",
+   "time": 1790946069,
+   "title": "Arcanic Systems Manual",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "78145-progress": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Owen Thadd",
+   "npc": "211022",
+   "questID": 78145,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you brought something to add to our collection?",
+   "time": 1790946067,
+   "title": "Arcanic Systems Manual",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "95204-complete": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Oran Snakewrithe",
+   "npc": "7825",
+   "questID": 95204,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "<Oran bites the crest to ensure authenticity.>\r\n\r\nWell I'll be. A genuine relic of our home. Mostly intact, too. We need to be extra careful with this one.\r\n\r\nThank you for your aid in restoring our history, $c. I'll see to it that we take good care of this.",
+   "time": 1790946116,
+   "title": "Crest of Lordaeron",
+   "wanted": true,
+   "zone": "Undercity"
+  },
+  "95204-progress": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Oran Snakewrithe",
+   "npc": "7825",
+   "questID": 95204,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "What have you got there, $c? A tasty morsel?",
+   "time": 1790946115,
+   "title": "Crest of Lordaeron",
+   "wanted": true,
+   "zone": "Undercity"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
