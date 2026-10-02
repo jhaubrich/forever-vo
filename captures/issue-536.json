@@ -1,0 +1,54 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "3296|d2a519bc": {
+   "build": "70170",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Orgrimmar Grunt",
+   "npc": "3296",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "One of those Light-loving Forsaken has posted up in Grommash Hold near the other ambassadors. Perhaps he can help you.",
+   "time": 1790957687,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "270582": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Mon'ye",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3296": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Orgrimmar Grunt",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3368": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Borstan",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-536",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
