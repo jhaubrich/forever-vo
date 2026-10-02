@@ -1017,6 +1017,8 @@ class Studio:
                             "offers": name in speaking or name in counts,
                         }
                     )
+        for row in rows:
+            row["expansion"] = voice_expansion(row["voice"])
         return sorted(rows, key=lambda r: r["voice"])
 
     def state(self) -> dict[str, Any]:
@@ -1054,6 +1056,8 @@ class Studio:
             "speakers": config.voices.speakers,
             # offered beside the voices in "Also offer clips from", as folder-<name>
             "clip_folders": config.voices.clip_folders,
+            # the order the "Also offer clips from" list groups voices in
+            "expansions": EXPANSIONS,
             # current: heard as it is configured now; stale: approved, then something
             # it reads from changed (VoiceCatalog.recipe)
             "approved": {
@@ -1334,6 +1338,66 @@ def group_about(voice: str, group: str, spoken: dict[str, int]) -> str:
         )
         return f"{where} · {len(files)} real lines"
     return ""
+
+
+# The expansion a race's voice comes from, for grouping the page's "Also offer clips
+# from" list. A race is filed where its NPCs first spoke, not where it became playable:
+# goblins bark in Booty Bay in 1.x. Skyborne are Forever's own.
+EXPANSIONS = ["Forever", "Classic", "The Burning Crusade", "Wrath of the Lich King",
+              "Cataclysm", "Mists of Pandaria", "Legion", "Battle for Azeroth",
+              "Dragonflight"]  # fmt: skip
+RACE_EXPANSION = {
+    "skyborne": "Forever",
+    **dict.fromkeys(
+        [
+            "human",
+            "orc",
+            "dwarf",
+            "nightelf",
+            "scourge",
+            "tauren",
+            "gnome",
+            "troll",
+            "goblin",
+            "skeleton",
+            "foresttroll",
+            "naga",
+        ],
+        "Classic",
+    ),
+    **dict.fromkeys(["bloodelf", "draenei", "felorc", "broken"], "The Burning Crusade"),
+    **dict.fromkeys(
+        ["vrykul", "tuskarr", "taunka", "northrendskeleton", "icetroll"],
+        "Wrath of the Lich King",
+    ),
+    "worgen": "Cataclysm",
+    "pandaren": "Mists of Pandaria",
+    **dict.fromkeys(
+        ["nightborne", "highmountaintauren", "voidelf", "lightforgeddraenei"], "Legion"
+    ),
+    **dict.fromkeys(
+        [
+            "zandalari",
+            "kultiran",
+            "thinhuman",
+            "darkirondwarf",
+            "vulpera",
+            "magharorc",
+            "mechagnome",
+        ],
+        "Battle for Azeroth",
+    ),
+    "dracthyr": "Dragonflight",
+}
+
+
+def voice_expansion(voice: str) -> str | None:
+    """The expansion of the race a voice speaks for, a race voice's or an archetype's.
+    None for a named NPC, whose display's race is no guide (Forever recast Sylvanas's
+    display as a skyborne) and which the page lists apart, and for a species."""
+    if voice.startswith("npc-"):
+        return None
+    return RACE_EXPANSION.get(voice.split("-", 1)[0])
 
 
 def wowhead_url(speaker_key: str) -> str | None:

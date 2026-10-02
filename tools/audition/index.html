@@ -1193,6 +1193,19 @@ function setAlso(voice, list) {
   try { localStorage.setItem("fvo-clips-also", JSON.stringify(clipsAlso)); } catch (e) { /* this browser only */ }
   renderAlso();
 }
+// The voices to borrow from, by the expansion their race comes from (Forever first,
+// as the server orders them), then the named NPCs, whose display's race is no guide to
+// theirs. Only voices with clips of their own to lend are passed in: a species with no
+// clip, or a race that borrows another's and has no speech or sets, would add nothing.
+function alsoVoiceGroups(rows, labelOf) {
+  const option = r => `<option value="${r.voice}">${esc(labelOf(r.voice))}</option>`;
+  const group = (label, list) => list.length ? `<optgroup label="${esc(label)}">` + list.map(option).join("") + "</optgroup>" : "";
+  const named = rows.filter(r => r.voice.startsWith("npc-"));
+  const rest = rows.filter(r => !r.voice.startsWith("npc-"));
+  return ((state && state.expansions) || []).map(e => group(e, rest.filter(r => r.expansion === e))).join("")
+    + group("Named NPCs", named)
+    + group("Species and other voices", rest.filter(r => !r.expansion));
+}
 function renderAlso() {
   const voice = $("voice").value, list = alsoOf(voice);
   const rows = (state && state.pickable) || [];
@@ -1202,11 +1215,7 @@ function renderAlso() {
   $("clips-also").innerHTML = `<option value="">Also offer clips from…</option>` +
     (folders.length ? `<optgroup label="Sound folders">` +
       folders.map(f => `<option value="${f}">${esc(f.slice(7))}</option>`).join("") + "</optgroup>" : "") +
-    `<optgroup label="Voices">` +
-    // only voices with clips of their own to lend: a species with no clip, or a race
-    // that borrows another's and has no speech or sets, would add nothing
-    rows.filter(r => r.voice !== voice && !list.includes(r.voice) && !r.species && (!r.borrows || r.offers))
-      .map(r => `<option value="${r.voice}">${esc(labelOf(r.voice))}</option>`).join("") + "</optgroup>";
+    alsoVoiceGroups(rows.filter(r => r.voice !== voice && !list.includes(r.voice) && !r.species && (!r.borrows || r.offers)), labelOf);
   $("clips-also-list").innerHTML = list.map(v =>
     `<span class="pill">${esc(labelOf(v))}<button data-drop="${v}" title="Stop offering ${v}'s clips">×</button></span>`).join("");
   $("clips-also-list").querySelectorAll("button[data-drop]").forEach(b => b.addEventListener("click", () => {

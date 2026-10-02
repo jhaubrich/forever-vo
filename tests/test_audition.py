@@ -731,3 +731,17 @@ def test_borrowed_clips_are_listed_while_the_voice_still_loads(
     assert d["status"] == "loading"
     assert d["pending"] == ["nightborne-female"]
     assert [c["fdid"] for c in d["clips"]] == [1243396]  # not an empty table
+
+
+def test_a_voice_is_filed_under_its_races_expansion() -> None:
+    from tools.audition import EXPANSIONS, RACE_EXPANSION, voice_expansion
+    from tools.config import RACE_DICT
+
+    assert voice_expansion("skyborne-female") == "Forever"
+    assert voice_expansion("goblin-male-zany") == "Classic"  # barks in Booty Bay in 1.x
+    assert voice_expansion("nightborne-male") == "Legion"
+    assert voice_expansion("npc-11657") is None  # named NPCs are listed apart
+    assert voice_expansion("spirithealer-female") is None  # a species
+    # every race the client names has one, and each is an expansion the page orders
+    assert {r for r in RACE_DICT.values() if r != "narrator"} <= set(RACE_EXPANSION)
+    assert set(RACE_EXPANSION.values()) <= set(EXPANSIONS)
