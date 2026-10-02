@@ -299,21 +299,30 @@ def candidates(
     # two skyborne, Fandral's 174 on a night elf), is that character's voice and is
     # offered as npc-<displayID>, not as one of the race's
     characters = set(named_sets()) if not own else set()
-    for sound_id, displays in wanted_sets:
+    for sound_id, _ in wanted_sets:
         if other_sex_set(sound_id, race_gender):
             continue  # the other sex's recordings, cast on a few displays
         if sound_id in characters:
             continue
+        greetings = set_greetings(sound_id)
         for fdid in set_fdids(sound_id):
             found.append(
                 Candidate(
-                    f"set {sound_id} ({displays} displays)",
+                    # what the file is, as the page lists it under the set's heading;
+                    # the set's display count is in the heading's line about it
+                    f"set {sound_id} {'greeting' if fdid in greetings else 'farewell'}",
                     fdid,
                     BETA_BUILD,
                     f"set {sound_id}",
                 )
             )
     return _fetched(found, voice, progress)
+
+
+def set_greetings(sound_id: int) -> set[int]:
+    """The files of an NPCSounds set that greet (SoundID_0); set_fdids' others say goodbye."""
+    row = load_db2("NPCSounds").get(sound_id, {})
+    return set(files_by_kit().get(int(row.get("SoundID_0") or 0), []))
 
 
 def _fetched(

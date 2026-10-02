@@ -96,6 +96,7 @@ from tools.wowdata import (
     dominant_sound_set,
     fetch_file,
     is_archetype,
+    set_voice,
     sound_set_displays,
 )
 
@@ -1328,15 +1329,23 @@ def group_about(voice: str, group: str, spoken: dict[str, int]) -> str:
                 "same folder as " + ", ".join(f"set {other}" for other in shared)
             )
         if sound_id == dominant_sound_set(race_gender):
-            about.append(f"the main set, what {race_gender} sounds like")
-        name = archetype_names(race_gender).get(sound_id)
-        if name == voice:
-            about.append("this voice's own set")
-        elif name and (VOICES_DIR / f"{name}.wav").exists():
-            lines = spoken.get(name)
-            about.append(f"clip {name}" + (f", {lines} lines" if lines else ""))
+            # what the automatic build makes the plain clip from; once the set has an
+            # archetype of its own, its NPCs no longer speak in the plain voice
+            about.append("the most-used set")
+        cast = set_voice(race_gender, sound_id) or race_gender
+        lines = spoken.get(cast)
+        # the voice's lines in all, not this set's: the corpus counts by voice
+        counted = f"; that voice has {lines} lines" if lines else ""
+        if cast == voice:
+            about.append(
+                f"its NPCs speak in this voice{'; ' + str(lines) + ' lines in all' if lines else ''}"
+            )
+        elif archetype_names(race_gender).get(sound_id) == cast:
+            about.append(f"its NPCs speak in {cast}, its own clip{counted}")
+        elif cast != race_gender:
+            about.append(f"its NPCs speak in {cast}, a sibling's clip{counted}")
         else:
-            about.append(f"no clip of its own: its NPCs read as {race_gender}")
+            about.append(f"no clip of its own: its NPCs speak in {cast}{counted}")
         return " · ".join(about)
     if group == "speech":
         return f"spoken /joke and /flirt emotes, {race_gender}'s only connected speech"

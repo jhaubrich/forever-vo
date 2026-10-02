@@ -451,7 +451,12 @@ def archetype_voice(voice: str, display_id: int | None) -> str | None:
     race with one set and no spoken emotes - regenerating those under a new name
     would cost GPU for the same audio.
     """
-    sound_id = display_sound_set(display_id)
+    return set_voice(voice, display_sound_set(display_id))
+
+
+def set_voice(voice: str, sound_id: int | None) -> str | None:
+    """The archetype a set's NPCs are cast on, its own clip or a sibling's, or None
+    when they read the plain `voice` (archetype_voice has the rules)."""
     if not sound_id or sound_id not in (sound_set_displays().get(voice) or {}):
         return None
     names = archetype_names(voice)
