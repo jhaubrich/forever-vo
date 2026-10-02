@@ -147,7 +147,7 @@ def test_a_race_voice_leaves_out_other_sexes_and_characters_kits(
         refclips, "other_sex_set", lambda sound_id, voice: sound_id == 54
     )
     monkeypatch.setattr(refclips, "set_fdids", lambda sound_id: [sound_id * 10])
-    monkeypatch.setattr(refclips, "_fetched", lambda found, voice: found)
+    monkeypatch.setattr(refclips, "_fetched", lambda found, voice, progress=None: found)
     found = refclips.candidates("skyborne-female", Voices())
     assert [c.group for c in found] == ["set 3773"]
 
