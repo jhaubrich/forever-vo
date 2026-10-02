@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The second **Narrator voice** is Skyborne female instead of Orc male, so
+  the menu has a male and a female voice. If you picked Orc male, narrated
+  lines go back to the default narrator until you pick again.
 - The Forever Voiceover page in Options has **Send Quests to Project** (the
   same as `/fvo export`, and showing how many lines you have to send) and
   **Report Bug** buttons, and lists the addon's
