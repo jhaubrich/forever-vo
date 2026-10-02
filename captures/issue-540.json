@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3428": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1022938,
+   "name": "Korran",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-540",
+ "quests": {
+  "868-complete": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Korran",
+   "npc": "3428",
+   "questID": 868,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "You please me, $N. The eggs and the tool. Well done.\n\nAnd for your reward...",
+   "time": 1790961942,
+   "title": "Egg Hunt",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "868-progress": {
+   "build": "70170",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Korran",
+   "npc": "3428",
+   "questID": 868,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Be careful with the eggs you find, $N. If they break, they be no good to me.",
+   "time": 1790961941,
+   "title": "Egg Hunt",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
