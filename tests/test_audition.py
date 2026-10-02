@@ -14,6 +14,7 @@ from fastapi import HTTPException
 from tools.audition import (
     LineRow,
     random_line,
+    run_finished,
     search,
     sound_packs,
     sources_warnings,
@@ -24,6 +25,16 @@ from tools.audition import (
     write_voice_sources,
 )
 from tools.config import CONFIG_TOML, load_config
+
+
+@pytest.fixture(autouse=True)
+def no_desktop_notifications(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A run's end calls notify-send, which on a desktop pops up for real; a test that
+    wants it puts the real function (imported above, so unpatched) back with a
+    stand-in for the command."""
+    from tools import audition
+
+    monkeypatch.setattr(audition, "run_finished", lambda voice, outcome: None)
 
 
 @pytest.fixture
@@ -335,6 +346,15 @@ def test_stop_ends_a_run_after_the_take_in_progress(
     from tools import audition
 
     monkeypatch.setattr(audition, "AUDITION_DIR", tmp_path)
+    # the run's end reaches the desktop through notify-send, here a stand-in
+    monkeypatch.setattr(audition, "run_finished", run_finished)
+    notified: list[tuple[str, ...]] = []
+    monkeypatch.setattr(audition.shutil, "which", lambda name: "/bin/notify-send")
+    monkeypatch.setattr(
+        audition.subprocess,
+        "Popen",
+        lambda args, **kw: notified.append(("human-male", args[-2], args[-1])),
+    )
     # a Studio without its corpus thread or a model: only what /api/generate touches
     studio = object.__new__(audition.Studio)
     studio.config_path = CONFIG_TOML
@@ -370,6 +390,7 @@ def test_stop_ends_a_run_after_the_take_in_progress(
     )
     events = [json.loads(line)["event"] for line in response.text.splitlines()]
     assert events == ["start", "take", "stopped"]
+    assert notified == [("human-male", "Audition: human-male", "stopped · 1 take done")]
     assert studio.stops == {}  # a finished run leaves nothing to stop
     assert client.post("/api/generate/nope/stop").json() == {"stopping": False}
 
@@ -448,3 +469,38 @@ def test_write_tuning_keeps_pitch_only_when_it_differs(toml_copy: Path) -> None:
     assert config.tts.voices["gnome-male"].pitch == -3.0
     config = write_tuning(toml_copy, "gnome-male", 0.6, 0.4, None, 1.0, 0.0)
     assert config.tts.voices["gnome-male"].pitch is None
+
+
+def test_local_clip_borrows_from_the_cache_or_another_voice_and_never_fetches(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from tools import audition, refclips
+
+    raw, casc = tmp_path / "raw", tmp_path / "casc"
+    monkeypatch.setattr(refclips, "RAW_DIR", raw)
+    monkeypatch.setattr(audition, "CASC_DIR", casc)
+    monkeypatch.setattr(
+        audition,
+        "fetch_file",
+        lambda fdid, dest, build: _link(casc / build / f"{fdid}.ogg", dest),
+    )
+    (raw / "orc-male").mkdir(parents=True)
+    (raw / "orc-male" / "1.ogg").write_bytes(b"own")
+    (casc / "1.0").mkdir(parents=True)
+    (casc / "1.0" / "2.ogg").write_bytes(b"cached")
+    (raw / "npc-4527").mkdir()
+    (raw / "npc-4527" / "3.ogg").write_bytes(b"thrall, fetched before the cache")
+
+    assert audition.local_clip("orc-male", 1, "1.0") == raw / "orc-male" / "1.ogg"
+    cached = audition.local_clip("orc-male", 2, "1.0")
+    assert cached is not None and cached.read_bytes() == b"cached"
+    borrowed = audition.local_clip("orc-male", 3, "1.0")
+    assert borrowed == raw / "orc-male" / "3.ogg"
+    assert borrowed.read_bytes() == b"thrall, fetched before the cache"
+    assert audition.local_clip("orc-male", 4, "1.0") is None  # never downloaded
+
+
+def _link(source: Path, dest: Path) -> Path:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_bytes(source.read_bytes())
+    return dest

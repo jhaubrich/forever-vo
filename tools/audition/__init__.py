@@ -39,6 +39,7 @@ import json
 import os
 import random
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -63,7 +64,9 @@ from tools.build_voice_references import (
     build_picked_reference,
 )
 from tools.config import (
+    BETA_BUILD,
     BETA_DIR,
+    CASC_DIR,
     CONFIG_TOML,
     DATA_DIR,
     PACK_NAME,
@@ -85,7 +88,12 @@ from tools.generate import (
     sound_path,
 )
 from tools.textclean import clean
-from tools.wowdata import archetype_names, is_archetype, sound_set_displays
+from tools.wowdata import (
+    archetype_names,
+    fetch_file,
+    is_archetype,
+    sound_set_displays,
+)
 
 AUDITION_DIR = DATA_DIR / "audition"
 ADDONS_DIR = BETA_DIR / "Interface" / "AddOns"
@@ -376,6 +384,20 @@ def unlisted_folders(config: Config) -> list[str]:
             "tools/data/named_folders.json does not list yet: run "
             "./tools/run.sh fvo-soundpaths --folders"
         )
+    ]
+
+
+def unlisted_clip_folders(config: Config) -> list[str]:
+    """[voices] clip_folders that named_folders.json does not have yet, which "Also offer
+    clips from" would otherwise offer with nothing in them."""
+    from tools.soundpaths import named_folder_files
+
+    listed = named_folder_files()
+    missing = [f for f in config.voices.clip_folders if f not in listed]
+    return [
+        f"[voices] clip_folders names {folder}, which tools/data/named_folders.json "
+        f"does not list yet: run ./tools/run.sh fvo-soundpaths --folders --only {folder}"
+        for folder in missing
     ]
 
 
@@ -948,6 +970,8 @@ class Studio:
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
             "speakers": config.voices.speakers,
+            # offered beside the voices in "Also offer clips from", as folder-<name>
+            "clip_folders": config.voices.clip_folders,
             # current: heard as it is configured now; stale: approved, then something
             # it reads from changed (VoiceCatalog.recipe)
             "approved": {
@@ -1034,6 +1058,76 @@ class BuildSources(BaseModel):
     clips: list[int] = Field(min_length=1, max_length=40)
     build: str | None = None
     keep: bool = True  # also write [voices.sources.<voice>] into forever-vo.toml
+
+
+def run_finished(voice: str, outcome: dict[str, Any]) -> None:
+    """A desktop notification that a generate run ended, from the server.
+
+    The page tried the browser's Notification API first, and on the owner's KDE
+    desktop it never showed one, while `notify-send` from this process did at once.
+    So the server, which runs in the desktop session the page is open in, says it;
+    where there is no notify-send (a server on another machine) the page alone does.
+    """
+    notify = shutil.which("notify-send")
+    if not notify:
+        return
+    if outcome["event"] == "error":
+        body = f"failed: {outcome.get('message', '')}"
+    else:
+        n = outcome.get("count", 0)
+        takes = f"{n} take{'' if n == 1 else 's'}"
+        body = (
+            f"stopped · {takes} done"
+            if outcome["event"] == "stopped"
+            else f"{takes} done"
+        )
+    try:
+        subprocess.Popen(
+            [notify, "--app-name=Forever VO audition", f"Audition: {voice}", body],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError:
+        pass  # a missed notification is not worth failing the run's last event over
+
+
+def local_clip(voice: str, fdid: int, build: str | None) -> Path | None:
+    """A clip under this voice's raw folder, linked from the download cache when it was
+    fetched for another voice; None when it was never downloaded. No network.
+
+    Clips fetched before the shared cache existed (2026-09-29) are only in the raw
+    folder of the voice they were fetched for - Thrall's 523 among them - so the other
+    voices' folders are the second place to look."""
+    from tools.refclips import RAW_DIR as CLIP_RAW
+
+    dest = CLIP_RAW / voice / f"{fdid}.ogg"
+    if dest.exists():
+        return dest
+    if (CASC_DIR / (build or BETA_BUILD) / f"{fdid}.ogg").exists():
+        return fetch_file(fdid, dest, build=build or BETA_BUILD)
+    found = next(CLIP_RAW.glob(f"*/{fdid}.ogg"), None)
+    if found is None:
+        return None
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        os.link(found, dest)
+    except FileExistsError:
+        pass  # another request linked it first
+    except OSError:
+        shutil.copyfile(found, dest)
+    return dest
+
+
+def _voice_label(voice: str, labels: dict[int, str]) -> str:
+    """npc-4527 (Thrall), or the name alone for a voice with no character label."""
+    if voice.startswith("npc-"):
+        try:
+            label = labels.get(int(voice.removeprefix("npc-")))
+        except ValueError:
+            label = None
+        if label:
+            return f"{voice} ({label})"
+    return voice
 
 
 def _safe(name: str) -> str:
@@ -1228,10 +1322,17 @@ def create_app(
         stop = studio.stops.setdefault(session, threading.Event())
 
         def stream() -> Iterator[str]:
+            outcome = None
             try:
-                yield from takes()
+                for line in takes():
+                    event = json.loads(line)
+                    if event["event"] in ("done", "stopped", "error"):
+                        outcome = event
+                    yield line
             finally:  # also when the page goes away mid-run
                 studio.stops.pop(session, None)
+                if outcome:
+                    run_finished(request.voice, outcome)
 
         def takes() -> Iterator[str]:
             yield (
@@ -1415,25 +1516,74 @@ def create_app(
         return FileResponse(_under(VOICES_DIR, _safe(name)), media_type="audio/wav")
 
     @app.get("/api/clips/{voice}")
-    def clips(voice: str, refresh: bool = False) -> dict[str, Any]:
+    def clips(voice: str, refresh: bool = False, also: str = "") -> dict[str, Any]:
         """Candidate clips for one voice. Returns status "loading" while the first
-        fetch runs; the page polls."""
+        fetch runs; the page polls.
+
+        `also` names other voices whose candidates join the table, each group labelled
+        with the voice it came from: Thrall's lines for an orc archetype. A saved pick
+        found among none of them is listed anyway, from the download cache, so a
+        rebuild cannot drop a clip borrowed in an earlier session. `pending` names the
+        borrowed voices still loading."""
+        from tools import refclips
+
         _safe(voice)
+        others = [_safe(v) for v in also.split(",") if v and v != voice]
         found = studio.clips(voice, refresh=refresh)
         seed_recipe_history(voice)
         config = studio.config()
         picked = config.voices.sources.get(voice)
+        rows = list(found or [])
+        pending = []
+        if found is not None:
+            labels = npc_labels()
+            seen = {c["fdid"] for c in rows}
+            for other in others:
+                theirs = studio.clips(other)
+                if theirs is None:
+                    pending.append(other)
+                    continue
+                name = _voice_label(other, labels)
+                for c in theirs:
+                    if c["fdid"] not in seen:
+                        seen.add(c["fdid"])
+                        rows.append({**c, "group": f"{name}: {c['group']}"})
+            saved_build = picked.build if picked else None
+            for fdid in picked.clips if picked else []:
+                if fdid in seen:
+                    continue
+                path = local_clip(voice, fdid, saved_build)
+                if path:
+                    seen.add(fdid)
+                    rows.append(
+                        {
+                            "n": len(rows) + 1,
+                            "fdid": fdid,
+                            "kind": "saved pick",
+                            "group": "saved picks from other voices",
+                            "seconds": round(
+                                refclips.CLIP_SECONDS.get(
+                                    fdid, saved_build or BETA_BUILD, path
+                                ),
+                                2,
+                            ),
+                            "url": f"/api/clips/audio/{voice}/{fdid}.ogg",
+                        }
+                    )
+            refclips.CLIP_SECONDS.save()
         return {
             "voice": voice,
             "status": studio.clips_status.get(voice, "not loaded"),
-            "clips": found or [],
+            "clips": rows,
+            "pending": pending,
             # in first-seen order, for the page's folder select
-            "groups": list(dict.fromkeys(c["group"] for c in found or [])),
+            "groups": list(dict.fromkeys(c["group"] for c in rows)),
             "picked": picked.clips if picked else [],
             "build": picked.build if picked else None,
             "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
             "warnings": sources_warnings(config, voice)
-            + (unlisted_folders(config) if voice.startswith("npc-") else []),
+            + (unlisted_folders(config) if voice.startswith("npc-") else [])
+            + unlisted_clip_folders(config),
             "history": pick_history(voice).get(voice, []),
             "reference_url": (
                 f"/api/clips/reference/{voice}.wav"
@@ -1447,10 +1597,15 @@ def create_app(
         from tools.refclips import RAW_DIR as CLIP_RAW
 
         voice = _safe(request.voice)
-        # The picks can only have come from /api/clips, so they are already downloaded;
-        # resolving them through _under keeps this endpoint off the network and guards
-        # the path in one move.
-        paths = [_under(CLIP_RAW, f"{voice}/{fdid}.ogg") for fdid in request.clips]
+        # The picks can only have come from /api/clips, so they are already downloaded:
+        # under this voice's folder, or, borrowed from another voice, in the download
+        # cache, linked here locally. Either way this endpoint stays off the network.
+        paths = []
+        for fdid in request.clips:
+            path = local_clip(voice, fdid, request.build)
+            if path is None:
+                raise HTTPException(404, f"clip {fdid} is not downloaded")
+            paths.append(_under(CLIP_RAW, f"{voice}/{path.name}"))
         existed = (VOICES_DIR / f"{voice}.wav").exists()
         try:
             out = build_picked_reference(voice, paths)

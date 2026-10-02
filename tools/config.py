@@ -143,6 +143,7 @@ class VoiceSources(Strict):
 
 _SPEAKER_KEY = re.compile(r"-?[1-9][0-9]*")
 _VOICE_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+_FOLDER_NAME = re.compile(r"[a-z0-9_]+")
 
 
 class Voices(Strict):
@@ -164,6 +165,9 @@ class Voices(Strict):
     named_folders: dict[
         str, list[str]
     ] = {}  # a named set's sound folder -> more folders its character's lines are in
+    clip_folders: list[
+        str
+    ] = []  # sound folders any voice may borrow clips from in the audition page
     sources: dict[
         str, VoiceSources
     ] = {}  # voice -> clips picked by ear, overriding the recipes
@@ -190,6 +194,19 @@ class Voices(Strict):
                 raise ValueError(
                     f"[voices.speakers] {key} = {voice!r} is not a voice name "
                     '(lowercase words joined by "-", like "goblin-male")'
+                )
+        return value
+
+    @field_validator("clip_folders")
+    @classmethod
+    def _folder_names(cls, value: list[str]) -> list[str]:
+        """Folder names as the listfile spells them under sound/creature/: lowercase,
+        since named_folders.json is keyed that way and a capital would never match."""
+        for folder in value:
+            if not _FOLDER_NAME.fullmatch(folder):
+                raise ValueError(
+                    f"[voices] clip_folders {folder!r} is not a sound folder name "
+                    '(lowercase letters, digits and "_", like "guldan")'
                 )
         return value
 

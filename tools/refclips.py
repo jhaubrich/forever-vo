@@ -239,6 +239,19 @@ def named_candidates(voice: str, voices: Voices) -> list[Candidate]:
     return found
 
 
+FOLDER_PREFIX = "folder-"  # a clip folder's name where a voice's would go
+
+
+def folder_candidates(folder: str) -> list[Candidate]:
+    """Every real line in one sound folder, barks last: [voices] clip_folders, for the
+    characters this client ships recordings of but casts no NPC with (Gul'dan)."""
+    rows = sorted(
+        named_folder_files().get(folder, []),
+        key=lambda r: (_bark_last(folder, r[1]), r[0]),
+    )
+    return [Candidate(stem, fdid, BETA_BUILD, folder) for fdid, stem, _ in rows]
+
+
 def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
     """Speech first, then greetings. Fetches as it goes.
 
@@ -249,6 +262,8 @@ def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
     """
     if voice.startswith("npc-"):
         return _fetched(named_candidates(voice, voices or load_config().voices), voice)
+    if voice.startswith(FOLDER_PREFIX):
+        return _fetched(folder_candidates(voice.removeprefix(FOLDER_PREFIX)), voice)
     found = speech_candidates(voice)
     race_gender = base_voice(voice)
     counts: Counter[int] = sound_set_displays().get(race_gender) or Counter()

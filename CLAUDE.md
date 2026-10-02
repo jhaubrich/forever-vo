@@ -309,8 +309,18 @@ plays the working folder's file, else the first installed `ForeverVO_Data*`
 pack under `WOW_DIR`'s `Interface/AddOns` that has it, in the addon's priority
 order (`sound_packs`; `--addons` names another folder): a contributor's working
 folder is mostly empty, and before 2026-09-28 every line read "no file in the
-pack yet" for them. Stop, beside Generate, ends a run after the take in
-progress: Chatterbox's `generate()` cannot be interrupted, so the check is
+pack yet" for them. The Source clips panel's "Also offer clips from" adds
+another voice's candidates to the table (Thrall's folder for an orc archetype),
+including the sound folders `[voices] clip_folders` names
+(Gul'dan's 156 Warlords and Legion lines, which no NPC here is cast with; add one
+with `fvo-soundpaths --folders --only <folder>`, which probes just that folder),
+and a saved pick found among none of them is still listed, linked from the
+download cache or another voice's raw folder (`local_clip`), so a rebuild never
+drops a borrowed clip. A run that ends raises a desktop notification from the
+server through `notify-send` (`run_finished`): the browser's Notification API
+never showed one on the owner's KDE desktop though permission was granted, and a
+server with no `notify-send` sends none. Stop, beside Generate, ends a run after
+the take in progress: Chatterbox's `generate()` cannot be interrupted, so the check is
 between takes (`Studio.stops`, `/api/generate/<session>/stop`). One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets

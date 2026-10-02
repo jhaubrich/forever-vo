@@ -19,6 +19,13 @@
 narrator = "narrator"
 narrator_alternates = ["orc-male"]
 
+# Sound folders (under sound/creature/) that any voice may borrow clips from in
+# the audition page's "Also offer clips from": characters this client ships
+# recordings of but casts no NPC with. Gul'dan has 156 real Warlords and Legion
+# lines here, connected speech that no orc set has. `fvo-soundpaths --folders --only
+# <folder>` lists a new one's real lines in tools/data/named_folders.json.
+clip_folders = ["guldan"]
+
 # Races without a reference clip borrow a related one; the narrator without a
 # tools/voices/narrator.wav borrows human-male. A borrowed clip brings its
 # owner's [tts.voices] tuning with it.

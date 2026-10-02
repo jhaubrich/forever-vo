@@ -73,6 +73,7 @@
   .pill.t3 { border-color: var(--ok); color: var(--ok); }
   .pill.s3 { border-color: var(--gold); color: var(--gold); }
   .pill.out { border-color: var(--line); color: var(--dim); }
+  #clips-also-list .pill button { font-size: 11px; padding: 0 4px; margin-left: 4px; line-height: 1.2; }
   button.help { flex: 0 0 auto; width: 22px; height: 22px; padding: 0; border-radius: 50%; line-height: 1; color: var(--gold); border-color: var(--gold); }
   #clips-help, #knobs-help { border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; padding: 10px 14px; margin: 8px 0; background: var(--panel); }
   #clips-help h4, #knobs-help h4 { margin: 0 0 6px; font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
@@ -192,6 +193,8 @@
       <div class="row" style="margin-top:8px">
         <button id="clips-load">Load candidates</button>
         <select id="clips-group" hidden title="Which folder's clips the table shows; picks from every folder stay listed"></select>
+        <select id="clips-also" title="Add another voice's candidates to this table, such as Thrall's lines for an orc archetype. Its groups are labelled with the voice they came from."></select>
+        <span id="clips-also-list"></span>
         <button id="clips-reset">Clear picks</button>
         <button id="clips-build" class="primary">Build and keep</button>
         <audio id="clips-ref" controls preload="none" style="flex:0 0 auto"></audio>
@@ -396,6 +399,7 @@ function loadVoiceSettings() {
 function showResolved() {
   if (!state) return;
   showApproval();
+  renderAlso();
   const r = state.resolved[$("voice").value];
   if (!r) { $("resolved").textContent = ""; return; }
   const ref = $("reference").value;
@@ -776,10 +780,14 @@ async function loadClips(refresh) {
   const voice = $("voice").value;
   clipsVoice = voice;
   try {
-    const d = await api(`/api/clips/${encodeURIComponent(voice)}${refresh === true ? "?refresh=1" : ""}`);
+    const query = new URLSearchParams();
+    if (refresh === true) query.set("refresh", "1");
+    if (alsoOf(voice).length) query.set("also", alsoOf(voice).join(","));
+    const d = await api(`/api/clips/${encodeURIComponent(voice)}${query.toString() ? "?" + query : ""}`);
     if ($("voice").value !== voice) return;
     clipsWindows = d.windows;
-    $("clips-status").textContent = `${voice}: ${d.status}`;
+    $("clips-status").textContent = `${voice}: ${d.status}` +
+      (d.pending.length ? ` · still loading ${d.pending.join(", ")}…` : "");
     if (d.status.startsWith("failed")) busy($("clips-load"), false);
     $("clips-warn").innerHTML = d.warnings.map(w => `<span class="warn">${esc(w)}</span>`).join("<br>");
     $("clips-ref").src = d.reference_url || "";
@@ -800,8 +808,13 @@ async function loadClips(refresh) {
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
       renderClips();
       renderHistory(d.history, picks);   // again, now that picks are seeded
-      if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
-      busy($("clips-load"), false);
+      if (d.pending.length) {
+        // this voice's rows are in; a voice added with "Also offer clips from" is not yet
+        if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 1000);
+      } else {
+        if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
+        busy($("clips-load"), false);
+      }
     } else if (d.status === "loading") {
       if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 1000);
     } else {
@@ -819,6 +832,46 @@ $("clips-load").addEventListener("click", () => {
   loadClips(true);
 });
 $("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
+
+// Other voices whose candidates join this voice's table: Thrall's lines for an orc
+// archetype. Remembered per voice in this browser only. A saved pick from another voice
+// is listed by the server whether or not its voice is added here, so forgetting this
+// never drops a clip from a rebuild.
+let clipsAlso = {};
+try { clipsAlso = JSON.parse(localStorage.getItem("fvo-clips-also") || "{}") || {}; } catch (e) { clipsAlso = {}; }
+function alsoOf(voice) { return clipsAlso[voice] || []; }
+function setAlso(voice, list) {
+  if (list.length) clipsAlso[voice] = list; else delete clipsAlso[voice];
+  try { localStorage.setItem("fvo-clips-also", JSON.stringify(clipsAlso)); } catch (e) { /* this browser only */ }
+  renderAlso();
+}
+function renderAlso() {
+  const voice = $("voice").value, list = alsoOf(voice);
+  const rows = (state && state.pickable) || [];
+  const labelOf = v => { const r = rows.find(r => r.voice === v); return r && r.label ? `${v} — ${r.label}` : v; };
+  // [voices] clip_folders: recordings no NPC here is cast with (Gul'dan's folder)
+  const folders = ((state && state.clip_folders) || []).map(f => `folder-${f}`).filter(f => !list.includes(f));
+  $("clips-also").innerHTML = `<option value="">Also offer clips from…</option>` +
+    (folders.length ? `<optgroup label="Sound folders">` +
+      folders.map(f => `<option value="${f}">${esc(f.slice(7))} (sound/creature/${esc(f.slice(7))})</option>`).join("") + "</optgroup>" : "") +
+    `<optgroup label="Voices">` +
+    rows.filter(r => r.voice !== voice && !list.includes(r.voice))
+      .map(r => `<option value="${r.voice}">${esc(labelOf(r.voice))}</option>`).join("") + "</optgroup>";
+  $("clips-also-list").innerHTML = list.map(v =>
+    `<span class="pill">${esc(labelOf(v))}<button data-drop="${v}" title="Stop offering ${v}'s clips">×</button></span>`).join("");
+  $("clips-also-list").querySelectorAll("button[data-drop]").forEach(b => b.addEventListener("click", () => {
+    setAlso(voice, alsoOf(voice).filter(v => v !== b.dataset.drop));
+    if (clipsVoice === voice) loadClips(false);
+  }));
+}
+$("clips-also").addEventListener("change", () => {
+  const voice = $("voice").value, add = $("clips-also").value;
+  if (!add) return;
+  setAlso(voice, [...alsoOf(voice), add]);
+  $("clips-status").textContent = `adding ${add}'s candidates; the first time for a voice downloads them…`;
+  busy($("clips-load"), true);
+  loadClips(false);
+});
 $("clips-group").addEventListener("change", renderClips);
 $("clips-help-toggle").addEventListener("click", () => { $("clips-help").hidden = !$("clips-help").hidden; });
 $("knobs-help-toggle").addEventListener("click", () => { $("knobs-help").hidden = !$("knobs-help").hidden; });
