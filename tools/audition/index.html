@@ -94,7 +94,8 @@
   .start .start-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 6px; }
   .start .start-top .start-head { margin: 0; }
   .start .check { margin: 0; white-space: nowrap; }
-  .start .approval { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  /* the approval, and under it the way back to it, both at the right */
+  .start .approval { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 4px; }
   .start #revert-voice { font-size: 12px; padding: 2px 8px; color: var(--warn); border-color: var(--warn); background: transparent; }
   .start #revert-voice:hover { background: var(--warn); color: var(--bg); }
   /* the list may be wider than the box: its notes are long */
