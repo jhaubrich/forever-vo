@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "252377": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Seena Skybreaker",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-732",
+ "quests": {
+  "94003-complete": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Seena Skybreaker",
+   "npc": "252377",
+   "questID": 94003,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "You have done what I could not and restored my family honor. For this, I will bestow a gift that few on Zephras are worthy to receive. I will teach you the secrets of the Skybreaker Defense.\r\n\r\nAlso, you will need a shield to put what I have to teach you into practice. Please, take this one. I have little use for it now that the Skybreaker Bulwark has been returned to me.\r\n\r\nBanu'Adoraah, friend.",
+   "time": 1791063508,
+   "title": "The Skybreaker Bulwark",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "94003-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Seena Skybreaker",
+   "npc": "252377",
+   "questID": 94003,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "<Seena nods curtly at you.>",
+   "time": 1791063507,
+   "title": "The Skybreaker Bulwark",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
