@@ -325,6 +325,37 @@ def write_approval(path: Path, voice: str, recipe: str | None) -> Config:
         return _validated_write(path, doc)
 
 
+NOTES_COMMENT = [
+    "Tasting notes, one per voice, written in the audition page's voice card: what",
+    "a voice sounds like by ear, which lines break it, what was tried and what to",
+    "try next. For people; nothing generates from them.",
+]
+
+
+def write_notes(path: Path, voice: str, text: str) -> Config:
+    """Sets [voices.notes].<voice>; empty text removes it. Several lines are kept as a
+    multi-line string. The table, made with its comment the first time, stays when
+    it empties, so the comment keeps its place."""
+    text = text.strip()
+    with _config_lock(path):
+        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+        voices = doc.get("voices")
+        if voices is None:
+            voices = tomlkit.table()
+            doc["voices"] = voices
+        notes = voices.get("notes")
+        if notes is None:
+            notes = tomlkit.table()
+            for line in NOTES_COMMENT:
+                notes.add(tomlkit.comment(line))
+            voices["notes"] = notes
+        if text:
+            notes[voice] = tomlkit.string(text, multiline="\n" in text)
+        elif voice in notes:
+            del notes[voice]
+        return _validated_write(path, doc)
+
+
 def tidy_gaps(gaps: list[float], clips: int) -> list[float]:
     """Gaps as the TOML keeps them: one per clip but the last, to the hundredth, with
     the trailing zeros dropped, so a pick with no gaps writes none."""
@@ -1449,6 +1480,8 @@ class Studio:
                 voice: "current" if catalog.recipe(voice) == heard else "stale"
                 for voice, heard in config.voices.approved.items()
             },
+            # tasting notes by voice, for the voice card
+            "notes": config.voices.notes,
             # stale approvals the page can offer to go back to (approved_target)
             "revertable": [
                 voice
@@ -1532,6 +1565,11 @@ class WritePack(BaseModel):
 
 class RevertVoice(BaseModel):
     voice: str
+
+
+class VoiceNotes(BaseModel):
+    voice: str
+    text: str = Field(default="", max_length=20000)
 
 
 class ForgetPick(BaseModel):
@@ -2257,6 +2295,13 @@ def create_app(
                 voice, config.voices.sources.get(voice), None, config
             )
         }
+
+    @app.post("/api/voice/notes")
+    def voice_notes(request: VoiceNotes) -> dict[str, Any]:
+        """Saves a voice's tasting notes; empty text removes them."""
+        voice = _safe(request.voice)
+        config = write_notes(studio.config_path, voice, request.text)
+        return {"notes": config.voices.notes}
 
     @app.post("/api/voice/revert")
     def revert_voice(request: RevertVoice) -> dict[str, Any]:

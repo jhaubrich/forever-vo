@@ -1051,3 +1051,28 @@ def test_keeping_settings_or_picks_keeps_comments_inside_the_table(
     write_tuning(path, "x-male", 0.75, 0.3, None, 1.0, 0.0)
     assert "# Respellings" in path.read_text(encoding="utf-8")
     assert load_config(path).tts.voices["x-male"].pitch is None
+
+
+def test_tasting_notes_are_kept_per_voice_and_removed_when_emptied(
+    toml_copy: Path,
+) -> None:
+    from fastapi import HTTPException
+
+    from tools.audition import NOTES_COMMENT, write_notes
+
+    config = write_notes(
+        toml_copy,
+        "dwarf-female",
+        "  Too bright on long lines.\nTry set 33 at the head.  ",
+    )
+    assert (
+        config.voices.notes["dwarf-female"]
+        == "Too bright on long lines.\nTry set 33 at the head."
+    )
+    text = toml_copy.read_text(encoding="utf-8")
+    assert NOTES_COMMENT[0] in text  # the table is made with what it is for
+    config = write_notes(toml_copy, "dwarf-female", "")
+    assert "dwarf-female" not in config.voices.notes
+    assert NOTES_COMMENT[0] in toml_copy.read_text(encoding="utf-8")  # the table stays
+    with pytest.raises(HTTPException):  # refused: not a voice name
+        write_notes(toml_copy, "Not A Voice", "x")

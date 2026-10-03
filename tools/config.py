@@ -212,6 +212,9 @@ class Voices(Strict):
     approved: dict[
         str, str
     ] = {}  # voice -> the recipe heard when it was approved by ear; nothing generates from it
+    notes: dict[
+        str, str
+    ] = {}  # voice -> tasting notes by ear, free text for people; nothing reads them
 
     @field_validator("speakers")
     @classmethod
@@ -269,6 +272,17 @@ class Voices(Strict):
             if not _VOICE_NAME.fullmatch(voice):
                 raise ValueError(
                     f"[voices.approved] {voice!r} is not a voice name "
+                    '(lowercase words joined by "-", like "goblin-male")'
+                )
+        return value
+
+    @field_validator("notes")
+    @classmethod
+    def _noted_voices(cls, value: dict[str, str]) -> dict[str, str]:
+        for voice in value:
+            if not _VOICE_NAME.fullmatch(voice):
+                raise ValueError(
+                    f"[voices.notes] {voice!r} is not a voice name "
                     '(lowercase words joined by "-", like "goblin-male")'
                 )
         return value

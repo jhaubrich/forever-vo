@@ -298,7 +298,9 @@ list writes `[voices.approved]`, a note for people that nothing generates from:
 each voice maps to the `VoiceCatalog.recipe` heard (clip read from, knobs off
 the defaults, picks digest), so a re-pick or retuning of it or of a voice it
 borrows from, made anywhere, turns its ★ into ☆ until someone listens again
-(the ★ meant "has a `[tts.voices]` row" until 2026-10-01). "Write to pack" regenerates one line's
+(the ★ meant "has a `[tts.voices]` row" until 2026-10-01). Below it, folded
+away, a voice's tasting notes (since 2026-10-03): free text in `[voices.notes]`,
+saved as you type, marked ✎ in the voice list, read by people only. "Write to pack" regenerates one line's
 pack file under the *saved* configuration only and records the fingerprint
 `generate.py` would compute, so the nightly run neither redoes nor misses it;
 it is disabled until the row's recipe is the saved one. On the ROCm build

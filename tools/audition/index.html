@@ -97,6 +97,11 @@
   .start .approval { display: inline-flex; align-items: center; }
   /* the way back to the approval: the card's bottom right, level with the voice box */
   .start #revert-voice { margin-left: auto; align-self: flex-end; }
+  /* tasting notes: folded away until wanted, opened on a voice that has some */
+  .start #voice-notes-box { margin-top: 8px; }
+  .start #voice-notes-box summary { cursor: pointer; color: var(--dim); font-size: 12px; user-select: none; }
+  .start #voice-notes-box[open] summary { color: var(--gold); }
+  .start #voice-notes { width: 100%; min-height: 4.5em; margin-top: 4px; font-size: 13px; background: var(--bg); }
   .start #revert-voice { font-size: 12px; padding: 2px 8px; color: var(--warn); border-color: var(--warn); background: transparent; }
   .start #revert-voice:hover { background: var(--warn); color: var(--bg); }
   /* the list may be wider than the box: its notes are long */
@@ -353,6 +358,11 @@
         <div id="voice-note" class="hint"></div>
         <button id="revert-voice" type="button" hidden title="Put this voice back to what was approved: the source clips and gaps heard then, the four settings, and its reference rebuilt from those clips. Nothing else changes; the pick it replaces stays in Earlier picks.">Revert to approved</button>
       </div>
+      <details id="voice-notes-box">
+        <summary>Tasting notes <span id="voice-notes-status" class="note"></span></summary>
+        <textarea id="voice-notes" rows="3" spellcheck="true"
+          placeholder="What you hear: accent, delivery, the lines that break it, what was tried, what to try next…"></textarea>
+      </details>
       <select id="voice" hidden aria-hidden="true" tabindex="-1"></select>
     </div>
 
@@ -572,7 +582,47 @@ function showApproval() {
     ? "Approved before a change (tick to approve as it is now)" : "Approved by ear";
   // offered while the approval is stale and the pick heard is still in the history
   $("revert-voice").hidden = !(state.revertable || []).includes($("voice").value);
+  showNotes();
 }
+
+// Tasting notes for the chosen voice, saved as you go: a pause in typing or leaving
+// the box writes [voices.notes]. The 15 s refresh never overwrites a note being
+// written, and changing voice saves the one left behind first.
+let notesVoice = null, notesDirty = false, notesTimer = null;
+function showNotes() {
+  if (!state) return;
+  const voice = $("voice").value, box = $("voice-notes");
+  if (voice === notesVoice && (notesDirty || document.activeElement === box)) return;
+  const text = (state.notes || {})[voice] || "";
+  const changedVoice = voice !== notesVoice;
+  notesVoice = voice; box.value = text;
+  if (changedVoice) $("voice-notes-box").open = !!text;
+  markNotes(text ? "" : "none yet");
+}
+function markNotes(status) {
+  const text = $("voice-notes").value.trim();
+  const lines = text ? text.split("\n").length : 0;
+  $("voice-notes-status").textContent = status || (lines ? `${lines} line${lines === 1 ? "" : "s"}` : "none yet");
+}
+async function saveNotes() {
+  clearTimeout(notesTimer);
+  if (!notesDirty || !notesVoice) return;
+  const voice = notesVoice, text = $("voice-notes").value;
+  notesDirty = false;
+  try {
+    const r = await api("/api/voice/notes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ voice, text }) });
+    state.notes = r.notes;
+    if (notesVoice === voice) markNotes(text.trim() ? "saved" : "none yet");
+    refreshVoiceListMarks();
+  } catch (e) { notesDirty = true; markNotes("not saved: " + e.message); }
+}
+// the ✎ in the list and the box follow a saved note without a full refresh
+function refreshVoiceListMarks() { if (typeof showVoice === "function") showVoice(); }
+$("voice-notes").addEventListener("input", () => {
+  notesDirty = true; markNotes("unsaved…");
+  clearTimeout(notesTimer); notesTimer = setTimeout(saveNotes, 1200);
+});
+$("voice-notes").addEventListener("blur", saveNotes);
 
 $("revert-voice").addEventListener("click", async () => {
   const voice = $("voice").value;
@@ -619,7 +669,9 @@ function voiceNote(s, r) {
   else if (!r.clip) bits.unshift(r.borrows ? `reads ${r.borrows}.wav until it has its own` : "no clip yet");
   return bits.join(", ");
 }
-function voiceStar(s, r) { return { current: " ★", stale: " ☆" }[s.approved[r.voice]] || ""; }
+function voiceStar(s, r) {
+  return ({ current: " ★", stale: " ☆" }[s.approved[r.voice]] || "") + ((s.notes || {})[r.voice] ? " ✎" : "");
+}
 
 // Best match first; every word of the query has to find itself somewhere (fuzzyScore)
 function voiceMatches(s, query) {
@@ -1099,6 +1151,7 @@ function showSpeakerPin() {
 }
 
 $("voice").addEventListener("change", () => {
+  if (notesDirty) saveNotes();  // the voice left behind keeps what was typed
   loadVoiceSettings();
   showResolved();
   listVoiceLines(true);
