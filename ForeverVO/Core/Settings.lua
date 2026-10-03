@@ -274,7 +274,7 @@ ns.OnInit(function()
     Checkbox(voiced, "playGreeting", "Greetings", "Read the greeting an NPC with more than one quest opens with, above the list of their quests.")
     Checkbox(voiced, "playGossip", "Gossip", "Read what an NPC says when you talk to them, above the conversation options.")
     Dropdown(voiced, "gossipRepeat", "Repeat greetings and gossip",
-        "Whether an NPC's greeting and gossip are read again the next time you talk to them. \"Once\" is remembered on each character. Quest text is always read.",
+        "Whether an NPC's greeting and gossip are read again the next time you talk to them. \"Once\" lasts until you log out. Quest text is always read.",
         GOSSIP_REPEAT)
 
     -- Audio

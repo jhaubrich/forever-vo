@@ -56,8 +56,6 @@ ns.defaults = {
 
 ns.charDefaults = {
     paused = false,
-    seenGossipOnce = {},                 -- NPCs whose gossip was read, by GUID or name
-    seenGreeting = {},                   -- the same for greetings
 }
 
 --- Addon 0.1.7 had two settings for one question, gossipFrequency (greetings
@@ -83,6 +81,9 @@ local function MigrateGossipRepeat(db, char)
     db.gossipFrequency = nil
     db.gossipOnce = nil
     char.seenGossip = nil -- greetings and gossip in one table; seenGreeting starts empty
+    -- 0.1.8 kept these across logins; "once" lasts the session now (Events.lua)
+    char.seenGossipOnce = nil
+    char.seenGreeting = nil
 end
 
 local function ApplyDefaults(target, defaults)

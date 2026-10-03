@@ -191,9 +191,13 @@ end
 -- Gossip events
 -- ---------------------------------------------------------------------------
 
+-- NPCs whose greeting or gossip was read this session, by GUID or name. Not
+-- saved: "once" means until logout, not for good.
+local seenGreeting, seenGossip = {}, {}
+
 --- The table that remembers which NPCs have had this event read.
 local function SeenFor(event)
-    return event == "greeting" and ns.char.seenGreeting or ns.char.seenGossipOnce
+    return event == "greeting" and seenGreeting or seenGossip
 end
 
 --- Whether gossipRepeat lets this NPC's greeting or gossip be read now, and the
