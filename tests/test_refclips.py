@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from tools import refclips
-from tools.build_voice_references import concat_to_wav, write_concat
+from tools.build_voice_references import concat_to_wav, duration, write_concat
 from tools.config import Voices
 
 
@@ -190,3 +190,65 @@ def test_a_load_reports_its_progress_file_by_file(
     assert seen[0] == (0, 3, 0)  # before anything settles: the bar can show 0 of 3
     assert max(seen) == (3, 3, 1)
     assert len(seen) == 4
+
+
+def test_a_gap_puts_silence_between_two_clips(tmp_path: Path) -> None:
+    a = tone(tmp_path / "a.ogg", 1.0, 300)
+    b = tone(tmp_path / "b.ogg", 0.5, 500)
+    out = concat_to_wav(
+        "x-male", [a, b], "picked.txt", list_dir=tmp_path, out=tmp_path / "x.wav",
+        gaps=[0.5],
+    )  # fmt: skip
+    assert abs(duration(out) - 2.0) < 0.1  # 1.0 + 0.5 of silence + 0.5
+    # the list stays a record of what went in, the gap as a comment the demuxer skips
+    assert "# gap 0.5s" in (tmp_path / "picked.txt").read_text()
+    # silence where the gap is: the loudest sample from 1.1 s to 1.4 s is near zero
+    level = subprocess.run(
+        ["ffmpeg", "-v", "info", "-ss", "1.1", "-t", "0.3", "-i", str(out),
+         "-af", "volumedetect", "-f", "null", "-"],
+        capture_output=True, text=True, check=True,
+    ).stderr  # fmt: skip
+    peak = float(level.split("max_volume: ")[1].split(" dB")[0])
+    assert peak < -50
+
+
+def test_no_gap_after_the_last_clip(tmp_path: Path) -> None:
+    a = tone(tmp_path / "a.ogg", 1.0, 300)
+    b = tone(tmp_path / "b.ogg", 0.5, 500)
+    out = concat_to_wav(
+        "x-male", [a, b], "picked.txt", list_dir=tmp_path, out=tmp_path / "x.wav",
+        gaps=[0.0, 2.0],  # a trailing entry the config refuses, ignored here
+    )  # fmt: skip
+    assert abs(duration(out) - 1.5) < 0.1
+
+
+def test_gaps_follow_every_clip_but_the_last_and_keep_old_digests(
+    tmp_path: Path,
+) -> None:
+    from tools.config import Config, Voices, VoiceSources
+    from tools.generate import VoiceCatalog
+
+    assert VoiceSources(clips=[1, 2, 3], gaps=[0.3]).gap_after(0) == 0.3
+    assert VoiceSources(clips=[1, 2, 3], gaps=[0.3]).gap_after(1) == 0.0
+    with pytest.raises(ValueError):
+        VoiceSources(clips=[1, 2], gaps=[0.3, 0.3])  # nothing follows the last
+    with pytest.raises(ValueError):
+        VoiceSources(clips=[1, 2], gaps=[5.0])  # a pause, not a breath
+
+    # a pick without gaps keeps the digest it had, so nothing restages on its own;
+    # the clip is a stand-in, since the real ones are not in git
+    (tmp_path / "x-male.wav").write_bytes(b"")
+
+    def digest(gaps: list[float]) -> object:
+        voices = Voices(sources={"x-male": VoiceSources(clips=[11, 12], gaps=gaps)})
+        catalog = VoiceCatalog(Config(voices=voices), voices_dir=tmp_path)
+        return catalog.conditioning("x-male").get("clips")
+
+    plain = Voices(sources={"x-male": VoiceSources(clips=[11, 12])})
+    joined = "11,12@"
+    import hashlib
+
+    assert digest([]) == hashlib.blake2b(joined.encode(), digest_size=4).hexdigest()
+    assert digest([0.0]) == digest([])  # a zero gap is no gap
+    assert digest([0.25]) not in (None, digest([]))
+    assert plain.sources["x-male"].gaps == []

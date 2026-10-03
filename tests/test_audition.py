@@ -809,3 +809,39 @@ def test_a_voice_lists_every_line_when_asked_for_all(
     d = client.get("/api/lines?voice=goblin-male-zany&limit=0").json()
     assert (len(d["rows"]), d["total"]) == (75, 75)  # choosing a voice lists them all
     assert d["rows"][0]["base"] == "75-accept"  # longest first
+
+
+def test_write_voice_sources_keeps_gaps_and_writes_none_for_no_gap(
+    toml_copy: Path,
+) -> None:
+    from tools.audition import tidy_gaps
+
+    assert tidy_gaps([0.25, 0.0, 0.0], 4) == [0.25]  # trailing zeros dropped
+    assert tidy_gaps([0.0, 0.0], 3) == []  # no gap is 0, and writes nothing
+    assert tidy_gaps([0.3, 0.3, 0.3], 2) == [0.3]  # none after the last clip
+    config = write_voice_sources(toml_copy, "tauren-male", [1, 2, 3], gaps=[0.25, 0.0])
+    assert config.voices.sources["tauren-male"].gaps == [0.25]
+    assert "gaps = [0.25]" in toml_copy.read_text(encoding="utf-8")
+    config = write_voice_sources(toml_copy, "tauren-male", [1, 2, 3], gaps=[0, 0])
+    assert config.voices.sources["tauren-male"].gaps == []
+    entry = toml_copy.read_text(encoding="utf-8").split("[voices.sources.tauren-male]")
+    assert "gaps" not in entry[1].split("[", 1)[0]
+
+
+def test_build_refuses_a_gap_before_touching_the_reference(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    built: list[object] = []
+    monkeypatch.setattr(audition, "build_picked_reference", lambda *a: built.append(a))
+    studio = object.__new__(audition.Studio)
+    client = TestClient(audition.create_app(studio, addons=None))
+    r = client.post(
+        "/api/clips/build",
+        json={"voice": "tauren-male", "clips": [1, 2], "gaps": [5.0], "keep": False},
+    )
+    assert r.status_code == 400 and "between 0 and 3" in r.json()["detail"]
+    assert built == []  # refused before anything was built

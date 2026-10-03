@@ -454,6 +454,7 @@ def write_concat(
     paths: list[Path],
     name: str = "concat.txt",
     list_dir: Path | None = None,
+    gaps: list[float] | None = None,
 ) -> Path:
     """The ffmpeg concat list for one clip, kept beside that voice's raw audio.
 
@@ -463,7 +464,16 @@ def write_concat(
     """
     list_file = (list_dir or RAW_DIR / voice) / name
     list_file.parent.mkdir(parents=True, exist_ok=True)
-    list_file.write_text("".join(concat_line(p) for p in paths), encoding="utf-8")
+    # a gap is written as a comment, which the demuxer skips: the list stays a record of
+    # what went into the wav, and with gaps the filter graph builds it instead
+    list_file.write_text(
+        "".join(
+            concat_line(p)
+            + (f"# gap {gaps[i]:g}s\n" if gaps and i < len(gaps) and gaps[i] else "")
+            for i, p in enumerate(paths)
+        ),
+        encoding="utf-8",
+    )
     return list_file
 
 
@@ -474,6 +484,7 @@ def concat_to_wav(
     *,
     list_dir: Path | None = None,
     out: Path | None = None,
+    gaps: list[float] | None = None,
 ) -> Path:
     """Concatenates `paths` in order into tools/voices/<voice>.wav, or raises.
 
@@ -481,7 +492,16 @@ def concat_to_wav(
     ffmpeg reports success for a concat it truncated (see CONCAT_SLACK_SECONDS). Built to
     a temporary file and renamed, so a failure leaves the previous reference in place
     rather than replacing it with a shorter one.
+
+    `gaps[i]` seconds of silence follow clip i (never the last). With any gap the clips
+    go through a filter graph that pads each one, since the concat demuxer joins files
+    end to end and has no silence of its own; with none the demuxer runs as it always
+    has, so a reference without gaps is built exactly as before.
     """
+    pads = [
+        (gaps[i] if gaps and i < len(gaps) and i < len(paths) - 1 else 0.0)
+        for i in range(len(paths))
+    ]
     if not paths:
         raise ValueError(f"{voice}: nothing to concatenate")
     expected = 0.0
@@ -495,9 +515,26 @@ def concat_to_wav(
         if seconds <= 0:
             raise RuntimeError(f"{voice}: {path} is empty, refusing to build from it")
         expected += seconds
-    list_file = write_concat(voice, paths, list_name, list_dir)
+    expected += sum(pads)
+    list_file = write_concat(voice, paths, list_name, list_dir, pads)
     out = out or VOICES_DIR / f"{voice}.wav"
     tmp = out.with_suffix(f".wav.{os.getpid()}.part")
+    if any(pads):
+        # each clip resampled to one format and padded with its gap, then joined
+        inputs = [arg for path in paths for arg in ("-i", str(path))]
+        chains = [
+            f"[{i}:a]aformat=sample_rates=24000:channel_layouts=mono"
+            + (f",apad=pad_dur={pad:g}" if pad else "")
+            + f"[a{i}]"
+            for i, pad in enumerate(pads)
+        ]
+        joined = "".join(f"[a{i}]" for i in range(len(paths)))
+        graph = ";".join(
+            [*chains, f"{joined}concat=n={len(paths)}:v=0:a=1,loudnorm[out]"]
+        )
+        source = [*inputs, "-filter_complex", graph, "-map", "[out]"]
+    else:
+        source = ["-f", "concat", "-safe", "0", "-i", str(list_file), "-af", "loudnorm"]
     try:
         subprocess.run(
             # -f wav because the temporary name ends in .part, which ffmpeg cannot
@@ -507,18 +544,11 @@ def concat_to_wav(
                 "-y",
                 "-v",
                 "error",
-                "-f",
-                "concat",
-                "-safe",
-                "0",
-                "-i",
-                str(list_file),
+                *source,
                 "-ac",
                 "1",
                 "-ar",
                 "24000",
-                "-af",
-                "loudnorm",
                 "-f",
                 "wav",
                 str(tmp),
@@ -538,7 +568,9 @@ def concat_to_wav(
     return out
 
 
-def build_picked_reference(voice: str, paths: list[Path]) -> Path:
+def build_picked_reference(
+    voice: str, paths: list[Path], gaps: list[float] | None = None
+) -> Path:
     """One reference from clips chosen by ear, in the order given.
 
     Nothing here sorts, filters or budgets: the order is the choice. build_reference is
@@ -546,15 +578,17 @@ def build_picked_reference(voice: str, paths: list[Path]) -> Path:
     (which is every spoken emote line), stops at TARGET_SECONDS, and deletes a `-s<N>`
     clip whose measured head is under ARCHETYPE_MIN_HEAD, which a plain concat never has.
     """
-    out = concat_to_wav(voice, paths, "picked.txt")
+    out = concat_to_wav(voice, paths, "picked.txt", gaps=gaps)
     offset = 0.0
     t3 = s3gen = 0
-    for path in paths:
+    for i, path in enumerate(paths):
         if offset < T3_SECONDS:
             t3 += 1
         if offset < S3GEN_SECONDS:
             s3gen += 1
         offset += duration(path)
+        if gaps and i < len(gaps) and i < len(paths) - 1:
+            offset += gaps[i]
     print(
         f"{out.name}: {len(paths)} clips picked by ear, {offset:.1f}s "
         f"({t3} reaching the {T3_SECONDS:.0f}s t3 window, {s3gen} the {S3GEN_SECONDS:.0f}s s3gen one)"
@@ -721,7 +755,7 @@ def main(argv: list[str] | None = None) -> int:
                     f"{voice}: {len(entry.clips) - len(chosen)} picked clip(s) missing, not rebuilt"
                 )
                 continue
-            build_picked_reference(voice, chosen)
+            build_picked_reference(voice, chosen, entry.gaps)
             continue
         folder = RAW_DIR / voice
         paths = []

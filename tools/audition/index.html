@@ -182,6 +182,11 @@
   #clips-picks li.mark { display: block; border-bottom: 0; padding: 1px 0 1px 2.6em; font-size: 11px; color: var(--dim); }
   #clips-picks li.mark::before { content: ""; display: inline-block; width: 1.5em; vertical-align: middle; margin-right: 6px; border-top: 1px dashed var(--dim); }
   #clips-picks li.mark.short { color: var(--warn); }
+  /* the silence between two picks: small, and gold only once it is set */
+  #clips-picks li.gap { display: block; border-bottom: 0; padding: 0 0 0 2.6em; font-size: 11px; color: var(--dim); }
+  #clips-picks li.gap label { display: inline-flex; align-items: center; gap: 4px; margin: 0; font-size: 11px; color: inherit; cursor: default; }
+  #clips-picks li.gap input { width: 4.2em; padding: 0 4px; font-size: 11px; line-height: 1.5; }
+  #clips-picks li.gap.set { color: var(--gold); }
   #clips-picks li.empty { display: block; color: var(--dim); font-size: 12px; padding: 6px 0; border: 0; }
   button.play { padding: 1px 7px; font-size: 11px; line-height: 1.4; }
 
@@ -963,7 +968,7 @@ $("voice").addEventListener("change", () => {
   listVoiceLines(true);
   showSpeakerPin();
   if (clipsVoice && $("voice").value !== clipsVoice) {
-    clipsRows = []; picks = []; clipsVoice = null;
+    clipsRows = []; picks = []; gapAfter = new Map(); clipsVoice = null;
     $("clips-group").hidden = true; $("clips-group").innerHTML = "";
     $("clips-status").textContent = ""; $("clips-warn").textContent = "";
     $("clips-ref").removeAttribute("src");
@@ -1131,6 +1136,16 @@ $("rebuild").addEventListener("click", async () => {
 // place: the voice select's change handler. applyState restores voice.value by
 // assignment, which fires no change event, so a refresh cannot reach this.
 let clipsSeedPending = false;  // Load candidates asked for the saved picks; not seeded yet
+// Seconds of silence after a pick, keyed by the clip it follows, so it moves with that
+// clip when the order changes. None set is 0; the last pick's is never used.
+let gapAfter = new Map();
+function gapOf(f) { return gapAfter.get(f) || 0; }
+// [voices.sources].gaps, aligned with the picks: one per pick but the last
+function gapsList() { return picks.slice(0, -1).map(gapOf); }
+function seedGaps(clips, gaps) {
+  gapAfter = new Map();
+  (gaps || []).forEach((g, i) => { if (g && clips[i] !== undefined) gapAfter.set(clips[i], g); });
+}
 let clipsVoice = null, clipsRows = [], clipsGroups = [], clipsAbout = {}, picks = [], clipsWindows = { t3: 6, s3gen: 10 }, clipsPoll = null;
 
 // Collapsed clip groups, by group name, remembered in this browser across voices and
@@ -1153,8 +1168,13 @@ function clipLabel(c) {
 // first 6 s, s3gen the first 10 s, and the rest only moves an average.
 function pickOffsets() {
   let at = 0; const offsets = new Map();
-  picks.forEach(f => { offsets.set(f, at); at += clipsSeconds(f); });
+  picks.forEach((f, i) => { offsets.set(f, at); at += clipsSeconds(f) + (i < picks.length - 1 ? gapOf(f) : 0); });
   return offsets;
+}
+function picksTotal() {
+  if (!picks.length) return 0;
+  const last = picks[picks.length - 1];
+  return pickOffsets().get(last) + clipsSeconds(last);
 }
 // a pick whose source was dropped from "Also offer clips from" stays in the order, and
 // in the build, until it is dropped; it is listed by its FileDataID alone
@@ -1225,7 +1245,7 @@ function renderClips() {
 // the reference reads as the model will read it.
 function renderReference() {
   const list = $("clips-picks"), line = $("clips-timeline");
-  const total = picks.reduce((t, f) => t + clipsSeconds(f), 0);
+  const total = picksTotal();
   if (!clipsRows.length) {
     list.innerHTML = ""; line.hidden = true; line.innerHTML = ""; $("clips-budget").textContent = "";
     return;
@@ -1253,6 +1273,13 @@ function renderReference() {
       `<button data-move="up" title="Move one earlier"${i > 0 ? "" : " disabled"}>▲</button>` +
       `<button data-move="down" title="Move one later"${i < picks.length - 1 ? "" : " disabled"}>▼</button>` +
       `<button data-move="drop" title="Drop it from the reference">×</button></span></li>`);
+    // the silence before the next pick: 0 joins them back to back, as before gaps
+    if (i < picks.length - 1) {
+      const g = gapOf(f);
+      items.push(`<li class="gap${g ? " set" : ""}" data-after="${f}"><label title="Seconds of silence between ${i + 1} and ${i + 2}. ` +
+        `Back-to-back clips can run two deliveries together and throw the accent or the cadence.">gap ` +
+        `<input type="number" min="0" max="3" step="0.05" value="${g}" aria-label="Gap after ${i + 1}, seconds">s</label></li>`);
+    }
   });
   // a window the picks never reach is said so where its mark would be
   while (next < marks.length) {
@@ -1313,6 +1340,13 @@ $("clips-body").addEventListener("click", ev => {
   if (i >= 0) picks.splice(i, 1); else picks.push(f);
   renderClips();
 });
+$("clips-picks").addEventListener("change", ev => {
+  const input = ev.target.closest("li.gap input"), li = ev.target.closest("li.gap");
+  if (!input || !li) return;
+  const g = Math.min(3, Math.max(0, Math.round((parseFloat(input.value) || 0) * 100) / 100));
+  if (g) gapAfter.set(+li.dataset.after, g); else gapAfter.delete(+li.dataset.after);
+  renderClips();
+});
 $("clips-picks").addEventListener("click", ev => {
   const play = ev.target.closest("button[data-play]");
   if (play) { playRow(play.dataset.play, play); return; }
@@ -1320,7 +1354,7 @@ $("clips-picks").addEventListener("click", ev => {
   if (!move || !li) return;
   const f = +li.dataset.f, i = picks.indexOf(f);
   if (i < 0) return;
-  if (move.dataset.move === "drop") picks.splice(i, 1);
+  if (move.dataset.move === "drop") { picks.splice(i, 1); gapAfter.delete(f); }
   else {
     const to = { top: 0, up: i - 1, down: i + 1 }[move.dataset.move];
     if (to >= 0 && to < picks.length) { picks.splice(i, 1); picks.splice(to, 0, f); }
@@ -1334,14 +1368,20 @@ function renderHistory(history, picked) {
   const box = $("clips-history");
   if (!history || !history.length) { box.innerHTML = ""; return; }
   const same = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+  const spaced = h => (h.gaps || []).filter(g => g).length;
+  // the same clips with the same gaps, a missing gap counting as 0
+  const padded = (gaps, n) => Array.from({ length: n }, (_, i) => (gaps || [])[i] || 0);
+  const current = h => same(h.clips, picks) && same(padded(h.gaps, picks.length - 1), gapsList());
   box.innerHTML = `<span class="note">Earlier picks: </span>` + history.map((h, i) =>
-    `<button data-i="${i}" class="${same(h.clips, picks) ? "current" : ""}" ` +
-    `title="${h.clips.join(", ")}">${h.recipe ? "automatic build" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"} · ${h.seconds}s</button>`
+    `<button data-i="${i}" class="${current(h) ? "current" : ""}" ` +
+    `title="${h.clips.join(", ")}${spaced(h) ? `; gaps ${h.gaps.join(", ")}s` : ""}">${h.recipe ? "automatic build" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
+    `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""} · ${h.seconds}s</button>`
   ).join("");
   box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
     const h = history[+b.dataset.i];
     const missing = h.clips.filter(f => !clipsRows.some(c => c.fdid === f));
     picks = h.clips.filter(f => clipsRows.some(c => c.fdid === f));
+    seedGaps(h.clips, h.gaps);
     renderClips();
     renderHistory(history, picks);
     toast(missing.length
@@ -1408,6 +1448,7 @@ async function loadClips(refresh) {
       // picks found among them, for good
       if (!d.pending.includes(voice) && (clipsSeedPending || !picks.length)) {
         picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
+        seedGaps(d.picked, d.gaps);
         clipsSeedPending = false;
       }
       const missing = d.picked.length - picks.length;
@@ -1446,7 +1487,7 @@ $("clips-load").addEventListener("click", () => {
   busy($("clips-load"), true);
   loadClips(true);
 });
-$("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
+$("clips-reset").addEventListener("click", () => { picks = []; gapAfter = new Map(); renderClips(); });
 
 // Other voices whose candidates join this voice's table: Thrall's lines for an orc
 // archetype. Remembered per voice in this browser only. A saved pick from another voice
@@ -1506,7 +1547,7 @@ $("clips-build").addEventListener("click", async () => {
   busy($("clips-build"), true);
   try {
     const r = await api("/api/clips/build", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ voice: clipsVoice, clips: picks, keep: true }) });
+      body: JSON.stringify({ voice: clipsVoice, clips: picks, gaps: gapsList(), keep: true }) });
     applyState(r);
     $("clips-ref").src = r.reference_url;
     $("clips-status").textContent = `built ${r.built}, ${r.seconds}s`;

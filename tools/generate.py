@@ -197,6 +197,9 @@ class VoiceCatalog:
             # a digest, not the list: sound_index carries this for every file, and a
             # fifteen-clip pick would run longer than the text hash it qualifies
             joined = ",".join(str(c) for c in picked.clips) + f"@{picked.build or ''}"
+            if any(picked.gaps):
+                # a pick with no gaps keeps the digest it had before gaps existed
+                joined += "~" + ",".join(f"{g:g}" for g in picked.gaps)
             fields = dict(fields)
             fields["clips"] = hashlib.blake2b(
                 joined.encode(), digest_size=4

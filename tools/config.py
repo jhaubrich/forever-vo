@@ -26,6 +26,7 @@ from pydantic import (
     RootModel,
     ValidationError,
     field_validator,
+    model_validator,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -119,6 +120,11 @@ class Strict(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+MAX_GAP_SECONDS = (
+    3.0  # silence between two picked clips; longer is a pause, not a breath
+)
+
+
 class VoiceSources(Strict):
     """[voices.sources.<voice>]: the client clips that voice's reference wav is cut from.
 
@@ -139,6 +145,32 @@ class VoiceSources(Strict):
     build: str | None = (
         None  # the wago build to fetch them from; the beta client by default
     )
+    # Seconds of silence after each clip, aligned with `clips`; a missing entry is no
+    # gap, and the last clip's is never used. Back-to-back clips inside the 6 s t3
+    # window can run two deliveries together and throw the accent or the cadence, so a
+    # pick may breathe between them. Empty, the reference is the plain concatenation.
+    gaps: list[float] = []
+
+    @model_validator(mode="after")
+    def _gaps_fit(self) -> VoiceSources:
+        if len(self.gaps) >= max(len(self.clips), 1):
+            raise ValueError(
+                f"[voices.sources] gaps has {len(self.gaps)} entries for "
+                f"{len(self.clips)} clips; a gap follows every clip but the last"
+            )
+        for gap in self.gaps:
+            if not 0 <= gap <= MAX_GAP_SECONDS:
+                raise ValueError(
+                    f"[voices.sources] gap {gap} is not between 0 and "
+                    f"{MAX_GAP_SECONDS} seconds"
+                )
+        return self
+
+    def gap_after(self, index: int) -> float:
+        """The silence after clip `index`, 0 for the last clip or none set."""
+        if index >= len(self.clips) - 1 or index >= len(self.gaps):
+            return 0.0
+        return self.gaps[index]
 
 
 _SPEAKER_KEY = re.compile(r"-?[1-9][0-9]*")

@@ -777,7 +777,13 @@ of the 10 s window, then the knobs.
   set, or a rebuild would clobber or delete them. They join the fingerprint,
   keyed on the clip actually cloned from, so a re-pick restages that voice by
   itself - the clip's *bytes* still do not. Pick them in the audition page's
-  Source clips panel, or with `fvo-refclips`.
+  Source clips panel, or with `fvo-refclips`. A pick may also carry `gaps`
+  (since 2026-10-03): seconds of silence after each clip but the last, aligned
+  with `clips`, at most 3 s, 0 when absent. Back-to-back clips inside the 6 s
+  window can run two deliveries together and throw the accent or the cadence.
+  With any gap `concat_to_wav` pads each clip in an ffmpeg filter graph instead of
+  the concat demuxer; a pick without gaps builds and digests exactly as before, and
+  adding one changes the digest, so that voice restages and its approval goes stale.
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
   just two greetings, so his clone is rougher. The automatic build uses the kit

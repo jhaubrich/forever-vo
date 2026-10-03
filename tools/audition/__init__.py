@@ -76,6 +76,7 @@ from tools.config import (
     VOICES_DIR,
     Config,
     ConfigError,
+    VoiceSources,
     VoiceTuning,
     load_config,
 )
@@ -290,11 +291,25 @@ def write_approval(path: Path, voice: str, recipe: str | None) -> Config:
         return _validated_write(path, doc)
 
 
+def tidy_gaps(gaps: list[float], clips: int) -> list[float]:
+    """Gaps as the TOML keeps them: one per clip but the last, to the hundredth, with
+    the trailing zeros dropped, so a pick with no gaps writes none."""
+    out = [round(max(0.0, g), 2) for g in gaps[: max(clips - 1, 0)]]
+    while out and not out[-1]:
+        out.pop()
+    return out
+
+
 def write_voice_sources(
-    path: Path, voice: str, clips: list[int], build: str | None = None
+    path: Path,
+    voice: str,
+    clips: list[int],
+    build: str | None = None,
+    gaps: list[float] | None = None,
 ) -> Config:
-    """Sets [voices.sources.<voice>].clips, head first; an empty list removes the entry,
-    so the file lists only the voices that were picked by ear."""
+    """Sets [voices.sources.<voice>].clips, head first, and its gaps when it has any;
+    an empty list removes the entry, so the file lists only the voices that were
+    picked by ear."""
     with _config_lock(path):
         doc = tomlkit.parse(path.read_text(encoding="utf-8"))
         voices = doc.get("voices")
@@ -320,6 +335,11 @@ def write_voice_sources(
             entry["clips"] = array.multiline(len(clips) > 6)
             if build:
                 entry["build"] = build
+            spaced = tidy_gaps(gaps or [], len(clips))
+            if spaced:
+                gap_array = tomlkit.array()
+                gap_array.extend(spaced)
+                entry["gaps"] = gap_array
             entry.add(tomlkit.nl())  # a blank line before whatever follows
             sources[voice] = entry
         return _validated_write(path, doc)
@@ -541,21 +561,28 @@ def record_pick(
     build: str | None,
     seconds: float,
     recipe: bool = False,
+    gaps: list[float] | None = None,
 ) -> None:
-    """Puts this pick at the head of the voice's history, if it is not already there."""
+    """Puts this pick at the head of the voice's history, if it is not already there.
+    The same clips with other gaps are another pick, and a row without gaps has none."""
+    spaced = tidy_gaps(gaps or [], len(clips))
     with _config_lock(SOURCE_PICKS):
         history = pick_history()
-        rows = [row for row in history.get(voice, []) if row.get("clips") != clips]
-        rows.insert(
-            0,
-            {
-                "clips": clips,
-                "build": build,
-                "seconds": round(seconds, 1),
-                "at": time.strftime("%Y-%m-%d %H:%M"),
-                "recipe": recipe,
-            },
-        )
+        rows = [
+            row
+            for row in history.get(voice, [])
+            if (row.get("clips"), row.get("gaps", [])) != (clips, spaced)
+        ]
+        row: dict[str, Any] = {
+            "clips": clips,
+            "build": build,
+            "seconds": round(seconds, 1),
+            "at": time.strftime("%Y-%m-%d %H:%M"),
+            "recipe": recipe,
+        }
+        if spaced:
+            row["gaps"] = spaced
+        rows.insert(0, row)
         history[voice] = rows[:PICK_HISTORY]
         tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
         tmp.write_text(
@@ -1162,6 +1189,8 @@ class BuildSources(BaseModel):
     clips: list[int] = Field(min_length=1, max_length=40)
     build: str | None = None
     keep: bool = True  # also write [voices.sources.<voice>] into forever-vo.toml
+    # seconds of silence after each clip, aligned with `clips` (VoiceSources.gaps)
+    gaps: list[float] = Field(default_factory=list, max_length=40)
 
 
 def run_finished(voice: str, outcome: dict[str, Any]) -> None:
@@ -1973,6 +2002,7 @@ def create_app(
                 for group in dict.fromkeys(c["group"] for c in rows)
             },
             "picked": picked.clips if picked else [],
+            "gaps": picked.gaps if picked else [],
             "build": picked.build if picked else None,
             "windows": {"t3": T3_SECONDS, "s3gen": S3GEN_SECONDS},
             "warnings": sources_warnings(config, voice)
@@ -1991,6 +2021,13 @@ def create_app(
         from tools.refclips import RAW_DIR as CLIP_RAW
 
         voice = _safe(request.voice)
+        # checked before anything is built: a gap the TOML would refuse must not
+        # replace the reference first and fail on the write after. No gap is 0.
+        gaps = tidy_gaps(request.gaps, len(request.clips))
+        try:
+            VoiceSources(clips=request.clips, gaps=gaps)
+        except ValidationError as e:
+            raise HTTPException(400, e.errors()[0]["msg"]) from e
         # The picks can only have come from /api/clips, so they are already downloaded:
         # under this voice's folder, or, borrowed from another voice, in the download
         # cache, linked here locally. Either way this endpoint stays off the network.
@@ -2002,15 +2039,17 @@ def create_app(
             paths.append(_under(CLIP_RAW, f"{voice}/{path.name}"))
         existed = (VOICES_DIR / f"{voice}.wav").exists()
         try:
-            out = build_picked_reference(voice, paths)
+            out = build_picked_reference(voice, paths, gaps)
         except (RuntimeError, ValueError, subprocess.CalledProcessError) as e:
             raise HTTPException(400, str(e)) from e
         if request.keep:
-            write_voice_sources(studio.config_path, voice, request.clips, request.build)
+            write_voice_sources(
+                studio.config_path, voice, request.clips, request.build, gaps
+            )
         # A new clip changes what wowdata.archetype_voice casts, which the corpus caches
         studio.forget_corpus()
         seconds = reference_seconds(out)
-        record_pick(voice, request.clips, request.build, seconds)
+        record_pick(voice, request.clips, request.build, seconds, gaps=gaps)
         return {
             **studio.state(),
             "built": out.name,
