@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "244": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Ma Stonefield",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-684",
+ "quests": {
+  "88-accept": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Ma Stonefield",
+   "npc": "244",
+   "questID": 88,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "The Brackwells have a prize-winning pig, Princess.  The sow is HUGE, and she got that way from sneaking over here and eating my veggies!\n\nSo before she comes to our fields...Princess must die!  Bring me her collar as proof of the deed and I'll give you something for your time!\n\nPrincess is usually over at the Brackwell Pumpkin Patch, to the east and beyond the Maclure farm.  Get her before she gets hungry and comes back here!",
+   "time": 1791050350,
+   "title": "Princess Must Die!",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "88-progress": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Ma Stonefield",
+   "npc": "244",
+   "questID": 88,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Did you see her yet?  Did you get her?",
+   "time": 1791050412,
+   "title": "Princess Must Die!",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
