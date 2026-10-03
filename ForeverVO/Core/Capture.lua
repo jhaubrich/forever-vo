@@ -206,6 +206,41 @@ function Capture.Contributes(entry)
     return not entry.found or entry.wanted == true or entry.differs == true
 end
 
+--- Checks every line still waiting to be sent against the packs installed
+--- now. `found`, `wanted` and `differs` were decided by the pack the player
+--- had when the line was heard, so a line a later pack voiced, or stopped
+--- asking for, stayed counted until an export. It never adds a line to send.
+--- Quest text is checked as stored, already tokenised for its reader, and a
+--- quest line recorded before the reader's sex was (0.1.4) is left alone.
+function Capture:Refresh()
+    local db = GetDB()
+    for _, entry in pairs(db.quests) do
+        if Capture.Contributes(entry) and not Capture.Exported(entry) and entry.questID
+            and entry.sex then
+            local path, _, pack = ns.Packs:FindQuest(entry.questID, entry.event)
+            if path then
+                local wanted = ns.Packs:QuestWanted(pack, entry.questID, entry.event, entry.sex) or nil
+                local differs = entry.text
+                    and not ns.Packs:QuestTextMatches(pack, entry.questID, entry.event, entry.text) or nil
+                if not entry.found then
+                    entry.found, entry.wanted, entry.differs = true, wanted, differs
+                else
+                    entry.wanted = entry.wanted and wanted
+                    entry.differs = entry.differs and differs
+                end
+            end
+        end
+    end
+    for _, entry in pairs(db.gossip) do
+        if not entry.found and not Capture.Exported(entry) and entry.text then
+            local speakerKey = tonumber(entry.npc) or ns.Packs:SpeakerKeyByName(entry.name)
+            if ns.Packs:FindGossip(speakerKey, entry.text) then
+                entry.found = true
+            end
+        end
+    end
+end
+
 --- True when the entry was heard before the last export, which packed it.
 --- Hearing the line again records a fresh time, so it goes out again as the
 --- newer reading. Entries with no time predate 0.1.4 and count as old.
@@ -262,3 +297,8 @@ function Capture:Pending()
     end
     return questCount, gossip
 end
+
+-- Before Welcome's handler counts what there is to send: Capture.lua loads first.
+ns.OnLogin(function()
+    Capture:Refresh()
+end)

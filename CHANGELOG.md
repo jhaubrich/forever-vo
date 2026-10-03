@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- The count of quests to send (login window, Options, minimap button) leaves
+  out lines a voice pack you installed since has voiced or stopped asking
+  for. It used to keep counting them until your next export.
+
 ## 0.1.8
 
 - The second **Narrator voice** is Skyborne female instead of Orc male, so

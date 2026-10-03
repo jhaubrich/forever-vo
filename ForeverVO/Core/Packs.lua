@@ -341,11 +341,12 @@ end
 --- pipeline has only one gender's reading of a line the client resolves a
 --- $G branch out of, or none it can trust, and this player can supply it.
 ---@param pack table the pack FindQuest found the event in
-function Packs:QuestWanted(pack, questID, event)
+---@param letter string? the reader's sex ("m"/"f"), the player's by default
+function Packs:QuestWanted(pack, questID, event, letter)
     local field = QUEST_FIELD[event]
     local entry = pack and field and pack.quests[questID]
     local wanted = entry and entry["w" .. field]
-    local letter = Util.PlayerSexLetter()
+    letter = letter or Util.PlayerSexLetter()
     return type(wanted) == "string" and letter ~= nil and strfind(wanted, letter, 1, true) ~= nil
 end
 
