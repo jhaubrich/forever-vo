@@ -87,6 +87,20 @@ class ResolvedVoice(NamedTuple):
     settings: TtsSettings
 
 
+def picks_digest(clips: list[int], build: str | None, gaps: list[float]) -> str:
+    """The `clips=` a pick adds to every file's fingerprint in sound_index.json.
+
+    A digest, not the list: sound_index carries this for every file, and a
+    fifteen-clip pick would run longer than the text hash it qualifies. The audition
+    page also reads it back, to tell which picks have audio in the pack.
+    """
+    joined = ",".join(str(c) for c in clips) + f"@{build or ''}"
+    if any(gaps):
+        # a pick with no gaps keeps the digest it had before gaps existed
+        joined += "~" + ",".join(f"{g:g}" for g in gaps)
+    return hashlib.blake2b(joined.encode(), digest_size=4).hexdigest()
+
+
 class VoiceCatalog:
     """Resolves a voice name to its reference clip and Chatterbox settings from
     [voices] and [tts] in forever-vo.toml.
@@ -140,6 +154,7 @@ class VoiceCatalog:
                     cfg_weight=borrowed.cfg_weight,
                     tempo=borrowed.tempo,
                     pitch=borrowed.pitch,
+                    speed=borrowed.speed,
                 )
                 resolved = ResolvedVoice(own, voice, settings)
                 self._resolved[voice] = resolved
@@ -194,13 +209,8 @@ class VoiceCatalog:
             else None
         )
         if picked and picked.clips:
-            # a digest, not the list: sound_index carries this for every file, and a
-            # fifteen-clip pick would run longer than the text hash it qualifies
-            joined = ",".join(str(c) for c in picked.clips) + f"@{picked.build or ''}"
             fields = dict(fields)
-            fields["clips"] = hashlib.blake2b(
-                joined.encode(), digest_size=4
-            ).hexdigest()
+            fields["clips"] = picks_digest(picked.clips, picked.build, picked.gaps)
         return fields
 
     def recipe(self, voice: str) -> str:
@@ -544,6 +554,10 @@ def load_items(
 # ----------------------------------------------------------------------------
 
 
+class TakeStopped(Exception):
+    """Synth.render was asked to stop between two generate() calls."""
+
+
 class Synth:
     def __init__(
         self,
@@ -599,14 +613,22 @@ class Synth:
     def speak(self, text: str, voice: str, out_mp3: Path) -> float:
         settings = self.catalog.resolve(voice).settings
         return self.encode(
-            self.render(text, voice), out_mp3, settings.tempo, settings.pitch
+            self.render(text, voice),
+            out_mp3,
+            settings.tempo,
+            settings.pitch,
+            settings.speed,
         )
 
-    def render(self, text: str, voice: str):
+    def render(self, text: str, voice: str, stopped=None):
         """The model's audio for `text` in `voice`, before tempo and pitch.
 
         Apart from encode so the audition page can hear one take several ways: tempo
         and pitch are applied afterwards, so a sweep over them needs no second take.
+        `stopped`, a callable, is asked before each generate() call; when it answers
+        true the take is abandoned with TakeStopped. A long line is several chunks and
+        a short one up to three tries, so checking only between takes left the
+        audition page's Stop waiting minutes on the ROCm card.
         """
         resolved = self.catalog.resolve(voice)
         settings = resolved.settings
@@ -622,6 +644,8 @@ class Synth:
             floor = max(0.5, 0.15 * len(part.split()))
             best = None
             for attempt in range(3):
+                if stopped is not None and stopped():
+                    raise TakeStopped
                 wav = self.model.generate(
                     part,
                     exaggeration=settings.exaggeration,
@@ -640,7 +664,12 @@ class Synth:
         return self.torch.cat(pieces[:-1], dim=-1)
 
     def encode(
-        self, audio, out_mp3: Path, tempo: float = 1.0, pitch: float = 0.0
+        self,
+        audio,
+        out_mp3: Path,
+        tempo: float = 1.0,
+        pitch: float = 0.0,
+        speed: float = 1.0,
     ) -> float:
         """Writes `audio` from render() as the pack's mp3; returns its length."""
         duration = audio.shape[-1] / self.sr
@@ -654,7 +683,7 @@ class Synth:
         # final name, which every later run skips as done. The partial file has no
         # .mp3 suffix so the table rebuild's glob cannot pick it up either.
         out_part = out_mp3.with_suffix(f".{os.getpid()}.part")
-        filters = encode_filters(tempo, pitch)
+        filters = encode_filters(tempo, pitch, speed, self.sr)
         require_filters(filters)
         filter_args = ["-af", ",".join(filters)] if filters else []
         try:
@@ -769,8 +798,17 @@ def sound_folder(base: str) -> str:
     return "Quests" if base.rsplit("-", 1)[-1] in QUEST_EVENTS else "Gossip"
 
 
-def encode_filters(tempo: float = 1.0, pitch: float = 0.0) -> list[str]:
-    """The ffmpeg filters for a voice's tempo and pitch, none when both are neutral.
+def encode_filters(
+    tempo: float = 1.0, pitch: float = 0.0, speed: float = 1.0, sample_rate: int = 24000
+) -> list[str]:
+    """The ffmpeg filters for a voice's speed, tempo and pitch, none when all are neutral.
+
+    Speed is varispeed, a tape played faster or slower: the samples are relabelled at
+    another rate and resampled back, so pace and pitch move together in one pass
+    (0.9 is 10% slower and about 1.8 semitones lower). Lowering tempo and pitch to the
+    same end runs a time stretch and then a pitch shift, each compensating for what
+    the other did, and both leave artefacts; speed does it with neither. It runs
+    first, on the model's own rate (`sample_rate`), before any tempo or pitch.
 
     Neither is a model knob. Pace: Chatterbox's generate() has none, so tempo is a
     pitch-preserving time stretch. Pitch: Chatterbox pulls every clone toward its own
@@ -780,6 +818,8 @@ def encode_filters(tempo: float = 1.0, pitch: float = 0.0) -> list[str]:
     encodes exactly as it did.
     """
     filters = []
+    if speed != 1.0:
+        filters.append(f"asetrate={round(sample_rate * speed)},aresample={sample_rate}")
     if tempo != 1.0:
         filters.append(f"atempo={tempo}")
     if pitch != 0.0:
@@ -810,7 +850,9 @@ def require_filters(filters: list[str]) -> None:
     shipped until 2026-09-29 has none, so Varimathras's first line would have failed
     mid-run, and daily.sh's `|| true` would have hidden the stopped night.
     """
-    missing = sorted({f.split("=", 1)[0] for f in filters} - ffmpeg_filters())
+    # an entry may chain several (speed is asetrate,aresample)
+    names = {part.split("=", 1)[0] for f in filters for part in f.split(",")}
+    missing = sorted(names - ffmpeg_filters())
     if missing:
         raise SystemExit(
             f"this ffmpeg has no {', '.join(missing)} filter, which a voice's tuning needs "
@@ -826,7 +868,7 @@ def tuning_filters(config: Config) -> list[str]:
         {
             f
             for s in [config.tts.defaults, *settings]
-            for f in encode_filters(s.tempo, s.pitch)
+            for f in encode_filters(s.tempo, s.pitch, s.speed)
         }
     )
 
@@ -910,12 +952,18 @@ def speaker_int(key: str | None) -> int | None:
 
 
 def unclipped_speakers(catalog: VoiceCatalog) -> dict[str, str]:
-    """The [voices.speakers] entries whose voice would borrow another's clip: a
-    typo, or a voice not built yet. An archetype falling back to its own race
-    is fine, since that is how every other speaker of it is read."""
+    """The [voices.speakers] and [voices.sound_sets] entries whose voice would
+    borrow another's clip: a typo, or a voice not built yet. An archetype falling
+    back to its own race is fine, since that is how every other speaker of it is
+    read. Keyed as the TOML spells them, `[voices.speakers] 248200` and so on."""
+    voices = catalog.config.voices
+    pinned = {
+        **{f"[voices.speakers] {k}": v for k, v in voices.speakers.items()},
+        **{f"[voices.sound_sets] {k}": v for k, v in voices.sound_sets.items()},
+    }
     return {
-        speaker: voice
-        for speaker, voice in catalog.config.voices.speakers.items()
+        where: voice
+        for where, voice in pinned.items()
         if catalog.resolve(voice).source not in (voice, base_voice(voice))
     }
 
@@ -1394,9 +1442,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config = load_config()
     catalog = VoiceCatalog(config)
-    for speaker, voice in unclipped_speakers(catalog).items():
+    for where, voice in unclipped_speakers(catalog).items():
         print(
-            f"warning: [voices.speakers] {speaker} = {voice!r} has no clip of its "
+            f"warning: {where} = {voice!r} has no clip of its "
             f"own; it is read in {catalog.resolve(voice).source}"
         )
     narrator = config.voices.narrator

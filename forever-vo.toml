@@ -21,12 +21,26 @@
 narrator = "narrator"
 narrator_alternates = ["skyborne-female"]
 
-# Sound folders (under sound/creature/) that any voice may borrow clips from in
-# the audition page's "Also offer clips from": characters this client ships
-# recordings of but casts no NPC with. Gul'dan has 156 real Warlords and Legion
-# lines here, connected speech that no orc set has. `fvo-soundpaths --folders --only
-# <folder>` lists a new one's real lines in tools/data/named_folders.json.
-clip_folders = ["guldan"]
+# Sound folders (under sound/creature/ or sound/character/) that any voice may
+# borrow clips from in the audition page's "Also offer clips from": characters this
+# client ships recordings of but casts no NPC with. Gul'dan has 156 real Warlords and
+# Legion lines here, connected speech that no orc set has; the night elf ones are
+# for nightelf-male, whose 1.x emotes are thin (Legion's demon hunter player set, a
+# Legion ghost, Jarod Shadowsong for the warrior archetype, and the nightborne
+# player and citizen sets, who read from nightelf-male.wav; and Legion's weeping
+# banshee, the one banshee speech this client ships: the WC3 banshee clip comes from
+# the Reforged install, and banshee_sylvanas_no_loc is all empty files). `fvo-soundpaths
+# --folders --only <folder>` lists a new one's real lines in
+# tools/data/named_folders.json.
+clip_folders = [
+    "guldan",
+    "pcdhnightelfmale",
+    "night_elf_male_ghost",
+    "commander_jarod_shadowsong",
+    "pc_-_nightborne_elf_male",
+    "nightborne_male_citizen",
+    "weeping_banshee",
+]
 
 # Races without a reference clip borrow a related one; the narrator without a
 # tools/voices/narrator.wav borrows human-male. A borrowed clip brings its
@@ -92,6 +106,14 @@ voljin = ["warchief_voljin"]  # Legion and Battle for Azeroth, long speeches
 [voices.speakers]
 "248200" = "goblin-male"
 
+# NPCSounds set -> voice, for a creature whose display the client tables give no
+# race and no species clip covers: the set Blizzard cast it with still says who it
+# is. Only reached after the species step, so it never overrides a species clip.
+# Set 66 is goblinMaleZany: Gryfe, Bragok, Kwee Q. Peddlefeet and Wizzlecrank's
+# Shredder are goblins on models the tables give no race.
+[voices.sound_sets]
+"66" = "goblin-male-zany"
+
 [voices.sources.bloodelf-female]
 clips = [539351, 539211, 539423]
 
@@ -148,7 +170,21 @@ clips = [540710]
 clips = [556536, 541059, 541035, 541067]
 
 [voices.sources.nightelf-male]
-clips = [541134, 556577, 556574, 556587]
+clips = [
+    1730262,
+    556587,
+    556574,
+    556579,
+    556573,
+    556582,
+    556589,
+    556588,
+    556578,
+    556576,
+    556577,
+    556583,
+    556581,
+]
 
 [voices.sources.orc-male]
 clips = [
@@ -174,13 +210,12 @@ clips = [562839, 562843, 543245, 543257, 562835, 562837]
 [voices.sources.tauren-male]
 clips = [
     543033,
-    561587,
-    561583,
-    561579,
-    561581,
-    561573,
-    561572,
-    543065,
+    543037,
+    561542,
+    561540,
+    561547,
+    561537,
+    561549,
 ]
 
 [voices.sources.dwarf-female-guard]
@@ -472,9 +507,9 @@ clips = [541941, 550784, 550786, 550772, 550782]
 [voices.sources.orc-male-guard]
 clips = [
     562151,
-    541397,
     557806,
     557800,
+    541397,
     557807,
     557803,
     557809,
@@ -484,10 +519,20 @@ clips = [
     557814,
     557804,
 ]
+gaps = [0.1]
 
 [voices.sources.orc-male-shady]
 clips = [541421, 541413, 541426, 541420]
 
+[voices.sources.spirithealer-female]
+clips = [1730301, 1730302, 1730303, 1730304]
+
+
+[voices.notes]
+# Tasting notes, one per voice, written in the audition page's voice card: what
+# a voice sounds like by ear, which lines break it, what was tried and what to
+# try next. For people; nothing generates from them.
+dwarf-female = "Southern accent mostly eliminated by using barks for T3, but Scottish accent also gone. No combination of jokes or flirts can seem to land it. We can get close, but she drifts in and out of accents and it sounds worse than no accent at all."
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
@@ -514,23 +559,6 @@ tempo = 1.0
 [tts.voices.dwarf-female]
 exaggeration = 0.75
 cfg_weight = 0.3
-
-# Respellings for names Chatterbox gets wrong. The model takes plain text only
-# (no IPA or SSML), so the fix is spelling the word the way it should sound.
-# Try candidates by ear first: of five for Gnomeregan (/noʊmɹəˈgɑːn/),
-# "Nomer-gahn" was natural, "Gnome-ruh-gahn" was bad, and "Nome-ruh-GAHN" came
-# out partly as numbers (so do not mark stress with capitals). Ahn'Qiraj is
-# fine as written; "Ahn Kih-rahj" adds a rolled r. Quel'Thalas came out wrong;
-# "Quell Thalas" and "Kwel-thalas" were both fine. Kharanos as written varies
-# take to take, and so do "Karanos" and "Karra-noss" (each had bad takes out of
-# four); "Karranos" was fine all four times, sometimes with a Scottish rolled r.
-# Dun Morogh is fine as written. Tirisfal as written sometimes came out
-# "Tirefal"; "Tirrisfal" and "Teerisfall" were right four times of four.
-# Hyphens can leave a pause mid-word ("Teer-iss-fall"), so prefer respellings
-# without them. Varimathras as written was only ever ok or good; "Vairimathrus"
-# was good four times of four. Sharptalon reads best as two words: "Sharp
-# Talon" beat the plain spelling and "Sharptallon" in the tauren-female voice,
-# and a space does not leave the pause a hyphen can (#38).
 
 [tts.voices.goblin-male]
 exaggeration = 0.9
@@ -736,8 +764,39 @@ cfg_weight = 0.3
 exaggeration = 0.6
 cfg_weight = 0.2
 pitch = -1.0
+
+[tts.voices.spirithealer-female]
+exaggeration = 0.5
+cfg_weight = 0.2
+tempo = 0.7
+pitch = -4.0
+
+[tts.voices.nightelf-male]
+exaggeration = 0.45
+cfg_weight = 0.3
+pitch = -1.0
+
+[tts.voices.tauren-male]
+exaggeration = 0.4
+cfg_weight = 0.3
+# Respellings for names Chatterbox gets wrong. The model takes plain text only
+# (no IPA or SSML), so the fix is spelling the word the way it should sound.
+# Try candidates by ear first: of five for Gnomeregan (/noʊmɹəˈgɑːn/),
+# "Nomer-gahn" was natural, "Gnome-ruh-gahn" was bad, and "Nome-ruh-GAHN" came
+# out partly as numbers (so do not mark stress with capitals). Ahn'Qiraj is
+# fine as written; "Ahn Kih-rahj" adds a rolled r. Quel'Thalas came out wrong;
+# "Quell Thalas" and "Kwel-thalas" were both fine. Kharanos as written varies
+# take to take, and so do "Karanos" and "Karra-noss" (each had bad takes out of
+# four); "Karranos" was fine all four times, sometimes with a Scottish rolled r.
+# Dun Morogh is fine as written. Tirisfal as written sometimes came out
+# "Tirefal"; "Tirrisfal" and "Teerisfall" were right four times of four.
+# Hyphens can leave a pause mid-word ("Teer-iss-fall"), so prefer respellings
+# without them. Varimathras as written was only ever ok or good; "Vairimathrus"
+# was good four times of four. Sharptalon reads best as two words: "Sharp
+# Talon" beat the plain spelling and "Sharptallon" in the tauren-female voice,
+# and a space does not leave the pause a hyphen can (#38).
 [pronunciations]
-"Ahn'Qiraj" = "Ahn Kih-rahj"
+"Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
 Kharanos = "Karranos"
 "Quel'Thalas" = "Quell Thalas"
@@ -758,6 +817,13 @@ Sho = "So"
 exshellent = "excellent"
 newsh = "news"
 Goldshire = "Gold-shire"
+Gnarlpines = "Gnarl Pines"
+furbolgs = "fur ballgs"
+"Ban'ethil" = "Ban'Ethyl"
+Athridas = "Athridahs"
+Gnarlpine = "Gnarl pine"
+furbolg = "fur ballg"
+Jaina = "jay'nuh"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
@@ -886,3 +952,7 @@ dwarf-male = "cfg_weight=0.3,clip=dwarf-male,clips=264d8895,exaggeration=0.7"
 orc-male = "cfg_weight=0.2,clip=orc-male,clips=e8326d21,exaggeration=0.6,tempo=1.1"
 orc-male-guard = "cfg_weight=0.3,clip=orc-male-guard,clips=af44c428,exaggeration=0.6,pitch=-0.5,tempo=1.1"
 orc-male-shady = "cfg_weight=0.2,clip=orc-male-shady,clips=4c1a666d,exaggeration=0.6,pitch=-1.0"
+nightelf-female = "cfg_weight=0.3,clip=nightelf-female,clips=ac26026c,exaggeration=0.6"
+nightelf-male = "cfg_weight=0.3,clip=nightelf-male,clips=780ac3d7,pitch=-1.0"
+spirithealer-female = "cfg_weight=0.2,clip=spirithealer-female,clips=a1ba39fd,exaggeration=0.5,pitch=-4.0,tempo=0.7"
+tauren-male = "cfg_weight=0.3,clip=tauren-male,clips=3c6712d9,exaggeration=0.4"

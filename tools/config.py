@@ -26,6 +26,7 @@ from pydantic import (
     RootModel,
     ValidationError,
     field_validator,
+    model_validator,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -119,6 +120,11 @@ class Strict(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+MAX_GAP_SECONDS = (
+    3.0  # silence between two picked clips; longer is a pause, not a breath
+)
+
+
 class VoiceSources(Strict):
     """[voices.sources.<voice>]: the client clips that voice's reference wav is cut from.
 
@@ -139,11 +145,37 @@ class VoiceSources(Strict):
     build: str | None = (
         None  # the wago build to fetch them from; the beta client by default
     )
+    # Seconds of silence after each clip, aligned with `clips`; a missing entry is no
+    # gap, and the last clip's is never used. Back-to-back clips inside the 6 s t3
+    # window can run two deliveries together and throw the accent or the cadence, so a
+    # pick may breathe between them. Empty, the reference is the plain concatenation.
+    gaps: list[float] = []
+
+    @model_validator(mode="after")
+    def _gaps_fit(self) -> VoiceSources:
+        if len(self.gaps) >= max(len(self.clips), 1):
+            raise ValueError(
+                f"[voices.sources] gaps has {len(self.gaps)} entries for "
+                f"{len(self.clips)} clips; a gap follows every clip but the last"
+            )
+        for gap in self.gaps:
+            if not 0 <= gap <= MAX_GAP_SECONDS:
+                raise ValueError(
+                    f"[voices.sources] gap {gap} is not between 0 and "
+                    f"{MAX_GAP_SECONDS} seconds"
+                )
+        return self
+
+    def gap_after(self, index: int) -> float:
+        """The silence after clip `index`, 0 for the last clip or none set."""
+        if index >= len(self.clips) - 1 or index >= len(self.gaps):
+            return 0.0
+        return self.gaps[index]
 
 
 _SPEAKER_KEY = re.compile(r"-?[1-9][0-9]*")
 _VOICE_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
-_FOLDER_NAME = re.compile(r"[a-z0-9_]+")
+_FOLDER_NAME = re.compile(r"[a-z0-9_-]+")
 
 
 class Voices(Strict):
@@ -174,9 +206,15 @@ class Voices(Strict):
     speakers: dict[
         str, str
     ] = {}  # speaker key -> voice, for the few whose captured model is wrong
+    sound_sets: dict[
+        str, str
+    ] = {}  # NPCSounds set -> voice, for a display with no race and no species clip
     approved: dict[
         str, str
     ] = {}  # voice -> the recipe heard when it was approved by ear; nothing generates from it
+    notes: dict[
+        str, str
+    ] = {}  # voice -> tasting notes by ear, free text for people; nothing reads them
 
     @field_validator("speakers")
     @classmethod
@@ -197,16 +235,33 @@ class Voices(Strict):
                 )
         return value
 
+    @field_validator("sound_sets")
+    @classmethod
+    def _sound_set_voices(cls, value: dict[str, str]) -> dict[str, str]:
+        for key, voice in value.items():
+            if not key.isdigit() or key.startswith("0"):
+                raise ValueError(
+                    f"[voices.sound_sets] key {key!r} is not an NPCSounds set ID"
+                )
+            if not _VOICE_NAME.fullmatch(voice):
+                raise ValueError(
+                    f"[voices.sound_sets] {key} = {voice!r} is not a voice name "
+                    '(lowercase words joined by "-", like "banshee-female")'
+                )
+        return value
+
     @field_validator("clip_folders")
     @classmethod
     def _folder_names(cls, value: list[str]) -> list[str]:
-        """Folder names as the listfile spells them under sound/creature/: lowercase,
-        since named_folders.json is keyed that way and a capital would never match."""
+        """Folder names as the listfile spells them under sound/creature/ or
+        sound/character/: lowercase, since named_folders.json is keyed that way and a
+        capital would never match. Legion's player sets put a hyphen in theirs
+        (`pc_-_nightborne_elf_male`)."""
         for folder in value:
             if not _FOLDER_NAME.fullmatch(folder):
                 raise ValueError(
                     f"[voices] clip_folders {folder!r} is not a sound folder name "
-                    '(lowercase letters, digits and "_", like "guldan")'
+                    '(lowercase letters, digits, "_" and "-", like "guldan")'
                 )
         return value
 
@@ -217,6 +272,17 @@ class Voices(Strict):
             if not _VOICE_NAME.fullmatch(voice):
                 raise ValueError(
                     f"[voices.approved] {voice!r} is not a voice name "
+                    '(lowercase words joined by "-", like "goblin-male")'
+                )
+        return value
+
+    @field_validator("notes")
+    @classmethod
+    def _noted_voices(cls, value: dict[str, str]) -> dict[str, str]:
+        for voice in value:
+            if not _VOICE_NAME.fullmatch(voice):
+                raise ValueError(
+                    f"[voices.notes] {voice!r} is not a voice name "
                     '(lowercase words joined by "-", like "goblin-male")'
                 )
         return value
@@ -240,6 +306,9 @@ class VoiceTuning(Strict):
     pitch: float | None = Field(
         default=None, ge=-12.0, le=12.0
     )  # semitones at encode time, length kept; 0 is as generated, down is negative
+    speed: float | None = Field(
+        default=None, ge=0.5, le=2.0
+    )  # varispeed at encode time: tempo and pitch move together, one resample; 1.0 as generated
 
 
 class TtsSettings(Strict):
@@ -249,6 +318,7 @@ class TtsSettings(Strict):
     cfg_weight: float
     tempo: float = 1.0
     pitch: float = 0.0
+    speed: float = 1.0
     reference: str | None = None
 
 
@@ -259,6 +329,7 @@ class Tts(Strict):
     cfg_weight: float = 0.5
     tempo: float = Field(default=1.0, ge=0.5, le=2.0)
     pitch: float = Field(default=0.0, ge=-12.0, le=12.0)
+    speed: float = Field(default=1.0, ge=0.5, le=2.0)
     voices: dict[str, VoiceTuning] = {}
 
     @property
@@ -268,6 +339,7 @@ class Tts(Strict):
             cfg_weight=self.cfg_weight,
             tempo=self.tempo,
             pitch=self.pitch,
+            speed=self.speed,
         )
 
     def settings_for(self, voice: str) -> TtsSettings:
@@ -284,6 +356,7 @@ class Tts(Strict):
             else tuning.cfg_weight,
             tempo=self.tempo if tuning.tempo is None else tuning.tempo,
             pitch=self.pitch if tuning.pitch is None else tuning.pitch,
+            speed=self.speed if tuning.speed is None else tuning.speed,
             reference=tuning.reference,
         )
 

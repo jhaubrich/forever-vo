@@ -25,15 +25,20 @@ def test_folder_entries_keeps_wanted_ogg_lines_only() -> None:
         "600001;sound/creature/Witch Doctor/WitchDoctorYes1.ogg",
         "600002;sound/creature/witch doctor/sub/nested.ogg",
         "600003;sound/spell/sylvanas_aurastart_loop.ogg",
+        # a player voice set, under sound/character/
+        "1304879;sound/character/pcdhnightelfmale/vo_dhnightelfmaleflirt01.ogg",
         "not a line",
     ]
-    found = soundpaths.folder_entries(lines, {"sylvanaswindrunner", "witch doctor"})
+    found = soundpaths.folder_entries(
+        lines, {"sylvanaswindrunner", "witch doctor", "pcdhnightelfmale"}
+    )
     assert found == {
         "sylvanaswindrunner": [
             (561277, "wg_sylvanas_hor02"),
             (561297, "sylvanaswindrunnergreeting01"),
         ],
         "witch doctor": [(600001, "witchdoctoryes1")],
+        "pcdhnightelfmale": [(1304879, "vo_dhnightelfmaleflirt01")],
     }
 
 
@@ -266,6 +271,30 @@ def test_only_probes_one_folder_and_keeps_the_rest(
 
 
 def test_clip_folders_must_be_spelled_as_the_listfile_keys_them() -> None:
-    assert Voices(clip_folders=["guldan", "image_of_guldan"]).clip_folders
+    assert Voices(
+        clip_folders=["guldan", "image_of_guldan", "pc_-_nightborne_elf_male"]
+    ).clip_folders
     with pytest.raises(ValueError):
         Voices(clip_folders=["Guldan"])
+
+
+def test_other_sex_set_catches_the_other_sex_and_not_another_race(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    sets = {
+        52: "nightelffemalesentinelnpc",
+        59: "nightelfmalestandardnpc",
+        149: "nightelfmalestandardnpc",
+        82: "undeadfemalestandardnpc",
+        174: "fandralstaghelm",
+    }
+    monkeypatch.setattr(soundpaths, "folders", lambda: sets)
+    assert soundpaths.other_sex_set(52, "nightelf-male")
+    assert not soundpaths.other_sex_set(52, "nightelf-female")
+    assert not soundpaths.other_sex_set(59, "nightelf-male")
+    # blood elves were cast with night elf sets; those recordings are their voice
+    assert not soundpaths.other_sex_set(149, "bloodelf-male")
+    # undead is how Blizzard files the scourge
+    assert soundpaths.other_sex_set(82, "scourge-male")
+    assert not soundpaths.other_sex_set(174, "nightelf-female")
+    assert not soundpaths.other_sex_set(999, "nightelf-male")  # no folder known

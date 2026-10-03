@@ -5,16 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Forever Voiceover audition</title>
 <style>
-  :root { color-scheme: dark; --bg: #16130f; --panel: #221d17; --ink: #e8dcc6; --dim: #9a8b74; --line: #3a3128; --gold: #d9b45b; --ok: #7fbf7f; --warn: #e0a050; }
+  :root { color-scheme: dark; --bg: #16130f; --panel: #221d17; --ink: #e8dcc6; --dim: #9a8b74; --line: #3a3128; --gold: #d9b45b; --ok: #7fbf7f; --warn: #e0a050; --borrow: #8fb3e0; }
   * { box-sizing: border-box; }
+  /* No mute on any player here: pausing does that job, and a take left muted reads as
+     a silent one. The volume belongs to the system. Chromium draws these parts of its
+     player; other browsers ignore the rule. */
+  audio::-webkit-media-controls-mute-button,
+  audio::-webkit-media-controls-volume-slider,
+  audio::-webkit-media-controls-volume-control-container { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, sans-serif; }
   header { display: flex; gap: 16px; align-items: baseline; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+  /* the page before its first state: locked, greyed, with a banner saying why */
+  main.booting { opacity: .4; filter: grayscale(.7); transition: opacity .2s; }
+  #booting { position: fixed; z-index: 50; top: 30vh; left: 50%; transform: translateX(-50%); padding: 12px 18px;
+    background: var(--panel); border: 1px solid var(--gold); border-radius: 6px; color: var(--ink); box-shadow: 0 6px 18px rgba(0, 0, 0, .5);
+    max-width: calc(100vw - 32px); }
   header h1 { font-size: 16px; margin: 0; color: var(--gold); font-weight: 600; }
   header .status { color: var(--dim); font-size: 12px; }
   header .status b { color: var(--ink); font-weight: 500; }
   main { display: grid; grid-template-columns: 340px 1fr; gap: 0; min-height: calc(100vh - 45px); }
   aside { border-right: 1px solid var(--line); padding: 14px; overflow: auto; }
   section { padding: 14px 20px; }
+  /* Source clips: under the takes on a narrow screen, a column of its own on a wide one,
+     where the table can run the height of the window */
+  aside { grid-row: 1 / span 2; }
+  #clips-col { grid-column: 2; padding-top: 0; }
+  @media (min-width: 1600px) {
+    main { grid-template-columns: 340px minmax(0, 1fr) minmax(0, 1fr); }
+    aside { grid-row: 1; }
+    /* held in the window while the page scrolls; fitClips sizes the table to what is
+       left of it below the toolbar and notes, which change height as they fill */
+    #clips-col { grid-column: 3; grid-row: 1; padding-top: 14px; border-left: 1px solid var(--line);
+      position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; }
+    #clips-col #clips { margin-top: 0; border-top: 0; padding-top: 0; }
+  }
   h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 18px 0 8px; }
   h2:first-child { margin-top: 0; }
   input, select, textarea, button { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
@@ -43,6 +67,84 @@
   #results .t { font-weight: 500; }
   #results .m { color: var(--dim); font-size: 12px; }
   #results li { display: flex; gap: 8px; align-items: flex-start; }
+  /* the speakers read in the chosen voice, linked to wowhead */
+  #npcs h2 .note { text-transform: none; letter-spacing: 0; font-weight: 400; margin-left: 0.5em; }
+  /* collapsible, with the caret the clip groups use; open or shut is remembered */
+  #npcs { margin-top: 18px; }
+  #npcs summary { cursor: pointer; list-style: none; user-select: none; }
+  #npcs summary::-webkit-details-marker { display: none; }
+  #npcs summary h2 { display: inline-block; margin: 0 0 8px; }
+  #npcs summary h2::before { content: "▾"; display: inline-block; width: 1.1em; color: var(--dim); }
+  #npcs:not([open]) summary h2::before { content: "▸"; }
+  #npcs-filter { width: 100%; margin-bottom: 6px; }
+  #npcs-list { list-style: none; margin: 0; padding: 0; max-height: 30vh; overflow: auto; columns: 16em; column-gap: 18px; }
+  #npcs-list li { break-inside: avoid; padding: 2px 0; }
+  #npcs-list a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--dim); }
+  #npcs-list a:hover { color: var(--gold); border-bottom-color: var(--gold); }
+  #npcs-list .m { color: var(--dim); font-size: 12px; }
+  /* The voice, its clip and takes, then the knobs: a grid each, a one-line label over
+     every box so the boxes share a line, and anything longer as a hint under the box.
+     Sized by the column they sit in, not the window: it is half as wide at 1600px. */
+  .setup { container-type: inline-size; }
+  /* the voice is where every audition starts: chosen first, everything else follows */
+  .start { border: 1px solid var(--gold); border-radius: 6px; background: var(--panel); padding: 10px 14px 12px; margin-bottom: 14px; }
+  .start .start-head { color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin: 0 0 6px; }
+  .start .start-head .note { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--dim); margin-left: 0.5em; }
+  /* one row: the box (its caret inside it), what the voice speaks for, the approval;
+     it wraps under the box only where the column is narrow */
+  .start .start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
+  .start .voice-find { flex: 0 1 26em; min-width: min(100%, 14em); }
+  .start #voice-search { width: 100%; font-size: 16px; padding: 8px 30px 8px 10px; background: var(--bg); border-color: var(--gold); }
+  .start #voice-note { margin: 0; font-size: 12px; white-space: nowrap; }
+  /* the heading on the left, the approval at the right of the same line */
+  .start .start-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 6px; }
+  .start .start-top .start-head { margin: 0; }
+  .start .check { margin: 0; white-space: nowrap; }
+  .start .approval { display: inline-flex; align-items: center; }
+  /* the way back to the approval: the card's bottom right, level with the voice box */
+  .start #revert-voice { margin-left: auto; align-self: flex-end; }
+  /* tasting notes: folded away until wanted, opened on a voice that has some */
+  .start #voice-notes-box { margin-top: 8px; }
+  .start #voice-notes-box summary { cursor: pointer; color: var(--dim); font-size: 12px; user-select: none; }
+  .start #voice-notes-box[open] summary { color: var(--gold); }
+  .start #voice-notes { width: 100%; min-height: 4.5em; margin-top: 4px; font-size: 13px; background: var(--bg); }
+  .start #revert-voice { font-size: 12px; padding: 2px 8px; color: var(--warn); border-color: var(--warn); background: transparent; }
+  .start #revert-voice:hover { background: var(--warn); color: var(--bg); }
+  /* the list may be wider than the box: its notes are long */
+  .start #voice-results { min-width: min(34em, calc(100vw - 32px)); }
+  .fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4.5em, 7em); gap: 0 12px; align-items: start; }
+  .fields.knobs { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .fields > div > label:not(.check) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fields input:not([type="checkbox"]), .fields select { width: 100%; }
+  .fields .hint, .start .hint { color: var(--dim); font-size: 11px; margin-top: 3px; }
+  /* a knob that departs from the voice's saved value, until it is kept or put back */
+  .fields .unsaved input { border-color: var(--warn); box-shadow: 0 0 0 1px var(--warn); }
+  .fields .unsaved label { color: var(--warn); }
+  .fields .saved-note { color: var(--warn); }
+  .fields .saved-note:empty { display: none; }
+  .fields .knob-reset { font-size: 11px; padding: 0 6px; line-height: 1.5; margin-left: 4px; color: var(--warn); border-color: var(--warn); background: transparent; }
+  .fields .knob-reset:hover { background: var(--warn); color: var(--bg); }
+  .fields-head { display: flex; align-items: center; gap: 6px; color: var(--dim); font-size: 12px; margin: 12px 0 -4px; }
+  @container (max-width: 560px) {
+    .fields { grid-template-columns: minmax(0, 1fr) minmax(4.5em, 7em); }
+    .fields .voice-field { grid-column: 1 / -1; }
+    .fields.knobs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  /* the voice combobox: the box shows the voice in use, typing narrows the list under
+     it, an empty box browses every voice; the hidden #voice select stays the value */
+  .voice-find { position: relative; }
+  #voice-search { padding-right: 26px; text-overflow: ellipsis; }
+  #voice-caret { position: absolute; right: 1px; top: 1px; bottom: 1px; width: 24px; padding: 0; border: 0; background: transparent; color: var(--dim); }
+  #voice-results { position: absolute; z-index: 20; left: 0; right: 0; top: 100%; margin: 2px 0 0; padding: 0; list-style: none;
+    max-height: 50vh; overflow: auto; background: var(--bg); border: 1px solid var(--gold); border-radius: 4px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5); }
+  #voice-results li { padding: 5px 8px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  #voice-results li:last-child { border-bottom: 0; }
+  #voice-results li.active, #voice-results li[data-v]:hover { background: var(--panel); }
+  #voice-results li.current { color: var(--gold); }
+  #voice-results .m { color: var(--dim); font-size: 12px; }
+  #voice-results li.none { color: var(--dim); cursor: default; }
+  #voice-results li.group { position: sticky; top: 0; background: var(--bg); color: var(--dim); cursor: default; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em; padding-top: 8px; }
   #results li > div { flex: 1; min-width: 0; }
   #results button.play { flex: 0 0 auto; padding: 2px 8px; font-size: 12px; }
   .badge { display: inline-block; font-size: 11px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 10px; color: var(--dim); margin-left: 4px; }
@@ -59,32 +161,149 @@
   #toast { position: fixed; right: 20px; bottom: 20px; background: var(--panel); border: 1px solid var(--gold); padding: 10px 14px; border-radius: 4px; display: none; max-width: 480px; }
   #current { padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
   #current .m { color: var(--dim); font-size: 12px; }
-  details#clips { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 10px; }
-  details#clips summary { cursor: pointer; color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
-  #clips-body tr { cursor: pointer; }
-  #clips-body tr:hover { background: var(--panel); }
-  #clips-body tr.picked { background: var(--panel); }
-  #clips-body td.pos { color: var(--gold); font-weight: 600; width: 7.5em; white-space: nowrap; }
-  #clips-body td.pos button { font-size: 11px; padding: 0 4px; margin-left: 2px; line-height: 1.4; }
+  /* title and badges on the left, the pack's file playing on the right */
+  #current .current-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  #current .in-pack { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  #current .in-pack audio { height: 32px; }
+  #current a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--dim); }
+  #current a:hover { color: var(--gold); border-bottom-color: var(--gold); }
+  #current .links { font-size: 12px; margin-left: 6px; }
+  #clips { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 10px; }
+  #clips .title { color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+  .clips-top { display: flex; align-items: center; gap: 8px; }
+  .clips-top .title { flex: 1; }
+  #clips .sub-title { color: var(--ink); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  /* the loading notes: status, one bar per download, warnings; an empty one takes no room */
+  #clips-notes { margin: 6px 0 0; }
+  #clips-notes p { margin: 3px 0; }
+  #clips-notes p:empty { display: none; }
+
+  /* The reference in build order: what the model reads, so it is the panel's focus.
+     The candidates under it are for browsing and adding. */
+  #clips-reference { margin: 10px 0 12px; border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; background: var(--panel); padding: 8px 10px; }
+  #clips-reference .ref-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+  #clips-reference .ref-head .spacer { flex: 1; }
+  /* the built reference's player sits at the right, under the picks' own controls */
+  #clips-reference .ref-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 10px; margin-top: 8px; }
+  /* wide, so the scrubber can find a place in a 20 s reference */
+  #clips-reference .ref-foot audio { flex: 1 1 360px; max-width: 520px; min-width: 0; }
+
+  #clips-history { margin: 6px 0 0; }
+  #clips-history:empty { display: none; }
+  /* one pill per earlier pick: the pick, then its × when it is only an experiment */
+  #clips-history .pick { display: inline-flex; margin: 0 6px 4px 0; }
+  #clips-history .pick button { font-size: 12px; padding: 2px 8px; }
+  #clips-history .pick button.forget { padding: 2px 6px; margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; color: var(--dim); }
+  #clips-history .pick button.forget:hover { color: var(--warn); border-color: var(--warn); }
+  #clips-history .pick:has(.forget) button[data-i] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  #clips-history .pick.current button { border-color: var(--gold); color: var(--gold); }
+  #clips-history .pick.saved button[data-i] { font-weight: 600; }
+  #clips-history .pick.released button[data-i] { border-color: var(--ok); }
+  #clips-history .pick.current.released button[data-i] { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--ok); }
+  #clips-history .rel { color: var(--ok); font-size: 11px; border: 1px solid var(--ok); border-radius: 8px; padding: 0 5px; margin-right: 2px; }
+  /* a bar of the first seconds: green to 6 s (t3), gold to 10 s (s3gen), then the
+     averaged rest, cut off at the right edge; each pick a block in its order */
+  #clips-timeline { position: relative; margin: 20px 0 4px; height: 22px; }
+  #clips-timeline .track { position: absolute; inset: 0; overflow: hidden; border-radius: 3px; background: var(--bg); border: 1px solid var(--line); }
+  #clips-timeline .zone { position: absolute; top: 0; bottom: 0; }
+  #clips-timeline .zone.t3 { background: rgba(127, 191, 127, 0.10); }
+  #clips-timeline .zone.s3 { background: rgba(217, 180, 91, 0.08); }
+  #clips-timeline .seg { position: absolute; top: 3px; bottom: 3px; border-radius: 2px; font-size: 11px; line-height: 14px; text-align: center;
+    overflow: hidden; color: var(--bg); font-weight: 600; box-shadow: inset -2px 0 0 var(--bg); }
+  #clips-timeline .seg.t3 { background: var(--ok); }
+  #clips-timeline .seg.s3 { background: var(--gold); }
+  #clips-timeline .seg.out { background: var(--dim); }
+  #clips-timeline .mark { position: absolute; top: -16px; bottom: 0; border-left: 1px dashed var(--ink); }
+  #clips-timeline .mark span { position: absolute; left: 3px; top: 0; font-size: 11px; line-height: 14px; color: var(--dim); white-space: nowrap; }
+  #clips-timeline .more { position: absolute; right: 4px; top: -16px; font-size: 11px; line-height: 14px; color: var(--dim); }
+  /* the picks, one compact line each; the window marks fall between them */
+  #clips-picks { list-style: none; margin: 4px 0 0; padding: 0; max-height: 40vh; overflow-y: auto; }
+  #clips-picks li { display: grid; grid-template-columns: 1.8em auto minmax(0, 1fr) auto auto 6.8em auto; align-items: center; gap: 0 8px;
+    padding: 2px 0; border-bottom: 1px solid var(--line); }
+  #clips-picks li:last-child { border-bottom: 0; }
+  #clips-picks .n { color: var(--gold); font-weight: 600; text-align: right; }
+  #clips-picks .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #clips-picks .name .from { color: var(--dim); font-size: 12px; margin-left: 0.5em; }
+  #clips-picks .len { color: var(--dim); font-size: 12px; }
+  #clips-picks .at { font-family: ui-monospace, monospace; font-size: 12px; white-space: nowrap; }
+  #clips-picks .moves { white-space: nowrap; }
+  #clips-picks .moves button { font-size: 11px; padding: 0 5px; line-height: 1.5; margin-left: 2px; }
+  #clips-picks li.mark { display: block; border-bottom: 0; padding: 1px 0 1px 2.6em; font-size: 11px; color: var(--dim); }
+  #clips-picks li.mark::before { content: ""; display: inline-block; width: 1.5em; vertical-align: middle; margin-right: 6px; border-top: 1px dashed var(--dim); }
+  #clips-picks li.mark.short { color: var(--warn); }
+  /* the silence after a pick, in its row: small, gold once set, warned past s3gen */
+  #clips-picks .gap label { display: inline-flex; align-items: center; gap: 2px; margin: 0; font-size: 11px; color: var(--dim); cursor: default; }
+  /* wide enough for "0.05" beside the browser's own step arrows */
+  #clips-picks .gap input { width: 5.4em; padding: 0 3px; font-size: 11px; line-height: 1.5; }
+  #clips-picks .gap.set label { color: var(--gold); }
+  #clips-picks .gap.past label { color: var(--warn); }
+  #clips-picks li.empty { display: block; color: var(--dim); font-size: 12px; padding: 6px 0; border: 0; }
+  button.play { padding: 1px 7px; font-size: 11px; line-height: 1.4; }
+
+  .cand-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0 0 6px; }
+  .cand-head select { flex: 0 1 18em; min-width: 0; }
+  #clips-body tr[data-f] { cursor: pointer; }
+  #clips-body tr[data-f]:hover { background: var(--panel); }
+  #clips-body td, #clips-wrap th { padding: 3px 8px; }
+  #clips-body td.play, #clips-wrap th.play { width: 1%; padding-right: 0; }
   #clips-body td.kind { max-width: 22em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  #clips-body td.at { font-family: ui-monospace, monospace; font-size: 12px; }
-  #clips-wrap { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
+  #clips-body tr.picked { background: var(--panel); }
+  #clips-body tr.picked td.kind { color: var(--gold); }
+  #clips-body td.pos { white-space: nowrap; width: 1%; }
+  #clips-body td.pos .add { color: var(--dim); }
+  #clips-body td.pos .num { display: inline-block; min-width: 1.6em; padding: 0 5px; border-radius: 9px; background: var(--gold); color: var(--bg); font-weight: 600; font-size: 12px; text-align: center; }
+  /* group headings: a line of the table's own size, the name in gold, then what the
+     group is, so the sections read without outshouting the clips */
+  #clips-body tr.sub { cursor: pointer; user-select: none; }
+  #clips-body tr.sub:hover th .name { text-decoration: underline; }
+  #clips-body tr.sub th { text-align: left; padding: 12px 8px 4px 4px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 400; color: var(--dim); }
+  #clips-body tr:first-child.sub th { padding-top: 6px; }
+  #clips-body tr.sub th .caret { display: inline-block; width: 1.1em; color: var(--dim); }
+  #clips-body tr.sub th .name { color: var(--gold); font-weight: 600; }
+  #clips-body tr.sub th .note { margin-left: 0.6em; }
+  #clips-body tr.sub th .about { font-size: 12px; margin: 1px 0 0 1.1em; overflow-wrap: anywhere; }
+  /* groups added with "Also offer clips from": on top, with an edge of their own colour
+     down the whole run. No fill, so nothing about them reads as picked or hovered. */
+  #clips-body tr.sub.also th { border-left: 3px solid var(--borrow); padding-left: 8px; }
+  #clips-body tr.also td:first-child { box-shadow: inset 2px 0 0 var(--borrow); }
+  #clips-body tr.sub th .borrowed, #clips-picks .borrowed { display: inline-block; margin-left: 0.6em; padding: 0 6px; border: 1px solid var(--borrow);
+    border-radius: 9px; color: var(--borrow); font-size: 11px; font-weight: 500; line-height: 1.4; }
+  #clips-wrap { max-height: 75vh; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
+  #clips-wrap table { margin-top: 0; }
+  #clips-wrap thead th { position: sticky; top: 0; z-index: 1; background: var(--bg); }
+  @media (max-width: 600px) {
+    #clips-wrap .fd { display: none; }
+    #clips-picks li { grid-template-columns: 1.6em auto minmax(0, 1fr) auto; }
+    #clips-picks .len { display: none; }
+    #clips-picks .gap { grid-column: 3; }
+    #clips-picks .moves { grid-column: 4; justify-self: end; }
+  }
   .pill { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px; border: 1px solid var(--line); margin-left: 6px; }
   .pill.t3 { border-color: var(--ok); color: var(--ok); }
   .pill.s3 { border-color: var(--gold); color: var(--gold); }
   .pill.out { border-color: var(--line); color: var(--dim); }
-  #clips-also-list .pill button { font-size: 11px; padding: 0 4px; margin-left: 4px; line-height: 1.2; }
+  /* the sources borrowed from, in the blue their groups carry in the table */
+  #clips-also-list .pill { border-color: var(--borrow); color: var(--borrow); background: rgba(143, 179, 224, 0.12); padding: 2px 4px 2px 8px; }
+  #clips-also-list .pill button { font-size: 11px; padding: 0 4px; margin-left: 4px; line-height: 1.2;
+    color: var(--borrow); background: transparent; border-color: rgba(143, 179, 224, 0.45); }
+  /* downloads from wago, one bar per voice while it loads */
+  #clips-progress { margin: 2px 0 8px; }
+  #clips-progress .bar { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 3px 0; }
+  #clips-progress .who { min-width: 10em; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #clips-progress progress { flex: 0 1 14em; height: 8px; accent-color: var(--borrow); }
+  #clips-also-list .pill button:hover { background: var(--borrow); color: var(--bg); }
   button.help { flex: 0 0 auto; width: 22px; height: 22px; padding: 0; border-radius: 50%; line-height: 1; color: var(--gold); border-color: var(--gold); }
   #clips-help, #knobs-help { border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; padding: 10px 14px; margin: 8px 0; background: var(--panel); }
   #clips-help h4, #knobs-help h4 { margin: 0 0 6px; font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
   #clips-help p, #clips-help li, #knobs-help p, #knobs-help li { color: var(--dim); font-size: 12px; margin: 4px 0; }
   #clips-help ul, #knobs-help ul { margin: 4px 0; padding-left: 18px; }
+  /* Emotion's rough scale, by ear on this pack's voices */
+  #knobs-help table.scale { width: auto; margin: 4px 0 6px; }
+  #knobs-help table.scale td { border: 0; padding: 0 12px 0 0; font-size: 12px; }
+  #knobs-help table.scale td:first-child { font-family: ui-monospace, monospace; color: var(--gold); }
   #clips-help b, #knobs-help b { color: var(--ink); font-weight: 500; }
   #clips-help code, #knobs-help code { color: var(--ink); }
   #clips-help table, #knobs-help table { margin: 6px 0; }
-  #clips-history { margin: 6px 0; }
-  #clips-history button { font-size: 12px; padding: 2px 8px; margin: 0 6px 4px 0; }
-  #clips-history button.current { border-color: var(--gold); color: var(--gold); }
   #clips-help td, #knobs-help td { padding: 3px 8px 3px 0; border: 0; font-size: 12px; color: var(--dim); vertical-align: top; }
   #clips-help td:first-child, #knobs-help td:first-child { font-family: ui-monospace, monospace; color: var(--ink); white-space: nowrap; }
   #knobs-help td:last-child { max-width: 70ch; }
@@ -96,7 +315,11 @@
   <h1>Forever Voiceover audition</h1>
   <span class="status">model <b id="s-model">…</b> · corpus <b id="s-corpus">…</b> · bulk worker <b id="s-bulk">…</b> · <span id="s-config"></span></span>
 </header>
-<main>
+<!-- Until the first /api/state the page has no voices (the corpus takes ~10 s to load
+     on a fresh server), and typing into it then left it in a bad state: everything is
+     inert and greyed out under this banner until that first answer lands. -->
+<div id="booting" role="status" aria-live="polite">Loading voices and lines&hellip; <span id="booting-detail" class="note">the first load reads the whole corpus, about ten seconds</span></div>
+<main inert class="booting">
   <aside>
     <h2>Find a line</h2>
     <input id="q" placeholder="quest title, NPC, words, or a base name like 415-accept" autocomplete="off">
@@ -122,65 +345,104 @@
   </aside>
 
   <section>
+    <div class="start">
+      <div class="start-top">
+        <label for="voice-search" class="start-head">Voice <span class="note">start here: choose a voice, then try its lines and settings below</span></label>
+        <span class="approval"><label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></span>
+      </div>
+      <div class="start-row">
+        <div class="voice-find">
+          <input id="voice-search" type="text" autocomplete="off" spellcheck="false" placeholder="type to search: sylv, vari, dwarf guard…"
+            role="combobox" aria-controls="voice-results" aria-expanded="false" aria-autocomplete="list">
+          <button id="voice-caret" type="button" tabindex="-1" aria-label="Show every voice" title="Show every voice">&#9662;</button>
+          <ul id="voice-results" role="listbox" aria-label="Voices" hidden></ul>
+        </div>
+        <div id="voice-note" class="hint"></div>
+        <button id="revert-voice" type="button" hidden title="Put this voice back to what was approved: the source clips and gaps heard then, the four settings, and its reference rebuilt from those clips. Nothing else changes; the pick it replaces stays in Earlier picks.">Revert to approved</button>
+      </div>
+      <details id="voice-notes-box">
+        <summary>Tasting notes <span id="voice-notes-status" class="note"></span></summary>
+        <textarea id="voice-notes" rows="3" spellcheck="true"
+          placeholder="What you hear: accent, delivery, the lines that break it, what was tried, what to try next…"></textarea>
+      </details>
+      <select id="voice" hidden aria-hidden="true" tabindex="-1"></select>
+    </div>
+
     <h2>Line</h2>
     <div id="current"><span class="m">No line picked: free text.</span></div>
     <label for="text">Text (cleaned and respelled before it reaches the model)</label>
     <textarea id="text">Aye, a stack o' letters came through the pass today, and I dinnae have the time to send them along.</textarea>
 
-    <div class="row">
-      <div><label for="voice">Voice</label>
-        <input id="voice-search" type="search" placeholder="search voices: sylv, vari, dwarf guard…" autocomplete="off" style="width:100%;margin-bottom:4px">
-        <select id="voice"></select>
-        <label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></div>
-      <div><label for="reference">Clone from</label><select id="reference"></select></div>
-      <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
+    <div class="setup">
+      <div class="fields">
+        <div><label for="reference">Clone from</label><select id="reference"></select></div>
+        <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
+      </div>
+      <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these five do">?</button></div>
+      <div class="fields knobs">
+        <div><label for="exag" title="Chatterbox's exaggeration">Emotion</label><input id="exag" value="0.45, 0.75"><div class="hint">0&ndash;2 &middot; 0.5 default, 1.5 shouty</div></div>
+        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (pace)</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
+        <div><label for="tempo">Tempo</label><input id="tempo" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
+        <div><label for="pitch">Pitch, semitones</label><input id="pitch" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
+        <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
+      </div>
     </div>
-    <div class="row">
-      <div><label for="exag">Exaggeration values (0&ndash;2)</label><input id="exag" value="0.45, 0.75"></div>
-      <div><label for="cfg">cfg_weight values (0&ndash;1)</label><input id="cfg" value="0.5, 0.3"></div>
-      <div><label for="tempo">Tempo values (0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept)</label><input id="tempo" value="1.0"></div>
-      <div><label for="pitch">Pitch values in semitones (&minus;12&ndash;12; 0 as generated, down is negative)</label><input id="pitch" value="0"></div>
-      <button id="knobs-help-toggle" class="help" title="What these three do">?</button>
+    <div class="row" style="margin-top:8px">
       <button id="go" class="primary">Generate</button>
-      <button id="stop" hidden title="Stop after the take in progress; the model cannot be interrupted mid-take">Stop</button>
+      <button id="stop" hidden title="Stop after the sentence in progress; the model cannot be interrupted mid-sentence">Stop</button>
     </div>
     <div id="knobs-help" hidden>
-      <h4>What these three do</h4>
+      <h4>What these five do</h4>
       <p>They shape <b>how a line is delivered</b>. They do not decide the accent or the
         character of the voice &mdash; that comes from the clips the reference is cut from,
         below.</p>
       <table>
-        <tr><td>exaggeration</td><td>0&ndash;2. A real conditioning input to the model
-          (<code>emotion_adv</code>): how much expression to put in. Higher is more
-          emphatic, and past about 1 it starts to sound performed.</td></tr>
-        <tr><td>cfg_weight</td><td>0&ndash;1. Classifier-free guidance. At each token the
+        <tr><td>Emotion<br><span class="note">exaggeration</span></td><td>0&ndash;2. A real conditioning input to the model
+          (<code>emotion_adv</code>): how much expression to put in. It is one number scaled
+          through a single layer, so past the range the model learned it extrapolates rather
+          than emotes, and faster than it seems it should:
+          <table class="scale">
+            <tr><td>0.3</td><td>low affect</td></tr>
+            <tr><td>0.5</td><td>default</td></tr>
+            <tr><td>0.7</td><td>colourful</td></tr>
+            <tr><td>1.2</td><td>angry</td></tr>
+            <tr><td>1.5</td><td>shouty</td></tr>
+          </table>
+          Higher also speeds a line up; a lower Adherence slows it back down.</td></tr>
+        <tr><td>Adherence (pace)<br><span class="note">cfg_weight</span></td><td>0&ndash;1. Classifier-free guidance. At each token the
           model predicts twice, once with your text and reference and once without, and
           pushes away from the second: <code>logits = cond + cfg &times; (cond &minus; uncond)</code>.
           Higher tracks the prompt harder, and clips pauses as it goes;
           <b>lower is Chatterbox's own advice for a rushed voice</b>, which is why the
           tuned voices here sit at 0.3. At 0 there is no guidance at all.</td></tr>
-        <tr><td>tempo</td><td>0.5&ndash;2.0. Not a model knob &mdash; Chatterbox has no pace
+        <tr><td>Tempo</td><td>0.5&ndash;2.0. Not a model knob &mdash; Chatterbox has no pace
           control. A pitch-preserving stretch applied when the mp3 is written, and the
-          stretched length is what the addon pages text against. Try a lower cfg_weight
+          stretched length is what the addon pages text against. Try a lower Adherence
           first.</td></tr>
-        <tr><td>pitch</td><td>&minus;12&ndash;12 semitones. Not a model knob either: a shift
+        <tr><td>Pitch</td><td>&minus;12&ndash;12 semitones. Not a model knob either: a shift
           that keeps the length, applied when the mp3 is written. Chatterbox pulls every
           clone toward its own mid-range voice, so a deep speaker comes out high &mdash;
           Varimathras's takes measured 153&nbsp;Hz against his recordings' 86&ndash;89, and
           &minus;3 to &minus;5 sounded right where matching the number (&minus;9) did not.
           The model runs once per take; every tempo and pitch here is cut from that same
           audio, so a sweep compares one delivery.</td></tr>
+        <tr><td>Speed</td><td>0.5&ndash;2.0. Varispeed, a tape played slower or faster: pace
+          and pitch move together in one resample (0.9 is 10% slower and about 1.8
+          semitones lower). Lowering Tempo and Pitch to the same end runs a time stretch
+          and then a pitch shift, each compensating for the other and both leaving
+          artefacts; Speed does it with neither. It is applied first, then any Tempo and
+          Pitch.</td></tr>
       </table>
       <p>The two interact: guidance amplifies whatever the conditioning says, so raising
-        exaggeration <i>and</i> cfg_weight compounds. The pairing in this pack &mdash; 0.75
-        exaggeration with 0.3 cfg_weight &mdash; is deliberately the other way round: more
-        expression, less pressure on it.</p>
+        Emotion <i>and</i> Adherence compounds. The pairing in this pack &mdash; 0.75
+        Emotion with 0.3 Adherence &mdash; is deliberately the other way round: more
+        expression, less pressure on it. In forever-vo.toml they keep Chatterbox's names,
+        <code>exaggeration</code> and <code>cfg_weight</code>.</p>
       <p class="warn">Not an accent control. Four settings pairs over eight takes of
         goblin-male moved its accent not at all, while changing the source clips took the
         same voice from &ldquo;sounds like a gnome&rdquo; to level with the shipped pack.</p>
     </div>
     <p class="note" id="resolved"></p>
-
     <h2>Takes</h2>
     <table>
       <thead><tr><th>#</th><th>Recipe</th><th>Take</th><th>Length</th><th></th></tr></thead>
@@ -188,17 +450,23 @@
     </table>
     <p class="note" id="progress"></p>
 
-    <details id="clips" open>
-      <summary>Source clips &mdash; what this voice's reference is cut from</summary>
+    <details id="npcs" open>
+      <summary><h2>NPCs in this voice <span class="note" id="npcs-status"></span></h2></summary>
+      <input id="npcs-filter" type="search" placeholder="filter by name or ID…" autocomplete="off" hidden>
+      <ul id="npcs-list"></ul>
+    </details>
+
+  </section>
+  <section id="clips-col">
+    <div id="clips">
+      <div class="clips-top">
+        <div class="title">Source clips &mdash; what this voice's reference is cut from</div>
+        <button id="clips-help-toggle" class="help" title="What the model actually reads">?</button>
+      </div>
       <div class="row" style="margin-top:8px">
         <button id="clips-load">Load candidates</button>
-        <select id="clips-group" hidden title="Which folder's clips the table shows; picks from every folder stay listed"></select>
-        <select id="clips-also" title="Add another voice's candidates to this table, such as Thrall's lines for an orc archetype. Its groups are labelled with the voice they came from."></select>
+        <select id="clips-also" style="flex:0 1 22em" title="Add another voice's candidates to this table, such as Thrall's lines for an orc archetype. Its groups are labelled with the voice they came from."></select>
         <span id="clips-also-list"></span>
-        <button id="clips-reset">Clear picks</button>
-        <button id="clips-build" class="primary">Build and keep</button>
-        <audio id="clips-ref" controls preload="none" style="flex:0 0 auto"></audio>
-        <button id="clips-help-toggle" class="help" title="What the model actually reads">?</button>
       </div>
       <div id="clips-help" hidden>
         <h4>What the model actually reads</h4>
@@ -219,21 +487,41 @@
           <li><b>A strong regional accent may not survive at all.</b> Fifteen different head clips, four settings and bark-free references all failed to carry retail goblin's New York. Timbre and delivery transfer reliably; an accent the model has no prior for may not, whatever you feed it.</li>
         </ul>
       </div>
-      <p class="note" id="clips-status"></p>
-      <p class="note" id="clips-warn"></p>
-      <p class="note" id="clips-budget"></p>
-      <div id="clips-history"></div>
+      <div id="clips-notes">
+        <p class="note" id="clips-status"></p>
+        <div id="clips-progress" hidden></div>
+        <p class="note" id="clips-warn"></p>
+      </div>
+      <!-- the reference as it will be built, in order: the picks, where each starts,
+           and where the t3 and s3gen windows end -->
+      <div id="clips-reference">
+        <div class="ref-head">
+          <span class="sub-title">Reference</span>
+          <span class="note" id="clips-budget"></span>
+          <span class="spacer"></span>
+          <button id="clips-reset" title="Drop every pick">Clear</button>
+          <button id="clips-build" class="primary" title="Build the reference from these picks, in this order, and keep them under [voices.sources] in forever-vo.toml">Build and keep</button>
+        </div>
+        <div id="clips-timeline" hidden></div>
+        <ol id="clips-picks"></ol>
+        <div class="ref-foot">
+          <span class="note">Current reference</span>
+          <audio id="clips-ref" controls preload="none"></audio>
+        </div>
+        <div id="clips-history"></div>
+      </div>
+      <div class="cand-head">
+        <span class="sub-title">Candidates</span>
+        <select id="clips-group" hidden title="Which folder's clips the table shows"></select>
+        <span class="note">click a row to add it to the reference, again to drop it</span>
+      </div>
       <div id="clips-wrap">
         <table>
-          <thead><tr><th>Order</th><th>Source</th><th>FileDataID</th><th>Length</th><th>Starts at</th><th>Listen</th></tr></thead>
+          <thead><tr><th class="play"></th><th>Clip</th><th class="fd">FileDataID</th><th>Length</th><th class="pos">Order</th></tr></thead>
           <tbody id="clips-body"></tbody>
         </table>
       </div>
-      <p class="note">Click a row to add it, click again to drop it. Click order is the
-        order in the clip, head first &mdash; only the first seconds of a reference reach
-        the model, so what you put at the top is the voice. On a picked row, &#x2912; moves it
-        to the head and &#x25B2;/&#x25BC; one place earlier or later.</p>
-    </details>
+    </div>
   </section>
 </main>
 <div id="toast"></div>
@@ -264,6 +552,7 @@ async function api(path, options) {
 function applyState(s) {
   const first = !state;
   state = s;
+  if (first) { $("booting").remove(); document.querySelector("main").removeAttribute("inert"); document.querySelector("main").classList.remove("booting"); }
   $("s-model").textContent = s.model; $("s-corpus").textContent = s.corpus;
   $("s-bulk").textContent = s.bulk_service; $("s-bulk").className = s.bulk_service === "active" ? "warn" : "";
   $("s-config").textContent = s.config_path;
@@ -274,9 +563,13 @@ function applyState(s) {
   ref.innerHTML = `<option value="">the voice's own (${"as configured"})</option>` + s.voices.map(v => `<option value="${v}">${v}.wav</option>`).join("");
   if (first) { voice.value = s.voices.includes("dwarf-female") ? "dwarf-female" : s.voices[0]; }
   else { voice.value = keepVoice; ref.value = keepRef; }
+  // the 15 s refresh lands here: an open voice list is redrawn where it was scrolled to
+  if (!$("voice-results").hidden) renderVoiceResults(false);
   if (first) loadVoiceSettings();
   showResolved();
   showSpeakerPin();
+  markKnobs();  // a Keep comes back through here, and so does a change made elsewhere
+  if (first) listVoiceLines(true);
 }
 
 // [voices] approved: voices someone has listened to and signed off on, starred in the
@@ -289,7 +582,63 @@ function showApproval() {
   $("approved").indeterminate = mark === "stale";
   $("approved-label").textContent = mark === "stale"
     ? "Approved before a change (tick to approve as it is now)" : "Approved by ear";
+  // offered while the approval is stale and the pick heard is still in the history
+  $("revert-voice").hidden = !(state.revertable || []).includes($("voice").value);
+  showNotes();
 }
+
+// Tasting notes for the chosen voice, saved as you go: a pause in typing or leaving
+// the box writes [voices.notes]. The 15 s refresh never overwrites a note being
+// written, and changing voice saves the one left behind first.
+let notesVoice = null, notesDirty = false, notesTimer = null;
+function showNotes() {
+  if (!state) return;
+  const voice = $("voice").value, box = $("voice-notes");
+  if (voice === notesVoice && (notesDirty || document.activeElement === box)) return;
+  const text = (state.notes || {})[voice] || "";
+  const changedVoice = voice !== notesVoice;
+  notesVoice = voice; box.value = text;
+  if (changedVoice) $("voice-notes-box").open = !!text;
+  markNotes(text ? "" : "none yet");
+}
+function markNotes(status) {
+  const text = $("voice-notes").value.trim();
+  const lines = text ? text.split("\n").length : 0;
+  $("voice-notes-status").textContent = status || (lines ? `${lines} line${lines === 1 ? "" : "s"}` : "none yet");
+}
+async function saveNotes() {
+  clearTimeout(notesTimer);
+  if (!notesDirty || !notesVoice) return;
+  const voice = notesVoice, text = $("voice-notes").value;
+  notesDirty = false;
+  try {
+    const r = await api("/api/voice/notes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ voice, text }) });
+    state.notes = r.notes;
+    if (notesVoice === voice) markNotes(text.trim() ? "saved" : "none yet");
+    refreshVoiceListMarks();
+  } catch (e) { notesDirty = true; markNotes("not saved: " + e.message); }
+}
+// the ✎ in the list and the box follow a saved note without a full refresh
+function refreshVoiceListMarks() { if (typeof showVoice === "function") showVoice(); }
+$("voice-notes").addEventListener("input", () => {
+  notesDirty = true; markNotes("unsaved…");
+  clearTimeout(notesTimer); notesTimer = setTimeout(saveNotes, 1200);
+});
+$("voice-notes").addEventListener("blur", saveNotes);
+
+$("revert-voice").addEventListener("click", async () => {
+  const voice = $("voice").value;
+  if (!confirm(`Put ${voice} back to what was approved? Its source clips, gaps and settings are replaced and its reference rebuilt; the current pick stays in Earlier picks.`)) return;
+  busy($("revert-voice"), true);
+  try {
+    const r = await api("/api/voice/revert", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ voice }) });
+    applyState(r);
+    loadVoiceSettings();
+    if (clipsVoice === voice) loadClips(true);  // the reverted pick, in the table
+    toast(r.message, r.reverted ? "ok" : "warn");
+  } catch (e) { toast(e.message, "warn"); }
+  busy($("revert-voice"), false);
+});
 
 $("approved").addEventListener("change", async () => {
   const box = $("approved"), voice = $("voice").value, approved = box.checked;
@@ -306,78 +655,246 @@ $("approved").addEventListener("change", async () => {
 // archetype the game casts - including the ones with no clip yet, which is where picking
 // clips matters most, since wowdata.archetype_voice puts NPCs on an archetype as soon as
 // its file exists.
-function voiceOptions(s) {
-  const rows = s.pickable || s.voices.map(v => ({ voice: v, clip: true, displays: null }));
-  const option = r => {
-    const star = { current: " ★", stale: " ☆" }[s.approved[r.voice]] || "";
-    const who = r.label ? ` — ${esc(r.label)}` : "";
-    // what the voice is worth picking for: how many creature displays it answers
-    // for, and how many lines it actually speaks
-    const bits = [];
-    if (r.displays) bits.push(`${r.displays} display${r.displays === 1 ? "" : "s"}`);
-    if (r.lines) bits.push(`${r.lines} line${r.lines === 1 ? "" : "s"}`);
-    if (!r.clip) bits.unshift("no clip yet");
-    const note = bits.length ? ` — ${bits.join(", ")}` : "";
-    return `<option value="${r.voice}">${r.voice}${who}${star}${note}</option>`;
-  };
-  const group = (label, list) => list.length
-    ? `<optgroup label="${label}">` + list.map(option).join("") + "</optgroup>"
-    : "";
-  // While the search box has text, one list best match first instead of the groups.
-  // The voice in use stays at the top, so narrowing the list never changes the voice
-  // behind the page's back (a select whose value vanishes silently takes its first).
-  const query = $("voice-search").value.trim();
+function voiceRows(s) { return s.pickable || s.voices.map(v => ({ voice: v, clip: true, displays: null })); }
+
+// what the voice is worth picking for: how many creature displays it answers for, and
+// how many lines it actually speaks
+function voiceNote(s, r) {
+  // most telling first: who speaks in it, how much they say, then how many creature
+  // displays could reach it
+  const bits = [];
+  const count = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  if (r.speakers) bits.push(count(r.speakers, "speaker"));
+  if (r.lines) bits.push(count(r.lines, "line"));
+  if (r.displays) bits.push(count(r.displays, "display"));
+  if (r.species) bits.unshift(`no clip of its kind yet, read as ${r.species} now`);
+  else if (!r.clip) bits.unshift(r.borrows ? `reads ${r.borrows}.wav until it has its own` : "no clip yet");
+  return bits.join(", ");
+}
+function voiceStar(s, r) {
+  return ({ current: " ★", stale: " ☆" }[s.approved[r.voice]] || "") + ((s.notes || {})[r.voice] ? " ✎" : "");
+}
+
+// Best match first; every word of the query has to find itself somewhere (fuzzyScore)
+function voiceMatches(s, query) {
+  return voiceRows(s).map(r => ({ r, score: fuzzyScore(query, `${r.voice} ${r.label || ""}`) }))
+    .filter(h => h.score > 0)
+    // a tie goes to the shorter name: the plain voice before its archetypes
+    .sort((a, b) => b.score - a.score || a.r.voice.length - b.r.voice.length).map(h => h.r);
+}
+
+// The list in groups, or while searching the voice in use and the matches best first.
+// [label, rows] pairs, empty groups included.
+function voiceGroups(s, query) {
+  const rows = voiceRows(s);
   if (query) {
     const current = $("voice").value;
-    const hits = rows.map(r => ({ r, score: fuzzyScore(query, `${r.voice} ${r.label || ""}`) }))
-      .filter(h => h.score > 0 && h.r.voice !== current)
-      .sort((a, b) => b.score - a.score).map(h => h.r);
-    const mine = rows.filter(r => r.voice === current);
-    return group("In use", mine) + (hits.length ? group(`Matches (${hits.length})`, hits)
-      : `<optgroup label="No matches for “${esc(query)}”"></optgroup>`);
+    const hits = voiceMatches(s, query).filter(r => r.voice !== current);
+    return [["In use", rows.filter(r => r.voice === current)], [`Matches (${hits.length})`, hits]];
   }
   const isArch = r => r.archetype;
   const isNpc = r => r.voice.startsWith("npc-");
-  return group("Race voices", rows.filter(r => !isArch(r) && !isNpc(r)))
-       + group("Archetypes — with a clip", rows.filter(r => isArch(r) && r.clip))
-       + group("Archetypes — not built yet", rows.filter(r => isArch(r) && !r.clip))
-       + group("Named NPCs", rows.filter(isNpc));
+  return [["Race voices", rows.filter(r => !isArch(r) && !isNpc(r) && !r.borrows && !r.species)],
+          ["Archetypes — with a clip", rows.filter(r => isArch(r) && r.clip)],
+          ["Archetypes — not built yet", rows.filter(r => isArch(r) && !r.clip)],
+          ["Named NPCs", rows.filter(isNpc)],
+          ["Species with no clip yet", rows.filter(r => r.species)],
+          ["Races borrowing another's clip", rows.filter(r => r.borrows)]];
 }
 
-// Every character of the query in order, anywhere in the text; 0 when they are not
-// all there. Runs of consecutive letters and letters that start a word score higher,
-// so "vari" ranks Varimathras over a voice that merely has v, a, r and i in it, and
-// "dwarf guard" finds dwarf-male-guard.
+// The hidden select behind the combobox: every voice, always, so whatever is set on it
+// is a real option (a select whose value vanishes silently takes its first).
+function voiceOptions(s) {
+  const option = r => {
+    const note = voiceNote(s, r);
+    return `<option value="${r.voice}">${esc(voiceTitle(s, r))}${note ? ` — ${esc(note)}` : ""}</option>`;
+  };
+  return voiceGroups(s, "").filter(([, list]) => list.length)
+    .map(([label, list]) => `<optgroup label="${esc(label)}">` + list.map(option).join("") + "</optgroup>").join("");
+}
+function voiceTitle(s, r) { return `${r.voice}${r.label ? ` — ${r.label}` : ""}${voiceStar(s, r)}`; }
+
+// Each word of the query is scored on its own and they all have to be there, in any
+// order: "guard dwarf" finds dwarf-male-guard. A word is its characters in order anywhere
+// in the text, runs of consecutive letters and letters that start a word scoring higher,
+// so "vari" ranks Varimathras over a voice that merely has v, a, r and i in it. A word
+// that is not there that way may still be a typo of one: within one edit of the start of
+// a word for four letters or more, two for seven ("nigthelf", "sylvanus"), scored low so
+// a real match always ranks first. 0 when a word finds nothing.
 function fuzzyScore(query, text) {
-  const q = query.toLowerCase().replace(/\s+/g, ""), t = text.toLowerCase();
+  const t = text.toLowerCase(), words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return 0;
+  let total = 0;
+  for (const w of words) {
+    const s = subsequenceScore(w, t) || typoScore(w, t);
+    if (!s) return 0;
+    total += s;
+  }
+  if (t.includes(query.toLowerCase().trim())) total += query.length * 2;  // a plain substring wins
+  return total;
+}
+
+function subsequenceScore(q, t) {
   let score = 0, run = 0, from = 0;
   for (const ch of q) {
     const at = t.indexOf(ch, from);
     if (at < 0) return 0;
     run = at === from ? run + 1 : 1;
-    score += run * 2 + (at === 0 || /[\s\-—_]/.test(t[at - 1]) ? 3 : 0) - Math.min(at - from, 5) * 0.2;
+    score += run * 2 + (at === 0 || /[\s\-—_()]/.test(t[at - 1]) ? 3 : 0) - Math.min(at - from, 5) * 0.2;
     from = at + 1;
   }
-  if (t.includes(query.toLowerCase().trim())) score += q.length * 2;  // a plain substring wins
   return Math.max(score, 0.01);
 }
 
-function refreshVoiceList() {
-  if (!state) return;
-  const voice = $("voice"), keep = voice.value;
-  voice.innerHTML = voiceOptions(state);
-  voice.value = keep;
+function typoScore(q, t) {
+  if (q.length < 4) return 0;
+  const allowed = q.length >= 7 ? 2 : 1;
+  let best = Infinity;
+  // against each word of the text, and against its first q.length letters (a prefix
+  // typed with a typo: "nigth" for nightelf)
+  for (const word of t.split(/[\s\-—_()]+/).filter(Boolean)) {
+    best = Math.min(best, editDistance(q, word), editDistance(q, word.slice(0, q.length)));
+  }
+  return best <= allowed ? q.length * (allowed + 1 - best) * 0.5 : 0;
 }
-$("voice-search").addEventListener("input", refreshVoiceList);
-// Enter takes the best match; Escape clears the search and shows the groups again
+
+// Optimal string alignment: a swapped pair of letters ("gth" for "ght") is one edit
+function editDistance(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+    if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+  }
+  return d[a.length][b.length];
+}
+
+// The combobox. #voice, hidden, is still the value every other part of the page reads,
+// sets and listens to; the box only shows it and drives it. Away from the box it reads
+// the voice in use. Focused, that text is selected and the list under it holds every
+// voice in its groups; typing replaces it and narrows the list to the matches. Arrow
+// keys move, Enter or a click takes one, Escape puts the voice back and closes, and
+// leaving the box closes it.
+let voiceActive = 0, voiceQuery = "";
+const VOICE_RESULTS_MAX = 15;
+function voiceRow(v) { return (state && voiceRows(state).find(r => r.voice === v)) || { voice: v }; }
+
+// Lines are picked and sessions restored by setting #voice's value outright, with no
+// change event, so the box follows the select's own setter rather than the event.
+{
+  const select = $("voice"), base = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
+  Object.defineProperty(select, "value", { configurable: true,
+    get() { return base.get.call(this); },
+    set(v) { base.set.call(this, v); showVoice(); } });
+}
+function showVoice() {
+  const box = $("voice-search"), v = $("voice").value;
+  if (!state || !v) return;
+  const r = voiceRow(v), title = voiceTitle(state, r);
+  box.title = title;
+  // never under someone's typing: the refresh sets the value again every 15 s
+  if (document.activeElement !== box) box.value = title;
+  $("voice-note").textContent = voiceNote(state, r);
+}
+
+function openVoiceList() {
+  const items = renderVoiceResults();
+  // browsing opens on the voice in use, searching on the best match below it
+  const at = voiceQuery ? items.findIndex(li => li.dataset.v !== $("voice").value) : items.findIndex(li => li.dataset.v === $("voice").value);
+  voiceActive = Math.max(at, 0);
+  renderVoiceResults();
+}
+function closeVoiceList() {
+  $("voice-results").hidden = true;
+  $("voice-search").setAttribute("aria-expanded", "false");
+  $("voice-search").removeAttribute("aria-activedescendant");
+}
+// Draws the list and returns its options; scroll false keeps where it was scrolled to
+function renderVoiceResults(scroll = true) {
+  const box = $("voice-results"), input = $("voice-search");
+  if (!state || document.activeElement !== input) { closeVoiceList(); return []; }
+  box.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+  const current = $("voice").value, top = box.scrollTop;
+  let n = 0, html = "";
+  const option = r => {
+    const note = voiceNote(state, r), i = n++;
+    return `<li role="option" id="voice-opt-${i}" data-v="${esc(r.voice)}" aria-selected="${i === voiceActive}"` +
+      ` class="${i === voiceActive ? "active" : ""}${r.voice === current ? " current" : ""}">${esc(voiceTitle(state, r))}` +
+      `${note ? ` <span class="m">${esc(note)}</span>` : ""}${r.voice === current ? ` <span class="m">(in use)</span>` : ""}</li>`;
+  };
+  for (const [label, list] of voiceGroups(state, voiceQuery)) {
+    // only the matches are cut short; the full list is a few hundred and scrolls
+    const shown = voiceQuery ? list.slice(0, VOICE_RESULTS_MAX) : list;
+    if (!list.length) continue;
+    html += `<li class="group" role="presentation">${esc(label)}</li>` + shown.map(option).join("") +
+      (list.length > shown.length ? `<li class="none" role="presentation">… ${list.length - shown.length} more; keep typing</li>` : "");
+  }
+  if (voiceQuery && !voiceGroups(state, voiceQuery)[1][1].length) html += `<li class="none" role="presentation">No voice matches “${esc(voiceQuery)}”</li>`;
+  box.innerHTML = html;
+  const items = [...box.querySelectorAll("li[data-v]")];
+  voiceActive = Math.min(voiceActive, Math.max(items.length - 1, 0));
+  const active = items[voiceActive];
+  if (active) input.setAttribute("aria-activedescendant", active.id); else input.removeAttribute("aria-activedescendant");
+  if (!scroll) box.scrollTop = top;
+  else if (active) active.scrollIntoView({ block: "nearest" });
+  return items;
+}
+function takeVoice(v) {
+  voiceQuery = ""; voiceActive = 0;
+  const changed = v !== $("voice").value;
+  $("voice").value = v;
+  if (changed) $("voice").dispatchEvent(new Event("change"));
+  $("voice-search").blur();
+  showVoice();
+}
+// The text on focus is the voice in use, selected so typing replaces it; a click's
+// mouseup would otherwise drop the selection it lands in.
+let voiceFocusClick = false;
+$("voice-search").addEventListener("focus", () => {
+  voiceQuery = ""; voiceFocusClick = true;
+  $("voice-search").select();
+  openVoiceList();
+});
+$("voice-search").addEventListener("mouseup", ev => { if (voiceFocusClick) ev.preventDefault(); voiceFocusClick = false; });
+$("voice-search").addEventListener("click", () => { if ($("voice-results").hidden) openVoiceList(); });
+$("voice-search").addEventListener("input", () => { voiceQuery = $("voice-search").value.trim(); openVoiceList(); });
+$("voice-search").addEventListener("blur", () => { voiceQuery = ""; closeVoiceList(); showVoice(); });
+// a press anywhere in the list (a group heading, its scrollbar) keeps the focus in the box
+$("voice-results").addEventListener("mousedown", ev => {
+  ev.preventDefault();
+  const li = ev.target.closest("li[data-v]");
+  if (li) takeVoice(li.dataset.v);
+});
+$("voice-caret").addEventListener("mousedown", ev => {
+  ev.preventDefault();
+  if (document.activeElement !== $("voice-search")) $("voice-search").focus();
+  else if ($("voice-results").hidden) openVoiceList();
+  else closeVoiceList();
+});
 $("voice-search").addEventListener("keydown", ev => {
-  if (ev.key === "Escape") { $("voice-search").value = ""; refreshVoiceList(); return; }
-  if (ev.key !== "Enter") return;
-  const best = $("voice").querySelector('optgroup[label^="Matches"] option');
-  if (!best) return;
-  $("voice").value = best.value;
-  $("voice").dispatchEvent(new Event("change"));
-  $("voice-search").value = ""; refreshVoiceList();
+  voiceFocusClick = false;
+  const box = $("voice-search"), open = !$("voice-results").hidden;
+  if (ev.key === "Escape") {
+    ev.preventDefault();
+    voiceQuery = ""; box.value = voiceTitle(state, voiceRow($("voice").value)); box.select();
+    closeVoiceList();
+    return;
+  }
+  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+    ev.preventDefault();
+    if (!open) { openVoiceList(); return; }
+    const items = [...$("voice-results").querySelectorAll("li[data-v]")];
+    if (!items.length) return;
+    voiceActive = (voiceActive + (ev.key === "ArrowDown" ? 1 : items.length - 1)) % items.length;
+    renderVoiceResults();
+    return;
+  }
+  if (ev.key !== "Enter" || !open) return;
+  const items = [...$("voice-results").querySelectorAll("li[data-v]")];
+  const pick = items[voiceActive] || items[0];
+  if (pick) { ev.preventDefault(); takeVoice(pick.dataset.v); }
 });
 
 // The four boxes keep whatever was typed last, and "Keep these settings" writes them:
@@ -394,10 +911,87 @@ function loadVoiceSettings() {
   $("cfg").value = `${r ? r.cfg_weight : d.cfg_weight}`;
   $("tempo").value = `${r ? r.tempo : d.tempo}`;
   $("pitch").value = `${r ? r.pitch : d.pitch}`;
+  $("speed").value = `${r ? (r.speed ?? 1) : (d.speed ?? 1)}`;
+  markKnobs();
 }
+
+// A knob box that holds anything but the voice's saved value - another number, or a
+// sweep of several - is marked until it matches again or Keep these settings saves it,
+// with the saved value said beside it. Saved is the voice's own [tts.voices] row, else
+// what it resolves to, else the [tts] defaults: what generating the pack would use.
+const KNOBS = [["exag", "exaggeration"], ["cfg", "cfg_weight"], ["tempo", "tempo"], ["pitch", "pitch"], ["speed", "speed"]];
+function markKnobs() {
+  if (!state) return;
+  const r = state.resolved[$("voice").value], d = state.defaults;
+  for (const [id, key] of KNOBS) {
+    // a value the server does not send is the knob's neutral one (speed before it existed)
+    const neutral = key === "tempo" || key === "speed" ? 1 : 0;
+    const saved = Number((r ? r[key] : d[key]) ?? neutral);
+    const typed = $(id).value.split(/[,\s]+/).filter(Boolean).map(Number);
+    const departs = typed.length !== 1 || !(Math.abs(typed[0] - saved) < 1e-9);
+    const field = $(id).parentElement;
+    field.classList.toggle("unsaved", departs);
+    let note = field.querySelector(".saved-note");
+    if (!note) { note = document.createElement("div"); note.className = "hint saved-note"; field.appendChild(note); }
+    note.innerHTML = departs
+      ? `not saved: ${esc($("voice").value)} has ${saved} <button type="button" class="knob-reset" data-knob="${id}" data-saved="${saved}" ` +
+        `title="Put back ${saved}, what ${esc($("voice").value)} has saved">reset</button>`
+      : "";
+  }
+}
+for (const [id] of KNOBS) $(id).addEventListener("input", markKnobs);
+document.querySelector(".fields.knobs").addEventListener("click", ev => {
+  const b = ev.target.closest("button.knob-reset");
+  if (!b) return;
+  $(b.dataset.knob).value = b.dataset.saved;
+  markKnobs();
+});
+// Who is read in the chosen voice, most lines first, each linked to wowhead. Loaded
+// once per voice; a species voice nobody is cast on yet lists who would move to it.
+let npcsVoice = null, npcsRows = [], npcsRetry = null;
+async function loadNpcs(force) {
+  const voice = $("voice").value;
+  if (!voice || (voice === npcsVoice && !force)) return;
+  npcsVoice = voice; clearTimeout(npcsRetry);
+  try {
+    const d = await api(`/api/npcs/${encodeURIComponent(voice)}`);
+    if ($("voice").value !== voice) return;
+    if (d.status === "loading") {
+      $("npcs-status").textContent = "(the corpus is still loading…)";
+      $("npcs-list").innerHTML = "";
+      npcsRetry = setTimeout(() => loadNpcs(true), 3000);
+      return;
+    }
+    npcsRows = d.npcs;
+    renderNpcs();
+  } catch (e) { $("npcs-status").textContent = `(${e.message})`; }
+}
+function renderNpcs() {
+  const q = $("npcs-filter").value.trim().toLowerCase();
+  const shown = q ? npcsRows.filter(n => n.name.toLowerCase().includes(q) || n.key.includes(q)) : npcsRows;
+  const lines = npcsRows.reduce((t, n) => t + n.lines, 0);
+  const moving = npcsRows.some(n => n.now);
+  $("npcs-status").textContent = npcsRows.length
+    ? `${npcsRows.length} speaker${npcsRows.length === 1 ? "" : "s"}, ${lines} line${lines === 1 ? "" : "s"}` +
+      (moving ? " · would move here once this voice has a clip" : "") + (q ? ` · ${shown.length} shown` : "")
+    : "none";
+  $("npcs-filter").hidden = npcsRows.length < 12;
+  $("npcs-list").innerHTML = shown.map(n => {
+    const name = esc(n.name);
+    const link = n.url ? `<a href="${esc(n.url)}" target="_blank" rel="noopener" title="${esc(n.key)} on wowhead">${name}</a>` : name;
+    return `<li>${link} <span class="m">${n.lines}${n.now ? `, now ${esc(n.now)}` : ""}</span></li>`;
+  }).join("");
+}
+$("npcs-filter").addEventListener("input", renderNpcs);
+// open or shut, remembered in this browser; the counts in the heading show either way
+try { if (localStorage.getItem("fvo-npcs-open") === "0") $("npcs").open = false; } catch (e) { /* this browser only */ }
+$("npcs").addEventListener("toggle", () => {
+  try { localStorage.setItem("fvo-npcs-open", $("npcs").open ? "1" : "0"); } catch (e) { /* this browser only */ }
+});
 
 function showResolved() {
   if (!state) return;
+  loadNpcs();
   showApproval();
   renderAlso();
   const r = state.resolved[$("voice").value];
@@ -405,11 +999,18 @@ function showResolved() {
   const ref = $("reference").value;
   $("resolved").innerHTML = `Saved resolution for <b>${$("voice").value}</b>: clip <b>${r.clip || "none (built-in voice)"}</b>` +
     (r.source !== $("voice").value ? ` borrowed from <b>${r.source}</b>` : "") +
-    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>, tempo <b>${r.tempo}</b>, pitch <b>${r.pitch}</b>` +
+    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>, tempo <b>${r.tempo}</b>, pitch <b>${r.pitch}</b>, speed <b>${r.speed ?? 1}</b>` +
     (ref ? ` · this run clones from <b>${ref}.wav</b> instead` : "");
 }
 
-async function refresh() { try { applyState(await api("/api/state")); } catch (e) { toast(e.message, "warn"); } }
+async function refresh() {
+  try { applyState(await api("/api/state")); }
+  catch (e) {
+    // before the first answer the banner says why the page is still locked
+    if (!state && $("booting")) $("booting-detail").textContent = `the server did not answer (${e.message}); trying again every 15 s`;
+    else toast(e.message, "warn");
+  }
+}
 
 let searchTimer;
 $("q").addEventListener("input", () => {
@@ -456,18 +1057,27 @@ rowPlayer.addEventListener("ended", () => { if (rowButton) rowButton.textContent
 
 // A voice's own lines, longest first: a reference that holds up on a greeting can still
 // fall apart on a paragraph, and these are the words it will actually have to say.
-$("in-voice").addEventListener("click", async () => {
+// Every line of the chosen voice, longest first. Run when a voice is chosen (the list,
+// the first load, a restored session), not when picking a line switches the voice,
+// which would replace the list just clicked in; the button runs it on demand. An
+// answer for a voice already left behind is dropped.
+async function listVoiceLines(quiet) {
   const voice = $("voice").value;
+  if (!voice) return;
   try {
-    const d = await api(`/api/lines?voice=${encodeURIComponent(voice)}`);
-    if (!d.rows.length) { toast(`no lines are spoken in ${voice}`, "warn"); $("results").innerHTML = ""; return; }
-    renderResults(d.rows);
+    const d = await api(`/api/lines?voice=${encodeURIComponent(voice)}&limit=0`);
+    if ($("voice").value !== voice) return;
     $("q").value = "";
-    toast(d.total > d.rows.length
-      ? `${voice}: the ${d.rows.length} longest of ${d.total} lines`
-      : `${voice}: ${d.total} line${d.total === 1 ? "" : "s"}`, "ok");
-  } catch (e) { toast(e.message, "warn"); }
-});
+    if (!d.rows.length) {
+      $("results").innerHTML = "";
+      if (!quiet) toast(`no lines are spoken in ${voice}`, "warn");
+      return;
+    }
+    renderResults(d.rows);
+    if (!quiet) toast(`${voice}: ${d.total} line${d.total === 1 ? "" : "s"}`, "ok");
+  } catch (e) { if (!quiet) toast(e.message, "warn"); }
+}
+$("in-voice").addEventListener("click", () => listVoiceLines(false));
 
 $("random").addEventListener("click", async () => {
   try {
@@ -484,10 +1094,20 @@ function pick(row, li) {
   $("results").querySelectorAll("li").forEach(x => x.classList.remove("active")); li.classList.add("active");
   $("text").value = row.spoken;
   if (state.voices.includes(row.voice)) $("voice").value = row.voice;
-  $("current").innerHTML = `<b>${esc(row.title)}</b> <span class="badge">${row.base}</span> <span class="badge">${row.subfolder}</span> <span class="badge">${row.source}</span>` +
-    `<div class="m">${esc(row.speaker || "")} · voice ${row.voice}` +
-    (row.pack_url ? ` · in the pack now${row.pack ? ` (${esc(row.pack)})` : ""}: <audio controls preload="none" src="${row.pack_url}"></audio>` : ` · <span class="warn">no file in the pack yet</span>`) +
-    `</div><div class="m">Raw: ${esc(row.raw)}</div><div id="speaker-pin" class="row"></div>`;
+  // the pack's file plays from the card's top right, beside the title; wowhead links
+  // the quest (its ID leads the base name, after an m-/f- branch) and the speaker
+  const quest = row.subfolder === "Quests" ? (row.base.replace(/^[mf]-/, "").match(/^(\d+)-/) || [])[1] : null;
+  const npc = /^\d+$/.test(row.speaker_key || "") ? `https://www.wowhead.com/npc=${row.speaker_key}`
+    : /^-\d+$/.test(row.speaker_key || "") ? `https://www.wowhead.com/object=${row.speaker_key.slice(1)}` : null;
+  const link = (url, text) => `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
+  $("current").innerHTML =
+    `<div class="current-head"><div><b>${esc(row.title)}</b> <span class="badge">${row.base}</span> <span class="badge">${row.subfolder}</span> <span class="badge">${row.source}</span>` +
+    `${quest ? ` <span class="links">${link(`https://www.wowhead.com/quest=${quest}`, `quest ${quest} on wowhead`)}</span>` : ""}</div>` +
+    (row.pack_url
+      ? `<div class="in-pack"><span class="m">in the pack now${row.pack ? ` (${esc(row.pack)})` : ""}</span><audio controls preload="none" src="${row.pack_url}"></audio></div>`
+      : `<div class="in-pack"><span class="warn">no file in the pack yet</span></div>`) + `</div>` +
+    `<div class="m">${npc ? link(npc, esc(row.speaker || row.speaker_key)) : esc(row.speaker || "")} · voice ${row.voice}</div>` +
+    `<div class="m">Raw: ${esc(row.raw)}</div><div id="speaker-pin" class="row"></div>`;
   showSpeakerPin();
   showResolved();
 }
@@ -533,14 +1153,17 @@ function showSpeakerPin() {
 }
 
 $("voice").addEventListener("change", () => {
+  if (notesDirty) saveNotes();  // the voice left behind keeps what was typed
   loadVoiceSettings();
   showResolved();
+  listVoiceLines(true);
   showSpeakerPin();
   if (clipsVoice && $("voice").value !== clipsVoice) {
-    clipsRows = []; picks = []; clipsVoice = null;
+    clipsRows = []; picks = []; gapAfter = new Map(); clipsWanted = null; clipsVoice = null;
     $("clips-group").hidden = true; $("clips-group").innerHTML = "";
-    $("clips-body").innerHTML = ""; $("clips-status").textContent = ""; $("clips-warn").textContent = "";
-    $("clips-budget").textContent = ""; $("clips-ref").removeAttribute("src");
+    $("clips-status").textContent = ""; $("clips-warn").textContent = "";
+    $("clips-ref").removeAttribute("src");
+    renderClips();  // empties the table and the reference list
   }
 });
 $("reference").addEventListener("change", showResolved);
@@ -548,7 +1171,7 @@ $("reference").addEventListener("change", showResolved);
 // The server rejects a setting outside its bounds, but it should not have to: a typo
 // in one of these boxes is caught here, naming the field and what it allows, rather
 // than coming back as a failed request.
-const BOUNDS = { exag: [0, 2, "Exaggeration"], cfg: [0, 1, "cfg_weight"], tempo: [0.5, 2, "Tempo"], pitch: [-12, 12, "Pitch"] };
+const BOUNDS = { exag: [0, 2, "Emotion (exaggeration)"], cfg: [0, 1, "Adherence (cfg_weight)"], tempo: [0.5, 2, "Tempo"], pitch: [-12, 12, "Pitch"], speed: [0.5, 2, "Speed"] };
 
 function numbers(value, field) {
   const out = value.split(/[,\s]+/).filter(Boolean).map(Number);
@@ -567,6 +1190,7 @@ $("go").addEventListener("click", async () => {
     body = { text: $("text").value, voice: $("voice").value, reference: $("reference").value || null,
              exaggeration: numbers($("exag").value, "exag"), cfg_weight: numbers($("cfg").value, "cfg"),
              tempo: numbers($("tempo").value, "tempo"), pitch: numbers($("pitch").value, "pitch"),
+             speed: numbers($("speed").value, "speed"),
              takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
   busy($("go"), true); runSession = null; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
@@ -590,18 +1214,24 @@ $("stop").addEventListener("click", async () => {
   busy($("stop"), true);
   try {
     const r = await api(`/api/generate/${encodeURIComponent(runSession)}/stop`, { method: "POST" });
-    $("progress").textContent += r.stopping ? " · stopping after the take in progress…" : "";
+    $("progress").textContent += r.stopping ? " · stopping after the sentence in progress…" : "";
   } catch (e) { toast(e.message, "warn"); busy($("stop"), false); }
 });
 
 function onEvent(ev) {
-  if (ev.event === "start") { runSession = ev.session; $("progress").textContent = `spoken as: “${ev.spoken}”`; return; }
+  // the spoken text is in the Line box above already; the line under Takes only says
+  // how the run is going
+  if (ev.event === "start") { runSession = ev.session; return; }
   if (ev.event === "stopped") { $("progress").textContent = `stopped · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   if (ev.event === "error") { toast(ev.message, "warn"); $("progress").textContent = ev.message; return; }
-  if (ev.event === "done") { $("progress").textContent += ` · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
+  if (ev.event === "done") { $("progress").textContent = `${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
+  // a take: the count so far, keeping a Stop already asked for
+  const stopping = $("progress").textContent.includes("stopping") ? " · stopping after the sentence in progress…" : "";
+  $("progress").textContent = `${ev.n} take${ev.n === 1 ? "" : "s"} so far…${stopping}`;
   const tr = document.createElement("tr");
   const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
-    (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "");
+    (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "") +
+    (ev.speed && ev.speed !== 1 ? ` · speed ${ev.speed}` : "");
   tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
     `<td class="n">${ev.seconds === "" ? "" : `${ev.seconds}s in ${ev.elapsed}s`}</td><td></td>`;
   tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
@@ -614,7 +1244,7 @@ function onEvent(ev) {
     busy(keep, true);
     try {
       applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, reference: ev.reference }) }));
+        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, speed: ev.speed || 1, reference: ev.reference }) }));
       toast(`Kept for ${$("voice").value}. The next generate run restages that voice's files.`, "ok");
       document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
     } catch (e) { toast(e.message, "warn"); }
@@ -623,7 +1253,7 @@ function onEvent(ev) {
   cell.appendChild(keep);
   if (current) {
     const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
-    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0]);
+    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0, ev.speed || 1]);
     write.title =
       "Generate this line once more under the SAVED settings and put that file in the pack, " +
       "then record its fingerprint so the nightly run neither redoes it nor misses it.\n\n" +
@@ -653,8 +1283,8 @@ function onEvent(ev) {
 
 function isSaved(recipe) {
   if (!state) return false;
-  const [clip, e, c, t, p = 0] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
-  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t && (r.pitch || 0) === p;
+  const [clip, e, c, t, p = 0, sp = 1] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
+  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t && (r.pitch || 0) === p && (r.speed ?? 1) === sp;
 }
 
 $("p-keep").addEventListener("click", async () => {
@@ -681,9 +1311,9 @@ $("sessions").addEventListener("change", () => {
   const s = sessionsCache.find(x => x.session === $("sessions").value);
   if (!s) return;
   $("takes-body").innerHTML = ""; $("progress").textContent = `takes from ${s.session}`;
-  if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); }
+  if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); listVoiceLines(true); }
   s.takes.forEach((t, i) => onEvent({ event: "take", n: i + 1, take: t.take, name: t.name, url: t.url, seconds: "", elapsed: "",
-    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, reference: null }));
+    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, speed: t.speed, reference: null }));
 });
 
 $("rebuild").addEventListener("click", async () => {
@@ -698,61 +1328,254 @@ $("rebuild").addEventListener("click", async () => {
 // runs every 15 s and would otherwise wipe a half-made pick. It is invalidated in one
 // place: the voice select's change handler. applyState restores voice.value by
 // assignment, which fires no change event, so a refresh cannot reach this.
-let clipsVoice = null, clipsRows = [], picks = [], clipsWindows = { t3: 6, s3gen: 10 }, clipsPoll = null;
+let clipsSeedPending = false;  // Load candidates asked for the saved picks; not seeded yet
+// An Earlier pick waiting for the sources it needs to finish loading before it is shown
+let clipsWanted = null;
+// Adds the voices and folders a pick's clips come from to "Also offer clips from", so
+// the whole pick is listed under its own groups instead of as strays. True when some
+// were missing, which means the table has to load them before the pick can show.
+function addPickSources(voice, uses) {
+  const missing = (uses || []).filter(v => !alsoOf(voice).includes(v));
+  if (!missing.length) return false;
+  setAlso(voice, [...alsoOf(voice), ...missing]);
+  toast(`adding what this pick uses: ${missing.join(", ")}`, "ok");
+  return true;
+}
+// Seconds of silence after a pick, keyed by the clip it follows, so it moves with that
+// clip when the order changes. None set is 0; the last pick's is never used.
+let gapAfter = new Map();
+function gapOf(f) { return gapAfter.get(f) || 0; }
+// [voices.sources].gaps, aligned with the picks: one per pick but the last
+function gapsList() { return picks.slice(0, -1).map(gapOf); }
+function seedGaps(clips, gaps) {
+  gapAfter = new Map();
+  (gaps || []).forEach((g, i) => { if (g && clips[i] !== undefined) gapAfter.set(clips[i], g); });
+}
+let clipsVoice = null, clipsRows = [], clipsGroups = [], clipsAbout = {}, picks = [], clipsWindows = { t3: 6, s3gen: 10 }, clipsPoll = null;
+
+// Collapsed clip groups, by group name, remembered in this browser across voices and
+// reloads: "set 59" folded away on one voice is the same idea on the next.
+let clipsCollapsed = new Set();
+try { clipsCollapsed = new Set(JSON.parse(localStorage.getItem("fvo-clips-collapsed") || "[]")); } catch (e) { clipsCollapsed = new Set(); }
+function saveCollapsed() {
+  try { localStorage.setItem("fvo-clips-collapsed", JSON.stringify([...clipsCollapsed])); } catch (e) { /* this browser only */ }
+}
 
 function clipsSeconds(fdid) { const r = clipsRows.find(c => c.fdid === fdid); return r ? r.seconds : 0; }
 
-// Hidden rather than disabled where the move is not possible, so the column stays
-// aligned; a click on a disabled button is not reliably kept from the row.
-function moveButton(move, title, glyph, possible) {
-  return `<button data-move="${move}" title="${title}"${possible ? "" : ' style="visibility:hidden"'}>${glyph}</button>`;
+// What a clip is, without its group's name: the heading above it already says "set 69",
+// so the row says "greeting" ("set 69 greeting"), "flirt" ("speech flirt") or the file.
+function clipLabel(c) {
+  return c.kind.startsWith(c.group + " ") ? c.kind.slice(c.group.length + 1) : c.kind;
+}
+
+// The silence after a pick, on its own row: offered only where it would fall inside the
+// 10 s s3gen window, since past it a gap only dilutes an averaged speaker vector, and
+// where it matters most is between the clips that start in the first 6 s. A gap already
+// set past the window still shows, so a saved one is never hidden. None after the last
+// pick. 0 joins two clips back to back, as before gaps.
+function gapCell(f, i, off) {
+  const g = gapOf(f);
+  const inWindow = off + clipsSeconds(f) < clipsWindows.s3gen;
+  if (i >= picks.length - 1 || (!inWindow && !g)) return `<span class="gap"></span>`;
+  return `<span class="gap${g ? " set" : ""}${inWindow ? "" : " past"}" data-after="${f}">` +
+    `<label title="Seconds of silence between ${i + 1} and ${i + 2}. Back-to-back clips can run two deliveries together ` +
+    `and throw the accent or the cadence; a gap also spends the window, so keep it to a breath.` +
+    `${inWindow ? "" : " This one falls past the 10s window, where it does nothing useful."}">+` +
+    `<input type="number" min="0" max="3" step="0.05" value="${g}" aria-label="Gap after ${i + 1}, seconds">s</label></span>`;
+}
+
+// Where each pick starts in the reference, and which window that is in: t3 reads the
+// first 6 s, s3gen the first 10 s, and the rest only moves an average.
+function pickOffsets() {
+  let at = 0; const offsets = new Map();
+  picks.forEach((f, i) => { offsets.set(f, at); at += clipsSeconds(f) + (i < picks.length - 1 ? gapOf(f) : 0); });
+  return offsets;
+}
+function picksTotal() {
+  if (!picks.length) return 0;
+  const last = picks[picks.length - 1];
+  return pickOffsets().get(last) + clipsSeconds(last);
+}
+// a pick whose source was dropped from "Also offer clips from" stays in the order, and
+// in the build, until it is dropped; it is listed by its FileDataID alone
+function pickRow(f) {
+  return clipsRows.find(r => r.fdid === f) || { fdid: f, kind: String(f), group: "not among the candidates", url: "", seconds: 0 };
+}
+function bandOf(off) { return off < clipsWindows.t3 ? "t3" : off < clipsWindows.s3gen ? "s3" : "out"; }
+const BAND_NAME = { t3: "t3", s3: "s3gen", out: "averaged" };
+
+// One player for every clip button in the panel, the one the line results use, so a
+// clip stops the line before it. A redraw replaces the buttons, so the one now playing
+// is found again by its URL and keeps its stop glyph.
+function playButton(url) {
+  if (!url) return "<span></span>";
+  const on = rowButton && !rowPlayer.paused && rowButton.dataset.play === url;
+  return `<button class="play" data-play="${esc(url)}" title="Listen">${on ? "■" : "▶"}</button>`;
+}
+function relinkPlaying(root) {
+  if (!rowButton || rowPlayer.paused) return;
+  const again = [...root.querySelectorAll("button[data-play]")].find(b => b.dataset.play === rowButton.dataset.play);
+  if (again) rowButton = again;
 }
 
 function renderClips() {
   const body = $("clips-body");
-  if (!clipsRows.length) { body.innerHTML = ""; $("clips-budget").textContent = ""; return; }
-  let at = 0; const offsets = new Map();
-  picks.forEach(f => { offsets.set(f, at); at += clipsSeconds(f); });
-  // the folder select narrows the table, never the picks: a picked row from another
-  // folder stays listed, so the order and the budget always show the whole reference
+  if (!clipsRows.length) { body.innerHTML = ""; renderReference(); return; }
+  // the folder select and the collapsed groups narrow the table only; every pick is
+  // in the reference list above it whatever the table shows
   const group = $("clips-group").hidden ? "" : $("clips-group").value;  // "" is all
-  body.innerHTML = clipsRows.filter(c => !group || c.group === group || picks.includes(c.fdid)).map(c => {
+  // one heading per group, borrowed folders and voices first, then the server's order;
+  // a row whose group turns up again later still files under its first heading
+  const borrowed = new Set(clipsRows.filter(c => c.source === "also").map(c => c.group));
+  const order = new Map([...clipsGroups].sort((a, b) => borrowed.has(b) - borrowed.has(a)).map((g, i) => [g, i]));
+  const shown = clipsRows.filter(c => !group || c.group === group)
+    .map((c, i) => [c, i]).sort((a, b) => (order.get(a[0].group) ?? 1e9) - (order.get(b[0].group) ?? 1e9) || a[1] - b[1])
+    .map(([c]) => c);
+  const tag = { saved: "picked in an earlier session" };
+  let heading = null;
+  body.innerHTML = shown.map(c => {
+    let sub = "";
+    const shut = clipsCollapsed.has(c.group);
+    if (c.group !== heading) {
+      heading = c.group;
+      const all = clipsRows.filter(r => r.group === c.group);
+      const secs = all.reduce((t, r) => t + r.seconds, 0);
+      const picked = all.filter(r => picks.includes(r.fdid)).length;
+      const about = clipsAbout[c.group];
+      sub = `<tr class="sub${c.source === "also" ? " also" : ""}" data-group="${esc(c.group)}" title="${shut ? "Show" : "Hide"} this group's clips"><th colspan="5">` +
+        `<span class="caret">${shut ? "▸" : "▾"}</span><span class="name">${esc(c.group)}</span>` +
+        `${c.source === "also" ? `<span class="borrowed" title="Added with Also offer clips from">borrowed</span>` : ""}<span class="note">${all.length} clip${all.length === 1 ? "" : "s"}, ${secs.toFixed(1)}s` +
+        `${picked ? ` &middot; ${picked} picked` : ""}${tag[c.source] ? ` &middot; ${tag[c.source]}` : ""}</span>` +
+        `${about && !shut ? `<div class="about">${esc(about)}</div>` : ""}</th></tr>`;
+    }
+    if (shut) return sub;
     const i = picks.indexOf(c.fdid);
-    const off = offsets.get(c.fdid);
-    const band = off === undefined ? "" : off < clipsWindows.t3 ? "t3" : off < clipsWindows.s3gen ? "s3" : "out";
-    return `<tr data-f="${c.fdid}" class="${i >= 0 ? "picked" : ""}">` +
-      `<td class="pos">${i >= 0 ? `${i + 1}` +
-        moveButton("top", "Move to the head of the reference", "⤒", i > 0) +
-        moveButton("up", "Move one earlier", "▲", i > 0) +
-        moveButton("down", "Move one later", "▼", i < picks.length - 1) : ""}</td><td class="kind" title="${esc(c.group)}: ${esc(c.kind)}">${esc(c.kind)}</td><td class="n">${c.fdid}</td>` +
+    return sub + `<tr data-f="${c.fdid}" class="${[i >= 0 ? "picked" : "", c.source === "also" ? "also" : ""].join(" ").trim()}" ` +
+      `title="${i >= 0 ? "In the reference; click to drop it" : "Click to add it to the end of the reference"}">` +
+      `<td class="play">${playButton(c.url)}</td>` +
+      `<td class="kind" title="${esc(c.group)}: ${esc(c.kind)}">${esc(clipLabel(c))}</td><td class="n fd">${c.fdid}</td>` +
       `<td class="n">${c.seconds.toFixed(1)}s</td>` +
-      `<td class="at">${off === undefined ? "" : off.toFixed(1) + "s"}` +
-      `${band ? `<span class="pill ${band}">${band === "t3" ? "t3" : band === "s3" ? "s3gen" : "averaged"}</span>` : ""}</td>` +
-      `<td><audio controls preload="none" src="${c.url}" style="width:210px"></audio></td></tr>`;
+      `<td class="pos">${i >= 0 ? `<span class="num">${i + 1}</span>` : `<span class="add">+ add</span>`}</td></tr>`;
   }).join("");
-  body.querySelectorAll("tr").forEach(tr => tr.addEventListener("click", ev => {
-    if (ev.target.closest("audio")) return;
-    const f = +tr.dataset.f, i = picks.indexOf(f);
-    const move = ev.target.closest("button[data-move]");
-    // the order cell of a picked row only ever reorders: a near miss on a button
-    // must not drop the pick
-    if (!move && i >= 0 && ev.target.closest("td.pos")) return;
-    if (move) {
-      // reorder in place; the row stays where it is in the table, its number changes
-      const to = { top: 0, up: i - 1, down: i + 1 }[move.dataset.move];
-      if (i >= 0 && to >= 0 && to < picks.length) { picks.splice(i, 1); picks.splice(to, 0, f); }
-    } else if (i >= 0) picks.splice(i, 1); else picks.push(f);
-    renderClips();
-  }));
-  const total = picks.reduce((t, f) => t + clipsSeconds(f), 0);
+  relinkPlaying(body);
+  renderReference();
+}
+
+// The picks in build order, with the t3 and s3gen marks where they fall: the one place
+// the reference reads as the model will read it.
+function renderReference() {
+  const list = $("clips-picks"), line = $("clips-timeline");
+  const total = picksTotal();
+  if (!clipsRows.length) {
+    list.innerHTML = ""; line.hidden = true; line.innerHTML = ""; $("clips-budget").textContent = "";
+    return;
+  }
+  if (!picks.length) {
+    list.innerHTML = `<li class="empty">Nothing picked yet. Click a candidate below to add it; the first one is the head of the reference, and the first ${clipsWindows.t3}s are what the model mostly hears.</li>`;
+    line.hidden = true; line.innerHTML = ""; $("clips-budget").textContent = "";
+    return;
+  }
+  const offsets = pickOffsets();
+  const marks = [[clipsWindows.t3, "t3 ends"], [clipsWindows.s3gen, "s3gen ends"]];
+  let next = 0, items = [];
+  const mark = ([s, what]) => `<li class="mark">${s}s &middot; ${what}</li>`;
+  picks.forEach((f, i) => {
+    const c = pickRow(f), off = offsets.get(f);
+    // a mark goes before the first clip that starts at or past it
+    while (next < marks.length && off >= marks[next][0]) items.push(mark(marks[next++]));
+    const band = bandOf(off);
+    items.push(`<li data-f="${f}"><span class="n">${i + 1}</span>${playButton(c.url)}` +
+      `<span class="name" title="${esc(c.group)}: ${esc(c.kind)} (${f})">${esc(clipLabel(c))}<span class="from">${esc(c.group)}</span>` +
+      `${c.source === "also" ? `<span class="borrowed">borrowed</span>` : ""}</span>` +
+      `<span class="len">${c.seconds.toFixed(1)}s</span>` +
+      `<span class="at" title="Starts ${off.toFixed(1)}s into the reference">${off.toFixed(1)}s<span class="pill ${band}">${BAND_NAME[band]}</span></span>` +
+      gapCell(f, i, off) +
+      `<span class="moves"><button data-move="top" title="Move to the head of the reference"${i > 0 ? "" : " disabled"}>⤒</button>` +
+      `<button data-move="up" title="Move one earlier"${i > 0 ? "" : " disabled"}>▲</button>` +
+      `<button data-move="down" title="Move one later"${i < picks.length - 1 ? "" : " disabled"}>▼</button>` +
+      `<button data-move="drop" title="Drop it from the reference">×</button></span></li>`);
+  });
+  // a window the picks never reach is said so where its mark would be
+  while (next < marks.length) {
+    const [s, what] = marks[next++];
+    items.push(`<li class="mark short">${s}s &middot; ${what}; the picks stop ${(s - total).toFixed(1)}s short</li>`);
+  }
+  list.innerHTML = items.join("");
+  relinkPlaying(list);
+
+  // the bar runs a little past s3gen, or to the total when that is not much longer;
+  // a long tail past it is cut off and its length said at the right
+  const span = Math.min(Math.max(total, clipsWindows.s3gen * 1.2), clipsWindows.s3gen * 2);
+  const pct = s => `${(Math.min(s, span) / span * 100).toFixed(2)}%`;
+  line.innerHTML = `<div class="track"><div class="zone t3" style="left:0;width:${pct(clipsWindows.t3)}"></div>` +
+    `<div class="zone s3" style="left:${pct(clipsWindows.t3)};width:${pct(clipsWindows.s3gen - clipsWindows.t3)}"></div>` +
+    picks.map((f, i) => {
+      const off = offsets.get(f), secs = clipsSeconds(f);
+      if (off >= span) return "";
+      // coloured by the window each part of it falls in, so a long clip that starts in
+      // t3 shows how much of it is only averaged
+      const shown = Math.min(secs, span - off);
+      const at = s => `${((s - off) / shown * 100).toFixed(1)}%`;
+      const cuts = [clipsWindows.t3, clipsWindows.s3gen].filter(s => s > off && s < off + shown);
+      const colours = ["var(--ok)", "var(--gold)", "var(--dim)"].slice(["t3", "s3", "out"].indexOf(bandOf(off)));
+      const fill = cuts.length ? `background:linear-gradient(to right, ${colours[0]} ${at(cuts[0])}, ` +
+        cuts.map((cut, k) => `${colours[k + 1]} ${at(cut)}` + (cuts[k + 1] ? `, ${colours[k + 1]} ${at(cuts[k + 1])}` : "")).join(", ") + ")" : "";
+      return `<div class="seg ${bandOf(off)}" style="left:${pct(off)};width:${pct(shown)};${fill}" ` +
+        `title="${i + 1}: ${esc(clipLabel(pickRow(f)))}, ${off.toFixed(1)}s to ${(off + secs).toFixed(1)}s">${shown / span > 0.03 ? i + 1 : ""}</div>`;
+    }).join("") + `</div>` +
+    marks.map(([s, what]) => `<div class="mark" style="left:${pct(s)}"><span>${s}s ${what.split(" ")[0]}</span></div>`).join("") +
+    (total > span ? `<span class="more" title="The rest only moves the averaged speaker vector">${total.toFixed(1)}s &rarr;</span>` : "");
+  line.hidden = false;
+
   const inT3 = picks.filter(f => offsets.get(f) < clipsWindows.t3).length;
   const inS3 = picks.filter(f => offsets.get(f) < clipsWindows.s3gen).length;
-  $("clips-budget").innerHTML = picks.length
-    ? `${picks.length} picked, ${total.toFixed(1)}s &middot; ${inT3} reaching the ${clipsWindows.t3}s t3 window &middot; ` +
-      `${inS3} the ${clipsWindows.s3gen}s s3gen one &middot; ${picks.length - inS3} past both, nudging an average` +
-      (total < clipsWindows.t3 ? ` <span class="warn">&mdash; under a full t3 window</span>` : "")
-    : "Nothing picked yet.";
+  $("clips-budget").innerHTML =
+    `${picks.length} clip${picks.length === 1 ? "" : "s"}, ${total.toFixed(1)}s &middot; ${inT3} start in t3, ` +
+    `${inS3 - inT3} in s3gen, ${picks.length - inS3} past both` +
+    (total < clipsWindows.t3 ? ` <span class="warn">&mdash; under a full t3 window</span>` : "");
 }
+
+// Bound once; the rows are redrawn on every change. A play button only plays, in the
+// table and in the reference list alike.
+$("clips-body").addEventListener("click", ev => {
+  const play = ev.target.closest("button[data-play]");
+  if (play) { ev.stopPropagation(); playRow(play.dataset.play, play); return; }
+  const sub = ev.target.closest("tr.sub");
+  if (sub) {
+    const g = sub.dataset.group;
+    if (clipsCollapsed.has(g)) clipsCollapsed.delete(g); else clipsCollapsed.add(g);
+    saveCollapsed();
+    renderClips();
+    return;
+  }
+  const tr = ev.target.closest("tr[data-f]");
+  if (!tr) return;
+  const f = +tr.dataset.f, i = picks.indexOf(f);
+  if (i >= 0) picks.splice(i, 1); else picks.push(f);
+  renderClips();
+});
+$("clips-picks").addEventListener("change", ev => {
+  const input = ev.target.closest(".gap input"), li = ev.target.closest(".gap[data-after]");
+  if (!input || !li) return;
+  const g = Math.min(3, Math.max(0, Math.round((parseFloat(input.value) || 0) * 100) / 100));
+  if (g) gapAfter.set(+li.dataset.after, g); else gapAfter.delete(+li.dataset.after);
+  renderClips();
+});
+$("clips-picks").addEventListener("click", ev => {
+  const play = ev.target.closest("button[data-play]");
+  if (play) { playRow(play.dataset.play, play); return; }
+  const move = ev.target.closest("button[data-move]"), li = ev.target.closest("li[data-f]");
+  if (!move || !li) return;
+  const f = +li.dataset.f, i = picks.indexOf(f);
+  if (i < 0) return;
+  if (move.dataset.move === "drop") { picks.splice(i, 1); gapAfter.delete(f); }
+  else {
+    const to = { top: 0, up: i - 1, down: i + 1 }[move.dataset.move];
+    if (to >= 0 && to < picks.length) { picks.splice(i, 1); picks.splice(to, 0, f); }
+  }
+  renderClips();
+});
 
 // Every build is kept, so trying a clip at the head is reversible: click an older
 // pick to load it back into the table without building, then build if it was better.
@@ -760,14 +1583,45 @@ function renderHistory(history, picked) {
   const box = $("clips-history");
   if (!history || !history.length) { box.innerHTML = ""; return; }
   const same = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
-  box.innerHTML = `<span class="note">Earlier picks: </span>` + history.map((h, i) =>
-    `<button data-i="${i}" class="${same(h.clips, picks) ? "current" : ""}" ` +
-    `title="${h.clips.join(", ")}">${h.recipe ? "automatic build" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"} · ${h.seconds}s</button>`
-  ).join("");
-  box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  const spaced = h => (h.gaps || []).filter(g => g).length;
+  // the same clips with the same gaps, a missing gap counting as 0
+  const padded = (gaps, n) => Array.from({ length: n }, (_, i) => (gaps || [])[i] || 0);
+  const current = h => same(h.clips, picks) && same(padded(h.gaps, picks.length - 1), gapsList());
+  // The pick saved in forever-vo.toml is marked ★, and a pick with audio in the pack
+  // ("released": the nightly voices from it and ships what it made) is marked too and
+  // never leaves the list. Every other pick is an experiment, with an × to drop it. The
+  // one being shown now is gold.
+  box.innerHTML = `<span class="note" title="Every build of this voice, newest first. Click one to load it back; nothing is built until Build and keep. Released picks and the saved one stay; × drops an experiment.">Earlier picks: </span>` + history.map((h, i) => {
+    const kept = h.saved || h.released;
+    return `<span class="pick${current(h) ? " current" : ""}${h.saved ? " saved" : ""}${h.released ? " released" : ""}">` +
+      `<button data-i="${i}" ` +
+      `title="${h.saved ? "The pick saved in forever-vo.toml. " : ""}${h.released ? `Released: ${h.released} pack file${h.released === 1 ? " was" : "s were"} voiced from it, so it stays. ` : ""}` +
+      `${h.clips.join(", ")}${spaced(h) ? `; gaps ${h.gaps.join(", ")}s` : ""}${(h.uses || []).length ? `; uses ${h.uses.join(", ")}` : ""}">` +
+      `${h.saved ? "★ saved · " : ""}${h.released ? `<span class="rel">released</span> ` : ""}` +
+      `${h.recipe ? "automatic build" : h.at === "saved" ? "in forever-vo.toml" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
+      `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""}${h.seconds !== undefined ? ` · ${h.seconds}s` : ""}</button>` +
+      (kept ? "" : `<button class="forget" data-forget="${i}" title="Drop this experiment from Earlier picks">×</button>`) + `</span>`;
+  }).join("");
+  box.querySelectorAll("button.forget").forEach(b => b.addEventListener("click", async () => {
+    const h = history[+b.dataset.forget];
+    try {
+      const r = await api("/api/clips/history/forget", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voice: clipsVoice || $("voice").value, clips: h.clips, gaps: h.gaps || [] }) });
+      renderHistory(r.history, picks);
+    } catch (e) { toast(e.message, "warn"); }
+  }));
+  box.querySelectorAll("button[data-i]").forEach(b => b.addEventListener("click", () => {
     const h = history[+b.dataset.i];
+    // its sources first: the pick shows once they have loaded (loadClips, clipsWanted)
+    if (addPickSources(clipsVoice || $("voice").value, h.uses)) {
+      clipsWanted = h;
+      busy($("clips-load"), true);
+      loadClips(false);
+      return;
+    }
     const missing = h.clips.filter(f => !clipsRows.some(c => c.fdid === f));
     picks = h.clips.filter(f => clipsRows.some(c => c.fdid === f));
+    seedGaps(h.clips, h.gaps);
     renderClips();
     renderHistory(history, picks);
     toast(missing.length
@@ -776,9 +1630,32 @@ function renderHistory(history, picked) {
   }));
 }
 
+// One bar per voice still downloading its candidates from wago: files settled of the
+// total, those that could not be had, and how long it has been. A first load is mostly
+// waiting on wago, and an uncached retail file can take minutes when it is slow.
+function renderClipsProgress(progress, pending) {
+  const box = $("clips-progress");
+  const rows = pending.filter(v => progress[v]).map(v => {
+    const p = progress[v];
+    const left = p.total - p.done;
+    const note = p.total
+      ? `${p.done} of ${p.total} file${p.total === 1 ? "" : "s"}` + (p.failed ? `, ${p.failed} could not be had` : "") +
+        ` · ${p.elapsed}s` + (left && p.elapsed > 60 ? " · wago is slow" : "")
+      : "listing candidates…";
+    return `<div class="bar"><span class="who">${esc(v)}</span><progress max="${Math.max(p.total, 1)}" value="${p.done}"></progress>` +
+      `<span class="note">${note}</span></div>`;
+  });
+  // a voice still listing its candidates has no counts yet
+  const waiting = pending.filter(v => !progress[v]);
+  if (waiting.length) rows.push(`<div class="bar"><span class="who">${esc(waiting.join(", "))}</span><progress></progress><span class="note">starting…</span></div>`);
+  box.innerHTML = rows.join("");
+  box.hidden = !rows.length;
+}
+
 async function loadClips(refresh) {
   const voice = $("voice").value;
   clipsVoice = voice;
+  if (refresh === true) clipsSeedPending = true;
   try {
     const query = new URLSearchParams();
     if (refresh === true) query.set("refresh", "1");
@@ -788,6 +1665,7 @@ async function loadClips(refresh) {
     clipsWindows = d.windows;
     $("clips-status").textContent = `${voice}: ${d.status}` +
       (d.pending.length ? ` · still loading ${d.pending.join(", ")}…` : "");
+    renderClipsProgress(d.progress || {}, d.pending);
     if (d.status.startsWith("failed")) busy($("clips-load"), false);
     $("clips-warn").innerHTML = d.warnings.map(w => `<span class="warn">${esc(w)}</span>`).join("<br>");
     $("clips-ref").src = d.reference_url || "";
@@ -796,6 +1674,8 @@ async function loadClips(refresh) {
     renderHistory(d.history, picks);
     if (d.clips.length) {
       clipsRows = d.clips;
+      clipsGroups = d.groups;
+      clipsAbout = d.about || {};
       const sel = $("clips-group"), keep = sel.value;
       sel.innerHTML = `<option value="">all (${d.clips.length})</option>` + d.groups.map(g => {
         const n = d.clips.filter(c => c.group === g).length;
@@ -803,7 +1683,28 @@ async function loadClips(refresh) {
       }).join("");
       sel.hidden = d.groups.length < 2;
       sel.value = d.groups.includes(keep) ? keep : "";
-      if (refresh !== false || !picks.length) picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
+      // The saved picks are seeded once the voice's own rows are in: borrowed sources
+      // now arrive first while the voice still loads, and seeding then kept only the
+      // picks found among them, for good
+      // Load candidates first adds the sources the saved pick uses, then seeds the
+      // pick once everything has loaded, so its borrowed clips are listed too
+      if (clipsSeedPending && !d.pending.includes(voice) && addPickSources(voice, d.uses)) {
+        // asked again at once: this answer has nothing pending, so the poll below would
+        // stop before the added sources were ever requested
+        setTimeout(() => { busy($("clips-load"), true); loadClips(false); }, 0);
+      } else if (!d.pending.length && (clipsSeedPending || !picks.length)) {
+        picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
+        seedGaps(d.picked, d.gaps);
+        clipsSeedPending = false;
+      }
+      if (clipsWanted && !d.pending.length) {
+        const h = clipsWanted; clipsWanted = null;
+        picks = h.clips.filter(f => clipsRows.some(c => c.fdid === f));
+        seedGaps(h.clips, h.gaps);
+        const missing = h.clips.length - picks.length;
+        toast(missing ? `Loaded ${picks.length} of ${h.clips.length}; ${missing} could not be found.`
+          : `Loaded the pick from ${h.at === "saved" ? "forever-vo.toml" : h.at}. Build to make it the reference again.`, missing ? "warn" : "ok");
+      }
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;
       renderClips();
@@ -815,12 +1716,21 @@ async function loadClips(refresh) {
         if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
         busy($("clips-load"), false);
       }
-    } else if (d.status === "loading") {
-      if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 1000);
     } else {
-      // finished with nothing to offer ("0 clips"): stop polling, or the button spins for good
-      if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
-      busy($("clips-load"), false);
+      // Nothing to list: a voice with no candidates of its own (spirithealer-female)
+      // whose last borrowed source was just dropped, or one still loading. The table
+      // is emptied, or the dropped source's rows would stay on screen for good.
+      clipsRows = []; clipsGroups = []; clipsAbout = {};
+      picks = picks.filter(f => d.picked.includes(f));
+      $("clips-group").hidden = true; $("clips-group").innerHTML = "";
+      renderClips();
+      if (d.status === "loading" || d.pending.length) {
+        if (!clipsPoll) clipsPoll = setInterval(() => loadClips(false), 1000);
+      } else {
+        // finished with nothing to offer ("0 clips"): stop polling, or the button spins for good
+        if (clipsPoll) { clearInterval(clipsPoll); clipsPoll = null; }
+        busy($("clips-load"), false);
+      }
     }
   } catch (e) { toast(e.message, "warn"); busy($("clips-load"), false); }
 }
@@ -831,7 +1741,7 @@ $("clips-load").addEventListener("click", () => {
   busy($("clips-load"), true);
   loadClips(true);
 });
-$("clips-reset").addEventListener("click", () => { picks = []; renderClips(); });
+$("clips-reset").addEventListener("click", () => { picks = []; gapAfter = new Map(); renderClips(); });
 
 // Other voices whose candidates join this voice's table: Thrall's lines for an orc
 // archetype. Remembered per voice in this browser only. A saved pick from another voice
@@ -845,6 +1755,19 @@ function setAlso(voice, list) {
   try { localStorage.setItem("fvo-clips-also", JSON.stringify(clipsAlso)); } catch (e) { /* this browser only */ }
   renderAlso();
 }
+// The voices to borrow from, by the expansion their race comes from (Forever first,
+// as the server orders them), then the named NPCs, whose display's race is no guide to
+// theirs. Only voices with clips of their own to lend are passed in: a species with no
+// clip, or a race that borrows another's and has no speech or sets, would add nothing.
+function alsoVoiceGroups(rows, labelOf) {
+  const option = r => `<option value="${r.voice}">${esc(labelOf(r.voice))}</option>`;
+  const group = (label, list) => list.length ? `<optgroup label="${esc(label)}">` + list.map(option).join("") + "</optgroup>" : "";
+  const named = rows.filter(r => r.voice.startsWith("npc-"));
+  const rest = rows.filter(r => !r.voice.startsWith("npc-"));
+  return ((state && state.expansions) || []).map(e => group(e, rest.filter(r => r.expansion === e))).join("")
+    + group("Named NPCs", named)
+    + group("Species and other voices", rest.filter(r => !r.expansion));
+}
 function renderAlso() {
   const voice = $("voice").value, list = alsoOf(voice);
   const rows = (state && state.pickable) || [];
@@ -853,10 +1776,8 @@ function renderAlso() {
   const folders = ((state && state.clip_folders) || []).map(f => `folder-${f}`).filter(f => !list.includes(f));
   $("clips-also").innerHTML = `<option value="">Also offer clips from…</option>` +
     (folders.length ? `<optgroup label="Sound folders">` +
-      folders.map(f => `<option value="${f}">${esc(f.slice(7))} (sound/creature/${esc(f.slice(7))})</option>`).join("") + "</optgroup>" : "") +
-    `<optgroup label="Voices">` +
-    rows.filter(r => r.voice !== voice && !list.includes(r.voice))
-      .map(r => `<option value="${r.voice}">${esc(labelOf(r.voice))}</option>`).join("") + "</optgroup>";
+      folders.map(f => `<option value="${f}">${esc(f.slice(7))}</option>`).join("") + "</optgroup>" : "") +
+    alsoVoiceGroups(rows.filter(r => r.voice !== voice && !list.includes(r.voice) && !r.species && (!r.borrows || r.offers)), labelOf);
   $("clips-also-list").innerHTML = list.map(v =>
     `<span class="pill">${esc(labelOf(v))}<button data-drop="${v}" title="Stop offering ${v}'s clips">×</button></span>`).join("");
   $("clips-also-list").querySelectorAll("button[data-drop]").forEach(b => b.addEventListener("click", () => {
@@ -880,7 +1801,7 @@ $("clips-build").addEventListener("click", async () => {
   busy($("clips-build"), true);
   try {
     const r = await api("/api/clips/build", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ voice: clipsVoice, clips: picks, keep: true }) });
+      body: JSON.stringify({ voice: clipsVoice, clips: picks, gaps: gapsList(), keep: true }) });
     applyState(r);
     $("clips-ref").src = r.reference_url;
     $("clips-status").textContent = `built ${r.built}, ${r.seconds}s`;
@@ -889,6 +1810,34 @@ $("clips-build").addEventListener("click", async () => {
   } catch (e) { toast(e.message, "warn"); }
   busy($("clips-build"), false);
 });
+
+// The three-column layout's table ends at the bottom of the window: whatever is left
+// below the toolbar, status lines and history, less the note under the table. In the
+// two-column layout the stylesheet's height stands.
+const WIDE = matchMedia("(min-width: 1600px)");
+function fitClips() {
+  const wrap = $("clips-wrap");
+  if (!WIDE.matches) { wrap.style.maxHeight = ""; return; }
+  const after = wrap.nextElementSibling;
+  const below = (after ? after.offsetHeight + parseFloat(getComputedStyle(after).marginTop) + parseFloat(getComputedStyle(after).marginBottom) : 0) + 14;
+  // the column is at most the window's height and sticks at its top, so the window's
+  // bottom is the column's; its own scroll offset is added back, since the table's
+  // position is read as the column has it scrolled
+  const col = $("clips-col");
+  const top = wrap.getBoundingClientRect().top + col.scrollTop;
+  wrap.style.maxHeight = `${Math.max(160, Math.floor(window.innerHeight - top - below))}px`;
+}
+let fitQueued = false;
+function queueFit() { if (!fitQueued) { fitQueued = true; requestAnimationFrame(() => { fitQueued = false; fitClips(); }); } }
+window.addEventListener("resize", queueFit);
+window.addEventListener("scroll", queueFit, { passive: true });
+WIDE.addEventListener("change", queueFit);
+// the lines above the table grow and shrink as candidates load and picks change
+if (window.ResizeObserver) {
+  const above = new ResizeObserver(queueFit);
+  for (let el = $("clips-wrap").previousElementSibling; el; el = el.previousElementSibling) above.observe(el);
+}
+queueFit();
 
 refresh();
 loadSessions();

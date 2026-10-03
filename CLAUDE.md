@@ -298,7 +298,9 @@ list writes `[voices.approved]`, a note for people that nothing generates from:
 each voice maps to the `VoiceCatalog.recipe` heard (clip read from, knobs off
 the defaults, picks digest), so a re-pick or retuning of it or of a voice it
 borrows from, made anywhere, turns its ★ into ☆ until someone listens again
-(the ★ meant "has a `[tts.voices]` row" until 2026-10-01). "Write to pack" regenerates one line's
+(the ★ meant "has a `[tts.voices]` row" until 2026-10-01). Below it, folded
+away, a voice's tasting notes (since 2026-10-03): free text in `[voices.notes]`,
+saved as you type, marked ✎ in the voice list, read by people only. "Write to pack" regenerates one line's
 pack file under the *saved* configuration only and records the fingerprint
 `generate.py` would compute, so the nightly run neither redoes nor misses it;
 it is disabled until the row's recipe is the saved one. On the ROCm build
@@ -320,8 +322,11 @@ drops a borrowed clip. A run that ends raises a desktop notification from the
 server through `notify-send` (`run_finished`): the browser's Notification API
 never showed one on the owner's KDE desktop though permission was granted, and a
 server with no `notify-send` sends none. Stop, beside Generate, ends a run after
-the take in progress: Chatterbox's `generate()` cannot be interrupted, so the check is
-between takes (`Studio.stops`, `/api/generate/<session>/stop`). One model instance, loaded on
+the sentence in progress: Chatterbox's `generate()` cannot be interrupted, so the check
+is between takes and, since 2026-10-02, between the generate() calls of one take
+(`Synth.render`'s `stopped`, raising `TakeStopped`), since a long line is several
+chunks and a short one up to three tries (`Studio.stops`,
+`/api/generate/<session>/stop`). One model instance, loaded on
 the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
 we need are plain HTML, and the addon's own rule of no libraries and a native
@@ -375,7 +380,14 @@ build artifact, never hand-edited):
    hints, then narrator. The archetype step is skipped when its clip would be
    identical to the race's, and when the set belongs to another race - 26 sets
    span more than one, and trusting the name once had night elves read by a
-   blood elf recording.
+   blood elf recording. A set with no clip of its own reads a sibling's
+   (`wowdata.sibling_sets`, since 2026-10-02): the voice's other sets in the same
+   sound folder that hold at least half of its greetings, the same actor cast
+   again (121 is 59's fourteen files and two more). Only the most-used set of a
+   folder is minted a name and built, so the siblings used to fall to the plain
+   race voice; the change moved 1,816 lines of 189 speakers onto archetypes. The
+   shared files are required because Forever's skyborne sets sit in unnamed
+   folders (`7478494`) holding several actors.
 
 Voice quality notes: Chatterbox on an RTX 3080 does ~6 s of audio in ~5 s
 with the game closed, roughly 3x slower with it open. Perth (the watermarker)
@@ -767,7 +779,16 @@ of the 10 s window, then the knobs.
   set, or a rebuild would clobber or delete them. They join the fingerprint,
   keyed on the clip actually cloned from, so a re-pick restages that voice by
   itself - the clip's *bytes* still do not. Pick them in the audition page's
-  Source clips panel, or with `fvo-refclips`.
+  Source clips panel, or with `fvo-refclips`. A pick may also carry `gaps`
+  (since 2026-10-03): seconds of silence after each clip but the last, aligned
+  with `clips`, at most 3 s, 0 when absent. Back-to-back clips inside the 6 s
+  window can run two deliveries together and throw the accent or the cadence.
+  With any gap `concat_to_wav` pads each clip in an ffmpeg filter graph instead of
+  the concat demuxer; a pick without gaps builds and digests exactly as before, and
+  adding one changes the digest, so that voice restages and its approval goes stale.
+  The audition page offers a gap, in the pick's own row, only where it would start
+  inside the 10 s window: past it silence only dilutes the averaged speaker vector,
+  and a gap spends the window too, so keep it to a breath (0.1-0.3 s).
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
   just two greetings, so his clone is rougher. The automatic build uses the kit
@@ -835,8 +856,13 @@ of the 10 s window, then the knobs.
   on every pick of clips tried, and -3 to -5 semitones sounded right where
   matching the number (-9) did not. That is a pitch correction after the
   model, not the knobs-for-accent argument the section below warns against;
-  accent still comes from the reference. The audition page renders a take
-  once and encodes every tempo and pitch of its sweep from that audio. Only knobs that differ from the `[tts]` defaults join the
+  accent still comes from the reference. `speed` (since 2026-10-03) is the
+  third such filter and runs first: varispeed, `asetrate` and `aresample` at the
+  model's 24 kHz, so pace and pitch move together in one resample (0.9 is 10%
+  slower and ~1.8 semitones lower). Lowering tempo and pitch together ran a
+  stretch and then a shift, each compensating for the other; speed does neither.
+  The audition page renders a take once and encodes every tempo, pitch and speed
+  of its sweep from that audio. Only knobs that differ from the `[tts]` defaults join the
   fingerprint (`Tts.differences`), so adding a knob later never restages what
   was already stamped. `generate.VoiceCatalog` resolves a voice to the
   clip it actually uses (its own, else its fallback race's, else the narrator's,

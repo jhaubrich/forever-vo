@@ -365,7 +365,7 @@ def test_stop_ends_a_run_after_the_take_in_progress(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str) -> str:
+        def render(self, text: str, voice: str, stopped=None) -> str:
             # the page presses Stop while the first take is being made
             (session,) = studio.stops
             assert client.post(f"/api/generate/{session}/stop").json() == {
@@ -373,7 +373,9 @@ def test_stop_ends_a_run_after_the_take_in_progress(
             }
             return "audio"
 
-        def encode(self, audio: str, out: Path, tempo: float, pitch: float) -> float:
+        def encode(
+            self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
+        ) -> float:
             out.write_bytes(b"")
             return 1.0
 
@@ -417,11 +419,13 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str) -> str:
+        def render(self, text: str, voice: str, stopped=None) -> str:
             renders.append(text)
             return f"audio{len(renders)}"
 
-        def encode(self, audio: str, out: Path, tempo: float, pitch: float) -> float:
+        def encode(
+            self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
+        ) -> float:
             encodes.append((audio, tempo, pitch))
             out.write_bytes(b"")
             return 1.0
@@ -504,3 +508,571 @@ def _link(source: Path, dest: Path) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_bytes(source.read_bytes())
     return dest
+
+
+def test_clips_put_the_voices_added_from_also_first_last_added_on_top(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, refclips
+    from tools.config import load_config
+
+    def row(fdid: int, group: str) -> dict[str, object]:
+        return {"n": fdid, "fdid": fdid, "kind": "line", "group": group,
+                "seconds": 1.0, "url": f"/{fdid}.ogg"}  # fmt: skip
+
+    loaded = {
+        "nightelf-male": [row(1, "speech"), row(2, "set 59")],
+        "folder-pcdhnightelfmale": [row(3, "pcdhnightelfmale")],
+        "folder-night_elf_male_ghost": [row(4, "night_elf_male_ghost"), row(1, "x")],
+    }
+    # a Studio with candidates already loaded: only what /api/clips touches
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: loaded[voice])
+    monkeypatch.setattr(studio, "config", load_config)
+    studio.clips_status = {}
+    studio._rows = None  # the corpus still loading: the headings go without line counts
+    # a set's heading reads the client tables (gitignored); the voice it is asked about
+    # is the point here, not the wording
+    monkeypatch.setattr(
+        audition,
+        "group_about",
+        lambda voice, group, spoken: (
+            "joke" if group == "speech" else f"{voice} {group}"
+        ),
+    )
+    monkeypatch.setattr(audition, "seed_recipe_history", lambda voice: None)
+    monkeypatch.setattr(audition, "npc_labels", dict)
+    monkeypatch.setattr(audition, "unlisted_clip_folders", lambda config: [])
+    # the real TOML's saved picks for the voice, which are not on this machine's disk
+    monkeypatch.setattr(audition, "local_clip", lambda voice, fdid, build: None)
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: {})
+    monkeypatch.setattr(audition, "sources_warnings", lambda config, voice: [])
+    monkeypatch.setattr(refclips.CLIP_SECONDS, "save", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    also = "folder-pcdhnightelfmale,folder-night_elf_male_ghost"
+    d = client.get(f"/api/clips/nightelf-male?also={also}").json()
+    # the ghost was added last, so it is on top; fdid 1 is the voice's own already
+    assert [c["fdid"] for c in d["clips"]] == [4, 3, 1, 2]
+    assert [c["source"] for c in d["clips"]] == ["also", "also", "own", "own"]
+    assert d["groups"] == [
+        "folder-night_elf_male_ghost: night_elf_male_ghost",
+        "folder-pcdhnightelfmale: pcdhnightelfmale",
+        "speech",
+        "set 59",
+    ]
+    assert d["about"] == {
+        # a borrowed group is described as its own voice's group
+        "folder-night_elf_male_ghost: night_elf_male_ghost": (
+            "folder-night_elf_male_ghost night_elf_male_ghost"
+        ),
+        "folder-pcdhnightelfmale: pcdhnightelfmale": (
+            "folder-pcdhnightelfmale pcdhnightelfmale"
+        ),
+        "speech": "joke",
+        "set 59": "nightelf-male set 59",
+    }
+
+
+def test_species_wanted_offers_a_speaking_species_with_no_clip(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from types import SimpleNamespace
+    from typing import Any
+
+    from tools import audition, wowdata
+    from tools.config import Voices
+
+    species = {126042: "spirithealer", 1: "ogre", 2: "fleshgolem"}
+    monkeypatch.setattr(wowdata, "speaker_species", lambda d, m: species.get(m))
+    monkeypatch.setattr(wowdata, "display_race_sex", lambda d: (None, None))
+    config = SimpleNamespace(voices=Voices())
+
+    def item(model: int, voice: str, sex: int = 3) -> Any:  # a stand-in Item
+        npc = {"modelFileID": model, "sex": sex}
+        return SimpleNamespace(npc=npc, voice=voice, config=config, speaker_key="1")
+
+    items = [
+        item(126042, "human-female"),  # the spirit healer, female by UnitSex
+        item(1, "human-male", 2),  # an ogre whose clip is on another machine
+        item(2, "npc-10699", 2),  # a flesh golem on its own named clip
+    ]
+    wanted = audition.species_wanted(items, voiced={"ogre-male"})
+    assert wanted == {
+        "spirithealer-female": audition.SpeciesWant(1, "human-female", frozenset({"1"}))
+    }
+
+
+def test_wowhead_links_creatures_and_game_objects() -> None:
+    from tools.audition import wowhead_url
+
+    assert wowhead_url("10583") == "https://www.wowhead.com/npc=10583"
+    assert wowhead_url("-123") == "https://www.wowhead.com/object=123"
+    assert wowhead_url("") is None
+
+
+def test_npcs_lists_the_voices_speakers_most_lines_first(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    def row(key: str, name: str, voice: str) -> audition.LineRow:
+        return audition.LineRow(
+            base=f"{key}-x", subfolder="Gossip", title=name, speaker=name,
+            voice=voice, raw="", spoken="", level=1, source="capture",
+            speaker_key=key,
+        )  # fmt: skip
+
+    rows = [
+        row("10583", "Gryfe", "goblin-male-zany"),
+        row("16075", "Kwee Q. Peddlefeet", "goblin-male-zany"),
+        row("16075", "Kwee Q. Peddlefeet", "goblin-male-zany"),
+        row("-42", "A Wanted Poster", "goblin-male-zany"),
+        row("", "An item", "goblin-male-zany"),  # no speaker to link
+        row("6491", "Spirit Healer", "human-female"),
+    ]
+    studio = object.__new__(audition.Studio)
+    want = audition.SpeciesWant(1, "human-female", frozenset({"6491"}))
+    monkeypatch.setattr(studio, "rows_if_loaded", lambda: rows)
+    monkeypatch.setattr(
+        studio, "species_want", lambda v: want if v == "spirithealer-female" else None
+    )
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/npcs/goblin-male-zany").json()
+    assert [(n["name"], n["lines"], n["url"]) for n in d["npcs"]] == [
+        ("Kwee Q. Peddlefeet", 2, "https://www.wowhead.com/npc=16075"),
+        ("A Wanted Poster", 1, "https://www.wowhead.com/object=42"),
+        ("Gryfe", 1, "https://www.wowhead.com/npc=10583"),
+    ]
+    # nobody is cast on a species voice before its clip exists: who would move to it
+    d = client.get("/api/npcs/spirithealer-female").json()
+    assert [(n["name"], n["now"]) for n in d["npcs"]] == [
+        ("Spirit Healer", "human-female")
+    ]
+
+
+def test_a_species_voice_offers_the_lines_that_will_move_to_it() -> None:
+    from tools import audition
+
+    healer = audition.LineRow(
+        base="6491-22357dc5", subfolder="Gossip", title="Spirit Healer",
+        speaker="Spirit Healer", voice="human-female", raw="It is not yet your time.",
+        spoken="It is not yet your time.", level=1, source="capture",
+        speaker_key="6491",
+    )  # fmt: skip
+    rows = [healer]
+    assert audition.lines_in_voice(rows, "spirithealer-female") == []
+    moving = frozenset({"6491"})
+    assert audition.lines_in_voice(rows, "spirithealer-female", moving=moving) == [
+        healer
+    ]
+    assert audition.random_line(rows, "spirithealer-female", moving=moving) is healer
+
+
+def test_clips_say_loading_until_the_rows_are_in_even_if_the_load_finished(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, refclips
+    from tools.config import load_config
+
+    # refresh=1 restarts the load, which for a voice with nothing to fetch finishes
+    # on its thread before the answer is built: no rows yet, status already done
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio._rows = None
+    studio.clips_status = {"spirithealer-female": "0 clips"}
+    monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: None)
+    monkeypatch.setattr(studio, "config", load_config)
+    monkeypatch.setattr(audition, "seed_recipe_history", lambda voice: None)
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: {})
+    monkeypatch.setattr(audition, "sources_warnings", lambda config, voice: [])
+    monkeypatch.setattr(audition, "unlisted_clip_folders", lambda config: [])
+    monkeypatch.setattr(refclips.CLIP_SECONDS, "save", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/clips/spirithealer-female?refresh=1").json()
+    assert d["status"] == "loading"  # the page keeps polling
+    assert d["pending"] == ["spirithealer-female"]
+    studio.clips_status["spirithealer-female"] = "failed: wago said no"
+    d = client.get("/api/clips/spirithealer-female").json()
+    assert d["status"].startswith("failed")  # and stops on a failure
+
+
+def test_borrowed_clips_are_listed_while_the_voice_still_loads(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, refclips
+    from tools.config import load_config
+
+    banshee = {"n": 1, "fdid": 1243396, "kind": "vo_70_weeping_banshee_04",
+               "group": "weeping_banshee", "seconds": 3.6, "url": "/x.ogg"}  # fmt: skip
+    loaded = {"nightborne-female": None, "folder-weeping_banshee": [banshee]}
+    studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio._rows = None
+    studio.clips_status = {"nightborne-female": "loading"}
+    studio.clips_progress = {
+        "nightborne-female": {"done": 3, "total": 13, "failed": 1, "since": 0.0}
+    }
+    monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: loaded[voice])
+    monkeypatch.setattr(studio, "config", load_config)
+    monkeypatch.setattr(audition, "seed_recipe_history", lambda voice: None)
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: {})
+    monkeypatch.setattr(audition, "sources_warnings", lambda config, voice: [])
+    monkeypatch.setattr(audition, "unlisted_clip_folders", lambda config: [])
+    monkeypatch.setattr(audition, "group_about", lambda voice, group, spoken: "")
+    monkeypatch.setattr(refclips.CLIP_SECONDS, "save", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/clips/nightborne-female?also=folder-weeping_banshee").json()
+    assert d["status"] == "loading"
+    assert d["pending"] == ["nightborne-female"]
+    assert [c["fdid"] for c in d["clips"]] == [1243396]  # not an empty table
+    progress = d["progress"]["nightborne-female"]
+    assert (progress["done"], progress["total"], progress["failed"]) == (3, 13, 1)
+
+
+def test_a_voice_is_filed_under_its_races_expansion() -> None:
+    from tools.audition import EXPANSIONS, RACE_EXPANSION, voice_expansion
+    from tools.config import RACE_DICT
+
+    assert voice_expansion("skyborne-female") == "Forever"
+    assert voice_expansion("goblin-male-zany") == "Classic"  # barks in Booty Bay in 1.x
+    assert voice_expansion("nightborne-male") == "Legion"
+    assert voice_expansion("npc-11657") is None  # named NPCs are listed apart
+    assert voice_expansion("spirithealer-female") is None  # a species
+    # every race the client names has one, and each is an expansion the page orders
+    assert {r for r in RACE_DICT.values() if r != "narrator"} <= set(RACE_EXPANSION)
+    assert set(RACE_EXPANSION.values()) <= set(EXPANSIONS)
+
+
+def test_a_take_stops_between_the_sentences_of_a_long_line() -> None:
+    from types import SimpleNamespace
+    from typing import Any
+
+    from tools.generate import Synth, TakeStopped
+
+    pressed: list[bool] = []
+
+    class Model:
+        calls = 0
+
+        def generate(self, text: str, **kwargs: object) -> object:
+            Model.calls += 1
+            pressed.append(True)  # Stop is pressed while the first sentence renders
+            return SimpleNamespace(shape=(1, 48_000), cpu=lambda: self.wav)
+
+        wav = SimpleNamespace(shape=(1, 48_000))
+
+    synth: Any = object.__new__(Synth)  # a Synth with a stand-in model, no GPU
+    synth.sr = 24_000
+    synth.torch = SimpleNamespace(zeros=lambda *shape: None)
+    synth.model = Model()
+    settings = SimpleNamespace(exaggeration=0.5, cfg_weight=0.5)
+    synth.catalog = SimpleNamespace(
+        resolve=lambda voice: SimpleNamespace(clip=None, settings=settings)
+    )
+    text = "The first sentence is long enough. " * 3 + "And so is the second one here."
+    with pytest.raises(TakeStopped):
+        synth.render(text, "human-male", stopped=lambda: bool(pressed))
+    assert Model.calls == 1  # the second sentence was never started
+
+
+def test_a_voice_lists_every_line_when_asked_for_all(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    def row(i: int) -> audition.LineRow:
+        return audition.LineRow(
+            base=f"{i}-accept", subfolder="Quests", title=f"Quest {i}", speaker="Gryfe",
+            voice="goblin-male-zany", raw="x" * i, spoken="x" * i, level=1,
+            source="capture", speaker_key="10583",
+        )  # fmt: skip
+
+    rows = [row(i) for i in range(1, 76)]
+    studio = object.__new__(audition.Studio)
+    monkeypatch.setattr(studio, "rows", lambda: rows)
+    monkeypatch.setattr(studio, "moving_to", lambda voice: frozenset())
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    d = client.get("/api/lines?voice=goblin-male-zany").json()
+    assert (len(d["rows"]), d["total"]) == (60, 75)  # the button's longest sixty
+    d = client.get("/api/lines?voice=goblin-male-zany&limit=0").json()
+    assert (len(d["rows"]), d["total"]) == (75, 75)  # choosing a voice lists them all
+    assert d["rows"][0]["base"] == "75-accept"  # longest first
+
+
+def test_write_voice_sources_keeps_gaps_and_writes_none_for_no_gap(
+    toml_copy: Path,
+) -> None:
+    from tools.audition import tidy_gaps
+
+    assert tidy_gaps([0.25, 0.0, 0.0], 4) == [0.25]  # trailing zeros dropped
+    assert tidy_gaps([0.0, 0.0], 3) == []  # no gap is 0, and writes nothing
+    assert tidy_gaps([0.3, 0.3, 0.3], 2) == [0.3]  # none after the last clip
+    config = write_voice_sources(toml_copy, "tauren-male", [1, 2, 3], gaps=[0.25, 0.0])
+    assert config.voices.sources["tauren-male"].gaps == [0.25]
+    assert "gaps = [0.25]" in toml_copy.read_text(encoding="utf-8")
+    config = write_voice_sources(toml_copy, "tauren-male", [1, 2, 3], gaps=[0, 0])
+    assert config.voices.sources["tauren-male"].gaps == []
+    entry = toml_copy.read_text(encoding="utf-8").split("[voices.sources.tauren-male]")
+    assert "gaps" not in entry[1].split("[", 1)[0]
+
+
+def test_build_refuses_a_gap_before_touching_the_reference(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    built: list[object] = []
+    monkeypatch.setattr(audition, "build_picked_reference", lambda *a: built.append(a))
+    studio = object.__new__(audition.Studio)
+    client = TestClient(audition.create_app(studio, addons=None))
+    r = client.post(
+        "/api/clips/build",
+        json={"voice": "tauren-male", "clips": [1, 2], "gaps": [5.0], "keep": False},
+    )
+    assert r.status_code == 400 and "between 0 and 3" in r.json()["detail"]
+    assert built == []  # refused before anything was built
+
+
+def test_a_pick_names_the_sources_its_clips_come_from(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from tools import audition
+    from tools.config import Config, Voices, VoiceSources
+
+    offers = {
+        1730262: ["folder-pc_-_nightborne_elf_male"],
+        556587: ["nightelf-male", "bloodelf-male"],  # a race set two voices offer
+        9: ["nightelf-male"],
+    }
+    monkeypatch.setattr(audition, "_clip_offers", lambda folders: offers)
+    config = Config(voices=Voices())
+    # the voice's own candidates need nothing; a clip only it offers needs nothing more
+    assert audition.pick_sources(
+        "nightelf-male", [1730262, 556587, 9], {556587}, config
+    ) == ["folder-pc_-_nightborne_elf_male"]
+    # a clip the voice does not list comes from the first other voice offering it
+    assert audition.pick_sources("nightelf-male", [556587], set(), config) == [
+        "bloodelf-male"
+    ]
+
+    # the saved pick is marked, and leads the history when no build matches it
+    monkeypatch.setattr(
+        audition,
+        "pick_history",
+        lambda voice=None: {
+            "nightelf-male": [{"clips": [9], "at": "2026-10-03 08:00"}]
+        },
+    )
+    saved = VoiceSources(clips=[1730262, 9], gaps=[0.1])
+    rows = audition.pick_history_for("nightelf-male", saved, set(), config)
+    assert rows[0]["saved"] and rows[0]["at"] == "saved" and rows[0]["gaps"] == [0.1]
+    assert rows[0]["uses"] == ["folder-pc_-_nightborne_elf_male"]
+    assert not rows[1].get("saved")
+    same = VoiceSources(clips=[9])
+    rows = audition.pick_history_for("nightelf-male", same, set(), config)
+    assert len(rows) == 1 and rows[0]["saved"]  # a matching build is marked, not added
+
+
+def test_released_picks_never_leave_the_history_and_experiments_can(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+
+    from tools import audition
+    from tools.config import Config, Voices, VoiceSources
+
+    monkeypatch.setattr(audition, "SOURCE_PICKS", tmp_path / "source_picks.json")
+    monkeypatch.setattr(audition, "PICK_HISTORY", 2)
+    # pick [1] has audio in the pack; the others are experiments
+    monkeypatch.setattr(
+        audition, "released_files", lambda row: 30 if row.get("clips") == [1] else 0
+    )
+    rows = [{"clips": [c], "at": str(c)} for c in (5, 4, 3, 2, 1)]
+    kept = audition.trim_history(rows)
+    assert [r["clips"] for r in kept] == [[5], [4], [1]]  # two newest, and the released
+
+    (tmp_path / "source_picks.json").write_text(json.dumps({"x-male": kept}))
+    saved = Config(voices=Voices(sources={"x-male": VoiceSources(clips=[5])}))
+    monkeypatch.setattr(audition, "load_config", lambda: saved)
+    assert audition.forget_pick("x-male", [4], [])  # an experiment goes
+    assert not audition.forget_pick("x-male", [1], [])  # a released pick stays
+    assert not audition.forget_pick("x-male", [5], [])  # and so does the saved one
+    left = json.loads((tmp_path / "source_picks.json").read_text())["x-male"]
+    assert [r["clips"] for r in left] == [[5], [1]]
+
+
+def test_released_reads_the_main_repositorys_main_and_falls_back(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import json
+
+    from tools import audition
+
+    remotes = (
+        "origin\thttps://github.com/someone/forever-vo.git (fetch)\n"
+        "upstream\tgit@github.com:quinn-dougherty/forever-vo.git (fetch)\n"
+    )
+    index = {"1-accept": {"t": "abc+clips=0a1b2c3d,exaggeration=0.6", "v": "orc-male"}}
+    calls: list[tuple[str, ...]] = []
+
+    def git(*args: str, timeout: float = 30) -> str | None:
+        calls.append(args)
+        if args == ("remote", "-v"):
+            return remotes
+        if args[0] == "rev-parse":
+            return "f00d\n"
+        if args[0] == "show":
+            return json.dumps(index)
+        return ""
+
+    monkeypatch.setattr(audition, "_git", git)
+    monkeypatch.setattr(audition, "_main_fetched", 1e18)  # no background fetch here
+    monkeypatch.setattr(audition, "_main_commit", ("", 0.0))
+    audition._main_remote.cache_clear()
+    audition._released_at.cache_clear()
+    assert audition._main_remote() == "upstream"  # the remote naming the main repo
+    assert audition._released() == {"0a1b2c3d": 1}
+    assert ("rev-parse", "upstream/main") in calls
+    assert ("show", "f00d:tools/data/sound_index.json") in calls
+
+    # outside a git checkout: the working copy
+    monkeypatch.setattr(audition, "_git", lambda *a, **kw: None)
+    monkeypatch.setattr(audition, "_main_commit", ("", 0.0))
+    audition._main_remote.cache_clear()
+    audition._released_at.cache_clear()
+    assert audition._main_remote() is None
+    assert audition._released() == audition._released_at("")
+    audition._main_remote.cache_clear()
+    audition._released_at.cache_clear()
+
+
+def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
+    toml_copy: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, generate
+    from tools.audition import write_approval, write_tuning
+
+    approved_clips, approved_gaps = [11, 12, 13], [0.1]
+    digest = generate.picks_digest(approved_clips, None, approved_gaps)
+    heard = f"clip=x-male,clips={digest},exaggeration=0.7,pitch=-1.0"
+    write_approval(toml_copy, "x-male", heard)
+    # since then: other picks and other knobs
+    write_voice_sources(toml_copy, "x-male", [21, 22])
+    write_tuning(toml_copy, "x-male", 1.2, 0.2, None, 1.3, 0.0)
+    history = {"x-male": [{"clips": [21, 22], "at": "now"},
+                          {"clips": approved_clips, "gaps": approved_gaps, "at": "then"}]}  # fmt: skip
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: history)
+    built: list[tuple] = []
+    monkeypatch.setattr(
+        audition, "build_picked_reference", lambda v, paths, gaps: built.append((v, gaps)) or Path("x.wav")
+    )  # fmt: skip
+    monkeypatch.setattr(
+        audition, "local_clip", lambda v, fdid, build: Path(f"{fdid}.ogg")
+    )
+    monkeypatch.setattr(audition, "record_pick", lambda *a, **kw: None)
+    monkeypatch.setattr(audition, "reference_seconds", lambda path: 9.0)
+
+    studio = object.__new__(audition.Studio)
+    studio.config_path = toml_copy
+    monkeypatch.setattr(studio, "config", lambda: audition.load_config(toml_copy))
+    monkeypatch.setattr(studio, "forget_corpus", lambda: None)
+    monkeypatch.setattr(studio, "state", dict)
+    target = audition.approved_target(studio.config(), "x-male")
+    assert target is not None and target[0]["clips"] == approved_clips
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    r = client.post("/api/voice/revert", json={"voice": "x-male"})
+    assert r.status_code == 200, r.text
+    assert built == [("x-male", approved_gaps)]  # the reference rebuilt from the pick
+    config = audition.load_config(toml_copy)
+    picked = config.voices.sources["x-male"]
+    assert (picked.clips, picked.gaps) == (approved_clips, approved_gaps)
+    tuning = config.tts.voices["x-male"]
+    assert (tuning.exaggeration, tuning.pitch) == (0.7, -1.0)
+    assert tuning.tempo in (None, 1.0) and tuning.cfg_weight in (None, 0.5)
+
+    # nothing to go back to: refused, and nothing written
+    write_approval(
+        toml_copy, "x-male", "clip=x-male,exaggeration=0.7"
+    )  # no picks heard
+    r = client.post("/api/voice/revert", json={"voice": "x-male"})
+    assert r.status_code == 409
+
+
+def test_keeping_settings_or_picks_keeps_comments_inside_the_table(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "forever-vo.toml"
+    path.write_text(
+        "[tts.voices.x-male]\n"
+        "exaggeration = 0.75\n"
+        "cfg_weight = 0.3\n"
+        "\n"
+        "# Respellings: a paragraph that drifted in under this table\n"
+        "\n"
+        "[voices.sources.x-male]\n"
+        "clips = [1, 2]\n"
+        "# why these clips\n"
+        "\n"
+        "[pronunciations]\n"
+        'Gnomeregan = "Nomer-gahn"\n',
+        encoding="utf-8",
+    )
+    write_tuning(path, "x-male", 0.75, 0.3, None, 1.0, 1.0)
+    write_voice_sources(path, "x-male", [3, 4, 5], gaps=[0.1])
+    text = path.read_text(encoding="utf-8")
+    assert "# Respellings: a paragraph that drifted in under this table" in text
+    assert "# why these clips" in text
+    config = load_config(path)
+    assert config.tts.voices["x-male"].pitch == 1.0
+    assert config.voices.sources["x-male"].clips == [3, 4, 5]
+    assert config.voices.sources["x-male"].gaps == [0.1]
+    # and taking a key back out leaves the comment too
+    write_tuning(path, "x-male", 0.75, 0.3, None, 1.0, 0.0)
+    assert "# Respellings" in path.read_text(encoding="utf-8")
+    assert load_config(path).tts.voices["x-male"].pitch is None
+
+
+def test_tasting_notes_are_kept_per_voice_and_removed_when_emptied(
+    toml_copy: Path,
+) -> None:
+    from fastapi import HTTPException
+
+    from tools.audition import NOTES_COMMENT, write_notes
+
+    config = write_notes(
+        toml_copy,
+        "dwarf-female",
+        "  Too bright on long lines.\nTry set 33 at the head.  ",
+    )
+    assert (
+        config.voices.notes["dwarf-female"]
+        == "Too bright on long lines.\nTry set 33 at the head."
+    )
+    text = toml_copy.read_text(encoding="utf-8")
+    assert NOTES_COMMENT[0] in text  # the table is made with what it is for
+    config = write_notes(toml_copy, "dwarf-female", "")
+    assert "dwarf-female" not in config.voices.notes
+    assert NOTES_COMMENT[0] in toml_copy.read_text(encoding="utf-8")  # the table stays
+    with pytest.raises(HTTPException):  # refused: not a voice name
+        write_notes(toml_copy, "Not A Voice", "x")

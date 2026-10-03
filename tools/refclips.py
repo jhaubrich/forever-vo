@@ -32,6 +32,7 @@ import subprocess
 import sys
 import threading
 from collections import Counter, defaultdict
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -49,6 +50,7 @@ from tools.build_voice_references import (
     emote_speech_fdids,
     files_by_kit,
     named_npc_fdids,
+    named_sets,
     set_fdids,
 )
 from tools.config import (
@@ -61,7 +63,7 @@ from tools.config import (
     Voices,
     load_config,
 )
-from tools.soundpaths import folders, named_folder_files
+from tools.soundpaths import folders, named_folder_files, other_sex_set
 from tools.wowdata import (
     display_sound_set,
     fetch_file,
@@ -154,6 +156,9 @@ class Candidate:
                 self.fdid, RAW_DIR / voice / f"{self.fdid}.ogg", build=self.build
             )
             if is_dud(self.path):  # named in the listfile, not carried by this build
+                # unlinked, or the next build's candidate for this FileDataID would
+                # find the dud at the same path and never fetch its own copy
+                self.path.unlink(missing_ok=True)
                 return False
             self.seconds = CLIP_SECONDS.get(self.fdid, self.build, self.path)
         except (
@@ -195,10 +200,17 @@ def speech_candidates(voice: str) -> list[Candidate]:
                 for fdid in kits.get(int(row.get("SoundID") or 0), []):
                     kind_of[fdid] = name.lower()
         where = "speech" if build == BETA_BUILD else "retail speech"
-        return [
-            Candidate(f"{where} {kind_of.get(f, '')}".strip(), f, build, where)
-            for f in fdids
-        ]
+        found = []
+        for f in fdids:
+            kind = f"{where} {kind_of.get(f, '')}".strip()
+            if build != BETA_BUILD:
+                # Only the emote table is retail's: the beta client ships many of the
+                # files themselves (nightborne's), and wago serves the beta build at
+                # once where an uncached retail file can hang for minutes. _fetched
+                # takes the first that can be had.
+                found.append(Candidate(kind, f, BETA_BUILD, where))
+            found.append(Candidate(kind, f, build, where))
+        return found
     return []
 
 
@@ -252,7 +264,13 @@ def folder_candidates(folder: str) -> list[Candidate]:
     return [Candidate(stem, fdid, BETA_BUILD, folder) for fdid, stem, _ in rows]
 
 
-def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
+# called with (finished, total, failed) as each FileDataID of a load is settled
+Progress = Callable[[int, int, int], None]
+
+
+def candidates(
+    voice: str, voices: Voices | None = None, progress: Progress | None = None
+) -> list[Candidate]:
     """Speech first, then greetings. Fetches as it goes.
 
     An archetype offers its own set's greetings and its race's speech; a plain voice
@@ -261,9 +279,13 @@ def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
     greeting kit and its sound folders instead (named_candidates).
     """
     if voice.startswith("npc-"):
-        return _fetched(named_candidates(voice, voices or load_config().voices), voice)
+        return _fetched(
+            named_candidates(voice, voices or load_config().voices), voice, progress
+        )
     if voice.startswith(FOLDER_PREFIX):
-        return _fetched(folder_candidates(voice.removeprefix(FOLDER_PREFIX)), voice)
+        return _fetched(
+            folder_candidates(voice.removeprefix(FOLDER_PREFIX)), voice, progress
+        )
     found = speech_candidates(voice)
     race_gender = base_voice(voice)
     counts: Counter[int] = sound_set_displays().get(race_gender) or Counter()
@@ -273,20 +295,39 @@ def candidates(voice: str, voices: Voices | None = None) -> list[Candidate]:
         if own
         else counts.most_common()
     )
-    for sound_id, displays in wanted_sets:
+    # a character's own kit, cast on a display or two of the race (Sylvanas's 175 on
+    # two skyborne, Fandral's 174 on a night elf), is that character's voice and is
+    # offered as npc-<displayID>, not as one of the race's
+    characters = set(named_sets()) if not own else set()
+    for sound_id, _ in wanted_sets:
+        if other_sex_set(sound_id, race_gender):
+            continue  # the other sex's recordings, cast on a few displays
+        if sound_id in characters:
+            continue
+        greetings = set_greetings(sound_id)
         for fdid in set_fdids(sound_id):
             found.append(
                 Candidate(
-                    f"set {sound_id} ({displays} displays)",
+                    # what the file is, as the page lists it under the set's heading;
+                    # the set's display count is in the heading's line about it
+                    f"set {sound_id} {'greeting' if fdid in greetings else 'farewell'}",
                     fdid,
                     BETA_BUILD,
                     f"set {sound_id}",
                 )
             )
-    return _fetched(found, voice)
+    return _fetched(found, voice, progress)
 
 
-def _fetched(found: list[Candidate], voice: str) -> list[Candidate]:
+def set_greetings(sound_id: int) -> set[int]:
+    """The files of an NPCSounds set that greet (SoundID_0); set_fdids' others say goodbye."""
+    row = load_db2("NPCSounds").get(sound_id, {})
+    return set(files_by_kit().get(int(row.get("SoundID_0") or 0), []))
+
+
+def _fetched(
+    found: list[Candidate], voice: str, progress: Progress | None = None
+) -> list[Candidate]:
     """The first of each FileDataID that can be had, in order.
 
     FileDataIDs are fetched side by side, and the candidates for one FileDataID in
@@ -297,8 +338,20 @@ def _fetched(found: list[Candidate], voice: str) -> list[Candidate]:
     for candidate in found:
         by_fdid[candidate.fdid].append(candidate)
 
+    total, settled, failed = len(by_fdid), [0], [0]
+    count = threading.Lock()
+
     def first_had(fdid: int) -> Candidate | None:
-        return next((c for c in by_fdid[fdid] if c.fetch(voice)), None)
+        had = next((c for c in by_fdid[fdid] if c.fetch(voice)), None)
+        if progress is not None:
+            with count:
+                settled[0] += 1
+                failed[0] += had is None
+                progress(settled[0], total, failed[0])
+        return had
+
+    if progress is not None:
+        progress(0, total, 0)
 
     try:
         with ThreadPoolExecutor(FETCH_WORKERS) as pool:
