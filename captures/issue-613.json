@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "3442": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Sputtervalve",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3446": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Mebok Mizzyrix",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-613",
+ "quests": {
+  "1069-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Mebok Mizzyrix",
+   "npc": "3446",
+   "questID": 1069,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Did you get the eggs, $N?  I already made a shipping deal with Wharfmaster Dizzywig!",
+   "time": 1790986552,
+   "title": "Deepmoss Spider Eggs",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "1094-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sputtervalve",
+   "npc": "3442",
+   "questID": 1094,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Hello there! How can I help you?",
+   "time": 1790986534,
+   "title": "Further Instructions",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
