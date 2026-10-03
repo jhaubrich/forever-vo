@@ -1,0 +1,92 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "4262|e66389a6": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1457,
+   "name": "Darnassus Sentinel",
+   "npc": "4262",
+   "questID": null,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "One has opened up on the Tradesman's Terrace.  If you take the path leading Southeast from the bank, it should be easy to find.",
+   "time": 1791029216,
+   "title": null,
+   "wanted": null,
+   "zone": "Darnassus"
+  },
+  "5595|21c84810": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Ironforge Guard",
+   "npc": "5595",
+   "questID": null,
+   "race": "Gnome",
+   "sex": "f",
+   "source": "community",
+   "text": "Where is the Auction House?  Why it's right by the gates of Ironforge as you enter our fine city.  Ye'll find it just across from The Vault.",
+   "time": 1791028257,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "5595|6286cd10": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Ironforge Guard",
+   "npc": "5595",
+   "questID": null,
+   "race": "Gnome",
+   "sex": "f",
+   "source": "community",
+   "text": "Well well!  You've come to the right place to learn Mining, girlie!  Geofram Bouldertoe himself resides at the Deepmountain Mining Guild.  Ye couldn't ask for a better instructor than him.",
+   "time": 1791028543,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  }
+ },
+ "npcs": {
+  "264943": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 950080,
+   "name": "Afadra Dunwall",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "4262": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Darnassus Sentinel",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "5595": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Ironforge Guard",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-628",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
