@@ -94,8 +94,9 @@
   .start .start-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 6px; }
   .start .start-top .start-head { margin: 0; }
   .start .check { margin: 0; white-space: nowrap; }
-  /* the approval, and under it the way back to it, both at the right */
-  .start .approval { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .start .approval { display: inline-flex; align-items: center; }
+  /* the way back to the approval: the card's bottom right, level with the voice box */
+  .start #revert-voice { margin-left: auto; align-self: flex-end; }
   .start #revert-voice { font-size: 12px; padding: 2px 8px; color: var(--warn); border-color: var(--warn); background: transparent; }
   .start #revert-voice:hover { background: var(--warn); color: var(--bg); }
   /* the list may be wider than the box: its notes are long */
@@ -340,7 +341,7 @@
     <div class="start">
       <div class="start-top">
         <label for="voice-search" class="start-head">Voice <span class="note">start here: choose a voice, then try its lines and settings below</span></label>
-        <span class="approval"><label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label><button id="revert-voice" type="button" hidden title="Put this voice back to what was approved: the source clips and gaps heard then, the four settings, and its reference rebuilt from those clips. Nothing else changes; the pick it replaces stays in Earlier picks.">Revert to approved</button></span>
+        <span class="approval"><label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></span>
       </div>
       <div class="start-row">
         <div class="voice-find">
@@ -350,6 +351,7 @@
           <ul id="voice-results" role="listbox" aria-label="Voices" hidden></ul>
         </div>
         <div id="voice-note" class="hint"></div>
+        <button id="revert-voice" type="button" hidden title="Put this voice back to what was approved: the source clips and gaps heard then, the four settings, and its reference rebuilt from those clips. Nothing else changes; the pick it replaces stays in Earlier picks.">Revert to approved</button>
       </div>
       <select id="voice" hidden aria-hidden="true" tabindex="-1"></select>
     </div>
