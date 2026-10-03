@@ -87,6 +87,20 @@ class ResolvedVoice(NamedTuple):
     settings: TtsSettings
 
 
+def picks_digest(clips: list[int], build: str | None, gaps: list[float]) -> str:
+    """The `clips=` a pick adds to every file's fingerprint in sound_index.json.
+
+    A digest, not the list: sound_index carries this for every file, and a
+    fifteen-clip pick would run longer than the text hash it qualifies. The audition
+    page also reads it back, to tell which picks have audio in the pack.
+    """
+    joined = ",".join(str(c) for c in clips) + f"@{build or ''}"
+    if any(gaps):
+        # a pick with no gaps keeps the digest it had before gaps existed
+        joined += "~" + ",".join(f"{g:g}" for g in gaps)
+    return hashlib.blake2b(joined.encode(), digest_size=4).hexdigest()
+
+
 class VoiceCatalog:
     """Resolves a voice name to its reference clip and Chatterbox settings from
     [voices] and [tts] in forever-vo.toml.
@@ -194,16 +208,8 @@ class VoiceCatalog:
             else None
         )
         if picked and picked.clips:
-            # a digest, not the list: sound_index carries this for every file, and a
-            # fifteen-clip pick would run longer than the text hash it qualifies
-            joined = ",".join(str(c) for c in picked.clips) + f"@{picked.build or ''}"
-            if any(picked.gaps):
-                # a pick with no gaps keeps the digest it had before gaps existed
-                joined += "~" + ",".join(f"{g:g}" for g in picked.gaps)
             fields = dict(fields)
-            fields["clips"] = hashlib.blake2b(
-                joined.encode(), digest_size=4
-            ).hexdigest()
+            fields["clips"] = picks_digest(picked.clips, picked.build, picked.gaps)
         return fields
 
     def recipe(self, voice: str) -> str:

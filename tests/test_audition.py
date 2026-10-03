@@ -885,3 +885,31 @@ def test_a_pick_names_the_sources_its_clips_come_from(
     same = VoiceSources(clips=[9])
     rows = audition.pick_history_for("nightelf-male", same, set(), config)
     assert len(rows) == 1 and rows[0]["saved"]  # a matching build is marked, not added
+
+
+def test_released_picks_never_leave_the_history_and_experiments_can(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+
+    from tools import audition
+    from tools.config import Config, Voices, VoiceSources
+
+    monkeypatch.setattr(audition, "SOURCE_PICKS", tmp_path / "source_picks.json")
+    monkeypatch.setattr(audition, "PICK_HISTORY", 2)
+    # pick [1] has audio in the pack; the others are experiments
+    monkeypatch.setattr(
+        audition, "released_files", lambda row: 30 if row.get("clips") == [1] else 0
+    )
+    rows = [{"clips": [c], "at": str(c)} for c in (5, 4, 3, 2, 1)]
+    kept = audition.trim_history(rows)
+    assert [r["clips"] for r in kept] == [[5], [4], [1]]  # two newest, and the released
+
+    (tmp_path / "source_picks.json").write_text(json.dumps({"x-male": kept}))
+    saved = Config(voices=Voices(sources={"x-male": VoiceSources(clips=[5])}))
+    monkeypatch.setattr(audition, "load_config", lambda: saved)
+    assert audition.forget_pick("x-male", [4], [])  # an experiment goes
+    assert not audition.forget_pick("x-male", [1], [])  # a released pick stays
+    assert not audition.forget_pick("x-male", [5], [])  # and so does the saved one
+    left = json.loads((tmp_path / "source_picks.json").read_text())["x-male"]
+    assert [r["clips"] for r in left] == [[5], [1]]

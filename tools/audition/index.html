@@ -167,9 +167,17 @@
   #clips-reference .ref-foot audio { flex: 0 1 260px; min-width: 0; }
   #clips-history { margin: 6px 0 0; }
   #clips-history:empty { display: none; }
-  #clips-history button { font-size: 12px; padding: 2px 8px; margin: 0 6px 4px 0; }
-  #clips-history button.current { border-color: var(--gold); color: var(--gold); }
-  #clips-history button.saved { font-weight: 600; }
+  /* one pill per earlier pick: the pick, then its × when it is only an experiment */
+  #clips-history .pick { display: inline-flex; margin: 0 6px 4px 0; }
+  #clips-history .pick button { font-size: 12px; padding: 2px 8px; }
+  #clips-history .pick button.forget { padding: 2px 6px; margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; color: var(--dim); }
+  #clips-history .pick button.forget:hover { color: var(--warn); border-color: var(--warn); }
+  #clips-history .pick:has(.forget) button[data-i] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  #clips-history .pick.current button { border-color: var(--gold); color: var(--gold); }
+  #clips-history .pick.saved button[data-i] { font-weight: 600; }
+  #clips-history .pick.released button[data-i] { border-color: var(--ok); }
+  #clips-history .pick.current.released button[data-i] { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--ok); }
+  #clips-history .rel { color: var(--ok); font-size: 11px; border: 1px solid var(--ok); border-radius: 8px; padding: 0 5px; margin-right: 2px; }
   /* a bar of the first seconds: green to 6 s (t3), gold to 10 s (s3gen), then the
      averaged rest, cut off at the right edge; each pick a block in its order */
   #clips-timeline { position: relative; margin: 20px 0 4px; height: 22px; }
@@ -1452,15 +1460,30 @@ function renderHistory(history, picked) {
   // the same clips with the same gaps, a missing gap counting as 0
   const padded = (gaps, n) => Array.from({ length: n }, (_, i) => (gaps || [])[i] || 0);
   const current = h => same(h.clips, picks) && same(padded(h.gaps, picks.length - 1), gapsList());
-  // the pick saved in forever-vo.toml is marked, and is always there to go back to;
-  // the one being shown now is gold
-  box.innerHTML = `<span class="note" title="Every build of this voice, newest first. Click one to load it back; nothing is built until Build and keep.">Earlier picks: </span>` + history.map((h, i) =>
-    `<button data-i="${i}" class="${current(h) ? "current" : ""}${h.saved ? " saved" : ""}" ` +
-    `title="${h.saved ? "The pick saved in forever-vo.toml. " : ""}${h.clips.join(", ")}${spaced(h) ? `; gaps ${h.gaps.join(", ")}s` : ""}` +
-    `${(h.uses || []).length ? `; uses ${h.uses.join(", ")}` : ""}">${h.saved ? "★ saved · " : ""}${h.recipe ? "automatic build" : h.at === "saved" ? "in forever-vo.toml" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
-    `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""}${h.seconds !== undefined ? ` · ${h.seconds}s` : ""}</button>`
-  ).join("");
-  box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  // The pick saved in forever-vo.toml is marked ★, and a pick with audio in the pack
+  // ("released": the nightly voices from it and ships what it made) is marked too and
+  // never leaves the list. Every other pick is an experiment, with an × to drop it. The
+  // one being shown now is gold.
+  box.innerHTML = `<span class="note" title="Every build of this voice, newest first. Click one to load it back; nothing is built until Build and keep. Released picks and the saved one stay; × drops an experiment.">Earlier picks: </span>` + history.map((h, i) => {
+    const kept = h.saved || h.released;
+    return `<span class="pick${current(h) ? " current" : ""}${h.saved ? " saved" : ""}${h.released ? " released" : ""}">` +
+      `<button data-i="${i}" ` +
+      `title="${h.saved ? "The pick saved in forever-vo.toml. " : ""}${h.released ? `Released: ${h.released} pack file${h.released === 1 ? " was" : "s were"} voiced from it, so it stays. ` : ""}` +
+      `${h.clips.join(", ")}${spaced(h) ? `; gaps ${h.gaps.join(", ")}s` : ""}${(h.uses || []).length ? `; uses ${h.uses.join(", ")}` : ""}">` +
+      `${h.saved ? "★ saved · " : ""}${h.released ? `<span class="rel">released</span> ` : ""}` +
+      `${h.recipe ? "automatic build" : h.at === "saved" ? "in forever-vo.toml" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
+      `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""}${h.seconds !== undefined ? ` · ${h.seconds}s` : ""}</button>` +
+      (kept ? "" : `<button class="forget" data-forget="${i}" title="Drop this experiment from Earlier picks">×</button>`) + `</span>`;
+  }).join("");
+  box.querySelectorAll("button.forget").forEach(b => b.addEventListener("click", async () => {
+    const h = history[+b.dataset.forget];
+    try {
+      const r = await api("/api/clips/history/forget", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voice: clipsVoice || $("voice").value, clips: h.clips, gaps: h.gaps || [] }) });
+      renderHistory(r.history, picks);
+    } catch (e) { toast(e.message, "warn"); }
+  }));
+  box.querySelectorAll("button[data-i]").forEach(b => b.addEventListener("click", () => {
     const h = history[+b.dataset.i];
     // its sources first: the pick shows once they have loaded (loadClips, clipsWanted)
     if (addPickSources(clipsVoice || $("voice").value, h.uses)) {

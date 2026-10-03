@@ -578,6 +578,8 @@ def pick_history_for(
                     "recipe": False,
                 },
             )
+    for row in rows:
+        row["released"] = released_files(row)  # pack files made from it, 0 for none
     if own is not None:
         for row in rows:
             row["uses"] = pick_sources(voice, row.get("clips", []), own, config)
@@ -619,7 +621,7 @@ def seed_recipe_history(voice: str) -> None:
                 "seconds": round(_concat_seconds(clips, voice), 1),
             }
         )
-        history[voice] = rows[:PICK_HISTORY]
+        history[voice] = trim_history(rows)
         tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
         tmp.write_text(
             json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8"
@@ -641,6 +643,83 @@ def _concat_seconds(clips: list[int], voice: str) -> float:
             except (subprocess.CalledProcessError, OSError):
                 pass
     return total
+
+
+@functools.cache
+def _released(index_mtime: float) -> dict[str, int]:
+    """picks digest -> how many pack files sound_index.json stamps with it."""
+    try:
+        index = json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    found: Counter[str] = Counter()
+    for entry in index.values():
+        match = re.search(r"(?:^|[+,])clips=([0-9a-f]{8})", entry.get("t") or "")
+        if match:
+            found[match.group(1)] += 1
+    return dict(found)
+
+
+def released_files(row: dict[str, Any]) -> int:
+    """How many pack files were generated from this pick, by its digest in
+    sound_index.json: the committed index the nightly run writes as it ships them.
+    The release records themselves (release_state, release_baseline) are gitignored
+    and live only on the machine that uploads, so this is what every checkout has."""
+    try:
+        mtime = SOUND_INDEX.stat().st_mtime
+    except OSError:
+        return 0
+    digest = generate.picks_digest(
+        row.get("clips", []), row.get("build"), row.get("gaps", [])
+    )
+    return _released(mtime).get(digest, 0)
+
+
+def trim_history(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """A voice's history kept to the last PICK_HISTORY picks, except that a pick with
+    audio in the pack is kept for good, wherever it falls: it is what players heard."""
+    kept, others = [], 0
+    for row in rows:
+        if released_files(row):
+            kept.append(row)
+        elif others < PICK_HISTORY:
+            kept.append(row)
+            others += 1
+    return kept
+
+
+def _write_history(history: dict[str, list[dict[str, Any]]]) -> None:
+    tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
+    tmp.write_text(
+        json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    os.replace(tmp, SOURCE_PICKS)
+
+
+def forget_pick(voice: str, clips: list[int], gaps: list[float]) -> bool:
+    """Drops one experiment from the voice's history. False, and nothing dropped, for a
+    pick with audio in the pack or the one saved in forever-vo.toml, which are kept."""
+    spaced = tidy_gaps(gaps, len(clips))
+    saved = load_config().voices.sources.get(voice)
+    if saved and (saved.clips, tidy_gaps(saved.gaps, len(saved.clips))) == (
+        clips,
+        spaced,
+    ):
+        return False
+    with _config_lock(SOURCE_PICKS):
+        history = pick_history()
+        rows = history.get(voice, [])
+        keep = [
+            r
+            for r in rows
+            if (r.get("clips"), r.get("gaps", [])) != (clips, spaced)
+            or released_files(r)
+        ]
+        if len(keep) == len(rows):
+            return False
+        history[voice] = keep
+        _write_history(history)
+    return True
 
 
 def record_pick(
@@ -671,7 +750,7 @@ def record_pick(
         if spaced:
             row["gaps"] = spaced
         rows.insert(0, row)
-        history[voice] = rows[:PICK_HISTORY]
+        history[voice] = trim_history(rows)
         tmp = SOURCE_PICKS.with_suffix(f".json.{os.getpid()}.part")
         tmp.write_text(
             json.dumps(history, indent=1, sort_keys=True) + "\n", encoding="utf-8"
@@ -1287,6 +1366,14 @@ class KeepSpeakerVoice(BaseModel):
 
 class WritePack(BaseModel):
     base: str
+
+
+class ForgetPick(BaseModel):
+    """One Earlier pick to drop, by its clips and gaps."""
+
+    voice: str
+    clips: list[int] = Field(min_length=1, max_length=40)
+    gaps: list[float] = Field(default_factory=list, max_length=40)
 
 
 class BuildSources(BaseModel):
@@ -1964,6 +2051,22 @@ def create_app(
             "fingerprint": fingerprint,
             "pack": "working folder",
             "pack_url": f"/api/pack/{PACK_NAME}/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}",
+        }
+
+    @app.post("/api/clips/history/forget")
+    def forget_history(request: ForgetPick) -> dict[str, Any]:
+        """Drops an experiment from a voice's Earlier picks. A pick with audio in the
+        pack and the one saved in forever-vo.toml are never dropped."""
+        voice = _safe(request.voice)
+        if not forget_pick(voice, request.clips, request.gaps):
+            raise HTTPException(
+                409, "that pick is released or saved, or already gone; it stays"
+            )
+        config = studio.config()
+        return {
+            "history": pick_history_for(
+                voice, config.voices.sources.get(voice), None, config
+            )
         }
 
     @app.get("/api/npcs/{voice}")
