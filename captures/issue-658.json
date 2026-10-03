@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1440": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Milton Sheaf",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-658",
+ "quests": {
+  "343-complete": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Milton Sheaf",
+   "npc": "1440",
+   "questID": 343,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Metallurgy?  Ah yes, we have many books on the subject, and are happy to aid Brother Kristoff with his speech!  Now...which particular book was it the good brother needed?",
+   "time": 1791041601,
+   "title": "Speaking of Fortitude",
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "344-accept": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Milton Sheaf",
+   "npc": "1440",
+   "questID": 344,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "The Stresses of Iron?  Yes, I know the book.  Quite a good one, written by the Dwarven miner Margulf Blaggon a few decades ago.  He spent most his time deep in the mountains of Khaz Modan, digging ore.  Smart fellow!\n\nBut where was I?  Oh yes, the Stresses of Iron!  I'm afraid the book was moved to the Northshire Abbey.  The caretaker of the Abbey's library, Brother Paxton, wanted to make a copy of the book for his own shelves.\n\nBut that was months ago.  I wonder why it's taking him so long...",
+   "time": 1791041602,
+   "title": "Brother Paxton",
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
