@@ -5,6 +5,10 @@
 - The count of quests to send (login window, Options, minimap button) leaves
   out lines a voice pack you installed since has voiced or stopped asking
   for. It used to keep counting them until your next export.
+- With greetings or gossip set to play once, a line only counts as heard
+  once it starts playing. One queued behind another line and dropped when
+  the window closed (a flight master's, when the map opens) was marked heard
+  and never played for that NPC again.
 
 ## 0.1.8
 

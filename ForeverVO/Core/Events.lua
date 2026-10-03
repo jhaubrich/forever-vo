@@ -250,12 +250,13 @@ local function QueueGossip(event, text)
         name = speaker.name, speakerKey = speakerKey, guid = speaker.guid, isObject = speaker.isObject,
         path = path, duration = duration, pack = pack, parts = parts, voice = voice,
     }
+    -- Remembered as read when it starts playing (OnPlay below), not now: a
+    -- line queued behind another and dropped when the window closes, as a
+    -- flight master's is when the map opens, was never heard.
+    item.seenKey = seenKey
     MaybeLeadIn(item, speaker)
     if Queue:Add(item) then
         currentGossipItem = item
-        if seenKey then
-            SeenFor(event)[seenKey] = true
-        end
     end
 end
 
@@ -308,6 +309,12 @@ ns.OnInit(function()
             end
         end
     end)
+
+    Queue:RegisterCallback("OnPlay", function(_, item)
+        if item.kind == "gossip" and item.seenKey then
+            SeenFor(item.event)[item.seenKey] = true
+        end
+    end, Events)
 
     -- Drop queued lines for quests the player abandons
     hooksecurefunc(C_QuestLog, "AbandonQuest", function()
