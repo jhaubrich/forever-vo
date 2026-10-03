@@ -91,6 +91,8 @@
   .fields .unsaved label { color: var(--warn); }
   .fields .saved-note { color: var(--warn); }
   .fields .saved-note:empty { display: none; }
+  .fields .knob-reset { font-size: 11px; padding: 0 6px; line-height: 1.5; margin-left: 4px; color: var(--warn); border-color: var(--warn); background: transparent; }
+  .fields .knob-reset:hover { background: var(--warn); color: var(--bg); }
   .fields-head { display: flex; align-items: center; gap: 6px; color: var(--dim); font-size: 12px; margin: 12px 0 -4px; }
   @container (max-width: 560px) {
     .fields { grid-template-columns: minmax(0, 1fr) minmax(4.5em, 7em); }
@@ -157,6 +159,7 @@
   #clips-history:empty { display: none; }
   #clips-history button { font-size: 12px; padding: 2px 8px; margin: 0 6px 4px 0; }
   #clips-history button.current { border-color: var(--gold); color: var(--gold); }
+  #clips-history button.saved { font-weight: 600; }
   /* a bar of the first seconds: green to 6 s (t3), gold to 10 s (s3gen), then the
      averaged rest, cut off at the right edge; each pick a block in its order */
   #clips-timeline { position: relative; margin: 20px 0 4px; height: 22px; }
@@ -523,9 +526,13 @@ function voiceRows(s) { return s.pickable || s.voices.map(v => ({ voice: v, clip
 // what the voice is worth picking for: how many creature displays it answers for, and
 // how many lines it actually speaks
 function voiceNote(s, r) {
+  // most telling first: who speaks in it, how much they say, then how many creature
+  // displays could reach it
   const bits = [];
-  if (r.displays) bits.push(`${r.displays} display${r.displays === 1 ? "" : "s"}`);
-  if (r.lines) bits.push(`${r.lines} line${r.lines === 1 ? "" : "s"}`);
+  const count = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  if (r.speakers) bits.push(count(r.speakers, "speaker"));
+  if (r.lines) bits.push(count(r.lines, "line"));
+  if (r.displays) bits.push(count(r.displays, "display"));
   if (r.species) bits.unshift(`no clip of its kind yet, read as ${r.species} now`);
   else if (!r.clip) bits.unshift(r.borrows ? `reads ${r.borrows}.wav until it has its own` : "no clip yet");
   return bits.join(", ");
@@ -787,10 +794,19 @@ function markKnobs() {
     field.classList.toggle("unsaved", departs);
     let note = field.querySelector(".saved-note");
     if (!note) { note = document.createElement("div"); note.className = "hint saved-note"; field.appendChild(note); }
-    note.textContent = departs ? `not saved: ${$("voice").value} has ${saved}` : "";
+    note.innerHTML = departs
+      ? `not saved: ${esc($("voice").value)} has ${saved} <button type="button" class="knob-reset" data-knob="${id}" data-saved="${saved}" ` +
+        `title="Put back ${saved}, what ${esc($("voice").value)} has saved">reset</button>`
+      : "";
   }
 }
 for (const [id] of KNOBS) $(id).addEventListener("input", markKnobs);
+document.querySelector(".fields.knobs").addEventListener("click", ev => {
+  const b = ev.target.closest("button.knob-reset");
+  if (!b) return;
+  $(b.dataset.knob).value = b.dataset.saved;
+  markKnobs();
+});
 // Who is read in the chosen voice, most lines first, each linked to wowhead. Loaded
 // once per voice; a species voice nobody is cast on yet lists who would move to it.
 let npcsVoice = null, npcsRows = [], npcsRetry = null;
@@ -996,7 +1012,7 @@ $("voice").addEventListener("change", () => {
   listVoiceLines(true);
   showSpeakerPin();
   if (clipsVoice && $("voice").value !== clipsVoice) {
-    clipsRows = []; picks = []; gapAfter = new Map(); clipsVoice = null;
+    clipsRows = []; picks = []; gapAfter = new Map(); clipsWanted = null; clipsVoice = null;
     $("clips-group").hidden = true; $("clips-group").innerHTML = "";
     $("clips-status").textContent = ""; $("clips-warn").textContent = "";
     $("clips-ref").removeAttribute("src");
@@ -1164,6 +1180,18 @@ $("rebuild").addEventListener("click", async () => {
 // place: the voice select's change handler. applyState restores voice.value by
 // assignment, which fires no change event, so a refresh cannot reach this.
 let clipsSeedPending = false;  // Load candidates asked for the saved picks; not seeded yet
+// An Earlier pick waiting for the sources it needs to finish loading before it is shown
+let clipsWanted = null;
+// Adds the voices and folders a pick's clips come from to "Also offer clips from", so
+// the whole pick is listed under its own groups instead of as strays. True when some
+// were missing, which means the table has to load them before the pick can show.
+function addPickSources(voice, uses) {
+  const missing = (uses || []).filter(v => !alsoOf(voice).includes(v));
+  if (!missing.length) return false;
+  setAlso(voice, [...alsoOf(voice), ...missing]);
+  toast(`adding what this pick uses: ${missing.join(", ")}`, "ok");
+  return true;
+}
 // Seconds of silence after a pick, keyed by the clip it follows, so it moves with that
 // clip when the order changes. None set is 0; the last pick's is never used.
 let gapAfter = new Map();
@@ -1410,13 +1438,23 @@ function renderHistory(history, picked) {
   // the same clips with the same gaps, a missing gap counting as 0
   const padded = (gaps, n) => Array.from({ length: n }, (_, i) => (gaps || [])[i] || 0);
   const current = h => same(h.clips, picks) && same(padded(h.gaps, picks.length - 1), gapsList());
-  box.innerHTML = `<span class="note">Earlier picks: </span>` + history.map((h, i) =>
-    `<button data-i="${i}" class="${current(h) ? "current" : ""}" ` +
-    `title="${h.clips.join(", ")}${spaced(h) ? `; gaps ${h.gaps.join(", ")}s` : ""}">${h.recipe ? "automatic build" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
-    `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""} · ${h.seconds}s</button>`
+  // the pick saved in forever-vo.toml is marked, and is always there to go back to;
+  // the one being shown now is gold
+  box.innerHTML = `<span class="note" title="Every build of this voice, newest first. Click one to load it back; nothing is built until Build and keep.">Earlier picks: </span>` + history.map((h, i) =>
+    `<button data-i="${i}" class="${current(h) ? "current" : ""}${h.saved ? " saved" : ""}" ` +
+    `title="${h.saved ? "The pick saved in forever-vo.toml. " : ""}${h.clips.join(", ")}${spaced(h) ? `; gaps ${h.gaps.join(", ")}s` : ""}` +
+    `${(h.uses || []).length ? `; uses ${h.uses.join(", ")}` : ""}">${h.saved ? "★ saved · " : ""}${h.recipe ? "automatic build" : h.at === "saved" ? "in forever-vo.toml" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
+    `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""}${h.seconds !== undefined ? ` · ${h.seconds}s` : ""}</button>`
   ).join("");
   box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
     const h = history[+b.dataset.i];
+    // its sources first: the pick shows once they have loaded (loadClips, clipsWanted)
+    if (addPickSources(clipsVoice || $("voice").value, h.uses)) {
+      clipsWanted = h;
+      busy($("clips-load"), true);
+      loadClips(false);
+      return;
+    }
     const missing = h.clips.filter(f => !clipsRows.some(c => c.fdid === f));
     picks = h.clips.filter(f => clipsRows.some(c => c.fdid === f));
     seedGaps(h.clips, h.gaps);
@@ -1484,10 +1522,24 @@ async function loadClips(refresh) {
       // The saved picks are seeded once the voice's own rows are in: borrowed sources
       // now arrive first while the voice still loads, and seeding then kept only the
       // picks found among them, for good
-      if (!d.pending.includes(voice) && (clipsSeedPending || !picks.length)) {
+      // Load candidates first adds the sources the saved pick uses, then seeds the
+      // pick once everything has loaded, so its borrowed clips are listed too
+      if (clipsSeedPending && !d.pending.includes(voice) && addPickSources(voice, d.uses)) {
+        // asked again at once: this answer has nothing pending, so the poll below would
+        // stop before the added sources were ever requested
+        setTimeout(() => { busy($("clips-load"), true); loadClips(false); }, 0);
+      } else if (!d.pending.length && (clipsSeedPending || !picks.length)) {
         picks = d.picked.filter(f => clipsRows.some(c => c.fdid === f));
         seedGaps(d.picked, d.gaps);
         clipsSeedPending = false;
+      }
+      if (clipsWanted && !d.pending.length) {
+        const h = clipsWanted; clipsWanted = null;
+        picks = h.clips.filter(f => clipsRows.some(c => c.fdid === f));
+        seedGaps(h.clips, h.gaps);
+        const missing = h.clips.length - picks.length;
+        toast(missing ? `Loaded ${picks.length} of ${h.clips.length}; ${missing} could not be found.`
+          : `Loaded the pick from ${h.at === "saved" ? "forever-vo.toml" : h.at}. Build to make it the reference again.`, missing ? "warn" : "ok");
       }
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;

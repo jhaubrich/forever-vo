@@ -71,6 +71,7 @@ from tools.config import (
     DATA_DIR,
     GENDER_DICT,
     PACK_NAME,
+    RETAIL_BUILD,
     SOUND_INDEX,
     SOUNDS_DIR,
     VOICES_DIR,
@@ -496,6 +497,93 @@ def pick_history(voice: str | None = None) -> dict[str, list[dict[str, Any]]]:
     return {voice: data.get(voice, [])} if voice else data
 
 
+@functools.cache
+def _clip_offers(clip_folders: tuple[str, ...]) -> dict[int, list[str]]:
+    """FileDataID -> the voices and sound folders whose candidates include it, in the
+    order the page would borrow from them: a [voices] clip_folders folder first (the
+    reason it was added), then a race's speech and its sets, then a named NPC's kit,
+    which shares files with race sets and is the narrower source. What lets a saved
+    pick bring its sources back with it."""
+    from tools.build_voice_references import (
+        emote_speech_fdids,
+        named_npc_fdids,
+        set_fdids,
+    )
+    from tools.soundpaths import named_folder_files
+
+    offers: dict[int, list[str]] = {}
+
+    def add(fdid: int, voice: str) -> None:
+        if voice not in offers.setdefault(fdid, []):
+            offers[fdid].append(voice)
+
+    files = named_folder_files()
+    for folder in clip_folders:
+        for fdid, _, _ in files.get(folder, []):
+            add(fdid, f"folder-{folder}")
+    for build in (BETA_BUILD, RETAIL_BUILD):
+        with contextlib.suppress(Exception):  # a table that cannot be had offers none
+            for race_gender, fdids in emote_speech_fdids(build).items():
+                for fdid in fdids:
+                    add(fdid, race_gender)
+    for race_gender, sets in sound_set_displays().items():
+        for sound_id in sets:
+            for fdid in set_fdids(sound_id):
+                add(fdid, race_gender)
+    for voice, fdids in named_npc_fdids().items():
+        for fdid in fdids:
+            add(fdid, voice)
+    return offers
+
+
+def pick_sources(
+    voice: str, clips: list[int], own: set[int], config: Config
+) -> list[str]:
+    """The other voices and folders a pick's clips come from, for the ones the voice's
+    own candidates do not offer: what "Also offer clips from" needs for the whole pick
+    to be listed. The first source that offers each clip, in first-needed order."""
+    offers = _clip_offers(tuple(config.voices.clip_folders))
+    needed: list[str] = []
+    for fdid in clips:
+        if fdid in own:
+            continue
+        source = next((v for v in offers.get(fdid, []) if v != voice), None)
+        if source and source not in needed:
+            needed.append(source)
+    return needed
+
+
+def pick_history_for(
+    voice: str, picked: VoiceSources | None, own: set[int] | None, config: Config
+) -> list[dict[str, Any]]:
+    """The voice's earlier picks for the page, each with the sources it needs (`uses`),
+    and the pick saved in forever-vo.toml marked `saved`. The saved pick leads the list
+    when no build in the history matches it, as when it predates the history: it is the
+    one to go back to, and it used to be missing (dwarf-female's approved pick)."""
+    rows = [dict(row) for row in pick_history(voice).get(voice, [])]
+    if picked and picked.clips:
+        saved = (picked.clips, tidy_gaps(picked.gaps, len(picked.clips)))
+        match = [r for r in rows if (r.get("clips"), r.get("gaps", [])) == saved]
+        for row in match[:1]:
+            row["saved"] = True
+        if not match:
+            rows.insert(
+                0,
+                {
+                    "clips": picked.clips,
+                    "gaps": saved[1],
+                    "build": picked.build,
+                    "at": "saved",
+                    "saved": True,
+                    "recipe": False,
+                },
+            )
+    if own is not None:
+        for row in rows:
+            row["uses"] = pick_sources(voice, row.get("clips", []), own, config)
+    return rows
+
+
 def seed_recipe_history(voice: str) -> None:
     """Record the automatic build as the oldest entry, so picking has an undo.
 
@@ -802,6 +890,7 @@ class Studio:
         self.model_status = "not loaded"
         self.corpus_status = "not loaded"
         self._lines_per_voice: Counter[str] | None = None
+        self._speakers_per_voice: Counter[str] | None = None
         self._species_wanted: dict[str, SpeciesWant] = {}
         self.clips_lock = threading.Lock()
         self._clips: dict[str, list[dict[str, Any]]] = {}
@@ -876,7 +965,19 @@ class Studio:
         with self.corpus_lock:
             if self._lines_per_voice is None:
                 self._lines_per_voice = Counter(row.voice for row in rows)
+                # and how many NPCs speak them, items and keyless lines aside
+                self._speakers_per_voice = Counter(
+                    voice
+                    for voice, _ in {
+                        (row.voice, row.speaker_key) for row in rows if row.speaker_key
+                    }
+                )
             return dict(self._lines_per_voice)
+
+    def speakers_per_voice(self) -> dict[str, int]:
+        """How many speakers each voice is cast on, counted with lines_per_voice."""
+        self.lines_per_voice()
+        return dict(self._speakers_per_voice or {})
 
     def clips(self, voice: str, refresh: bool = False) -> list[dict[str, Any]] | None:
         """This voice's candidate source clips, or None while a background load runs.
@@ -946,6 +1047,7 @@ class Studio:
         with self.corpus_lock:
             self._rows = None
             self._lines_per_voice = None
+            self._speakers_per_voice = None
             self._by_base = {}
         threading.Thread(target=self.rows, daemon=True).start()
 
@@ -982,6 +1084,7 @@ class Studio:
         for display_id in labels:
             displays[f"npc-{display_id}"] = named_display_count(display_id)
         spoken = self.lines_per_voice()
+        speakers = self.speakers_per_voice()
 
         def label_of(voice: str) -> str | None:
             if not voice.startswith("npc-"):
@@ -999,6 +1102,7 @@ class Studio:
                 "archetype": is_archetype(v),
                 "label": label_of(v),
                 "lines": spoken.get(v, 0),
+                "speakers": speakers.get(v, 0),
             }
             for v in self.voices()
         ]
@@ -1015,6 +1119,7 @@ class Studio:
                             "archetype": True,
                             "label": None,
                             "lines": spoken.get(name, 0),
+                            "speakers": speakers.get(name, 0),
                         }
                     )
         # A species whose speakers have lines but no clip of their kind: the spirit
@@ -1033,6 +1138,7 @@ class Studio:
                         "archetype": False,
                         "label": None,
                         "lines": count,
+                        "speakers": len(want.speakers),
                         "species": now,
                     }
                 )
@@ -1056,6 +1162,7 @@ class Studio:
                             "archetype": False,
                             "label": None,
                             "lines": spoken.get(name, 0),
+                            "speakers": speakers.get(name, 0),
                             "borrows": f"{borrowed}-{gender}",
                             # has clips to offer of its own: spoken emotes here or in
                             # retail (nightborne, an allied race), or sets it is cast with
@@ -2008,7 +2115,19 @@ def create_app(
             "warnings": sources_warnings(config, voice)
             + (unlisted_folders(config) if voice.startswith("npc-") else [])
             + unlisted_clip_folders(config),
-            "history": pick_history(voice).get(voice, []),
+            "history": pick_history_for(
+                voice,
+                picked,
+                {c["fdid"] for c in found} if found is not None else None,
+                config,
+            ),
+            # the sources the saved pick's clips come from, which the page adds to
+            # "Also offer clips from" so the whole pick is listed, not as strays
+            "uses": pick_sources(
+                voice, picked.clips, {c["fdid"] for c in found}, config
+            )
+            if picked and found is not None
+            else [],
             "reference_url": (
                 f"/api/clips/reference/{voice}.wav"
                 if (VOICES_DIR / f"{voice}.wav").exists()
@@ -2055,7 +2174,9 @@ def create_app(
             "built": out.name,
             "seconds": seconds,
             "existed": existed,
-            "history": pick_history(voice).get(voice, []),
+            "history": pick_history_for(
+                voice, studio.config().voices.sources.get(voice), None, studio.config()
+            ),
             "reference_url": f"/api/clips/reference/{voice}.wav?t={int(time.time())}",
             "restage": restage_note(voice, existed, request.keep),
         }

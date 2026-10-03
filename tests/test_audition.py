@@ -845,3 +845,43 @@ def test_build_refuses_a_gap_before_touching_the_reference(
     )
     assert r.status_code == 400 and "between 0 and 3" in r.json()["detail"]
     assert built == []  # refused before anything was built
+
+
+def test_a_pick_names_the_sources_its_clips_come_from(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from tools import audition
+    from tools.config import Config, Voices, VoiceSources
+
+    offers = {
+        1730262: ["folder-pc_-_nightborne_elf_male"],
+        556587: ["nightelf-male", "bloodelf-male"],  # a race set two voices offer
+        9: ["nightelf-male"],
+    }
+    monkeypatch.setattr(audition, "_clip_offers", lambda folders: offers)
+    config = Config(voices=Voices())
+    # the voice's own candidates need nothing; a clip only it offers needs nothing more
+    assert audition.pick_sources(
+        "nightelf-male", [1730262, 556587, 9], {556587}, config
+    ) == ["folder-pc_-_nightborne_elf_male"]
+    # a clip the voice does not list comes from the first other voice offering it
+    assert audition.pick_sources("nightelf-male", [556587], set(), config) == [
+        "bloodelf-male"
+    ]
+
+    # the saved pick is marked, and leads the history when no build matches it
+    monkeypatch.setattr(
+        audition,
+        "pick_history",
+        lambda voice=None: {
+            "nightelf-male": [{"clips": [9], "at": "2026-10-03 08:00"}]
+        },
+    )
+    saved = VoiceSources(clips=[1730262, 9], gaps=[0.1])
+    rows = audition.pick_history_for("nightelf-male", saved, set(), config)
+    assert rows[0]["saved"] and rows[0]["at"] == "saved" and rows[0]["gaps"] == [0.1]
+    assert rows[0]["uses"] == ["folder-pc_-_nightborne_elf_male"]
+    assert not rows[1].get("saved")
+    same = VoiceSources(clips=[9])
+    rows = audition.pick_history_for("nightelf-male", same, set(), config)
+    assert len(rows) == 1 and rows[0]["saved"]  # a matching build is marked, not added
