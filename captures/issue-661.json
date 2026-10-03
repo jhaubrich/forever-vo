@@ -1,0 +1,76 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "253279": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Alba Fairmoon",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-661",
+ "quests": {
+  "92753-complete": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Alba Fairmoon",
+   "npc": "253279",
+   "questID": 92753,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "So you found the forge, and planted the bomb... only one thing remains to be done.",
+   "time": 1790975976,
+   "title": "Destruction in Deadmines",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "92819-accept": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Alba Fairmoon",
+   "npc": "253279",
+   "questID": 92819,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "We are almost finished. Use the detonator, and end this.",
+   "time": 1790975980,
+   "title": "Destruction in Deadmines",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "92819-complete": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Alba Fairmoon",
+   "npc": "253279",
+   "questID": 92819,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "I don't know what to say, $N. To think that Stormwind would put their military ambitions over the livelihood of their people...",
+   "time": 1790976022,
+   "title": "Destruction in Deadmines",
+   "wanted": null,
+   "zone": "Westfall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
