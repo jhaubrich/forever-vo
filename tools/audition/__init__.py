@@ -222,19 +222,46 @@ def _write_tuning(
         if voice in voices:
             del voices[voice]
     else:
-        entry = tomlkit.table()
-        if reference:
-            entry["reference"] = reference
-        entry["exaggeration"] = exaggeration
-        entry["cfg_weight"] = cfg_weight
-        if tempo != defaults[2]:
-            entry["tempo"] = tempo
-        if pitch != defaults[3]:
-            entry["pitch"] = pitch
-        if speed != defaults[4]:
-            entry["speed"] = speed
-        voices[voice] = entry
+        _set_keys(
+            voices,
+            voice,
+            {
+                "reference": reference or None,
+                "exaggeration": exaggeration,
+                "cfg_weight": cfg_weight,
+                "tempo": tempo if tempo != defaults[2] else None,
+                "pitch": pitch if pitch != defaults[3] else None,
+                "speed": speed if speed != defaults[4] else None,
+            },
+        )
     return _validated_write(path, doc)
+
+
+def _set_keys(
+    parent: Any, name: str, values: dict[str, Any], blank_after: bool = False
+) -> None:
+    """Sets `parent[name]`'s keys to `values`, None removing one, in the table that is
+    already there rather than a new one: a comment that sits inside a table belongs to
+    it in tomlkit, and replacing the table dropped it. That is how the paragraph on
+    respellings, which had drifted under [tts.voices.dwarf-female], was lost when
+    dwarf-female's pitch was kept (2026-10-03). A new table is made only when there
+    is none, its keys in the order given."""
+    entry = parent.get(name)
+    if entry is None:
+        entry = tomlkit.table()
+        for key, value in values.items():
+            if value is not None:
+                entry[key] = value
+        if blank_after:
+            entry.add(tomlkit.nl())
+        parent[name] = entry
+        return
+    for key, value in values.items():
+        if value is None:
+            if key in entry:
+                del entry[key]
+        else:
+            entry[key] = value
 
 
 def write_pronunciation(path: Path, word: str, spoken: str) -> Config:
@@ -336,19 +363,19 @@ def write_voice_sources(
                 # leaving an empty [voices.sources] behind would not round-trip
                 del voices["sources"]
         else:
-            entry = tomlkit.table()
             array = tomlkit.array()
             array.extend(clips)
-            entry["clips"] = array.multiline(len(clips) > 6)
-            if build:
-                entry["build"] = build
             spaced = tidy_gaps(gaps or [], len(clips))
-            if spaced:
-                gap_array = tomlkit.array()
-                gap_array.extend(spaced)
-                entry["gaps"] = gap_array
-            entry.add(tomlkit.nl())  # a blank line before whatever follows
-            sources[voice] = entry
+            gap_array = tomlkit.array()
+            gap_array.extend(spaced)
+            values = {
+                "clips": array.multiline(len(clips) > 6),
+                "build": build or None,
+                "gaps": gap_array if spaced else None,
+            }
+            # in place, so a comment inside the entry stays (_set_keys); a new one
+            # gets a blank line before whatever follows
+            _set_keys(sources, voice, values, blank_after=True)
         return _validated_write(path, doc)
 
 

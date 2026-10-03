@@ -1017,3 +1017,37 @@ def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
     )  # no picks heard
     r = client.post("/api/voice/revert", json={"voice": "x-male"})
     assert r.status_code == 409
+
+
+def test_keeping_settings_or_picks_keeps_comments_inside_the_table(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "forever-vo.toml"
+    path.write_text(
+        "[tts.voices.x-male]\n"
+        "exaggeration = 0.75\n"
+        "cfg_weight = 0.3\n"
+        "\n"
+        "# Respellings: a paragraph that drifted in under this table\n"
+        "\n"
+        "[voices.sources.x-male]\n"
+        "clips = [1, 2]\n"
+        "# why these clips\n"
+        "\n"
+        "[pronunciations]\n"
+        'Gnomeregan = "Nomer-gahn"\n',
+        encoding="utf-8",
+    )
+    write_tuning(path, "x-male", 0.75, 0.3, None, 1.0, 1.0)
+    write_voice_sources(path, "x-male", [3, 4, 5], gaps=[0.1])
+    text = path.read_text(encoding="utf-8")
+    assert "# Respellings: a paragraph that drifted in under this table" in text
+    assert "# why these clips" in text
+    config = load_config(path)
+    assert config.tts.voices["x-male"].pitch == 1.0
+    assert config.voices.sources["x-male"].clips == [3, 4, 5]
+    assert config.voices.sources["x-male"].gaps == [0.1]
+    # and taking a key back out leaves the comment too
+    write_tuning(path, "x-male", 0.75, 0.3, None, 1.0, 0.0)
+    assert "# Respellings" in path.read_text(encoding="utf-8")
+    assert load_config(path).tts.voices["x-male"].pitch is None
