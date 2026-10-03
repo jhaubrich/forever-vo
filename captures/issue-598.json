@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "257554": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Halaan Hawk-Eye",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-598",
+ "quests": {
+  "94414-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Halaan Hawk-Eye",
+   "npc": "257554",
+   "questID": 94414,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "My gift is simple, and mundane. I cannot peer between worlds such as those with the skysight, nor can I draw upon the magic of the ley lines beneath Zephras like others can. But a gift it remains and I am grateful to have it.\r\n\r\nAppreciation of what you have is the key to happiness. Yearning for what you may have, or what you have lost, only leads to despair.",
+   "time": 1791005787,
+   "title": "The Anchors of Zephras",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
