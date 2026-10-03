@@ -1,0 +1,54 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "2238|5408b909": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Tog'thar",
+   "npc": "2238",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Marlgen... One of the jailors. He has the key to my bonds.",
+   "time": 1791019915,
+   "title": null,
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  }
+ },
+ "npcs": {
+  "2238": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Tog'thar",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "260093": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Garen Largo",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3537": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Zixil",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-621",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
