@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3338": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Sergra Darkthorn",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3449": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Darsok Swiftdagger",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-625",
+ "quests": {
+  "867-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Darsok Swiftdagger",
+   "npc": "3449",
+   "questID": 867,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Cut up enough of them yet? Keep slicing and taking trophies. I want 8 Witchwing talons.",
+   "time": 1791027232,
+   "title": "Harpy Raiders",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "903-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sergra Darkthorn",
+   "npc": "3338",
+   "questID": 903,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "How goes your hunt, $N?  Have you found the prowlers?",
+   "time": 1791027134,
+   "title": "Prowlers of the Barrens",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
