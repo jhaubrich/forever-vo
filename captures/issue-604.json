@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "5513": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Gelman Stonehand",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-604",
+ "quests": {
+  "97923-complete": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Gelman Stonehand",
+   "npc": "5513",
+   "questID": 97923,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "There you have it, you can now craft your very own Lodestone. Most folk don't care much for camps being set up in the center of town, so you'll need to head into the wilderness if you want to test it out.\r\n\r\nOh, and just remember, no camp is complete without a campfire. You'll need one of those before you start up your camp. Most cooks can teach you to make a fire. If you haven't already, you might want to check in with someone who can train you in the culinary arts to learn the basics.",
+   "time": 1791010589,
+   "title": "Camping 101: Mining",
+   "wanted": true,
+   "zone": "Stormwind City"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
