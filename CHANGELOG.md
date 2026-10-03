@@ -9,8 +9,8 @@
   once it starts playing. One queued behind another line and dropped when
   the window closed (a flight master's, when the map opens) was marked heard
   and never played for that NPC again.
-- "Once" in **Repeat greetings and gossip** lasts until you log out again,
-  as before 0.1.8. An NPC you heard yesterday speaks again today.
+- "Once" in **Repeat greetings and gossip** lasts until you log out,
+  not for good. An NPC you heard yesterday speaks again today.
 
 ## 0.1.8
 
