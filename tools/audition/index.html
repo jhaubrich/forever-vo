@@ -169,7 +169,7 @@
   #clips-timeline .more { position: absolute; right: 4px; top: -16px; font-size: 11px; line-height: 14px; color: var(--dim); }
   /* the picks, one compact line each; the window marks fall between them */
   #clips-picks { list-style: none; margin: 4px 0 0; padding: 0; max-height: 40vh; overflow-y: auto; }
-  #clips-picks li { display: grid; grid-template-columns: 1.8em auto minmax(0, 1fr) auto auto auto; align-items: center; gap: 0 8px;
+  #clips-picks li { display: grid; grid-template-columns: 1.8em auto minmax(0, 1fr) auto auto 5.2em auto; align-items: center; gap: 0 8px;
     padding: 2px 0; border-bottom: 1px solid var(--line); }
   #clips-picks li:last-child { border-bottom: 0; }
   #clips-picks .n { color: var(--gold); font-weight: 600; text-align: right; }
@@ -182,11 +182,11 @@
   #clips-picks li.mark { display: block; border-bottom: 0; padding: 1px 0 1px 2.6em; font-size: 11px; color: var(--dim); }
   #clips-picks li.mark::before { content: ""; display: inline-block; width: 1.5em; vertical-align: middle; margin-right: 6px; border-top: 1px dashed var(--dim); }
   #clips-picks li.mark.short { color: var(--warn); }
-  /* the silence between two picks: small, and gold only once it is set */
-  #clips-picks li.gap { display: block; border-bottom: 0; padding: 0 0 0 2.6em; font-size: 11px; color: var(--dim); }
-  #clips-picks li.gap label { display: inline-flex; align-items: center; gap: 4px; margin: 0; font-size: 11px; color: inherit; cursor: default; }
-  #clips-picks li.gap input { width: 4.2em; padding: 0 4px; font-size: 11px; line-height: 1.5; }
-  #clips-picks li.gap.set { color: var(--gold); }
+  /* the silence after a pick, in its row: small, gold once set, warned past s3gen */
+  #clips-picks .gap label { display: inline-flex; align-items: center; gap: 2px; margin: 0; font-size: 11px; color: var(--dim); cursor: default; }
+  #clips-picks .gap input { width: 3.8em; padding: 0 3px; font-size: 11px; line-height: 1.5; }
+  #clips-picks .gap.set label { color: var(--gold); }
+  #clips-picks .gap.past label { color: var(--warn); }
   #clips-picks li.empty { display: block; color: var(--dim); font-size: 12px; padding: 6px 0; border: 0; }
   button.play { padding: 1px 7px; font-size: 11px; line-height: 1.4; }
 
@@ -225,7 +225,8 @@
     #clips-wrap .fd { display: none; }
     #clips-picks li { grid-template-columns: 1.6em auto minmax(0, 1fr) auto; }
     #clips-picks .len { display: none; }
-    #clips-picks .moves { grid-column: 3 / -1; justify-self: end; }
+    #clips-picks .gap { grid-column: 3; }
+    #clips-picks .moves { grid-column: 4; justify-self: end; }
   }
   .pill { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px; border: 1px solid var(--line); margin-left: 6px; }
   .pill.t3 { border-color: var(--ok); color: var(--ok); }
@@ -1164,6 +1165,22 @@ function clipLabel(c) {
   return c.kind.startsWith(c.group + " ") ? c.kind.slice(c.group.length + 1) : c.kind;
 }
 
+// The silence after a pick, on its own row: offered only where it would fall inside the
+// 10 s s3gen window, since past it a gap only dilutes an averaged speaker vector, and
+// where it matters most is between the clips that start in the first 6 s. A gap already
+// set past the window still shows, so a saved one is never hidden. None after the last
+// pick. 0 joins two clips back to back, as before gaps.
+function gapCell(f, i, off) {
+  const g = gapOf(f);
+  const inWindow = off + clipsSeconds(f) < clipsWindows.s3gen;
+  if (i >= picks.length - 1 || (!inWindow && !g)) return `<span class="gap"></span>`;
+  return `<span class="gap${g ? " set" : ""}${inWindow ? "" : " past"}" data-after="${f}">` +
+    `<label title="Seconds of silence between ${i + 1} and ${i + 2}. Back-to-back clips can run two deliveries together ` +
+    `and throw the accent or the cadence; a gap also spends the window, so keep it to a breath.` +
+    `${inWindow ? "" : " This one falls past the 10s window, where it does nothing useful."}">+` +
+    `<input type="number" min="0" max="3" step="0.05" value="${g}" aria-label="Gap after ${i + 1}, seconds">s</label></span>`;
+}
+
 // Where each pick starts in the reference, and which window that is in: t3 reads the
 // first 6 s, s3gen the first 10 s, and the rest only moves an average.
 function pickOffsets() {
@@ -1269,17 +1286,11 @@ function renderReference() {
       `${c.source === "also" ? `<span class="borrowed">borrowed</span>` : ""}</span>` +
       `<span class="len">${c.seconds.toFixed(1)}s</span>` +
       `<span class="at" title="Starts ${off.toFixed(1)}s into the reference">${off.toFixed(1)}s<span class="pill ${band}">${BAND_NAME[band]}</span></span>` +
+      gapCell(f, i, off) +
       `<span class="moves"><button data-move="top" title="Move to the head of the reference"${i > 0 ? "" : " disabled"}>⤒</button>` +
       `<button data-move="up" title="Move one earlier"${i > 0 ? "" : " disabled"}>▲</button>` +
       `<button data-move="down" title="Move one later"${i < picks.length - 1 ? "" : " disabled"}>▼</button>` +
       `<button data-move="drop" title="Drop it from the reference">×</button></span></li>`);
-    // the silence before the next pick: 0 joins them back to back, as before gaps
-    if (i < picks.length - 1) {
-      const g = gapOf(f);
-      items.push(`<li class="gap${g ? " set" : ""}" data-after="${f}"><label title="Seconds of silence between ${i + 1} and ${i + 2}. ` +
-        `Back-to-back clips can run two deliveries together and throw the accent or the cadence.">gap ` +
-        `<input type="number" min="0" max="3" step="0.05" value="${g}" aria-label="Gap after ${i + 1}, seconds">s</label></li>`);
-    }
   });
   // a window the picks never reach is said so where its mark would be
   while (next < marks.length) {
@@ -1341,7 +1352,7 @@ $("clips-body").addEventListener("click", ev => {
   renderClips();
 });
 $("clips-picks").addEventListener("change", ev => {
-  const input = ev.target.closest("li.gap input"), li = ev.target.closest("li.gap");
+  const input = ev.target.closest(".gap input"), li = ev.target.closest(".gap[data-after]");
   if (!input || !li) return;
   const g = Math.min(3, Math.max(0, Math.round((parseFloat(input.value) || 0) * 100) / 100));
   if (g) gapAfter.set(+li.dataset.after, g); else gapAfter.delete(+li.dataset.after);

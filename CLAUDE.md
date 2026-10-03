@@ -784,6 +784,9 @@ of the 10 s window, then the knobs.
   With any gap `concat_to_wav` pads each clip in an ffmpeg filter graph instead of
   the concat demuxer; a pick without gaps builds and digests exactly as before, and
   adding one changes the digest, so that voice restages and its approval goes stale.
+  The audition page offers a gap, in the pick's own row, only where it would start
+  inside the 10 s window: past it silence only dilutes the averaged speaker vector,
+  and a gap spends the window too, so keep it to a breath (0.1-0.3 s).
 - Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
   models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
   just two greetings, so his clone is rougher. The automatic build uses the kit
