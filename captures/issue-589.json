@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3338": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Sergra Darkthorn",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3429": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Thork",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3432": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Mankrik",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-589",
+ "quests": {
+  "4921-accept": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Mankrik",
+   "npc": "3432",
+   "questID": 4921,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "We battled in a small $r camp when we were separated--she held three of the Bristlebacks off by herself. But the odds began to overwhelm us. I led some away only to see her overwhelmed by newcomers. In my rage, I turned to face my enemies, but they brought me down easily with their vast numbers.\n\nI awoke to a $r $c tending my wounds--he had come across me on the Gold Road as I fell.\n\nPlease, $c, find some sign of my wife.",
+   "time": 1790951508,
+   "title": "Lost in Battle",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "5041-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Thork",
+   "npc": "3429",
+   "questID": 5041,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "How goes your search for the supplies, $N? I trust the quilboar fall under your strength easily.",
+   "time": 1790951374,
+   "title": "Supplies for the Crossroads",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "844-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sergra Darkthorn",
+   "npc": "3338",
+   "questID": 844,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you collected the plainstrider beaks?",
+   "time": 1790949696,
+   "title": "Plainstrider Menace",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "845-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sergra Darkthorn",
+   "npc": "3338",
+   "questID": 845,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "How many zhevra have you slain?",
+   "time": 1790951435,
+   "title": "The Zhevra",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
