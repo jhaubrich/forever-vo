@@ -1,0 +1,104 @@
+{
+ "addon": "0.1.7",
+ "gossip": {
+  "344|d18fd3a5": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Magistrate Solomon",
+   "npc": "344",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Who is this $c who goes before the Court of Lakshire in the Kingdom of Stormwind?  State your business within this township, $R.  The orc threat to the Kingdom is far too great to squander time in idle conversation.",
+   "time": 1790911324,
+   "title": null,
+   "wanted": null,
+   "zone": "Lakeshire Inn"
+  }
+ },
+ "npcs": {
+  "344": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Magistrate Solomon",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "900": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Bailiff Conacher",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-585",
+ "quests": {
+  "91-progress": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Bailiff Conacher",
+   "npc": "900",
+   "questID": 91,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Turn in 10 Shadowhide Pendants to me, and you shall be rewarded.",
+   "time": 1790911324,
+   "title": "Solomon's Law",
+   "wanted": null,
+   "zone": "Lakeshire Inn"
+  },
+  "95999-complete": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Magistrate Solomon",
+   "npc": "344",
+   "questID": 95999,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Excellent work, $N! Incinerator Gar'im was preparing to bolster the defenses at Stonewatch Keep. With this victory, we may yet succeed in reclaiming the keep!",
+   "time": 1790911233,
+   "title": "WANTED: Incinerator Gar'im",
+   "wanted": null,
+   "zone": "Lakeshire Town Hall"
+  },
+  "95999-progress": {
+   "build": "70170",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Magistrate Solomon",
+   "npc": "344",
+   "questID": 95999,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "What do you have there, $r?",
+   "time": 1790911232,
+   "title": "WANTED: Incinerator Gar'im",
+   "wanted": null,
+   "zone": "Lakeshire Town Hall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
