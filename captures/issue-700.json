@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1495": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Deathguard Linnea",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "1515": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Executor Zygand",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-700",
+ "quests": {
+  "372-complete": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Executor Zygand",
+   "npc": "1515",
+   "questID": 372,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "You have done extremely well, $c.  With ruthless fighters like you conquering in the name of The Forsaken our race is one step closer to defeating Arthas once and for all.  I have a good feeling about you, comrade.",
+   "time": 1791053669,
+   "title": "At War With The Scarlet Crusade",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "99156-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Deathguard Linnea",
+   "npc": "1495",
+   "questID": 99156,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you dealt with our little problem?",
+   "time": 1791053766,
+   "title": "Rear Guard Patrol",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
