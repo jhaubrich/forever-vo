@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "251906|6574e2ad": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Teeri Wellwind",
+   "npc": "251906",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I'm in charge of Shen'dar Village operations, and there's a lot of things to keep track of around here. Between bandits, cultists, and other random incidents that pop up, keeping this village afloat is a lot of work.",
+   "time": 1791045102,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251906": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Teeri Wellwind",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "251991": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Taleen Shimmerthread",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-663",
+ "quests": {
+  "93951-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Taleen Shimmerthread",
+   "npc": "251991",
+   "questID": 93951,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "The hippogryphs that have taken up residence southwest of the village can be a nuisance, but they also present a rather unique opportunity to obtain their feathers. Many $r love to adorn their hair with vibrant plumes and the down feathers of a hippogryph are exceptionally vibrant and, more importantly, silky soft.\r\n\r\nIf you are heading that way, try and gather as many of the fallen feathers as you can from around their nesting grounds. Do be careful, as wild hippogryph are not tolerant of guests.",
+   "time": 1791045118,
+   "title": "A Little Beauty",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
