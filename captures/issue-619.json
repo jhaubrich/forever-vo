@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "1070": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Deputy Feldon",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "341": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Foreman Oslow",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "379": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Darcy",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-619",
+ "quests": {
+  "125-progress": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Foreman Oslow",
+   "npc": "341",
+   "questID": 125,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Were you able to find my tools?",
+   "time": 1791023789,
+   "title": "The Lost Tools",
+   "wanted": null,
+   "zone": "Redridge Mountains"
+  },
+  "131-progress": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Darcy",
+   "npc": "379",
+   "questID": 131,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Hello again, $N.  Did Parker like the lunch I sent him?",
+   "time": 1791024001,
+   "title": "Delivering Daffodils",
+   "wanted": null,
+   "zone": "Lakeshire Inn"
+  },
+  "98407-complete": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Deputy Feldon",
+   "npc": "1070",
+   "questID": 98407,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Quite the armful you have.\r\n\r\nWhile this doesn't solve our problem out here, I can rest comfortably knowing we've discouraged them pushing any further. Great work, $N.",
+   "time": 1791023528,
+   "title": "Show of Force",
+   "wanted": null,
+   "zone": "Redridge Mountains"
+  },
+  "98407-progress": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Deputy Feldon",
+   "npc": "1070",
+   "questID": 98407,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "A full assessment of the gnolls cannot be complete without facing the worst of their kind. Put those thrashers down!",
+   "time": 1791023526,
+   "title": "Show of Force",
+   "wanted": null,
+   "zone": "Redridge Mountains"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
