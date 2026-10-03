@@ -913,3 +913,48 @@ def test_released_picks_never_leave_the_history_and_experiments_can(
     assert not audition.forget_pick("x-male", [5], [])  # and so does the saved one
     left = json.loads((tmp_path / "source_picks.json").read_text())["x-male"]
     assert [r["clips"] for r in left] == [[5], [1]]
+
+
+def test_released_reads_the_main_repositorys_main_and_falls_back(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import json
+
+    from tools import audition
+
+    remotes = (
+        "origin\thttps://github.com/someone/forever-vo.git (fetch)\n"
+        "upstream\tgit@github.com:quinn-dougherty/forever-vo.git (fetch)\n"
+    )
+    index = {"1-accept": {"t": "abc+clips=0a1b2c3d,exaggeration=0.6", "v": "orc-male"}}
+    calls: list[tuple[str, ...]] = []
+
+    def git(*args: str, timeout: float = 30) -> str | None:
+        calls.append(args)
+        if args == ("remote", "-v"):
+            return remotes
+        if args[0] == "rev-parse":
+            return "f00d\n"
+        if args[0] == "show":
+            return json.dumps(index)
+        return ""
+
+    monkeypatch.setattr(audition, "_git", git)
+    monkeypatch.setattr(audition, "_main_fetched", 1e18)  # no background fetch here
+    monkeypatch.setattr(audition, "_main_commit", ("", 0.0))
+    audition._main_remote.cache_clear()
+    audition._released_at.cache_clear()
+    assert audition._main_remote() == "upstream"  # the remote naming the main repo
+    assert audition._released() == {"0a1b2c3d": 1}
+    assert ("rev-parse", "upstream/main") in calls
+    assert ("show", "f00d:tools/data/sound_index.json") in calls
+
+    # outside a git checkout: the working copy
+    monkeypatch.setattr(audition, "_git", lambda *a, **kw: None)
+    monkeypatch.setattr(audition, "_main_commit", ("", 0.0))
+    audition._main_remote.cache_clear()
+    audition._released_at.cache_clear()
+    assert audition._main_remote() is None
+    assert audition._released() == audition._released_at("")
+    audition._main_remote.cache_clear()
+    audition._released_at.cache_clear()

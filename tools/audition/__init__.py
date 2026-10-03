@@ -72,6 +72,7 @@ from tools.config import (
     GENDER_DICT,
     PACK_NAME,
     RETAIL_BUILD,
+    ROOT,
     SOUND_INDEX,
     SOUNDS_DIR,
     VOICES_DIR,
@@ -645,12 +646,76 @@ def _concat_seconds(clips: list[int], voice: str) -> float:
     return total
 
 
-@functools.cache
-def _released(index_mtime: float) -> dict[str, int]:
-    """picks digest -> how many pack files sound_index.json stamps with it."""
+MAIN_REPO = "quinn-dougherty/forever-vo"  # whose main the nightly run commits to
+MAIN_FETCH_SECONDS = 600  # how stale main may get before it is fetched again
+_main_lock = threading.Lock()
+_main_fetched = 0.0
+_main_commit: tuple[str, float] = ("", 0.0)  # main's commit, and when it was asked
+
+
+def _git(*args: str, timeout: float = 30) -> str | None:
+    """Output of a git command in the repository, or None if it fails. Never prompts:
+    a fetch over SSH that wants a passphrase fails instead of hanging the server."""
+    env = {
+        **os.environ,
+        "GIT_TERMINAL_PROMPT": "0",
+        "GIT_SSH_COMMAND": "ssh -o BatchMode=yes",
+    }
     try:
-        index = json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+        done = subprocess.run(
+            ["git", "-C", str(ROOT), *args],
+            capture_output=True, text=True, timeout=timeout, env=env, check=True,
+        )  # fmt: skip
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return done.stdout
+
+
+@functools.cache
+def _main_remote() -> str | None:
+    """The remote whose URL is the main repository: upstream on a contributor's clone,
+    origin on the owner's. origin when none names it, None outside a git checkout."""
+    listing = _git("remote", "-v")
+    if listing is None:
+        return None
+    remotes = [
+        line.split()[:2] for line in listing.splitlines() if len(line.split()) >= 2
+    ]
+    named = [name for name, url in remotes if MAIN_REPO in url]
+    if named:
+        return named[0]
+    return "origin" if any(name == "origin" for name, _ in remotes) else None
+
+
+def _fetch_main() -> None:
+    """Fetches main in the background, at most every MAIN_FETCH_SECONDS: the marks follow
+    the nightly run's commits without any request waiting on the network."""
+    global _main_fetched
+    remote = _main_remote()
+    with _main_lock:
+        if remote is None or time.time() - _main_fetched < MAIN_FETCH_SECONDS:
+            return
+        _main_fetched = time.time()
+    threading.Thread(
+        target=lambda: _git("fetch", "--quiet", remote, "main", timeout=120),
+        daemon=True,
+    ).start()
+
+
+@functools.cache
+def _released_at(commit: str) -> dict[str, int]:
+    """picks digest -> how many pack files main's sound_index.json stamps with it, at
+    one commit of main (or "" for the working copy)."""
+    if commit:
+        text = _git("show", f"{commit}:tools/data/sound_index.json", timeout=60)
+    else:
+        try:
+            text = SOUND_INDEX.read_text(encoding="utf-8")
+        except OSError:
+            text = None
+    try:
+        index = json.loads(text or "")
+    except ValueError:
         return {}
     found: Counter[str] = Counter()
     for entry in index.values():
@@ -660,19 +725,30 @@ def _released(index_mtime: float) -> dict[str, int]:
     return dict(found)
 
 
+def _released() -> dict[str, int]:
+    """The digests main's sound index stamps, read from the latest main this checkout
+    has fetched, so a branch cut weeks ago still sees what last night's run voiced;
+    the working copy only when git cannot say."""
+    global _main_commit
+    _fetch_main()
+    # which commit main is at, asked of git at most every 30 s: each history row asks
+    if time.time() - _main_commit[1] > 30:
+        remote = _main_remote()
+        commit = (_git("rev-parse", f"{remote}/main") or "").strip() if remote else ""
+        _main_commit = (commit, time.time())
+    found = _released_at(_main_commit[0]) if _main_commit[0] else {}
+    return found or _released_at("")
+
+
 def released_files(row: dict[str, Any]) -> int:
-    """How many pack files were generated from this pick, by its digest in
-    sound_index.json: the committed index the nightly run writes as it ships them.
+    """How many pack files were generated from this pick, by its digest in main's
+    sound_index.json: the index the nightly run commits as it voices and ships them.
     The release records themselves (release_state, release_baseline) are gitignored
     and live only on the machine that uploads, so this is what every checkout has."""
-    try:
-        mtime = SOUND_INDEX.stat().st_mtime
-    except OSError:
-        return 0
     digest = generate.picks_digest(
         row.get("clips", []), row.get("build"), row.get("gaps", [])
     )
-    return _released(mtime).get(digest, 0)
+    return _released().get(digest, 0)
 
 
 def trim_history(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
