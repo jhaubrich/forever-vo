@@ -7,6 +7,12 @@
 <style>
   :root { color-scheme: dark; --bg: #16130f; --panel: #221d17; --ink: #e8dcc6; --dim: #9a8b74; --line: #3a3128; --gold: #d9b45b; --ok: #7fbf7f; --warn: #e0a050; --borrow: #8fb3e0; }
   * { box-sizing: border-box; }
+  /* No mute on any player here: pausing does that job, and a take left muted reads as
+     a silent one. The volume belongs to the system. Chromium draws these parts of its
+     player; other browsers ignore the rule. */
+  audio::-webkit-media-controls-mute-button,
+  audio::-webkit-media-controls-volume-slider,
+  audio::-webkit-media-controls-volume-control-container { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, sans-serif; }
   header { display: flex; gap: 16px; align-items: baseline; padding: 12px 20px; border-bottom: 1px solid var(--line); }
   /* the page before its first state: locked, greyed, with a banner saying why */
@@ -181,11 +187,7 @@
   #clips-reference .ref-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 10px; margin-top: 8px; }
   /* wide, so the scrubber can find a place in a 20 s reference */
   #clips-reference .ref-foot audio { flex: 1 1 360px; max-width: 520px; min-width: 0; }
-  /* no mute on the reference's player: a muted reference reads as a silent one, and
-     the volume belongs to the system. Chromium draws these parts; others ignore it */
-  #clips-ref::-webkit-media-controls-mute-button,
-  #clips-ref::-webkit-media-controls-volume-slider,
-  #clips-ref::-webkit-media-controls-volume-control-container { display: none !important; }
+
   #clips-history { margin: 6px 0 0; }
   #clips-history:empty { display: none; }
   /* one pill per earlier pick: the pick, then its × when it is only an experiment */
