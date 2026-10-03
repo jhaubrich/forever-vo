@@ -195,7 +195,7 @@
   #clips-timeline .more { position: absolute; right: 4px; top: -16px; font-size: 11px; line-height: 14px; color: var(--dim); }
   /* the picks, one compact line each; the window marks fall between them */
   #clips-picks { list-style: none; margin: 4px 0 0; padding: 0; max-height: 40vh; overflow-y: auto; }
-  #clips-picks li { display: grid; grid-template-columns: 1.8em auto minmax(0, 1fr) auto auto 5.2em auto; align-items: center; gap: 0 8px;
+  #clips-picks li { display: grid; grid-template-columns: 1.8em auto minmax(0, 1fr) auto auto 6.8em auto; align-items: center; gap: 0 8px;
     padding: 2px 0; border-bottom: 1px solid var(--line); }
   #clips-picks li:last-child { border-bottom: 0; }
   #clips-picks .n { color: var(--gold); font-weight: 600; text-align: right; }
@@ -210,7 +210,8 @@
   #clips-picks li.mark.short { color: var(--warn); }
   /* the silence after a pick, in its row: small, gold once set, warned past s3gen */
   #clips-picks .gap label { display: inline-flex; align-items: center; gap: 2px; margin: 0; font-size: 11px; color: var(--dim); cursor: default; }
-  #clips-picks .gap input { width: 3.8em; padding: 0 3px; font-size: 11px; line-height: 1.5; }
+  /* wide enough for "0.05" beside the browser's own step arrows */
+  #clips-picks .gap input { width: 5.4em; padding: 0 3px; font-size: 11px; line-height: 1.5; }
   #clips-picks .gap.set label { color: var(--gold); }
   #clips-picks .gap.past label { color: var(--warn); }
   #clips-picks li.empty { display: block; color: var(--dim); font-size: 12px; padding: 6px 0; border: 0; }
