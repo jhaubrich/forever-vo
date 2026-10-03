@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "268568|f87f742d": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Roy Lewells",
+   "npc": "268568",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Literacy should be celebrated and shared.",
+   "time": 1791012385,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "267007": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Stormwind Harbor Guard",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "268568": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Roy Lewells",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-608",
+ "quests": {
+  "97234-accept": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Roy Lewells",
+   "npc": "268568",
+   "questID": 97234,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Are you here to discuss the deeper meanings of our storied legends? No?\r\n\r\nWell, after you're done looking around, can you carry this to the library for me? We're exchanging some of our less popular bodies of work for some more modern writing. I have a list of tomes I'm quite sure the librarian will be able to procure for us within our existing arrangement.\r\n\r\nComplimentary club refreshments on us, if you help us out.",
+   "time": 1791012386,
+   "title": "Reading Room",
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
