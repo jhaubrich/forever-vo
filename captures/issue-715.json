@@ -1,0 +1,84 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "14729": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Ralston Farnsley",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1498": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Bethor Iceshard",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-715",
+ "quests": {
+  "357-progress": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Bethor Iceshard",
+   "npc": "1498",
+   "questID": 357,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "$N, have you acquired the book?",
+   "time": 1790915111,
+   "title": "The Lich's Identity",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "405-progress": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Bethor Iceshard",
+   "npc": "1498",
+   "questID": 405,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings.  Either you do not know who I am, or your business with me is urgent.\n\nBecause if neither of these were true, then you would not be foolish enough to disturb me...",
+   "time": 1790914278,
+   "title": "The Prodigal Lich",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "7813-progress": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Ralston Farnsley",
+   "npc": "14729",
+   "questID": 7813,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "We are currently accepting donations for wool cloth.  A donation of sixty pieces of wool cloth will net you full recognition by the Undercity for your generous actions.  Our stores are such on wool that we would only need sixty pieces from you total; we should be able to acquire enough from others in the realm to support our drive.\n\nIf you have the sixty pieces of wool cloth on you and are ready to donate them, I'm able to take them from you now.",
+   "time": 1790915161,
+   "title": "A Donation of Wool",
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
