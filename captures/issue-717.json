@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "415": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Verner Osgood",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-717",
+ "quests": {
+  "126-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Verner Osgood",
+   "npc": "415",
+   "questID": 126,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Yowler is a dangerous creature, $N.  If you're not ready for him, I understand.",
+   "time": 1791057799,
+   "title": "Howling in the Hills",
+   "wanted": null,
+   "zone": "Redridge Mountains"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
