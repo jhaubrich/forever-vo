@@ -1,0 +1,93 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "12042|a2527c6f": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1450,
+   "name": "Loganaar",
+   "npc": "12042",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Welcome, my brother.  If you are here to train, then I would be delighted to train you.\n\nThere will be a time soon where the call of the Emerald Dream will take hold in you.  You will hibernate for many years and walk amongst the purest of forms.  It is there and then that your ultimate training will take place.",
+   "time": 1791031259,
+   "title": null,
+   "wanted": null,
+   "zone": "Moonglade"
+  },
+  "4184|dd12f193": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1450,
+   "name": "Geenia Sunshadow",
+   "npc": "4184",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Ishnu-alah, traveler, and welcome to Nighthaven.\r\n\r\nWould you like to browse my selection of fine dresses?",
+   "time": 1791031213,
+   "title": null,
+   "wanted": null,
+   "zone": "Moonglade"
+  }
+ },
+ "npcs": {
+  "12042": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120791,
+   "name": "Loganaar",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4184": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120590,
+   "name": "Geenia Sunshadow",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "900": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Bailiff Conacher",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-691",
+ "quests": {
+  "91-accept": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Bailiff Conacher",
+   "npc": "900",
+   "questID": 91,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "An enemy of Stormwind has taken up residence in the eastern foothills of Redridge. This wicked villain uses the Arcane to spread terror and misery upon our town and our people. Under the name, Morganth, he conducts his evil business.\n\nMorganth now controls the Shadowhide Gnoll Clan to perform his biddings. As stated by the Law of Lakeshire, aiding a criminal of the Kingdom is punishable by death.\n\nThese vile gnolls must be killed!\n\nTurn in 10 Shadowhide Pendants to me, and you shall be rewarded.",
+   "time": 1791031044,
+   "title": "Solomon's Law",
+   "wanted": null,
+   "zone": "Lakeshire Town Hall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
