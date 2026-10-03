@@ -210,13 +210,12 @@ clips = [562839, 562843, 543245, 543257, 562835, 562837]
 [voices.sources.tauren-male]
 clips = [
     543033,
-    561587,
-    561583,
-    561579,
-    561581,
-    561573,
-    561572,
-    543065,
+    543037,
+    561542,
+    561540,
+    561547,
+    561537,
+    561549,
 ]
 
 [voices.sources.dwarf-female-guard]
@@ -508,9 +507,9 @@ clips = [541941, 550784, 550786, 550772, 550782]
 [voices.sources.orc-male-guard]
 clips = [
     562151,
-    541397,
     557806,
     557800,
+    541397,
     557807,
     557803,
     557809,
@@ -520,6 +519,7 @@ clips = [
     557814,
     557804,
 ]
+gaps = [0.1]
 
 [voices.sources.orc-male-shady]
 clips = [541421, 541413, 541426, 541420]
@@ -527,6 +527,12 @@ clips = [541421, 541413, 541426, 541420]
 [voices.sources.spirithealer-female]
 clips = [1730301, 1730302, 1730303, 1730304]
 
+
+[voices.notes]
+# Tasting notes, one per voice, written in the audition page's voice card: what
+# a voice sounds like by ear, which lines break it, what was tried and what to
+# try next. For people; nothing generates from them.
+dwarf-female = "Southern accent mostly eliminated by using barks for T3, but Scottish accent also gone. No combination of jokes or flirts can seem to land it. We can get close, but she drifts in and out of accents and it sounds worse than no accent at all."
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
@@ -553,23 +559,6 @@ tempo = 1.0
 [tts.voices.dwarf-female]
 exaggeration = 0.75
 cfg_weight = 0.3
-
-# Respellings for names Chatterbox gets wrong. The model takes plain text only
-# (no IPA or SSML), so the fix is spelling the word the way it should sound.
-# Try candidates by ear first: of five for Gnomeregan (/noʊmɹəˈgɑːn/),
-# "Nomer-gahn" was natural, "Gnome-ruh-gahn" was bad, and "Nome-ruh-GAHN" came
-# out partly as numbers (so do not mark stress with capitals). Ahn'Qiraj is
-# fine as written; "Ahn Kih-rahj" adds a rolled r. Quel'Thalas came out wrong;
-# "Quell Thalas" and "Kwel-thalas" were both fine. Kharanos as written varies
-# take to take, and so do "Karanos" and "Karra-noss" (each had bad takes out of
-# four); "Karranos" was fine all four times, sometimes with a Scottish rolled r.
-# Dun Morogh is fine as written. Tirisfal as written sometimes came out
-# "Tirefal"; "Tirrisfal" and "Teerisfall" were right four times of four.
-# Hyphens can leave a pause mid-word ("Teer-iss-fall"), so prefer respellings
-# without them. Varimathras as written was only ever ok or good; "Vairimathrus"
-# was good four times of four. Sharptalon reads best as two words: "Sharp
-# Talon" beat the plain spelling and "Sharptallon" in the tauren-female voice,
-# and a space does not leave the pause a hyphen can (#38).
 
 [tts.voices.goblin-male]
 exaggeration = 0.9
@@ -781,6 +770,31 @@ exaggeration = 0.5
 cfg_weight = 0.2
 tempo = 0.7
 pitch = -4.0
+
+[tts.voices.nightelf-male]
+exaggeration = 0.45
+cfg_weight = 0.3
+pitch = -1.0
+
+[tts.voices.tauren-male]
+exaggeration = 0.4
+cfg_weight = 0.3
+# Respellings for names Chatterbox gets wrong. The model takes plain text only
+# (no IPA or SSML), so the fix is spelling the word the way it should sound.
+# Try candidates by ear first: of five for Gnomeregan (/noʊmɹəˈgɑːn/),
+# "Nomer-gahn" was natural, "Gnome-ruh-gahn" was bad, and "Nome-ruh-GAHN" came
+# out partly as numbers (so do not mark stress with capitals). Ahn'Qiraj is
+# fine as written; "Ahn Kih-rahj" adds a rolled r. Quel'Thalas came out wrong;
+# "Quell Thalas" and "Kwel-thalas" were both fine. Kharanos as written varies
+# take to take, and so do "Karanos" and "Karra-noss" (each had bad takes out of
+# four); "Karranos" was fine all four times, sometimes with a Scottish rolled r.
+# Dun Morogh is fine as written. Tirisfal as written sometimes came out
+# "Tirefal"; "Tirrisfal" and "Teerisfall" were right four times of four.
+# Hyphens can leave a pause mid-word ("Teer-iss-fall"), so prefer respellings
+# without them. Varimathras as written was only ever ok or good; "Vairimathrus"
+# was good four times of four. Sharptalon reads best as two words: "Sharp
+# Talon" beat the plain spelling and "Sharptallon" in the tauren-female voice,
+# and a space does not leave the pause a hyphen can (#38).
 [pronunciations]
 "Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
@@ -804,10 +818,12 @@ exshellent = "excellent"
 newsh = "news"
 Goldshire = "Gold-shire"
 Gnarlpines = "Gnarl Pines"
-furbolgs = "fur bolgs"
-"Ban'ethil" = "Bahnethyl"
-Athridas = "Athridos"
+furbolgs = "fur ballgs"
+"Ban'ethil" = "Ban'Ethyl"
+Athridas = "Athridahs"
 Gnarlpine = "Gnarl pine"
+furbolg = "fur ballg"
+Jaina = "jay'nuh"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
@@ -937,5 +953,6 @@ orc-male = "cfg_weight=0.2,clip=orc-male,clips=e8326d21,exaggeration=0.6,tempo=1
 orc-male-guard = "cfg_weight=0.3,clip=orc-male-guard,clips=af44c428,exaggeration=0.6,pitch=-0.5,tempo=1.1"
 orc-male-shady = "cfg_weight=0.2,clip=orc-male-shady,clips=4c1a666d,exaggeration=0.6,pitch=-1.0"
 nightelf-female = "cfg_weight=0.3,clip=nightelf-female,clips=ac26026c,exaggeration=0.6"
-nightelf-male = "clip=nightelf-male,clips=0a424923"
+nightelf-male = "cfg_weight=0.3,clip=nightelf-male,clips=780ac3d7,pitch=-1.0"
 spirithealer-female = "cfg_weight=0.2,clip=spirithealer-female,clips=a1ba39fd,exaggeration=0.5,pitch=-4.0,tempo=0.7"
+tauren-male = "cfg_weight=0.3,clip=tauren-male,clips=3c6712d9,exaggeration=0.4"
