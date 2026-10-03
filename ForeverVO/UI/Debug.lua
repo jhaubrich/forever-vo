@@ -4,8 +4,11 @@ local Util, Packs = ns.Util, ns.Packs
 --[[
 Developer overlay: a small window attached to the quest or gossip frame,
 showing the quest file base, the voice that plays, and the speaker's
-display and model ids. Off by default. Saved variables do not come back
-on this beta, so the checkbox keeps the choice in ForeverVO_devOverlay.
+display and model ids, and a second one attached to the talking head while
+a line plays: the quest window is usually closed by the time a line is heard
+and found wanting, and the talking head is what is up then. Off by default.
+Saved variables do not come back on this beta, so the checkbox keeps the
+choice in ForeverVO_devOverlay.
 ]]
 
 local Debug = {}
@@ -14,8 +17,10 @@ ns.UI.Debug = Debug
 local CVAR = "ForeverVO_devOverlay"
 
 local probe
-local panel
-local current -- { host, head } while a dialog is up
+local panel     -- beside the quest or gossip frame
+local current   -- { host, head } while a dialog is up
+local headPanel -- beside the talking head
+local headItem  -- the queue item it describes while a line plays
 
 local function Enabled()
     return ns.db and ns.db.devOverlay
@@ -40,23 +45,72 @@ local function ModelLines()
     return "display " .. display, "model " .. model
 end
 
+--- A panel whose text can be copied: a font string cannot be selected, so the
+--- lines sit in a read-only edit box. A click selects them all, ready for
+--- Ctrl+C; typing puts them back; Escape lets go of the keyboard. The font
+--- string stays, hidden, to measure the lines by.
+local function NewPanel()
+    local frame = CreateFrame("Frame", nil, UIParent, "TooltipBackdropTemplate")
+    frame:SetFrameStrata("DIALOG")
+    frame:SetClampedToScreen(true)
+    frame:EnableMouse(true)
+    frame.text = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    frame.text:SetPoint("TOPLEFT", 12, -10)
+    frame.text:SetJustifyH("LEFT")
+    frame.text:SetSpacing(2)
+    frame.text:SetAlpha(0)
+    local edit = CreateFrame("EditBox", nil, frame)
+    frame.edit = edit
+    edit:SetPoint("TOPLEFT", 12, -10)
+    edit:SetMultiLine(true)
+    edit:SetAutoFocus(false)
+    edit:SetFontObject(GameFontHighlightSmall)
+    edit:SetSpacing(2)
+    edit:EnableMouse(true)
+    edit:SetScript("OnEditFocusGained", function(self)
+        self:HighlightText()
+    end)
+    edit:SetScript("OnMouseUp", function(self)
+        self:HighlightText()
+    end)
+    edit:SetScript("OnEscapePressed", function(self)
+        self:ClearFocus()
+    end)
+    edit:SetScript("OnTextChanged", function(self, userInput)
+        if userInput then
+            self:SetText(self.lines or "")
+            self:HighlightText()
+        end
+    end)
+    frame.watched = {}
+    frame:Hide()
+    return frame
+end
+
 --- Its own frame, stuck to the host's right edge, so the quest parchment
 --- never has to make room for it.
 local function Panel()
-    if panel then
-        return panel
+    if not panel then
+        panel = NewPanel()
     end
-    panel = CreateFrame("Frame", nil, UIParent, "TooltipBackdropTemplate")
-    panel:SetFrameStrata("DIALOG")
-    panel:SetClampedToScreen(true)
-    panel:EnableMouse(false)
-    panel.text = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    panel.text:SetPoint("TOPLEFT", 12, -10)
-    panel.text:SetJustifyH("LEFT")
-    panel.text:SetSpacing(2)
-    panel.watched = {}
-    panel:Hide()
     return panel
+end
+
+--- Sizes a panel to its lines, at most 400 wide, and puts them in its edit box.
+local function Fill(frame, lines)
+    local text = table.concat(lines, "\n")
+    local body = frame.text
+    body:SetWidth(400)
+    body:SetText(text)
+    local width = math.min(body:GetStringWidth(), 400)
+    width = math.max(width, 96)
+    body:SetWidth(width)
+    local height = body:GetStringHeight()
+    frame.edit.lines = text
+    frame.edit:SetSize(width + 4, height)
+    frame.edit:SetText(text)
+    frame.edit:SetCursorPosition(0)
+    frame:SetSize(width + 28, height + 20)
 end
 
 local function Watch(host)
@@ -101,14 +155,7 @@ function Paint()
     local display, model = ModelLines()
     lines[#lines + 1] = display
     lines[#lines + 1] = model
-    local text = table.concat(lines, "\n")
-    local body = panel.text
-    body:SetWidth(400)
-    body:SetText(text)
-    local width = math.min(body:GetStringWidth(), 400)
-    width = math.max(width, 96)
-    body:SetWidth(width)
-    panel:SetSize(width + 24, body:GetStringHeight() + 20)
+    Fill(panel, lines)
 end
 
 function Debug:HideClosed()
@@ -219,6 +266,89 @@ function Debug:ShowGossip(text, onGossipFrame)
     })
 end
 
+--- The talking head's portrait is the one model that is surely the speaker's
+--- once the dialog is gone: read its ids from it. GetModelFileID is the only
+--- model query that answers on this client; the display id stays 0.
+local function HeadModelLines()
+    local head = ns.UI.TalkingHead
+    local model = head and head.frame and head.frame.Model
+    local display, file
+    if model and model:IsShown() then
+        local ok, value = pcall(model.GetDisplayInfo, model)
+        display = ok and value and value ~= 0 and value or nil
+        local okFile, fileID = pcall(model.GetModelFileID, model)
+        file = okFile and fileID and fileID ~= 0 and fileID or nil
+    end
+    return "display " .. (display and tostring(display) or "none"),
+        "model " .. (file and tostring(file) or (model and model:IsShown() and "loading" or "none (book)"))
+end
+
+--- What plays now, as the pack sees it: the file under Sounds\, the voice playing
+--- and the one recorded for the line, the speaker and the pack.
+local function PaintHead()
+    if not headItem or not headPanel then
+        return
+    end
+    local item = headItem
+    local recorded
+    if item.kind == "quest" and item.questID then
+        local _, _, rec = Packs:DebugQuest(item.questID, item.event)
+        recorded = rec
+    elseif item.kind == "gossip" then
+        local _, rec = Packs:DebugGossip(item.speakerKey, item.text)
+        recorded = rec
+    end
+    local file = item.path and (item.path:match("\\Sounds\\(.+)%.mp3$") or item.path) or "no file"
+    local lines = {
+        file,
+        VoiceLine(item.voice, recorded),
+        format("speaker %s%s", tostring(item.speakerKey or "?"), item.pack and (" · pack " .. (item.pack.name or "?")) or ""),
+    }
+    if item.kind == "quest" and item.questID then
+        lines[#lines + 1] = format("quest %d %s", item.questID, item.event or "?")
+    end
+    local display, model = HeadModelLines()
+    lines[#lines + 1] = display
+    lines[#lines + 1] = model
+    Fill(headPanel, lines)
+end
+
+--- Follows the talking head: shown beside it while a line plays, gone with it.
+function Debug:ShowHead(item)
+    local head = ns.UI.TalkingHead
+    local host = head and head.frame
+    if not Enabled() or not item or not host then
+        self:HideHead()
+        return
+    end
+    if not headPanel then
+        headPanel = NewPanel()
+        host:HookScript("OnHide", function()
+            Debug:HideHead()
+        end)
+        -- the portrait's model arrives after the line starts; its ids follow
+        host.Model:HookScript("OnModelLoaded", function()
+            if headItem then
+                PaintHead()
+            end
+        end)
+    end
+    headItem = item
+    headPanel:ClearAllPoints()
+    -- above the head, flush with the portrait's left edge: beside it the frame
+    -- runs on past the button column and the panel floated off on its own
+    headPanel:SetPoint("BOTTOMLEFT", host.Portrait, "TOPLEFT", 0, 4)
+    PaintHead()
+    headPanel:Show()
+end
+
+function Debug:HideHead()
+    headItem = nil
+    if headPanel then
+        headPanel:Hide()
+    end
+end
+
 --- Which quest panel is up, so turning the option on mid-dialog can redraw.
 local function OpenQuestEvent()
     if QuestFrameDetailPanel and QuestFrameDetailPanel:IsShown() then
@@ -233,7 +363,12 @@ end
 function Debug:Apply()
     if not Enabled() then
         self:Hide()
+        self:HideHead()
         return
+    end
+    local head = ns.UI.TalkingHead
+    if head and head.displayed then
+        self:ShowHead(head.displayed)
     end
     local event = OpenQuestEvent()
     if event then
@@ -281,6 +416,20 @@ ns.OnInit(function()
     for event in pairs(handlers) do
         frame:RegisterEvent(event)
     end
+
+    -- the talking head: a new line presented, or the frame closing
+    local head = ns.UI.TalkingHead
+    hooksecurefunc(head, "Present", function(_, item)
+        if Enabled() then
+            local ok, err = pcall(Debug.ShowHead, Debug, item)
+            if not ok then
+                ns.Print("|cffff4040error in developer overlay (talking head):|r", err)
+            end
+        end
+    end)
+    hooksecurefunc(head, "CloseFrame", function()
+        Debug:HideHead()
+    end)
     frame:SetScript("OnEvent", function(_, event)
         if not Enabled() then
             return
