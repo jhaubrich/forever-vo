@@ -958,3 +958,58 @@ def test_released_reads_the_main_repositorys_main_and_falls_back(
     assert audition._released() == audition._released_at("")
     audition._main_remote.cache_clear()
     audition._released_at.cache_clear()
+
+
+def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
+    toml_copy: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition, generate
+    from tools.audition import write_approval, write_tuning
+
+    approved_clips, approved_gaps = [11, 12, 13], [0.1]
+    digest = generate.picks_digest(approved_clips, None, approved_gaps)
+    heard = f"clip=x-male,clips={digest},exaggeration=0.7,pitch=-1.0"
+    write_approval(toml_copy, "x-male", heard)
+    # since then: other picks and other knobs
+    write_voice_sources(toml_copy, "x-male", [21, 22])
+    write_tuning(toml_copy, "x-male", 1.2, 0.2, None, 1.3, 0.0)
+    history = {"x-male": [{"clips": [21, 22], "at": "now"},
+                          {"clips": approved_clips, "gaps": approved_gaps, "at": "then"}]}  # fmt: skip
+    monkeypatch.setattr(audition, "pick_history", lambda voice=None: history)
+    built: list[tuple] = []
+    monkeypatch.setattr(
+        audition, "build_picked_reference", lambda v, paths, gaps: built.append((v, gaps)) or Path("x.wav")
+    )  # fmt: skip
+    monkeypatch.setattr(
+        audition, "local_clip", lambda v, fdid, build: Path(f"{fdid}.ogg")
+    )
+    monkeypatch.setattr(audition, "record_pick", lambda *a, **kw: None)
+    monkeypatch.setattr(audition, "reference_seconds", lambda path: 9.0)
+
+    studio = object.__new__(audition.Studio)
+    studio.config_path = toml_copy
+    monkeypatch.setattr(studio, "config", lambda: audition.load_config(toml_copy))
+    monkeypatch.setattr(studio, "forget_corpus", lambda: None)
+    monkeypatch.setattr(studio, "state", dict)
+    target = audition.approved_target(studio.config(), "x-male")
+    assert target is not None and target[0]["clips"] == approved_clips
+    client = TestClient(audition.create_app(studio, addons=None))
+
+    r = client.post("/api/voice/revert", json={"voice": "x-male"})
+    assert r.status_code == 200, r.text
+    assert built == [("x-male", approved_gaps)]  # the reference rebuilt from the pick
+    config = audition.load_config(toml_copy)
+    picked = config.voices.sources["x-male"]
+    assert (picked.clips, picked.gaps) == (approved_clips, approved_gaps)
+    tuning = config.tts.voices["x-male"]
+    assert (tuning.exaggeration, tuning.pitch) == (0.7, -1.0)
+    assert tuning.tempo in (None, 1.0) and tuning.cfg_weight in (None, 0.5)
+
+    # nothing to go back to: refused, and nothing written
+    write_approval(
+        toml_copy, "x-male", "clip=x-male,exaggeration=0.7"
+    )  # no picks heard
+    r = client.post("/api/voice/revert", json={"voice": "x-male"})
+    assert r.status_code == 409

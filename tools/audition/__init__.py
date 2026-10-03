@@ -587,6 +587,49 @@ def pick_history_for(
     return rows
 
 
+def approved_target(
+    config: Config, voice: str
+) -> tuple[dict[str, Any], dict[str, Any]] | None:
+    """What reverting a voice to its approval would write: the pick heard (from the
+    history, by the digest the approval recorded) and its knobs. None when there is
+    nothing to revert to here: no approval, an approval of a clip another voice owns,
+    one heard before its picks were kept (no digest), or a pick no longer in the
+    history (released picks never leave it)."""
+    heard = config.voices.approved.get(voice)
+    if not heard:
+        return None
+    fields = dict(part.split("=", 1) for part in heard.split(",") if "=" in part)
+    digest = fields.get("clips")
+    if fields.get("clip") != voice or not digest:
+        return None
+    saved = config.voices.sources.get(voice)
+    rows = list(pick_history(voice).get(voice, []))
+    if saved and saved.clips:
+        rows.insert(0, {"clips": saved.clips, "build": saved.build, "gaps": saved.gaps})
+    pick = next(
+        (
+            row
+            for row in rows
+            if generate.picks_digest(
+                row.get("clips", []), row.get("build"), row.get("gaps", [])
+            )
+            == digest
+        ),
+        None,
+    )
+    if pick is None:
+        return None
+    defaults = config.tts.defaults
+    knobs = {
+        "exaggeration": float(fields.get("exaggeration", defaults.exaggeration)),
+        "cfg_weight": float(fields.get("cfg_weight", defaults.cfg_weight)),
+        "tempo": float(fields.get("tempo", defaults.tempo or 1.0)),
+        "pitch": float(fields.get("pitch", defaults.pitch or 0.0)),
+        "reference": fields.get("reference"),
+    }
+    return pick, knobs
+
+
 def seed_recipe_history(voice: str) -> None:
     """Record the automatic build as the oldest entry, so picking has an undo.
 
@@ -1371,6 +1414,12 @@ class Studio:
                 voice: "current" if catalog.recipe(voice) == heard else "stale"
                 for voice, heard in config.voices.approved.items()
             },
+            # stale approvals the page can offer to go back to (approved_target)
+            "revertable": [
+                voice
+                for voice, heard in config.voices.approved.items()
+                if catalog.recipe(voice) != heard and approved_target(config, voice)
+            ],
             "sources": {
                 v: e.model_dump(exclude_none=True)
                 for v, e in config.voices.sources.items()
@@ -1442,6 +1491,10 @@ class KeepSpeakerVoice(BaseModel):
 
 class WritePack(BaseModel):
     base: str
+
+
+class RevertVoice(BaseModel):
+    voice: str
 
 
 class ForgetPick(BaseModel):
@@ -2143,6 +2196,53 @@ def create_app(
             "history": pick_history_for(
                 voice, config.voices.sources.get(voice), None, config
             )
+        }
+
+    @app.post("/api/voice/revert")
+    def revert_voice(request: RevertVoice) -> dict[str, Any]:
+        """Puts a voice back to what was approved: the picks heard (clips, build and
+        gaps), the knobs, and its reference wav rebuilt from those clips. Every clip is
+        checked first, so a revert that cannot finish touches nothing."""
+        voice = _safe(request.voice)
+        config = studio.config()
+        target = approved_target(config, voice)
+        if target is None:
+            raise HTTPException(409, f"{voice} has no approved pick to go back to")
+        pick, knobs = target
+        clips, build = pick["clips"], pick.get("build")
+        gaps = tidy_gaps(pick.get("gaps", []), len(clips))
+        paths = []
+        for fdid in clips:
+            path = local_clip(voice, fdid, build)
+            if path is None:
+                raise HTTPException(
+                    404, f"clip {fdid} is not downloaded; load the candidates first"
+                )
+            paths.append(path)
+        try:
+            out = build_picked_reference(voice, paths, gaps)
+        except (RuntimeError, ValueError, subprocess.CalledProcessError) as e:
+            raise HTTPException(400, str(e)) from e
+        write_voice_sources(studio.config_path, voice, clips, build, gaps)
+        write_tuning(
+            studio.config_path,
+            voice,
+            knobs["exaggeration"],
+            knobs["cfg_weight"],
+            knobs["reference"],
+            knobs["tempo"],
+            knobs["pitch"],
+        )
+        studio.forget_corpus()
+        record_pick(voice, clips, build, reference_seconds(out), gaps=gaps)
+        after = studio.config()
+        matches = VoiceCatalog(after).recipe(voice) == after.voices.approved.get(voice)
+        return {
+            **studio.state(),
+            "reverted": matches,
+            "message": f"{voice} is back to what was approved"
+            if matches
+            else f"{voice} was reverted, but its recipe still differs from the approval",
         }
 
     @app.get("/api/npcs/{voice}")

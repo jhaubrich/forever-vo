@@ -94,6 +94,9 @@
   .start .start-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 6px; }
   .start .start-top .start-head { margin: 0; }
   .start .check { margin: 0; white-space: nowrap; }
+  .start .approval { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .start #revert-voice { font-size: 12px; padding: 2px 8px; color: var(--warn); border-color: var(--warn); background: transparent; }
+  .start #revert-voice:hover { background: var(--warn); color: var(--bg); }
   /* the list may be wider than the box: its notes are long */
   .start #voice-results { min-width: min(34em, calc(100vw - 32px)); }
   .fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4.5em, 7em); gap: 0 12px; align-items: start; }
@@ -332,7 +335,7 @@
     <div class="start">
       <div class="start-top">
         <label for="voice-search" class="start-head">Voice <span class="note">start here: choose a voice, then try its lines and settings below</span></label>
-        <label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label>
+        <span class="approval"><label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label><button id="revert-voice" type="button" hidden title="Put this voice back to what was approved: the source clips and gaps heard then, the four settings, and its reference rebuilt from those clips. Nothing else changes; the pick it replaces stays in Earlier picks.">Revert to approved</button></span>
       </div>
       <div class="start-row">
         <div class="voice-find">
@@ -543,7 +546,23 @@ function showApproval() {
   $("approved").indeterminate = mark === "stale";
   $("approved-label").textContent = mark === "stale"
     ? "Approved before a change (tick to approve as it is now)" : "Approved by ear";
+  // offered while the approval is stale and the pick heard is still in the history
+  $("revert-voice").hidden = !(state.revertable || []).includes($("voice").value);
 }
+
+$("revert-voice").addEventListener("click", async () => {
+  const voice = $("voice").value;
+  if (!confirm(`Put ${voice} back to what was approved? Its source clips, gaps and settings are replaced and its reference rebuilt; the current pick stays in Earlier picks.`)) return;
+  busy($("revert-voice"), true);
+  try {
+    const r = await api("/api/voice/revert", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ voice }) });
+    applyState(r);
+    loadVoiceSettings();
+    if (clipsVoice === voice) loadClips(true);  // the reverted pick, in the table
+    toast(r.message, r.reverted ? "ok" : "warn");
+  } catch (e) { toast(e.message, "warn"); }
+  busy($("revert-voice"), false);
+});
 
 $("approved").addEventListener("change", async () => {
   const box = $("approved"), voice = $("voice").value, approved = box.checked;
