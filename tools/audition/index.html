@@ -169,7 +169,13 @@
   #clips-reference .ref-head .spacer { flex: 1; }
   /* the built reference's player sits at the right, under the picks' own controls */
   #clips-reference .ref-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 10px; margin-top: 8px; }
-  #clips-reference .ref-foot audio { flex: 0 1 260px; min-width: 0; }
+  /* wide, so the scrubber can find a place in a 20 s reference */
+  #clips-reference .ref-foot audio { flex: 1 1 360px; max-width: 520px; min-width: 0; }
+  /* no mute on the reference's player: a muted reference reads as a silent one, and
+     the volume belongs to the system. Chromium draws these parts; others ignore it */
+  #clips-ref::-webkit-media-controls-mute-button,
+  #clips-ref::-webkit-media-controls-volume-slider,
+  #clips-ref::-webkit-media-controls-volume-control-container { display: none !important; }
   #clips-history { margin: 6px 0 0; }
   #clips-history:empty { display: none; }
   /* one pill per earlier pick: the pick, then its × when it is only an experiment */
