@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "237": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Farmer Furlbrow",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "238": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Verna Furlbrow",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-611",
+ "quests": {
+  "151-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Verna Furlbrow",
+   "npc": "238",
+   "questID": 151,
+   "race": "Dwarf",
+   "sex": "f",
+   "source": "community",
+   "text": "Old Blanchy is on her last leg.  Did you happen to find any oats for her?",
+   "time": 1790978750,
+   "title": "Poor Old Blanchy",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "64-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Farmer Furlbrow",
+   "npc": "237",
+   "questID": 64,
+   "race": "Dwarf",
+   "sex": "f",
+   "source": "community",
+   "text": "Don't suppose you were able to get my watch?",
+   "time": 1790978755,
+   "title": "The Forgotten Heirloom",
+   "wanted": null,
+   "zone": "Westfall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
