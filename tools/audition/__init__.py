@@ -173,12 +173,13 @@ def write_tuning(
     reference: str | None,
     tempo: float = 1.0,
     pitch: float = 0.0,
+    speed: float = 1.0,
 ) -> Config:
     """Sets [tts.voices.<voice>]; a tuning equal to the defaults with no reference
     removes the entry instead, so the file only lists what differs."""
     with _config_lock(path):
         return _write_tuning(
-            path, voice, exaggeration, cfg_weight, reference, tempo, pitch
+            path, voice, exaggeration, cfg_weight, reference, tempo, pitch, speed
         )
 
 
@@ -190,6 +191,7 @@ def _write_tuning(
     reference: str | None,
     tempo: float = 1.0,
     pitch: float = 0.0,
+    speed: float = 1.0,
 ) -> Config:
     doc = tomlkit.parse(path.read_text(encoding="utf-8"))
     tts = doc.get("tts")
@@ -201,6 +203,7 @@ def _write_tuning(
         float(tts.get("cfg_weight", 0.5)),
         float(tts.get("tempo", 1.0)),
         float(tts.get("pitch", 0.0)),
+        float(tts.get("speed", 1.0)),
     )
     voices = tts.get("voices")
     if voices is None:
@@ -215,7 +218,7 @@ def _write_tuning(
         # existing reference is carried over; clearing one is a TOML edit.
         current = load_config(path).tts.voices.get(voice)
         reference = current.reference if current else None
-    if (exaggeration, cfg_weight, tempo, pitch) == defaults and not reference:
+    if (exaggeration, cfg_weight, tempo, pitch, speed) == defaults and not reference:
         if voice in voices:
             del voices[voice]
     else:
@@ -228,6 +231,8 @@ def _write_tuning(
             entry["tempo"] = tempo
         if pitch != defaults[3]:
             entry["pitch"] = pitch
+        if speed != defaults[4]:
+            entry["speed"] = speed
         voices[voice] = entry
     return _validated_write(path, doc)
 
@@ -625,6 +630,7 @@ def approved_target(
         "cfg_weight": float(fields.get("cfg_weight", defaults.cfg_weight)),
         "tempo": float(fields.get("tempo", defaults.tempo or 1.0)),
         "pitch": float(fields.get("pitch", defaults.pitch or 0.0)),
+        "speed": float(fields.get("speed", defaults.speed or 1.0)),
         "reference": fields.get("reference"),
     }
     return pick, knobs
@@ -1384,6 +1390,7 @@ class Studio:
                 "cfg_weight": r.settings.cfg_weight,
                 "tempo": r.settings.tempo,
                 "pitch": r.settings.pitch,
+                "speed": r.settings.speed,
                 "reference": r.settings.reference,
                 "tuned": catalog.tuned(voice),
             }
@@ -1397,6 +1404,7 @@ class Studio:
                 "cfg_weight": config.tts.cfg_weight,
                 "tempo": config.tts.tempo,
                 "pitch": config.tts.pitch,
+                "speed": config.tts.speed,
             },
             "overrides": {
                 v: t.model_dump(exclude_none=True) for v, t in config.tts.voices.items()
@@ -1462,6 +1470,7 @@ class GenerateRequest(BaseModel):
     cfg_weight: list[float] = Field(min_length=1, max_length=6)
     tempo: list[float] = Field(default=[1.0], min_length=1, max_length=4)
     pitch: list[float] = Field(default=[0.0], min_length=1, max_length=4)
+    speed: list[float] = Field(default=[1.0], min_length=1, max_length=4)
     takes: int = Field(default=1, ge=1, le=5)
 
 
@@ -1471,6 +1480,7 @@ class KeepTuning(BaseModel):
     cfg_weight: float
     tempo: float = 1.0
     pitch: float = 0.0
+    speed: float = 1.0
     reference: str | None = None
 
 
@@ -1916,7 +1926,7 @@ def create_app(
             for path in sorted(folder.glob("*.mp3")):
                 recipe = re.match(
                     r"^(?P<voice>.+)-e(?P<e>[0-9.]+)-c(?P<c>[0-9.]+)(?:-t(?P<t>[0-9.]+))?"
-                    r"(?:-p(?P<p>-?[0-9.]+))?-take(?P<take>\d+)\.mp3$",
+                    r"(?:-p(?P<p>-?[0-9.]+))?(?:-s(?P<s>[0-9.]+))?-take(?P<take>\d+)\.mp3$",
                     path.name,
                 )
                 takes.append(
@@ -1928,6 +1938,7 @@ def create_app(
                         "cfg_weight": float(recipe["c"]) if recipe else None,
                         "tempo": float(recipe["t"]) if recipe and recipe["t"] else 1.0,
                         "pitch": float(recipe["p"]) if recipe and recipe["p"] else 0.0,
+                        "speed": float(recipe["s"]) if recipe and recipe["s"] else 1.0,
                         "take": int(recipe["take"]) if recipe else None,
                     }
                 )
@@ -1949,8 +1960,12 @@ def create_app(
         # to raise inside the generator, after 200 had been sent, and the page could
         # only report that the connection broke. A tempo of 10 looked like a network
         # error.
-        for exaggeration, cfg_weight, tempo, pitch in itertools.product(
-            request.exaggeration, request.cfg_weight, request.tempo, request.pitch
+        for exaggeration, cfg_weight, tempo, pitch, speed in itertools.product(
+            request.exaggeration,
+            request.cfg_weight,
+            request.tempo,
+            request.pitch,
+            request.speed,
         ):
             try:
                 VoiceTuning(
@@ -1959,6 +1974,7 @@ def create_app(
                     cfg_weight=cfg_weight,
                     tempo=tempo,
                     pitch=pitch,
+                    speed=speed,
                 )
             except ValidationError as e:
                 detail = "; ".join(
@@ -1968,7 +1984,8 @@ def create_app(
                 raise HTTPException(
                     400,
                     f"{detail} (you gave exaggeration {exaggeration}, "
-                    f"cfg_weight {cfg_weight}, tempo {tempo}, pitch {pitch})",
+                    f"cfg_weight {cfg_weight}, tempo {tempo}, pitch {pitch}, "
+                    f"speed {speed})",
                 ) from e
         session = time.strftime("%Y%m%d-%H%M%S")
         out_dir = AUDITION_DIR / session
@@ -1979,6 +1996,7 @@ def create_app(
             cfg_weight: float,
             tempo: float = 1.0,
             pitch: float = 0.0,
+            speed: float = 1.0,
         ) -> Config:
             tuning = VoiceTuning(
                 reference=request.reference,
@@ -1986,6 +2004,7 @@ def create_app(
                 cfg_weight=cfg_weight,
                 tempo=tempo,
                 pitch=pitch,
+                speed=speed,
             )
             tts = config.tts.model_copy(
                 update={"voices": {**config.tts.voices, request.voice: tuning}}
@@ -2047,18 +2066,30 @@ def create_app(
                     except TakeStopped:
                         yield json.dumps({"event": "stopped", "count": n}) + "\n"
                         return
-                    for tempo, pitch in itertools.product(request.tempo, request.pitch):
+                    for tempo, pitch, speed in itertools.product(
+                        request.tempo, request.pitch, request.speed
+                    ):
                         resolved = VoiceCatalog(
-                            variant_config(exaggeration, cfg_weight, tempo, pitch)
+                            variant_config(
+                                exaggeration, cfg_weight, tempo, pitch, speed
+                            )
                         ).resolve(request.voice)
                         settings = resolved.settings
                         n += 1
+                        # speed joins the name only when it is not 1, so the takes of
+                        # older runs still read back the way they were written
                         name = (
                             f"{request.voice}-e{exaggeration}-c{cfg_weight}"
-                            f"-t{tempo}-p{pitch}-take{take}.mp3"
+                            f"-t{tempo}-p{pitch}"
+                            + (f"-s{speed}" if speed != 1.0 else "")
+                            + f"-take{take}.mp3"
                         )
                         seconds = synth.encode(
-                            audio, out_dir / name, settings.tempo, settings.pitch
+                            audio,
+                            out_dir / name,
+                            settings.tempo,
+                            settings.pitch,
+                            settings.speed,
                         )
                         yield (
                             json.dumps(
@@ -2078,6 +2109,7 @@ def create_app(
                                     "cfg_weight": settings.cfg_weight,
                                     "tempo": settings.tempo,
                                     "pitch": settings.pitch,
+                                    "speed": settings.speed,
                                     "reference": request.reference,
                                 }
                             )
@@ -2111,6 +2143,7 @@ def create_app(
             request.reference,
             request.tempo,
             request.pitch,
+            request.speed,
         )
         studio.forget_corpus()
         return studio.state()
@@ -2232,6 +2265,7 @@ def create_app(
             knobs["reference"],
             knobs["tempo"],
             knobs["pitch"],
+            knobs["speed"],
         )
         studio.forget_corpus()
         record_pick(voice, clips, build, reference_seconds(out), gaps=gaps)

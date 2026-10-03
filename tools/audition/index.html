@@ -102,7 +102,7 @@
   /* the list may be wider than the box: its notes are long */
   .start #voice-results { min-width: min(34em, calc(100vw - 32px)); }
   .fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4.5em, 7em); gap: 0 12px; align-items: start; }
-  .fields.knobs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .fields.knobs { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .fields > div > label:not(.check) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .fields input:not([type="checkbox"]), .fields select { width: 100%; }
   .fields .hint, .start .hint { color: var(--dim); font-size: 11px; margin-top: 3px; }
@@ -366,12 +366,13 @@
         <div><label for="reference">Clone from</label><select id="reference"></select></div>
         <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
       </div>
-      <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these four do">?</button></div>
+      <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these five do">?</button></div>
       <div class="fields knobs">
         <div><label for="exag" title="Chatterbox's exaggeration">Emotion</label><input id="exag" value="0.45, 0.75"><div class="hint">0&ndash;2 &middot; 0.5 default, 1.5 shouty</div></div>
         <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (pace)</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
         <div><label for="tempo">Tempo</label><input id="tempo" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
         <div><label for="pitch">Pitch, semitones</label><input id="pitch" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
+        <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
       </div>
     </div>
     <div class="row" style="margin-top:8px">
@@ -379,7 +380,7 @@
       <button id="stop" hidden title="Stop after the sentence in progress; the model cannot be interrupted mid-sentence">Stop</button>
     </div>
     <div id="knobs-help" hidden>
-      <h4>What these four do</h4>
+      <h4>What these five do</h4>
       <p>They shape <b>how a line is delivered</b>. They do not decide the accent or the
         character of the voice &mdash; that comes from the clips the reference is cut from,
         below.</p>
@@ -413,6 +414,12 @@
           &minus;3 to &minus;5 sounded right where matching the number (&minus;9) did not.
           The model runs once per take; every tempo and pitch here is cut from that same
           audio, so a sweep compares one delivery.</td></tr>
+        <tr><td>Speed</td><td>0.5&ndash;2.0. Varispeed, a tape played slower or faster: pace
+          and pitch move together in one resample (0.9 is 10% slower and about 1.8
+          semitones lower). Lowering Tempo and Pitch to the same end runs a time stretch
+          and then a pitch shift, each compensating for the other and both leaving
+          artefacts; Speed does it with neither. It is applied first, then any Tempo and
+          Pitch.</td></tr>
       </table>
       <p>The two interact: guidance amplifies whatever the conditioning says, so raising
         Emotion <i>and</i> Adherence compounds. The pairing in this pack &mdash; 0.75
@@ -850,6 +857,7 @@ function loadVoiceSettings() {
   $("cfg").value = `${r ? r.cfg_weight : d.cfg_weight}`;
   $("tempo").value = `${r ? r.tempo : d.tempo}`;
   $("pitch").value = `${r ? r.pitch : d.pitch}`;
+  $("speed").value = `${r ? (r.speed ?? 1) : (d.speed ?? 1)}`;
   markKnobs();
 }
 
@@ -857,12 +865,14 @@ function loadVoiceSettings() {
 // sweep of several - is marked until it matches again or Keep these settings saves it,
 // with the saved value said beside it. Saved is the voice's own [tts.voices] row, else
 // what it resolves to, else the [tts] defaults: what generating the pack would use.
-const KNOBS = [["exag", "exaggeration"], ["cfg", "cfg_weight"], ["tempo", "tempo"], ["pitch", "pitch"]];
+const KNOBS = [["exag", "exaggeration"], ["cfg", "cfg_weight"], ["tempo", "tempo"], ["pitch", "pitch"], ["speed", "speed"]];
 function markKnobs() {
   if (!state) return;
   const r = state.resolved[$("voice").value], d = state.defaults;
   for (const [id, key] of KNOBS) {
-    const saved = Number(r ? r[key] : d[key]) || 0;
+    // a value the server does not send is the knob's neutral one (speed before it existed)
+    const neutral = key === "tempo" || key === "speed" ? 1 : 0;
+    const saved = Number((r ? r[key] : d[key]) ?? neutral);
     const typed = $(id).value.split(/[,\s]+/).filter(Boolean).map(Number);
     const departs = typed.length !== 1 || !(Math.abs(typed[0] - saved) < 1e-9);
     const field = $(id).parentElement;
@@ -935,7 +945,7 @@ function showResolved() {
   const ref = $("reference").value;
   $("resolved").innerHTML = `Saved resolution for <b>${$("voice").value}</b>: clip <b>${r.clip || "none (built-in voice)"}</b>` +
     (r.source !== $("voice").value ? ` borrowed from <b>${r.source}</b>` : "") +
-    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>, tempo <b>${r.tempo}</b>, pitch <b>${r.pitch}</b>` +
+    `, exaggeration <b>${r.exaggeration}</b>, cfg_weight <b>${r.cfg_weight}</b>, tempo <b>${r.tempo}</b>, pitch <b>${r.pitch}</b>, speed <b>${r.speed ?? 1}</b>` +
     (ref ? ` · this run clones from <b>${ref}.wav</b> instead` : "");
 }
 
@@ -1106,7 +1116,7 @@ $("reference").addEventListener("change", showResolved);
 // The server rejects a setting outside its bounds, but it should not have to: a typo
 // in one of these boxes is caught here, naming the field and what it allows, rather
 // than coming back as a failed request.
-const BOUNDS = { exag: [0, 2, "Emotion (exaggeration)"], cfg: [0, 1, "Adherence (cfg_weight)"], tempo: [0.5, 2, "Tempo"], pitch: [-12, 12, "Pitch"] };
+const BOUNDS = { exag: [0, 2, "Emotion (exaggeration)"], cfg: [0, 1, "Adherence (cfg_weight)"], tempo: [0.5, 2, "Tempo"], pitch: [-12, 12, "Pitch"], speed: [0.5, 2, "Speed"] };
 
 function numbers(value, field) {
   const out = value.split(/[,\s]+/).filter(Boolean).map(Number);
@@ -1125,6 +1135,7 @@ $("go").addEventListener("click", async () => {
     body = { text: $("text").value, voice: $("voice").value, reference: $("reference").value || null,
              exaggeration: numbers($("exag").value, "exag"), cfg_weight: numbers($("cfg").value, "cfg"),
              tempo: numbers($("tempo").value, "tempo"), pitch: numbers($("pitch").value, "pitch"),
+             speed: numbers($("speed").value, "speed"),
              takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
   busy($("go"), true); runSession = null; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
@@ -1164,7 +1175,8 @@ function onEvent(ev) {
   $("progress").textContent = `${ev.n} take${ev.n === 1 ? "" : "s"} so far…${stopping}`;
   const tr = document.createElement("tr");
   const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
-    (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "");
+    (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "") +
+    (ev.speed && ev.speed !== 1 ? ` · speed ${ev.speed}` : "");
   tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
     `<td class="n">${ev.seconds === "" ? "" : `${ev.seconds}s in ${ev.elapsed}s`}</td><td></td>`;
   tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
@@ -1177,7 +1189,7 @@ function onEvent(ev) {
     busy(keep, true);
     try {
       applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, reference: ev.reference }) }));
+        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, speed: ev.speed || 1, reference: ev.reference }) }));
       toast(`Kept for ${$("voice").value}. The next generate run restages that voice's files.`, "ok");
       document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
     } catch (e) { toast(e.message, "warn"); }
@@ -1186,7 +1198,7 @@ function onEvent(ev) {
   cell.appendChild(keep);
   if (current) {
     const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
-    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0]);
+    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0, ev.speed || 1]);
     write.title =
       "Generate this line once more under the SAVED settings and put that file in the pack, " +
       "then record its fingerprint so the nightly run neither redoes it nor misses it.\n\n" +
@@ -1216,8 +1228,8 @@ function onEvent(ev) {
 
 function isSaved(recipe) {
   if (!state) return false;
-  const [clip, e, c, t, p = 0] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
-  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t && (r.pitch || 0) === p;
+  const [clip, e, c, t, p = 0, sp = 1] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
+  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t && (r.pitch || 0) === p && (r.speed ?? 1) === sp;
 }
 
 $("p-keep").addEventListener("click", async () => {
@@ -1246,7 +1258,7 @@ $("sessions").addEventListener("change", () => {
   $("takes-body").innerHTML = ""; $("progress").textContent = `takes from ${s.session}`;
   if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); listVoiceLines(true); }
   s.takes.forEach((t, i) => onEvent({ event: "take", n: i + 1, take: t.take, name: t.name, url: t.url, seconds: "", elapsed: "",
-    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, reference: null }));
+    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, speed: t.speed, reference: null }));
 });
 
 $("rebuild").addEventListener("click", async () => {

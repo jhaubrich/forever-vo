@@ -373,7 +373,9 @@ def test_stop_ends_a_run_after_the_take_in_progress(
             }
             return "audio"
 
-        def encode(self, audio: str, out: Path, tempo: float, pitch: float) -> float:
+        def encode(
+            self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
+        ) -> float:
             out.write_bytes(b"")
             return 1.0
 
@@ -421,7 +423,9 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
             renders.append(text)
             return f"audio{len(renders)}"
 
-        def encode(self, audio: str, out: Path, tempo: float, pitch: float) -> float:
+        def encode(
+            self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
+        ) -> float:
             encodes.append((audio, tempo, pitch))
             out.write_bytes(b"")
             return 1.0

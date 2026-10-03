@@ -154,6 +154,7 @@ class VoiceCatalog:
                     cfg_weight=borrowed.cfg_weight,
                     tempo=borrowed.tempo,
                     pitch=borrowed.pitch,
+                    speed=borrowed.speed,
                 )
                 resolved = ResolvedVoice(own, voice, settings)
                 self._resolved[voice] = resolved
@@ -612,7 +613,11 @@ class Synth:
     def speak(self, text: str, voice: str, out_mp3: Path) -> float:
         settings = self.catalog.resolve(voice).settings
         return self.encode(
-            self.render(text, voice), out_mp3, settings.tempo, settings.pitch
+            self.render(text, voice),
+            out_mp3,
+            settings.tempo,
+            settings.pitch,
+            settings.speed,
         )
 
     def render(self, text: str, voice: str, stopped=None):
@@ -659,7 +664,12 @@ class Synth:
         return self.torch.cat(pieces[:-1], dim=-1)
 
     def encode(
-        self, audio, out_mp3: Path, tempo: float = 1.0, pitch: float = 0.0
+        self,
+        audio,
+        out_mp3: Path,
+        tempo: float = 1.0,
+        pitch: float = 0.0,
+        speed: float = 1.0,
     ) -> float:
         """Writes `audio` from render() as the pack's mp3; returns its length."""
         duration = audio.shape[-1] / self.sr
@@ -673,7 +683,7 @@ class Synth:
         # final name, which every later run skips as done. The partial file has no
         # .mp3 suffix so the table rebuild's glob cannot pick it up either.
         out_part = out_mp3.with_suffix(f".{os.getpid()}.part")
-        filters = encode_filters(tempo, pitch)
+        filters = encode_filters(tempo, pitch, speed, self.sr)
         require_filters(filters)
         filter_args = ["-af", ",".join(filters)] if filters else []
         try:
@@ -788,8 +798,17 @@ def sound_folder(base: str) -> str:
     return "Quests" if base.rsplit("-", 1)[-1] in QUEST_EVENTS else "Gossip"
 
 
-def encode_filters(tempo: float = 1.0, pitch: float = 0.0) -> list[str]:
-    """The ffmpeg filters for a voice's tempo and pitch, none when both are neutral.
+def encode_filters(
+    tempo: float = 1.0, pitch: float = 0.0, speed: float = 1.0, sample_rate: int = 24000
+) -> list[str]:
+    """The ffmpeg filters for a voice's speed, tempo and pitch, none when all are neutral.
+
+    Speed is varispeed, a tape played faster or slower: the samples are relabelled at
+    another rate and resampled back, so pace and pitch move together in one pass
+    (0.9 is 10% slower and about 1.8 semitones lower). Lowering tempo and pitch to the
+    same end runs a time stretch and then a pitch shift, each compensating for what
+    the other did, and both leave artefacts; speed does it with neither. It runs
+    first, on the model's own rate (`sample_rate`), before any tempo or pitch.
 
     Neither is a model knob. Pace: Chatterbox's generate() has none, so tempo is a
     pitch-preserving time stretch. Pitch: Chatterbox pulls every clone toward its own
@@ -799,6 +818,8 @@ def encode_filters(tempo: float = 1.0, pitch: float = 0.0) -> list[str]:
     encodes exactly as it did.
     """
     filters = []
+    if speed != 1.0:
+        filters.append(f"asetrate={round(sample_rate * speed)},aresample={sample_rate}")
     if tempo != 1.0:
         filters.append(f"atempo={tempo}")
     if pitch != 0.0:
@@ -829,7 +850,9 @@ def require_filters(filters: list[str]) -> None:
     shipped until 2026-09-29 has none, so Varimathras's first line would have failed
     mid-run, and daily.sh's `|| true` would have hidden the stopped night.
     """
-    missing = sorted({f.split("=", 1)[0] for f in filters} - ffmpeg_filters())
+    # an entry may chain several (speed is asetrate,aresample)
+    names = {part.split("=", 1)[0] for f in filters for part in f.split(",")}
+    missing = sorted(names - ffmpeg_filters())
     if missing:
         raise SystemExit(
             f"this ffmpeg has no {', '.join(missing)} filter, which a voice's tuning needs "
@@ -845,7 +868,7 @@ def tuning_filters(config: Config) -> list[str]:
         {
             f
             for s in [config.tts.defaults, *settings]
-            for f in encode_filters(s.tempo, s.pitch)
+            for f in encode_filters(s.tempo, s.pitch, s.speed)
         }
     )
 

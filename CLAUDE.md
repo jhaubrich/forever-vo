@@ -854,8 +854,13 @@ of the 10 s window, then the knobs.
   on every pick of clips tried, and -3 to -5 semitones sounded right where
   matching the number (-9) did not. That is a pitch correction after the
   model, not the knobs-for-accent argument the section below warns against;
-  accent still comes from the reference. The audition page renders a take
-  once and encodes every tempo and pitch of its sweep from that audio. Only knobs that differ from the `[tts]` defaults join the
+  accent still comes from the reference. `speed` (since 2026-10-03) is the
+  third such filter and runs first: varispeed, `asetrate` and `aresample` at the
+  model's 24 kHz, so pace and pitch move together in one resample (0.9 is 10%
+  slower and ~1.8 semitones lower). Lowering tempo and pitch together ran a
+  stretch and then a shift, each compensating for the other; speed does neither.
+  The audition page renders a take once and encodes every tempo, pitch and speed
+  of its sweep from that audio. Only knobs that differ from the `[tts]` defaults join the
   fingerprint (`Tts.differences`), so adding a knob later never restages what
   was already stamped. `generate.VoiceCatalog` resolves a voice to the
   clip it actually uses (its own, else its fallback race's, else the narrator's,
