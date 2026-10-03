@@ -1,0 +1,116 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "267007|deb32f0f": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Stormwind Harbor Guard",
+   "npc": "267007",
+   "questID": null,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "That bum Leland... all he does is sit out on the dock outside the Trade District and fish all day.  I sure hope he's good at it for all the time he spends fishing.  If you want to learn, why don't you go talk to him?",
+   "time": 1791025002,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "-17183": {
+   "isObject": true,
+   "name": "Unknown"
+  },
+  "267007": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Stormwind Harbor Guard",
+   "sex": 3,
+   "sexes": "mf"
+  },
+  "2930": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Sentinel Glynda Nal'Shea",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "6301": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Gorbold Steelhand",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-646",
+ "quests": {
+  "1002-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1439,
+   "name": "Unknown",
+   "npc": "-17183",
+   "questID": 1002,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Though you have yet to place the 6 Moonstalker Fangs inside, you believe you hear the sounds of static and incoherent gnome ramblings coming from within. Could someone else have fixed the machine already?",
+   "time": 1791028337,
+   "title": "Buzzbox 323",
+   "wanted": null,
+   "zone": "Darkshore"
+  },
+  "4812-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Sentinel Glynda Nal'Shea",
+   "npc": "2930",
+   "questID": 4812,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "The crystal looks very alien against the wooded scenery of Darkshore.  You think you hear a very slight humming coming from deep within it.",
+   "time": 1791027399,
+   "title": "As Water Cascades",
+   "wanted": null,
+   "zone": "Darkshore"
+  },
+  "982-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Gorbold Steelhand",
+   "npc": "6301",
+   "questID": 982,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "The captains of those ships were good night elves, and they deserve a better fate than they were given. Perhaps tending to their personal effects will be the best way to put their spirits to rest.",
+   "time": 1791029137,
+   "title": "Deep Ocean, Vast Sea",
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
