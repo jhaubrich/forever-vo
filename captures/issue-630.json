@@ -1,0 +1,170 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "2150": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 125796,
+   "name": "Zenn Foulhoof",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2155": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120590,
+   "name": "Sentinel Shayla Nightbreeze",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "258572": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120791,
+   "name": "Dani'ill",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3517": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120791,
+   "name": "Rellian Greenspyre",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3567": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120791,
+   "name": "Tallonkai Swiftroot",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3608": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120590,
+   "name": "Aldia",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "6287": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120791,
+   "name": "Radnaal Maneweaver",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "8396": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120590,
+   "name": "Sentinel Dalia Sunblade",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-630",
+ "quests": {
+  "2459-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Tallonkai Swiftroot",
+   "npc": "3567",
+   "questID": 2459,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Ferocitas and the Gnarlpine mystics must return what is mine.  Please retrieve the emerald so that I may repair my emerald dreamcatcher.",
+   "time": 1791026459,
+   "title": "Ferocitas the Dream Eater",
+   "wanted": null,
+   "zone": "Teldrassil"
+  },
+  "489-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Zenn Foulhoof",
+   "npc": "2150",
+   "questID": 489,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "What do you have for me, $N?  A lovely snack I presume?",
+   "time": 1791024774,
+   "title": "Seek Redemption!",
+   "wanted": null,
+   "zone": "Teldrassil"
+  },
+  "490-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Sentinel Shayla Nightbreeze",
+   "npc": "2155",
+   "questID": 490,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Teldrassil cannot thrive with corruption tainting the land. Drive the Gnarlpine from this forest, once and for all.",
+   "time": 1791027091,
+   "title": "Bounty: Gnarlpine Furbolg",
+   "wanted": null,
+   "zone": "Teldrassil"
+  },
+  "87288-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Aldia",
+   "npc": "3608",
+   "questID": 87288,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "It is good to see you again! Are you here to trade?",
+   "time": 1791026496,
+   "title": "Soft Saber Pelts",
+   "wanted": null,
+   "zone": "Teldrassil"
+  },
+  "922-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1457,
+   "name": "Rellian Greenspyre",
+   "npc": "3517",
+   "questID": 922,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Hello...\n\nAnd how may I help you?",
+   "time": 1791024017,
+   "title": "Rellian Greenspyre",
+   "wanted": null,
+   "zone": "Darnassus"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
