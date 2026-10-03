@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "12738": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Nori Pridedrift",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "786": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Grelin Whitebeard",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "836": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Durnan Furcutter",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-668",
+ "quests": {
+  "182-progress": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Grelin Whitebeard",
+   "npc": "786",
+   "questID": 182,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "From what I've learned, these trolls hail from the Frostmane clan. I'm afraid I don't know much else about them that would be of any use to you, $N.",
+   "time": 1791043355,
+   "title": "The Troll Cave",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "234-progress": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Grelin Whitebeard",
+   "npc": "786",
+   "questID": 234,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "Is there something I can help you with?",
+   "time": 1791043319,
+   "title": "Coldridge Valley Mail Delivery",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "3364-progress": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Durnan Furcutter",
+   "npc": "836",
+   "questID": 3364,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "Aye, I'm Durnan Furcutter.  You have something for me?",
+   "time": 1791045622,
+   "title": "Scalding Mornbrew Delivery",
+   "wanted": null,
+   "zone": "Anvilmar"
+  },
+  "3365-progress": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Nori Pridedrift",
+   "npc": "12738",
+   "questID": 3365,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "I trust the scalding mornbrew got to Durnan on time!  Did you remember to bring me back my mug?",
+   "time": 1791045885,
+   "title": "Bring Back the Mug",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
