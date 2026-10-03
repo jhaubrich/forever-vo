@@ -79,8 +79,18 @@
   .start { border: 1px solid var(--gold); border-radius: 6px; background: var(--panel); padding: 10px 14px 12px; margin-bottom: 14px; }
   .start .start-head { color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin: 0 0 6px; }
   .start .start-head .note { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--dim); margin-left: 0.5em; }
-  .start #voice-search { font-size: 16px; padding: 8px 30px 8px 10px; background: var(--bg); border-color: var(--gold); }
-  .start .check { margin-top: 6px; }
+  /* one row: the box (its caret inside it), what the voice speaks for, the approval;
+     it wraps under the box only where the column is narrow */
+  .start .start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
+  .start .voice-find { flex: 0 1 26em; min-width: min(100%, 14em); }
+  .start #voice-search { width: 100%; font-size: 16px; padding: 8px 30px 8px 10px; background: var(--bg); border-color: var(--gold); }
+  .start #voice-note { margin: 0; font-size: 12px; white-space: nowrap; }
+  /* the heading on the left, the approval at the right of the same line */
+  .start .start-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 6px; }
+  .start .start-top .start-head { margin: 0; }
+  .start .check { margin: 0; white-space: nowrap; }
+  /* the list may be wider than the box: its notes are long */
+  .start #voice-results { min-width: min(34em, calc(100vw - 32px)); }
   .fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4.5em, 7em); gap: 0 12px; align-items: start; }
   .fields.knobs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .fields > div > label:not(.check) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -296,16 +306,20 @@
 
   <section>
     <div class="start">
-      <label for="voice-search" class="start-head">Voice <span class="note">start here: choose a voice, then try its lines and settings below</span></label>
-      <div class="voice-find">
-        <input id="voice-search" type="text" autocomplete="off" spellcheck="false" placeholder="type to search: sylv, vari, dwarf guard…"
-          role="combobox" aria-controls="voice-results" aria-expanded="false" aria-autocomplete="list">
-        <button id="voice-caret" type="button" tabindex="-1" aria-label="Show every voice" title="Show every voice">&#9662;</button>
-        <ul id="voice-results" role="listbox" aria-label="Voices" hidden></ul>
+      <div class="start-top">
+        <label for="voice-search" class="start-head">Voice <span class="note">start here: choose a voice, then try its lines and settings below</span></label>
+        <label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label>
+      </div>
+      <div class="start-row">
+        <div class="voice-find">
+          <input id="voice-search" type="text" autocomplete="off" spellcheck="false" placeholder="type to search: sylv, vari, dwarf guard…"
+            role="combobox" aria-controls="voice-results" aria-expanded="false" aria-autocomplete="list">
+          <button id="voice-caret" type="button" tabindex="-1" aria-label="Show every voice" title="Show every voice">&#9662;</button>
+          <ul id="voice-results" role="listbox" aria-label="Voices" hidden></ul>
+        </div>
+        <div id="voice-note" class="hint"></div>
       </div>
       <select id="voice" hidden aria-hidden="true" tabindex="-1"></select>
-      <div id="voice-note" class="hint"></div>
-      <label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label>
     </div>
 
     <h2>Line</h2>
