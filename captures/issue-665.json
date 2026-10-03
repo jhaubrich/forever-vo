@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1661": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Novice Elreth",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-665",
+ "quests": {
+  "376-progress": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Novice Elreth",
+   "npc": "1661",
+   "questID": 376,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Do try your best to keep yourself unharmed until I get you some armor.",
+   "time": 1791046193,
+   "title": "The Damned",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
