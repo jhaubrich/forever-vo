@@ -1,0 +1,85 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "3934|0f322cd8": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Innkeeper Boorand Plainswind",
+   "npc": "3934",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "The old kingdom of Lordaeron is perilous. We urge caution for anyone who dares to venture into the now decaying lands of Tirisfal Glades. If you must, find the Undercity; the upper courtyards are what you seek.",
+   "time": 1790917899,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "3934|c3a29bdb": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Innkeeper Boorand Plainswind",
+   "npc": "3934",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Our ancient lands are in the northeast of the Eastern Kingdom. Named after Lordain himself, it was once a proud and powerful kingdom. Its history is rich and offers many lessons to upstart nobles and kings. One of its defining moments was assisting in the foundation of the Alliance that we know today.\r\n\r\nUnfortunately, its history is also dark, and its current inhabitants defile its lands day by day. There is still much of significance in the ruins that now rest above the Undercity, but it is folly to attempt that journey and expect to return still among the living.",
+   "time": 1790917902,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "npcs": {
+  "3449": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Darsok Swiftdagger",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3934": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Innkeeper Boorand Plainswind",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-647",
+ "quests": {
+  "867-progress": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Darsok Swiftdagger",
+   "npc": "3449",
+   "questID": 867,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Cut up enough of them yet? Keep slicing and taking trophies. I want 8 Witchwing talons.",
+   "time": 1790917997,
+   "title": "Harpy Raiders",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
