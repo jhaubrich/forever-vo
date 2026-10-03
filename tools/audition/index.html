@@ -289,6 +289,10 @@
   #clips-help h4, #knobs-help h4 { margin: 0 0 6px; font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
   #clips-help p, #clips-help li, #knobs-help p, #knobs-help li { color: var(--dim); font-size: 12px; margin: 4px 0; }
   #clips-help ul, #knobs-help ul { margin: 4px 0; padding-left: 18px; }
+  /* Emotion's rough scale, by ear on this pack's voices */
+  #knobs-help table.scale { width: auto; margin: 4px 0 6px; }
+  #knobs-help table.scale td { border: 0; padding: 0 12px 0 0; font-size: 12px; }
+  #knobs-help table.scale td:first-child { font-family: ui-monospace, monospace; color: var(--gold); }
   #clips-help b, #knobs-help b { color: var(--ink); font-weight: 500; }
   #clips-help code, #knobs-help code { color: var(--ink); }
   #clips-help table, #knobs-help table { margin: 6px 0; }
@@ -360,10 +364,10 @@
         <div><label for="reference">Clone from</label><select id="reference"></select></div>
         <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
       </div>
-      <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these three do">?</button></div>
+      <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these four do">?</button></div>
       <div class="fields knobs">
-        <div><label for="exag">Exaggeration</label><input id="exag" value="0.45, 0.75"><div class="hint">0&ndash;2</div></div>
-        <div><label for="cfg">cfg_weight</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1</div></div>
+        <div><label for="exag" title="Chatterbox's exaggeration">Emotion</label><input id="exag" value="0.45, 0.75"><div class="hint">0&ndash;2 &middot; 0.5 default, 1.5 shouty</div></div>
+        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (pace)</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
         <div><label for="tempo">Tempo</label><input id="tempo" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
         <div><label for="pitch">Pitch, semitones</label><input id="pitch" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
       </div>
@@ -373,25 +377,34 @@
       <button id="stop" hidden title="Stop after the sentence in progress; the model cannot be interrupted mid-sentence">Stop</button>
     </div>
     <div id="knobs-help" hidden>
-      <h4>What these three do</h4>
+      <h4>What these four do</h4>
       <p>They shape <b>how a line is delivered</b>. They do not decide the accent or the
         character of the voice &mdash; that comes from the clips the reference is cut from,
         below.</p>
       <table>
-        <tr><td>exaggeration</td><td>0&ndash;2. A real conditioning input to the model
-          (<code>emotion_adv</code>): how much expression to put in. Higher is more
-          emphatic, and past about 1 it starts to sound performed.</td></tr>
-        <tr><td>cfg_weight</td><td>0&ndash;1. Classifier-free guidance. At each token the
+        <tr><td>Emotion<br><span class="note">exaggeration</span></td><td>0&ndash;2. A real conditioning input to the model
+          (<code>emotion_adv</code>): how much expression to put in. It is one number scaled
+          through a single layer, so past the range the model learned it extrapolates rather
+          than emotes, and faster than it seems it should:
+          <table class="scale">
+            <tr><td>0.3</td><td>low affect</td></tr>
+            <tr><td>0.5</td><td>default</td></tr>
+            <tr><td>0.7</td><td>colourful</td></tr>
+            <tr><td>1.2</td><td>angry</td></tr>
+            <tr><td>1.5</td><td>shouty</td></tr>
+          </table>
+          Higher also speeds a line up; a lower Adherence slows it back down.</td></tr>
+        <tr><td>Adherence (pace)<br><span class="note">cfg_weight</span></td><td>0&ndash;1. Classifier-free guidance. At each token the
           model predicts twice, once with your text and reference and once without, and
           pushes away from the second: <code>logits = cond + cfg &times; (cond &minus; uncond)</code>.
           Higher tracks the prompt harder, and clips pauses as it goes;
           <b>lower is Chatterbox's own advice for a rushed voice</b>, which is why the
           tuned voices here sit at 0.3. At 0 there is no guidance at all.</td></tr>
-        <tr><td>tempo</td><td>0.5&ndash;2.0. Not a model knob &mdash; Chatterbox has no pace
+        <tr><td>Tempo</td><td>0.5&ndash;2.0. Not a model knob &mdash; Chatterbox has no pace
           control. A pitch-preserving stretch applied when the mp3 is written, and the
-          stretched length is what the addon pages text against. Try a lower cfg_weight
+          stretched length is what the addon pages text against. Try a lower Adherence
           first.</td></tr>
-        <tr><td>pitch</td><td>&minus;12&ndash;12 semitones. Not a model knob either: a shift
+        <tr><td>Pitch</td><td>&minus;12&ndash;12 semitones. Not a model knob either: a shift
           that keeps the length, applied when the mp3 is written. Chatterbox pulls every
           clone toward its own mid-range voice, so a deep speaker comes out high &mdash;
           Varimathras's takes measured 153&nbsp;Hz against his recordings' 86&ndash;89, and
@@ -400,9 +413,10 @@
           audio, so a sweep compares one delivery.</td></tr>
       </table>
       <p>The two interact: guidance amplifies whatever the conditioning says, so raising
-        exaggeration <i>and</i> cfg_weight compounds. The pairing in this pack &mdash; 0.75
-        exaggeration with 0.3 cfg_weight &mdash; is deliberately the other way round: more
-        expression, less pressure on it.</p>
+        Emotion <i>and</i> Adherence compounds. The pairing in this pack &mdash; 0.75
+        Emotion with 0.3 Adherence &mdash; is deliberately the other way round: more
+        expression, less pressure on it. In forever-vo.toml they keep Chatterbox's names,
+        <code>exaggeration</code> and <code>cfg_weight</code>.</p>
       <p class="warn">Not an accent control. Four settings pairs over eight takes of
         goblin-male moved its accent not at all, while changing the source clips took the
         same voice from &ldquo;sounds like a gnome&rdquo; to level with the shipped pack.</p>
@@ -1090,7 +1104,7 @@ $("reference").addEventListener("change", showResolved);
 // The server rejects a setting outside its bounds, but it should not have to: a typo
 // in one of these boxes is caught here, naming the field and what it allows, rather
 // than coming back as a failed request.
-const BOUNDS = { exag: [0, 2, "Exaggeration"], cfg: [0, 1, "cfg_weight"], tempo: [0.5, 2, "Tempo"], pitch: [-12, 12, "Pitch"] };
+const BOUNDS = { exag: [0, 2, "Emotion (exaggeration)"], cfg: [0, 1, "Adherence (cfg_weight)"], tempo: [0.5, 2, "Tempo"], pitch: [-12, 12, "Pitch"] };
 
 function numbers(value, field) {
   const out = value.split(/[,\s]+/).filter(Boolean).map(Number);
