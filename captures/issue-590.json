@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.7",
+ "gossip": {},
+ "npcs": {
+  "251361": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Rorian the Dayseeker",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "251363": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Dalia the Collector",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "251964": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Blademaster Ren",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-590",
+ "quests": {
+  "92532-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "questID": 92532,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "While you were gone our $c trainer--Blademaster Ren--requested that we send you their way when you returned. She dropped this note off for you as well.\r\n\r\nGive it a read, then find Blademaster Ren inside the village watchtower.",
+   "time": 1790929331,
+   "title": "The Warrior's Path",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "92532-complete": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Blademaster Ren",
+   "npc": "251964",
+   "questID": 92532,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "You are about to embark upon a dangerous journey. Our world is changing and it will need those who have the will to lead and protect others if our people hope to survive. As you grow in power you will need guidance. Come to me--I will do what I can to train you as you progress.\n\nGood luck, $N, may the winds guide you.",
+   "time": 1790929358,
+   "title": "The Warrior's Path",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "92532-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Blademaster Ren",
+   "npc": "251964",
+   "questID": 92532,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "So you've come for training, then?",
+   "time": 1790929358,
+   "title": "The Warrior's Path",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "93552-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Dalia the Collector",
+   "npc": "251363",
+   "questID": 93552,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Windstones are a critical resource on Zephras Isle as they contain the raw, concentrated energy of the winds themselves. The wind elementals who used to live here on Zephras with us vanished a number of years ago, and since then, the magic that sustains this island is slowly fading. Not without limitations, the windstones are still a reliable energy source, and are incredibly valuable to us.\r\n\r\nYou'll find raw windstones scattered around the grove. Think you can help me harvest them?",
+   "time": 1790929351,
+   "title": "Harvesting Windstones",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
