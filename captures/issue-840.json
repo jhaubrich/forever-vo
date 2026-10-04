@@ -1,0 +1,127 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1937": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Apothecary Renferrel",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2055": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Master Apothecary Faranell",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3348": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Kor'geld",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4598": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Brom Killian",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5819": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Mirelle Tremayne",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-840",
+ "quests": {
+  "447-complete": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "questID": 447,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "How good of Apothecary Renferrel to send you to me, $N.  These samples will indeed prove useful to the cause.  I will begin studying their toxic and contaminable properties at once.",
+   "time": 1791107175,
+   "title": "A Recipe For Death",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "450-accept": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "questID": 450,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "You can be of further service to the Royal Apothecary Society, $N.\n\nWhen Arugal cast his wretched magic on the forest, he cursed one of our most promising members, Apothecary Berard.  Now a mindless servant of Arugal, Berard is useless to us.  But his findings might prove to be of worth.  He was studying an ancient plague that killed off all the aquatic life in Lake Lordamere ages ago.\n\nRetrieve Berard's Journal from his study in the Pyrewood Village Inn and take it to Apothecary Renferrel.",
+   "time": 1791107176,
+   "title": "A Recipe For Death",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "91920-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh. You're back?",
+   "time": 1791093280,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "97242-accept": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Kor'geld",
+   "npc": "3348",
+   "questID": 97242,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Yelmak doesn't want his apprentice breaking anything. Well, anything more than he already has.\r\n\r\nHe told me the young mixer in training has too much pride to ask for help when he really needs it. Yelmak wants to give him a taste of a particular home-brewed recipe.\r\n\r\nGather a mix of cattail and speargrass cuttings taken from the plants growing around the water in the Valley of Honor. I'd get them myself, but if I left the shop, Whuut would surely know we're catering to his mood.",
+   "time": 1791119619,
+   "title": "Yelmak's Medley",
+   "wanted": true,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
