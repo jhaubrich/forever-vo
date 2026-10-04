@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "11820": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Locke Okarr",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-897",
+ "quests": {
+  "6571-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Locke Okarr",
+   "npc": "11820",
+   "questID": 6571,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "I hope you can come through with the supplies! I'm in big trouble if I don't deliver them soon!",
+   "time": 1791140010,
+   "title": "Warsong Supplies",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
