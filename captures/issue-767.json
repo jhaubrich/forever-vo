@@ -1,0 +1,77 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "1937|19122c56": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "The Dark Lady has put the challenge forth. Now it is up to the Royal Apothecary Society to develop a new plague. We shall bring Arthas and his wretched army to their knees.",
+   "time": 1791084436,
+   "title": null,
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "npcs": {
+  "1937": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Apothecary Renferrel",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-767",
+ "quests": {
+  "91920-complete": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "The potion didn't work? Of course it didn't work. You brought me insufficient hearts. The recipe clearly calls for six. You brought three.\r\n\r\nHowever, I confess I hadn't considered applications for murloc parts until now...\r\n\r\n<Renferrel takes the eyes.>\r\n\r\nI can afford to sacrifice a few of my own hearts to get your Deathstalker's strength back.",
+   "time": 1791084441,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "91920-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 91920,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh. You're back?",
+   "time": 1791084438,
+   "title": "Wild Eyes",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
