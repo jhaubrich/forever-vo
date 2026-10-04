@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3894": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120791,
+   "name": "Pelturas Whitemoon",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-832",
+ "quests": {
+  "1033-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Pelturas Whitemoon",
+   "npc": "3894",
+   "questID": 1033,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "$N, did you find Iris Lake?  Do you have the Tear?",
+   "time": 1791117249,
+   "title": "Elune's Tear",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
