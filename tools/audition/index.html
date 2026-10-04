@@ -688,8 +688,16 @@ function voiceStar(s, r) {
 }
 
 // Best match first; every word of the query has to find itself somewhere (fuzzyScore)
+// When some voice holds every word of the query as typed, only those are matches:
+// "nightelf-male-" is the night elf males, not the females whose "female" happens to
+// hold m, a, l, e in order. The letters-in-order and typo matching (fuzzyScore) is for
+// when nothing is literally there: "nigthelf", "dwarf guard", "vari".
 function voiceMatches(s, query) {
-  return voiceRows(s).map(r => ({ r, score: fuzzyScore(query, `${r.voice} ${r.label || ""}`) }))
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const text = r => `${r.voice} ${r.label || ""}`;
+  const rows = voiceRows(s);
+  const literal = rows.filter(r => words.every(w => text(r).toLowerCase().includes(w)));
+  return (literal.length ? literal : rows).map(r => ({ r, score: fuzzyScore(query, text(r)) }))
     .filter(h => h.score > 0)
     // a tie goes to a voice with a clip of its own, then to the one speaking more lines,
     // then to the shorter name: built archetypes before unbuilt -s<N> sets, the plain
