@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "256388|6df3de7b": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Jornah",
+   "npc": "256388",
+   "questID": null,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "Yes! Well. Sort of.\r\n\r\nGold is the true universal currency, but we have our own system for trade amongst ourselves known as Merchant's Favor. It abstracts away the ever-fluctuating value of gold and silver, and ensures fair and equitable trade between members of the organization. It cannot be liquidated to gold, unless you're engaging in some shady activity, I suppose.\r\n\r\nWe still use gold for typical day-to-day needs such as materials needed for common crafts, but otherwise rely on Merchant's Favor for any kind of internal commerce.\r\n\r\nIf you assist us with recovering waylaid crates and ensuring swift fulfillment of craftsman's writs, you will earn plenty!",
+   "time": 1791091866,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "npcs": {
+  "256388": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Jornah",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-778",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
