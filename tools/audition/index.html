@@ -199,9 +199,11 @@
   /* one pill per earlier pick: the pick, then its × when it is only an experiment */
   #clips-history .pick { display: inline-flex; margin: 0 6px 4px 0; }
   #clips-history .pick button { font-size: 12px; padding: 2px 8px; }
-  #clips-history .pick button.forget { padding: 2px 6px; margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; color: var(--dim); }
+  #clips-history .pick button.forget, #clips-history .pick button.copy { padding: 2px 6px; margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; color: var(--dim); }
+  #clips-history .pick button.copy:hover { color: var(--gold); border-color: var(--gold); }
+  #clips-history .pick button.copy:has(+ .forget) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
   #clips-history .pick button.forget:hover { color: var(--warn); border-color: var(--warn); }
-  #clips-history .pick:has(.forget) button[data-i] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  #clips-history .pick button[data-i] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
   #clips-history .pick.current button { border-color: var(--gold); color: var(--gold); }
   #clips-history .pick.saved button[data-i] { font-weight: 600; }
   #clips-history .pick.released button[data-i] { border-color: var(--ok); }
@@ -505,6 +507,7 @@
           <span class="sub-title">Reference</span>
           <span class="note" id="clips-budget"></span>
           <span class="spacer"></span>
+          <button id="clips-paste" title="Load a pick copied with ⧉ under Earlier picks, from this voice or another: its clips, gaps and build go into the Reference box, with the sources they need. Nothing is built until Build and keep.">Paste pick</button>
           <button id="clips-reset" title="Drop every pick">Clear</button>
           <button id="clips-build" class="primary" title="Build the reference from these picks, in this order, and keep them under [voices.sources] in forever-vo.toml">Build and keep</button>
         </div>
@@ -1606,8 +1609,10 @@ function renderHistory(history, picked) {
       `${h.saved ? "★ saved · " : ""}${h.released ? `<span class="rel">released</span> ` : ""}` +
       `${h.recipe ? "automatic build" : h.at === "saved" ? "in forever-vo.toml" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
       `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""}${h.seconds !== undefined ? ` · ${h.seconds}s` : ""}</button>` +
+      `<button class="copy" data-copy="${i}" title="Copy this pick (clips, gaps, build) to paste into another voice with Paste pick">⧉</button>` +
       (kept ? "" : `<button class="forget" data-forget="${i}" title="Drop this experiment from Earlier picks">×</button>`) + `</span>`;
   }).join("");
+  box.querySelectorAll("button.copy").forEach(b => b.addEventListener("click", () => copyPick(history[+b.dataset.copy])));
   box.querySelectorAll("button.forget").forEach(b => b.addEventListener("click", async () => {
     const h = history[+b.dataset.forget];
     try {
@@ -1709,6 +1714,7 @@ async function loadClips(refresh) {
         seedGaps(h.clips, h.gaps);
         const missing = h.clips.length - picks.length;
         toast(missing ? `Loaded ${picks.length} of ${h.clips.length}; ${missing} could not be found.`
+          : h.label ? `Loaded the pick ${h.label}. Build and keep to make it this voice's reference.`
           : `Loaded the pick from ${h.at === "saved" ? "forever-vo.toml" : h.at}. Build to make it the reference again.`, missing ? "warn" : "ok");
       }
       const missing = d.picked.length - picks.length;
@@ -1747,6 +1753,44 @@ $("clips-load").addEventListener("click", () => {
   busy($("clips-load"), true);
   loadClips(true);
 });
+// A pick copied from one voice and pasted into another: plain text on the clipboard
+// (JSON with the clips, gaps and build), so it also survives a note or an issue. Kept
+// in this browser too, for a clipboard the page may not read.
+function copyPick(h) {
+  const text = JSON.stringify({ kind: "fvo-pick", voice: clipsVoice || $("voice").value, at: h.at, clips: h.clips, gaps: h.gaps || [], build: h.build || null });
+  try { localStorage.setItem("fvo-pick-clipboard", text); } catch (e) { /* this browser only */ }
+  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => {});
+  toast(`Copied ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}. Pick another voice, Load candidates, then Paste pick.`, "ok");
+}
+async function readPick() {
+  let text = "";
+  try { if (navigator.clipboard) text = await navigator.clipboard.readText(); } catch (e) { /* not allowed: fall back */ }
+  if (!/fvo-pick/.test(text)) { try { text = localStorage.getItem("fvo-pick-clipboard") || text; } catch (e) { /* none */ } }
+  try {
+    const p = JSON.parse(text);
+    if (Array.isArray(p.clips) && p.clips.length) return p;
+  } catch (e) { /* not JSON: a bare list of FileDataIDs works too */ }
+  const ids = (text.match(/\d{4,}/g) || []).map(Number);
+  return ids.length ? { clips: ids, gaps: [], build: null } : null;
+}
+$("clips-paste").addEventListener("click", async () => {
+  const voice = $("voice").value;
+  if (!clipsRows.length || clipsVoice !== voice) { toast("Load candidates for this voice first, then paste.", "warn"); return; }
+  const p = await readPick();
+  if (!p) { toast("Nothing to paste: copy a pick with ⧉ under Earlier picks first.", "warn"); return; }
+  busy($("clips-paste"), true);
+  try {
+    // the sources the clips come from, so the pick lists in full under its own groups
+    const d = await api(`/api/clips/sources?voice=${encodeURIComponent(voice)}&clips=${p.clips.join(",")}`);
+    addPickSources(voice, d.uses);
+    clipsWanted = { clips: p.clips, gaps: p.gaps || [], build: p.build || null,
+      label: p.voice ? `copied from ${p.voice}${p.at ? ` (${p.at === "saved" ? "its saved pick" : p.at})` : ""}` : "pasted" };
+    busy($("clips-load"), true);
+    loadClips(false);  // applies it once every source it needs has loaded
+  } catch (e) { toast(e.message, "warn"); }
+  busy($("clips-paste"), false);
+});
+
 $("clips-reset").addEventListener("click", () => { picks = []; gapAfter = new Map(); renderClips(); });
 
 // Other voices whose candidates join this voice's table: Thrall's lines for an orc

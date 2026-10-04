@@ -1076,3 +1076,33 @@ def test_tasting_notes_are_kept_per_voice_and_removed_when_emptied(
     assert NOTES_COMMENT[0] in toml_copy.read_text(encoding="utf-8")  # the table stays
     with pytest.raises(HTTPException):  # refused: not a voice name
         write_notes(toml_copy, "Not A Voice", "x")
+
+
+def test_clip_sources_names_what_a_pasted_pick_needs(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    seen: list[tuple] = []
+
+    def sources(
+        voice: str, clips: list[int], own: set[int], config: object
+    ) -> list[str]:
+        seen.append((voice, clips, own))
+        return ["folder-pc_-_nightborne_elf_male"]
+
+    monkeypatch.setattr(audition, "pick_sources", sources)
+    studio = object.__new__(audition.Studio)
+    monkeypatch.setattr(
+        studio, "clips", lambda voice, refresh=False: [{"fdid": 556587}]
+    )
+    monkeypatch.setattr(studio, "config", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+    d = client.get(
+        "/api/clips/sources?voice=nightelf-male-warrior&clips=1730262,556587,x"
+    ).json()
+    assert d == {"uses": ["folder-pc_-_nightborne_elf_male"]}
+    # the voice's own candidates are passed as own; a stray value is ignored
+    assert seen == [("nightelf-male-warrior", [1730262, 556587], {556587})]

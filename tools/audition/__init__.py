@@ -2296,6 +2296,15 @@ def create_app(
             )
         }
 
+    @app.get("/api/clips/sources")
+    def clip_sources(voice: str, clips: str) -> dict[str, Any]:
+        """The other voices and folders that offer these clips, for a pick pasted from
+        another voice: what "Also offer clips from" needs so the whole pick is listed."""
+        _safe(voice)
+        fdids = [int(c) for c in clips.split(",") if c.strip().isdigit()]
+        own = {c["fdid"] for c in studio.clips(voice) or []}
+        return {"uses": pick_sources(voice, fdids, own, studio.config())}
+
     @app.post("/api/voice/notes")
     def voice_notes(request: VoiceNotes) -> dict[str, Any]:
         """Saves a voice's tasting notes; empty text removes them."""
