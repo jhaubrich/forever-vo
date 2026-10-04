@@ -7,6 +7,12 @@
 <style>
   :root { color-scheme: dark; --bg: #16130f; --panel: #221d17; --ink: #e8dcc6; --dim: #9a8b74; --line: #3a3128; --gold: #d9b45b; --ok: #7fbf7f; --warn: #e0a050; --borrow: #8fb3e0; }
   * { box-sizing: border-box; }
+  /* Chrome tints a field it filled itself (restoring a form after a reload) pale
+     blue; these boxes are filled by the page from the saved settings, never by the
+     browser, so its tint is painted over with the page's own colours */
+  input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--ink); caret-color: var(--ink);
+    box-shadow: 0 0 0 1000px var(--panel) inset; transition: background-color 9999s; }
   /* No mute on any player here: pausing does that job, and a take left muted reads as
      a silent one. The volume belongs to the system. Chromium draws these parts of its
      player; other browsers ignore the rule. */
@@ -376,15 +382,15 @@
     <div class="setup">
       <div class="fields">
         <div><label for="reference">Clone from</label><select id="reference"></select></div>
-        <div><label for="takes">Takes each</label><input id="takes" type="number" min="1" max="5" value="2"></div>
+        <div><label for="takes">Takes each</label><input id="takes" autocomplete="off" type="number" min="1" max="5" value="2"></div>
       </div>
       <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these five do">?</button></div>
       <div class="fields knobs">
-        <div><label for="exag" title="Chatterbox's exaggeration">Emotion</label><input id="exag" value="0.45, 0.75"><div class="hint">0&ndash;2 &middot; 0.5 default, 1.5 shouty</div></div>
-        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (delivery)</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
-        <div><label for="tempo">Tempo</label><input id="tempo" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
-        <div><label for="pitch">Pitch, semitones</label><input id="pitch" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
-        <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
+        <div><label for="exag" title="Chatterbox's exaggeration">Emotion</label><input id="exag" autocomplete="off" value="0.45, 0.75"><div class="hint">0&ndash;2 &middot; 0.5 default, 1.5 shouty</div></div>
+        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (delivery)</label><input id="cfg" autocomplete="off" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
+        <div><label for="tempo">Tempo</label><input id="tempo" autocomplete="off" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
+        <div><label for="pitch">Pitch, semitones</label><input id="pitch" autocomplete="off" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
+        <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" autocomplete="off" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
       </div>
     </div>
     <div class="row" style="margin-top:8px">
