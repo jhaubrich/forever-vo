@@ -31,8 +31,9 @@ narrator_alternates = ["skyborne-female"]
 # banshee, the one banshee speech this client ships: the WC3 banshee clip comes from
 # the Reforged install, and banshee_sylvanas_no_loc is all empty files; and
 # Moira Bronzebeard's dialogue, Battle for Azeroth to The War Within, for
-# dwarf-female, whose speakers
-# bark nothing and include Moira herself). `fvo-soundpaths
+# dwarf-female, whose speakers bark nothing and include Moira herself; and
+# Malfurion Stormrage's, for nightelf-male, whose speakers are mostly elders and
+# druids, Malfurion among them). `fvo-soundpaths
 # --folders --only <folder>` lists a new one's real lines in
 # tools/data/named_folders.json.
 clip_folders = [
@@ -44,6 +45,7 @@ clip_folders = [
     "nightborne_male_citizen",
     "weeping_banshee",
     "moira_thaurissan",
+    "malfurion_stormrage",
 ]
 
 # Races without a reference clip borrow a related one; the narrator without a
