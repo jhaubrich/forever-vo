@@ -789,7 +789,18 @@ of the 10 s window, then the knobs.
   choice. Picks are honoured by `--named` too and join the stale sweep's keep
   set, or a rebuild would clobber or delete them. They join the fingerprint,
   keyed on the clip actually cloned from, so a re-pick restages that voice by
-  itself - the clip's *bytes* still do not. Pick them in the audition page's
+  itself - the clip's *bytes* still do not. The picks travel in git and the
+  wavs do not, so until 2026-10-04 a re-pick merged from another machine
+  restaged its voice here from the *old* wav and stamped the files current
+  (2,042 files after #563 and the archetype picks before it, found only by
+  comparing file times with wav times). Every picked wav now has
+  `<voice>.picks.json` beside it (`build_picked_reference`, from whichever
+  builder ran: the reference builder, audition, `fvo-refclips`), and
+  `generate.ensure_picked_references` rebuilds, under a lock the shards share,
+  every picked wav whose record is missing or disagrees with
+  `[voices.sources]` before anything is generated; a voice it cannot rebuild has
+  its lines left out of the run. An audition experiment that was never kept
+  leaves its record, so the next generator run puts the saved pick back. Pick them in the audition page's
   Source clips panel, or with `fvo-refclips`. A pick may also carry `gaps`
   (since 2026-10-03): seconds of silence after each clip but the last, aligned
   with `clips`, at most 3 s, 0 when absent. Back-to-back clips inside the 6 s
