@@ -1066,6 +1066,15 @@ function playRow(url, button) {
     .catch(e => toast(`could not play: ${e.message}`, "warn"));
 }
 rowPlayer.addEventListener("ended", () => { if (rowButton) rowButton.textContent = "▶"; rowButton = null; });
+// Everything playing stops: the row player behind every ▶ and each <audio> on the
+// page (takes, the reference, the pack's file). A new voice should not be heard over
+// the one left behind.
+function stopAllAudio() {
+  rowPlayer.pause();
+  if (rowButton) rowButton.textContent = "▶";
+  rowButton = null;
+  document.querySelectorAll("audio").forEach(a => { if (!a.paused) a.pause(); });
+}
 
 // A voice's own lines, longest first: a reference that holds up on a greeting can still
 // fall apart on a paragraph, and these are the words it will actually have to say.
@@ -1166,6 +1175,7 @@ function showSpeakerPin() {
 
 $("voice").addEventListener("change", () => {
   if (notesDirty) saveNotes();  // the voice left behind keeps what was typed
+  stopAllAudio();
   // the takes belong to the voice they were made for, so a new voice starts with none
   $("takes-body").innerHTML = ""; $("progress").textContent = "";
   loadVoiceSettings();
