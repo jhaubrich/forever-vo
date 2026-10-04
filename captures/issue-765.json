@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "4949": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Thrall",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-765",
+ "quests": {
+  "93739-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "questID": 93739,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Azeroth is a large world, and the territory of the Horde is vast. The Undercity, Orgrimmar, and Thunder Bluff all have very unique people and culture.\r\n\r\nIf you are to be a guest of the Horde here on Azeroth, it would do you good to visit each of our capital cities in turn. Speak with my advisor Nazgrel for directions.",
+   "time": 1791080656,
+   "title": "Exploring the Horde",
+   "wanted": true,
+   "zone": "Orgrimmar"
+  },
+  "95350-complete": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Thrall",
+   "npc": "4949",
+   "questID": 95350,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Lok-tar, $c. I am Thrall, Warchief of the Horde.\r\n\r\nAn Earthen Ring messenger told me to expect members of the Windshapers, and here you are. I'd not have expected to see a high elf standing before me here in Orgrimmar, but the Horde will welcome you as our guest all the same.\r\n\r\nYou have my blessing to travel through Horde lands. Go with honor, Windshaper.",
+   "time": 1791080649,
+   "title": "Welcome to Azeroth",
+   "wanted": true,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
