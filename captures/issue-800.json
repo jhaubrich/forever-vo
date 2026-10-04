@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1568": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Undertaker Mordo",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-800",
+ "quests": {
+  "363-accept": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Undertaker Mordo",
+   "npc": "1568",
+   "questID": 363,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "About time you woke up. We were ready to toss you into the fire with the others, but it looks like you made it.\n\nI am Mordo, the caretaker of the crypt of Deathknell. And you are the Lich King's slave no more.\n\nSpeak with Shadow Priest Sarvis in the chapel at the base of the hill, he will tell you more of what you must know.",
+   "time": 1791047804,
+   "title": "Rude Awakening",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
