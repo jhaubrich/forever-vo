@@ -445,6 +445,8 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
         },
     )
     takes = [json.loads(line) for line in response.text.splitlines()]
+    # each take names the voice it was made for: Keep these settings saves to it
+    assert {t["voice"] for t in takes if t["event"] == "take"} == {"human-male"}
     assert len(renders) == 2
     assert encodes == [
         ("audio1", 1.0, 0.0),

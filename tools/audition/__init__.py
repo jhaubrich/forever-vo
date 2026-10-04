@@ -2160,6 +2160,9 @@ def create_app(
                             json.dumps(
                                 {
                                     "event": "take",
+                                    # the voice it was made for, which Keep these
+                                    # settings saves to, whatever is selected later
+                                    "voice": request.voice,
                                     "n": n,
                                     "take": take,
                                     "name": name,

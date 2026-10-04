@@ -1241,7 +1241,11 @@ function onEvent(ev) {
   const stopping = $("progress").textContent.includes("stopping") ? " · stopping after the sentence in progress…" : "";
   $("progress").textContent = `${ev.n} take${ev.n === 1 ? "" : "s"} so far…${stopping}`;
   const tr = document.createElement("tr");
-  const recipe = `${ev.clip || "built-in"}${ev.source !== $("voice").value ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
+  // The voice this take was made for. Keep these settings saves to it, not to whatever
+  // is selected when the button is pressed: generating on one voice and keeping a take
+  // after switching to another used to tune the wrong voice.
+  const voice = ev.voice || $("voice").value;
+  const recipe = `${voice !== $("voice").value ? `${voice}: ` : ""}${ev.clip || "built-in"}${ev.source !== voice ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
     (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "") +
     (ev.speed && ev.speed !== 1 ? ` · speed ${ev.speed}` : "");
   tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
@@ -1249,15 +1253,16 @@ function onEvent(ev) {
   tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
   const cell = tr.lastElementChild;
   const keep = document.createElement("button"); keep.textContent = "Keep these settings";
-  keep.title = `Write [tts.voices.${$("voice").value}] with these settings${ev.reference ? " and this clip" : ""} ` +
+  keep.title = `Write [tts.voices.${voice}] with these settings${ev.reference ? " and this clip" : ""} ` +
     `into forever-vo.toml.\n\nThe settings join that voice's fingerprint, so its lines go stale and the ` +
     `next generate run redoes them — exactly that voice's files, and the voices that borrow its clip.`;
   keep.addEventListener("click", async () => {
     busy(keep, true);
     try {
       applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voice: $("voice").value, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, speed: ev.speed || 1, reference: ev.reference }) }));
-      toast(`Kept for ${$("voice").value}. The next generate run restages that voice's files.`, "ok");
+        body: JSON.stringify({ voice, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, speed: ev.speed || 1, reference: ev.reference }) }));
+      toast(`Kept for ${voice}. The next generate run restages that voice's files.`, "ok");
+      if (voice === $("voice").value) loadVoiceSettings();  // the knobs now read as saved
       document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
     } catch (e) { toast(e.message, "warn"); }
     busy(keep, false);
@@ -1265,7 +1270,7 @@ function onEvent(ev) {
   cell.appendChild(keep);
   if (current) {
     const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
-    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0, ev.speed || 1]);
+    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0, ev.speed || 1, voice]);
     write.title =
       "Generate this line once more under the SAVED settings and put that file in the pack, " +
       "then record its fingerprint so the nightly run neither redoes it nor misses it.\n\n" +
@@ -1295,7 +1300,7 @@ function onEvent(ev) {
 
 function isSaved(recipe) {
   if (!state) return false;
-  const [clip, e, c, t, p = 0, sp = 1] = JSON.parse(recipe); const r = state.resolved[$("voice").value];
+  const [clip, e, c, t, p = 0, sp = 1, voice] = JSON.parse(recipe); const r = state.resolved[voice || $("voice").value];
   return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t && (r.pitch || 0) === p && (r.speed ?? 1) === sp;
 }
 
@@ -1325,7 +1330,7 @@ $("sessions").addEventListener("change", () => {
   $("takes-body").innerHTML = ""; $("progress").textContent = `takes from ${s.session}`;
   if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); listVoiceLines(true); }
   s.takes.forEach((t, i) => onEvent({ event: "take", n: i + 1, take: t.take, name: t.name, url: t.url, seconds: "", elapsed: "",
-    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, speed: t.speed, reference: null }));
+    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, speed: t.speed, voice: t.voice, reference: null }));
 });
 
 $("rebuild").addEventListener("click", async () => {
