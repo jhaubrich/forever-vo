@@ -102,6 +102,8 @@
   .start .voice-find { flex: 0 1 26em; min-width: min(100%, 14em); }
   .start #voice-search { width: 100%; font-size: 16px; padding: 8px 30px 8px 10px; background: var(--bg); border-color: var(--gold); }
   .start #voice-note { margin: 0; font-size: 12px; white-space: nowrap; }
+  .start #voice-barks { margin: 4px 0 0; font-size: 12px; }
+  .start #voice-barks:empty { display: none; }
   /* the heading on the left, the approval at the right of the same line */
   .start .start-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 6px; }
   .start .start-top .start-head { margin: 0; }
@@ -370,6 +372,7 @@
         <div id="voice-note" class="hint"></div>
         <button id="revert-voice" type="button" hidden title="Put this voice back to what was approved: the source clips and gaps heard then, the four settings, and its reference rebuilt from those clips. Nothing else changes; the pick it replaces stays in Earlier picks.">Revert to approved</button>
       </div>
+      <div id="voice-barks" class="hint"></div>
       <details id="voice-notes-box">
         <summary>Tasting notes <span id="voice-notes-status" class="note"></span></summary>
         <textarea id="voice-notes" rows="3" spellcheck="true"
@@ -817,10 +820,12 @@ function showVoice() {
   box.title = title;
   // never under someone's typing: the refresh sets the value again every 15 s
   if (document.activeElement !== box) box.value = title;
-  // an archetype says which NPC bark set it is, and the sibling sets of the same actor
+  $("voice-note").textContent = voiceNote(state, r);
+  // an archetype says which NPC bark set it is, and the sibling sets of the same actor,
+  // on a line of its own under the voice row
   const b = r.barks;
-  $("voice-note").textContent = voiceNote(state, r) + (b ? ` · barks: set ${b.set}${b.folder ? `, ${b.folder}` : ""}` +
-    (b.siblings && b.siblings.length ? ` (+ set${b.siblings.length === 1 ? "" : "s"} ${b.siblings.join(", ")})` : "") : "");
+  $("voice-barks").textContent = b ? `barks: set ${b.set}${b.folder ? `, ${b.folder}` : ""}` +
+    (b.siblings && b.siblings.length ? ` (+ set${b.siblings.length === 1 ? "" : "s"} ${b.siblings.join(", ")})` : "") : "";
 }
 
 function openVoiceList() {
