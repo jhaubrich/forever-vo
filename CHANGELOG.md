@@ -11,6 +11,10 @@
   and never played for that NPC again.
 - "Once" in **Repeat greetings and gossip** lasts until you log out,
   not for good. An NPC you heard yesterday speaks again today.
+- Gossip that says "his" or "her" depending on your character plays the
+  version for your character. When only a player of the other sex had sent
+  the line in, you could hear theirs: Brock Stoneseeker told men about "her
+  pick".
 
 ## 0.1.8
 

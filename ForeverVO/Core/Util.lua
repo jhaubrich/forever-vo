@@ -189,6 +189,17 @@ function Util.TextKey(text, playerName, className, raceName)
     return Util.HashText(Util.NormalizeText(text, playerName, className, raceName))
 end
 
+--- Pack text with each "$g male:female;" branch resolved for a sex ("m"/"f"), as
+--- textclean.split_gender does in the pipeline and the client does for the
+--- player. NormalizeText drops the branch whole, so the key of raw text with one
+--- never equals the key of the live text, which the client already resolved.
+function Util.ResolveGender(text, letter)
+    local index = letter == "f" and 2 or 1
+    return (text:gsub("%$[Gg]%s*([^:;]-)%s*:%s*([^:;]-)%s*;", function(male, female)
+        return index == 1 and male or female
+    end))
+end
+
 --- Word set for fuzzy matching (lowercase alphanumeric words).
 local function WordSet(text)
     local set, count = {}, 0

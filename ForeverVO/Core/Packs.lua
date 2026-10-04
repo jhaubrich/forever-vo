@@ -92,6 +92,19 @@ local Packs = {
 ns.Packs = Packs
 
 local FUZZY_THRESHOLD = 0.6
+
+--- Whether a gossip entry is the live text exactly (`hash`, Util.TextKey of it
+--- tokenised). An entry with a $g branch (`g`) is keyed on its raw text, which
+--- never equals what the client shows, so it is also tried resolved for the
+--- player's sex. Otherwise the fuzzy match took another sex's captured reading,
+--- one word away, over it: Brock Stoneseeker said "her" to men (#365).
+local function GossipExact(entry, hash, letter)
+    if entry.h == hash then
+        return true
+    end
+    return entry.g and letter ~= nil and type(entry.t) == "string"
+        and Util.TextKey(Util.ResolveGender(entry.t, letter)) == hash or false
+end
 local QUEST_FIELD = { accept = "a", progress = "p", complete = "c" }
 
 function ns.RegisterPack(pack)
@@ -428,13 +441,14 @@ function Packs:FindGossip(speakerKey, text, sex)
     -- word sets compare like with like whoever is reading.
     local tokenized = Util.Tokenize(text)
     local hash = Util.TextKey(tokenized)
+    local letter = Util.PlayerSexLetter()
     local bestEntry, bestPack, bestScore
 
     for _, pack in ipairs(self.list) do
         local entries = pack.gossip[speakerKey]
         if entries then
             for _, entry in ipairs(entries) do
-                if entry.h == hash then
+                if GossipExact(entry, hash, letter) then
                     bestEntry, bestPack, bestScore = entry, pack, 1
                     break
                 end
@@ -516,8 +530,9 @@ function Packs:DebugGossip(speakerKey, text)
         local tokenized = Util.Tokenize(text)
         local hash = Util.TextKey(tokenized)
         local best, bestScore
+        local letter = Util.PlayerSexLetter()
         for _, entry in ipairs(pack.gossip[speakerKey]) do
-            if entry.h == hash then
+            if GossipExact(entry, hash, letter) then
                 return playing, entry.v
             end
             local score = Util.Similarity(tokenized, entry.t or "")
