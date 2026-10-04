@@ -199,11 +199,9 @@
   /* one pill per earlier pick: the pick, then its × when it is only an experiment */
   #clips-history .pick { display: inline-flex; margin: 0 6px 4px 0; }
   #clips-history .pick button { font-size: 12px; padding: 2px 8px; }
-  #clips-history .pick button.forget, #clips-history .pick button.copy { padding: 2px 6px; margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; color: var(--dim); }
-  #clips-history .pick button.copy:hover { color: var(--gold); border-color: var(--gold); }
-  #clips-history .pick button.copy:has(+ .forget) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  #clips-history .pick button.forget { padding: 2px 6px; margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; color: var(--dim); }
   #clips-history .pick button.forget:hover { color: var(--warn); border-color: var(--warn); }
-  #clips-history .pick button[data-i] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  #clips-history .pick:has(.forget) button[data-i] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
   #clips-history .pick.current button { border-color: var(--gold); color: var(--gold); }
   #clips-history .pick.saved button[data-i] { font-weight: 600; }
   #clips-history .pick.released button[data-i] { border-color: var(--ok); }
@@ -508,7 +506,7 @@
           <span class="note" id="clips-budget"></span>
           <span class="spacer"></span>
           <button id="clips-copy" title="Copy the picks in the Reference box (clips and gaps) to paste into another voice with Paste pick">Copy pick</button>
-          <button id="clips-paste" title="Load a copied pick, from this voice or another: its clips, gaps and build go into the Reference box, with the sources they need. Nothing is built until Build and keep.">Paste pick</button>
+          <button id="clips-paste" title="Load a pick copied with Copy pick, from this voice or another: its clips, gaps and build go into the Reference box, with the sources they need. Nothing is built until Build and keep.">Paste pick</button>
           <button id="clips-reset" title="Drop every pick">Clear</button>
           <button id="clips-build" class="primary" title="Build the reference from these picks, in this order, and keep them under [voices.sources] in forever-vo.toml">Build and keep</button>
         </div>
@@ -1610,10 +1608,8 @@ function renderHistory(history, picked) {
       `${h.saved ? "★ saved · " : ""}${h.released ? `<span class="rel">released</span> ` : ""}` +
       `${h.recipe ? "automatic build" : h.at === "saved" ? "in forever-vo.toml" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
       `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""}${h.seconds !== undefined ? ` · ${h.seconds}s` : ""}</button>` +
-      `<button class="copy" data-copy="${i}" title="Copy this pick (clips, gaps, build) to paste into another voice with Paste pick">copy</button>` +
       (kept ? "" : `<button class="forget" data-forget="${i}" title="Drop this experiment from Earlier picks">×</button>`) + `</span>`;
   }).join("");
-  box.querySelectorAll("button.copy").forEach(b => b.addEventListener("click", () => copyPick(history[+b.dataset.copy])));
   box.querySelectorAll("button.forget").forEach(b => b.addEventListener("click", async () => {
     const h = history[+b.dataset.forget];
     try {
