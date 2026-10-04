@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "2122": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "David Trias",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-783",
+ "quests": {
+  "3096-progress": {
+   "build": "70205",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "David Trias",
+   "npc": "2122",
+   "questID": 3096,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "So you've made it? Good, we'll have need of more rogues as time goes on. The Shadowstalkers will probably wind up finding you when they think the time's right, so don't go and slip up or do anything you might regret. They need talented agents... not pickpockets and fools.",
+   "time": 1791094967,
+   "title": "Encrypted Scroll",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
