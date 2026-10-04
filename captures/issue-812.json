@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "10216": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Gubber Blump",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-812",
+ "quests": {
+  "1141-progress": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Gubber Blump",
+   "npc": "10216",
+   "questID": 1141,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "There's plenty of good dishes you use Darkshore groupers for.  They're good to eat, but I think it's more fun catching them.\n\nYou caught any Darkshore groupers yet?",
+   "time": 1791109574,
+   "title": "The Family and the Fishing Pole",
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
