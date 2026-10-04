@@ -625,6 +625,17 @@ owner's machine picks the files up on the next sync.
   `[voices.speakers]` in `forever-vo.toml` pins a speaker's voice outright
   for a record that cannot heal (Fizzlefuse: his one line is voiced, so no
   export would have carried him again before this).
+- **A player-race NPC's model file depends on the reader** (2026-10-04, #810,
+  #811, #816, #820): `GetModelFileID()` gives the HD model
+  (`scourgemale_hd.m2`, 959310) for some readers and the legacy one
+  (`scourgemale.m2`, 121768) for others, and no creature display in this client
+  uses a legacy file, so a legacy reading named no race and a Forever-only NPC
+  (no Classic display to fall back on) was read as human. Hadric Harlson and
+  Danitha Morr went human or undead as the `modelReads` majority swung. 641 of
+  856 unmapped readings were such files. `build_species_map.py` now also writes
+  `tools/data/character_models.json` (legacy FileDataID -> HD twin, 20 pairs,
+  committed), and `wowdata.model_race_sex` reads a legacy file as its twin.
+  Goblin has no HD twin and keeps its own displays.
 - `PlayerModel:GetDisplayInfo()` returns 0 until the model loads; the capture
   reads it in `OnModelLoaded`, and the merge ignores zero display IDs. On the
   Forever client it never yields anything at all (0 of 146 captured NPCs), only

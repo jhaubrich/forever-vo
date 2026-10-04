@@ -13,6 +13,13 @@ JSON that ships with the tools:
     python tools/build_species_map.py
 
 Writes tools/data/species_models.json: {FileDataID: species}.
+
+Also writes tools/data/character_models.json: {legacy FileDataID: HD FileDataID}
+for each player-race model, character/<race>/<sex>/<race><sex>.m2 beside its
+<race><sex>_hd.m2. The client reports either for one NPC, depending on the
+reader, and no creature display in this client uses the legacy file, so a
+reading of it named no race and the speaker was read as human (Hadric Harlson,
+Danitha Morr, 2026-10-04). wowdata.model_race_sex reads it as its twin.
 """
 
 from __future__ import annotations
@@ -26,6 +33,7 @@ from tools.wowdata import load_db2
 
 LISTFILE = DATA_DIR / "verified-listfile.csv"
 OUT = DATA_DIR / "species_models.json"
+CHARACTER_OUT = DATA_DIR / "character_models.json"
 
 
 def main() -> int:
@@ -39,11 +47,22 @@ def main() -> int:
     # FileDataID -> species, for every model under creature/<species>/
     species_by_file: dict[int, str] = {}
     pattern = re.compile(r"^(\d+);creature/([^/]+)/[^/]+\.m2$", re.IGNORECASE)
+    # (race, sex) -> {"legacy": FileDataID, "hd": FileDataID}
+    characters: dict[tuple[str, str], dict[str, int]] = {}
+    character = re.compile(
+        r"^(\d+);character/([a-z]+)/(male|female)/\2\3(_hd)?\.m2$", re.IGNORECASE
+    )
     with LISTFILE.open(encoding="utf-8", errors="replace") as f:
         for line in f:
             m = pattern.match(line.strip())
             if m:
                 species_by_file[int(m.group(1))] = m.group(2).lower()
+            m = character.match(line.strip())
+            if m:
+                key = (m.group(2).lower(), m.group(3).lower())
+                characters.setdefault(key, {})["hd" if m.group(4) else "legacy"] = int(
+                    m.group(1)
+                )
     print(f"models named by the listfile: {len(species_by_file)}")
 
     # keep only the ones some creature display actually uses
@@ -59,6 +78,16 @@ def main() -> int:
     print(
         f"wrote {OUT} ({OUT.stat().st_size / 1024:.0f} KB, {len(set(mapping.values()))} distinct species)"
     )
+
+    twins = {
+        str(pair["legacy"]): pair["hd"]
+        for _, pair in sorted(characters.items())
+        if "legacy" in pair and "hd" in pair
+    }
+    CHARACTER_OUT.write_text(
+        json.dumps(twins, indent=0, sort_keys=True), encoding="utf-8"
+    )
+    print(f"wrote {CHARACTER_OUT} ({len(twins)} legacy player-race models)")
     return 0
 
 
