@@ -290,7 +290,22 @@ def _race_sex_by_model_file() -> dict[int, Counter]:
             result.setdefault(fdid, Counter())[
                 (int(extra["DisplayRaceID"]), int(extra["DisplaySexID"]))
             ] += 1
+    # The client reports a player-race NPC's legacy model or its HD twin, by
+    # reader, and no display here uses the legacy file: read it as the twin, or
+    # it names no race and the speaker falls to human (Hadric Harlson, #810)
+    for legacy, hd in _character_model_twins().items():
+        if legacy not in result and hd in result:
+            result[legacy] = result[hd]
     return result
+
+
+def _character_model_twins() -> dict[int, int]:
+    """{legacy FileDataID: HD FileDataID} for player-race models, from
+    tools/data/character_models.json (build_species_map.py)."""
+    path = DATA_DIR / "character_models.json"
+    if not path.exists():
+        return {}
+    return {int(k): v for k, v in json.loads(path.read_text(encoding="utf-8")).items()}
 
 
 def model_race_sex(
