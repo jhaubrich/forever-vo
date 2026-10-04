@@ -817,7 +817,10 @@ function showVoice() {
   box.title = title;
   // never under someone's typing: the refresh sets the value again every 15 s
   if (document.activeElement !== box) box.value = title;
-  $("voice-note").textContent = voiceNote(state, r);
+  // an archetype says which NPC bark set it is, and the sibling sets of the same actor
+  const b = r.barks;
+  $("voice-note").textContent = voiceNote(state, r) + (b ? ` · barks: set ${b.set}${b.folder ? `, ${b.folder}` : ""}` +
+    (b.siblings && b.siblings.length ? ` (+ set${b.siblings.length === 1 ? "" : "s"} ${b.siblings.join(", ")})` : "") : "");
 }
 
 function openVoiceList() {

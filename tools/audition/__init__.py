@@ -95,11 +95,13 @@ from tools.generate import (
 from tools.textclean import clean
 from tools.wowdata import (
     archetype_names,
+    archetype_of,
     base_voice,
     dominant_sound_set,
     fetch_file,
     is_archetype,
     set_voice,
+    sibling_sets,
     sound_set_displays,
 )
 
@@ -1431,8 +1433,21 @@ class Studio:
                             "offers": name in speaking or name in counts,
                         }
                     )
+        from tools.soundpaths import folders
+
+        sets = folders()
         for row in rows:
             row["expansion"] = voice_expansion(row["voice"])
+            # an archetype is one actor's NPC bark set: which, its folder, and the
+            # sibling sets the same actor was cast under, for the voice card
+            cast = archetype_of(row["voice"]) if row["archetype"] else None
+            if cast:
+                race_gender, sound_id = cast
+                row["barks"] = {
+                    "set": sound_id,
+                    "folder": sets.get(sound_id),
+                    "siblings": list(sibling_sets(race_gender, sound_id)),
+                }
         return sorted(rows, key=lambda r: r["voice"])
 
     def state(self) -> dict[str, Any]:
