@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3292": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Brewmaster Drohn",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3419": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Apothecary Zamah",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-853",
+ "quests": {
+  "819-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Brewmaster Drohn",
+   "npc": "3292",
+   "questID": 819,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Yes?",
+   "time": 1791123411,
+   "title": "Chen's Empty Keg",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "853-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Apothecary Zamah",
+   "npc": "3419",
+   "questID": 853,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "You have something from Apothecary Helbrim?",
+   "time": 1791122640,
+   "title": "Apothecary Zamah",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
