@@ -6,6 +6,8 @@ tools/data/db2/
 tools/data/casc/
 tools/data/capture.json.bak
 tools/voices/*.wav
+tools/voices/*.picks.json
+tools/voices/.build.lock
 tools/voices/raw/
 tools/voices/raw-wc3/
 tools/voices/raw-retail/
