@@ -1,0 +1,147 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "13417|1605f087": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Sagorne Creststrider",
+   "npc": "13417",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "The spirits have guided you to me. How may I be of service?",
+   "time": 1791078020,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  },
+  "3344|8fca8484": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Kardris Dreamseeker",
+   "npc": "3344",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "If you desire, in addition to training, I have it within my power to erase the knowledge of your talents from your mind.  Be warned that every time you undergo this procedure the more difficult it is to perform, and therefore the more expensive it becomes.",
+   "time": 1791078021,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "13417": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Sagorne Creststrider",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2055": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Master Apothecary Faranell",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3230": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Nazgrel",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3344": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Kardris Dreamseeker",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "5640": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Keldran",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-758",
+ "quests": {
+  "1109-accept": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "questID": 1109,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "As you can see, $N, we're up to some very.... interesting experiments at the Royal Apothecary Society.\n\nAs the Master here, it is my job to oversee the most ambitious of our alchemical attempts. So much work and so little time!\n\nYou look well traveled for a $c. Perhaps you can aid me.\n\nI'm in need of a rare substance. It's foul material; it comes from a rare species of bats only found in the muck-hole known as Razorfen Kraul. Bring to me the guano from the Kraul Bats so we can begin our work...",
+   "time": 1791077046,
+   "title": "Going, Going, Guano!",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "1361-accept": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Nazgrel",
+   "npc": "3230",
+   "questID": 1361,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "A warrior of the Horde, Regthar Deathgate, is recruiting agents for a mission into the land of Desolace.  Speak with him if you wish to volunteer.  He is stationed in the Barrens, in a series of bunkers west of the Crossroads.\n\nAnd sharpen your weapons.  Desolace is a place torn by war.",
+   "time": 1791075964,
+   "title": "Regthar Deathgate",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  },
+  "1432-accept": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Keldran",
+   "npc": "5640",
+   "questID": 1432,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "As the Alliance progresses deeper and deeper into Kalimdor, incorrect conclusions may be drawn about the Horde making pacts with the Burning Legion. The Warchief cannot allow that to happen. And with his blessing, I am taking control of overseeing them removed.\n\nI have agents in the area of Desolace at the Ghost Walker Post north of the great Kodo Graveyard. Head south of the Charred Vale in the Stonetalon Mountains and you shall come across it. When you arrive, seek out Takata Steelblade.",
+   "time": 1791049307,
+   "title": "Alliance Relations",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
