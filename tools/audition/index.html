@@ -391,7 +391,7 @@
       <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these five do">?</button></div>
       <div class="fields knobs">
         <div><label for="exag" title="Chatterbox's exaggeration">Emotion</label><input id="exag" autocomplete="off" value="0.45, 0.75"><div class="hint">0&ndash;2 &middot; 0.5 default, 1.5 shouty</div></div>
-        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (delivery)</label><input id="cfg" autocomplete="off" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
+        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (delivery)</label><input id="cfg" autocomplete="off" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; Higher is stricter</div></div>
         <div><label for="tempo">Tempo</label><input id="tempo" autocomplete="off" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
         <div><label for="pitch">Pitch, semitones</label><input id="pitch" autocomplete="off" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
         <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" autocomplete="off" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
@@ -1166,6 +1166,8 @@ function showSpeakerPin() {
 
 $("voice").addEventListener("change", () => {
   if (notesDirty) saveNotes();  // the voice left behind keeps what was typed
+  // the takes belong to the voice they were made for, so a new voice starts with none
+  $("takes-body").innerHTML = ""; $("progress").textContent = "";
   loadVoiceSettings();
   showResolved();
   listVoiceLines(true);
@@ -1205,7 +1207,7 @@ $("go").addEventListener("click", async () => {
              speed: numbers($("speed").value, "speed"),
              takes: +$("takes").value };
   } catch (e) { toast(e.message, "warn"); return; }
-  busy($("go"), true); runSession = null; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
+  busy($("go"), true); runSession = null; runVoice = body.voice; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
   try {
     const response = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
@@ -1216,7 +1218,7 @@ $("go").addEventListener("click", async () => {
       let nl; while ((nl = buffer.indexOf("\n")) >= 0) { const line = buffer.slice(0, nl); buffer = buffer.slice(nl + 1); if (line.trim()) onEvent(JSON.parse(line)); }
     }
   } catch (e) { toast(e.message, "warn"); }
-  busy($("go"), false); $("stop").hidden = true; runSession = null; refresh(); loadSessions();
+  busy($("go"), false); $("stop").hidden = true; runSession = null; runVoice = null; refresh(); loadSessions();
 });
 
 // the session comes with the run's first event; until then there is nothing to stop
@@ -1230,22 +1232,28 @@ $("stop").addEventListener("click", async () => {
   } catch (e) { toast(e.message, "warn"); busy($("stop"), false); }
 });
 
+// The voice the run in progress is generating for. A run left going while another voice
+// is chosen keeps generating, but neither its takes nor its progress are shown under
+// the new voice: the takes belong to the voice they were made for.
+let runVoice = null;
 function onEvent(ev) {
   // the spoken text is in the Line box above already; the line under Takes only says
   // how the run is going
   if (ev.event === "start") { runSession = ev.session; return; }
+  // an error is worth saying whichever voice is shown
+  if (ev.event === "error") toast(ev.message, "warn");
+  const voice = ev.voice || runVoice || $("voice").value;
+  if (voice !== $("voice").value) return;
   if (ev.event === "stopped") { $("progress").textContent = `stopped · ${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
-  if (ev.event === "error") { toast(ev.message, "warn"); $("progress").textContent = ev.message; return; }
+  if (ev.event === "error") { $("progress").textContent = ev.message; return; }
   if (ev.event === "done") { $("progress").textContent = `${ev.count} take${ev.count === 1 ? "" : "s"} done`; return; }
   // a take: the count so far, keeping a Stop already asked for
   const stopping = $("progress").textContent.includes("stopping") ? " · stopping after the sentence in progress…" : "";
   $("progress").textContent = `${ev.n} take${ev.n === 1 ? "" : "s"} so far…${stopping}`;
   const tr = document.createElement("tr");
-  // The voice this take was made for. Keep these settings saves to it, not to whatever
-  // is selected when the button is pressed: generating on one voice and keeping a take
-  // after switching to another used to tune the wrong voice.
-  const voice = ev.voice || $("voice").value;
-  const recipe = `${voice !== $("voice").value ? `${voice}: ` : ""}${ev.clip || "built-in"}${ev.source !== voice ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
+  // Keep these settings saves to the take's own voice (`voice`, above), not to whatever
+  // is selected when the button is pressed
+  const recipe = `${ev.clip || "built-in"}${ev.source !== voice ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
     (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "") +
     (ev.speed && ev.speed !== 1 ? ` · speed ${ev.speed}` : "");
   tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
