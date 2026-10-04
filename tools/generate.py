@@ -50,6 +50,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from tools.build_voice_references import build_pick, picked_reference_current
 from tools.config import (
     CAPTURE_JSON,
     DATA_DIR,
@@ -861,6 +862,55 @@ def require_filters(filters: list[str]) -> None:
         )
 
 
+def ensure_picked_references(config: Config, dry_run: bool = False) -> set[str]:
+    """Rebuilds every picked reference whose wav was not built from its saved pick,
+    before anything is generated; returns the voices that could not be rebuilt.
+
+    Picks reach this machine through git, the wavs do not, and a file's fingerprint
+    names the picks: a merged re-pick restaged its voice from the old wav and stamped
+    the files current, so nothing ever redid them (2,042 files, 2026-10-03). Under a
+    lock, so the shards of one bulk run build each voice once. A voice that cannot be
+    rebuilt (a clip gone from wago) has its lines left out of this run, not voiced
+    from the wrong clip.
+    """
+    picked = {
+        voice: pick for voice, pick in config.voices.sources.items() if pick.clips
+    }
+    stale = sorted(
+        v for v, pick in picked.items() if not picked_reference_current(v, pick)
+    )
+    if not stale:
+        return set()
+    if dry_run:
+        print(f"would rebuild {len(stale)} picked reference(s) first: {stale}")
+        return set()
+    failed: set[str] = set()
+    VOICES_DIR.mkdir(parents=True, exist_ok=True)
+    with open(VOICES_DIR / ".build.lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        for voice in stale:
+            if picked_reference_current(voice, picked[voice]):
+                continue  # another shard built it while this one waited
+            print(f"{voice}: reference not built from its saved pick, rebuilding")
+            try:
+                built = build_pick(voice, picked[voice])
+            except (
+                RuntimeError,
+                ValueError,
+                OSError,
+                subprocess.CalledProcessError,
+            ) as e:
+                print(f"{voice}: {e}")
+                built = None
+            if built is None:
+                failed.add(voice)
+    if failed:
+        print(
+            f"warning: could not rebuild {sorted(failed)}; their lines are left out of this run"
+        )
+    return failed
+
+
 def tuning_filters(config: Config) -> list[str]:
     """Every encode filter some voice's saved tuning asks for."""
     settings = [config.tts.settings_for(v) for v in config.tts.voices]
@@ -1456,6 +1506,12 @@ def main(argv: list[str] | None = None) -> int:
             "--narrator-only with --narrator-voices none has nothing to do"
         )
 
+    unbuilt = (
+        set()
+        if args.tables_only or args.reindex
+        else ensure_picked_references(config, dry_run=args.dry_run)
+    )
+
     capture = load_sources()
     if not capture["quests"] and not capture["gossip"]:
         print("nothing to voice: run ingest.py or classicdb.py first")
@@ -1607,6 +1663,19 @@ def main(argv: list[str] | None = None) -> int:
                     Target(item, part, words, voice, True) for voice in alternate_voices
                 ]
             candidates = [target for target in candidates if in_voice(target)]
+            if unbuilt:
+                kept = [
+                    target
+                    for target in candidates
+                    if catalog.resolve(target.voice).source not in unbuilt
+                ]
+                if len(kept) != len(candidates):
+                    skipped["reference could not be rebuilt"] = (
+                        skipped.get("reference could not be rebuilt", 0)
+                        + len(candidates)
+                        - len(kept)
+                    )
+                candidates = kept
             if args.reindex:
                 for target in candidates:
                     recorded = sound_index.get(target.key)

@@ -984,7 +984,7 @@ def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
     monkeypatch.setattr(audition, "pick_history", lambda voice=None: history)
     built: list[tuple] = []
     monkeypatch.setattr(
-        audition, "build_picked_reference", lambda v, paths, gaps: built.append((v, gaps)) or Path("x.wav")
+        audition, "build_picked_reference", lambda v, paths, gaps, **_: built.append((v, gaps)) or Path("x.wav")
     )  # fmt: skip
     monkeypatch.setattr(
         audition, "local_clip", lambda v, fdid, build: Path(f"{fdid}.ogg")

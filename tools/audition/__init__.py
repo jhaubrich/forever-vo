@@ -2325,7 +2325,7 @@ def create_app(
                 )
             paths.append(path)
         try:
-            out = build_picked_reference(voice, paths, gaps)
+            out = build_picked_reference(voice, paths, gaps, clips=clips, build=build)
         except (RuntimeError, ValueError, subprocess.CalledProcessError) as e:
             raise HTTPException(400, str(e)) from e
         write_voice_sources(studio.config_path, voice, clips, build, gaps)
@@ -2543,7 +2543,9 @@ def create_app(
             paths.append(_under(CLIP_RAW, f"{voice}/{path.name}"))
         existed = (VOICES_DIR / f"{voice}.wav").exists()
         try:
-            out = build_picked_reference(voice, paths, gaps)
+            out = build_picked_reference(
+                voice, paths, gaps, clips=request.clips, build=request.build
+            )
         except (RuntimeError, ValueError, subprocess.CalledProcessError) as e:
             raise HTTPException(400, str(e)) from e
         if request.keep:

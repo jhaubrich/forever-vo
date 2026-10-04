@@ -27,6 +27,7 @@ needed. Raw clips are kept under tools/voices/raw/.
 from __future__ import annotations
 
 import functools
+import json
 import os
 import subprocess
 import sys
@@ -568,8 +569,79 @@ def concat_to_wav(
     return out
 
 
+def pick_record_path(voice: str) -> Path:
+    """Beside a picked reference, what it was built from (pick_signature)."""
+    return VOICES_DIR / f"{voice}.picks.json"
+
+
+def pick_signature(
+    clips: list[int], build: str | None, gaps: list[float] | None
+) -> dict:
+    """What a picked reference is built from, in a form two picks compare by. A gap
+    follows every clip but the last, and an absent one is 0, so gaps are padded to
+    that length: [0.1] and [0.1, 0.0] build the same wav."""
+    clips = [int(c) for c in clips]
+    gaps = list(gaps or [])
+    return {
+        "clips": clips,
+        "build": build or None,
+        "gaps": [
+            float(gaps[i]) if i < len(gaps) else 0.0
+            for i in range(max(len(clips) - 1, 0))
+        ],
+    }
+
+
+def picked_reference_current(voice: str, pick) -> bool:
+    """Whether tools/voices/<voice>.wav was built from `pick` ([voices.sources.<voice>]).
+
+    The picks travel in git and the wav does not, and a file's fingerprint names the
+    picks, not the wav: before this check a merged re-pick restaged the voice from the
+    old wav and stamped the result current (2,042 files on 2026-10-03). A wav with no
+    record, or built from an audition experiment that was never kept, is not current.
+    """
+    wav, record = VOICES_DIR / f"{voice}.wav", pick_record_path(voice)
+    if not wav.exists() or not record.exists():
+        return False
+    try:
+        built = json.loads(record.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    return built == pick_signature(pick.clips, pick.build, pick.gaps)
+
+
+def build_pick(voice: str, pick) -> Path | None:
+    """Fetches a pick's clips and builds its reference; None when a clip cannot be had,
+    rather than a shorter reference than was chosen."""
+    chosen = []
+    for fdid in pick.clips:
+        try:
+            chosen.append(
+                fetch_file(
+                    fdid,
+                    RAW_DIR / voice / f"{fdid}.ogg",
+                    build=pick.build or BETA_BUILD,
+                )
+            )
+        except FileNotFoundError as e:
+            print("skip:", e)
+    if len(chosen) != len(pick.clips):
+        print(
+            f"{voice}: {len(pick.clips) - len(chosen)} picked clip(s) missing, not rebuilt"
+        )
+        return None
+    return build_picked_reference(
+        voice, chosen, pick.gaps, clips=pick.clips, build=pick.build
+    )
+
+
 def build_picked_reference(
-    voice: str, paths: list[Path], gaps: list[float] | None = None
+    voice: str,
+    paths: list[Path],
+    gaps: list[float] | None = None,
+    *,
+    clips: list[int] | None = None,
+    build: str | None = None,
 ) -> Path:
     """One reference from clips chosen by ear, in the order given.
 
@@ -577,8 +649,22 @@ def build_picked_reference(
     deliberately not reused - it sorts by duration, drops everything outside 0.8-8.0 s
     (which is every spoken emote line), stops at TARGET_SECONDS, and deletes a `-s<N>`
     clip whose measured head is under ARCHETYPE_MIN_HEAD, which a plain concat never has.
+
+    `clips` and `build` name what the paths are, for the record beside the wav
+    (pick_record_path); without them the clips are read off file names like
+    `<fdid>.ogg`, and a name that is not one leaves no record, so the next generator
+    run rebuilds the voice from its saved pick.
     """
     out = concat_to_wav(voice, paths, "picked.txt", gaps=gaps)
+    if clips is None and all(p.stem.isdigit() for p in paths):
+        clips = [int(p.stem) for p in paths]
+    record = pick_record_path(voice)
+    if clips is not None and out == VOICES_DIR / f"{voice}.wav":
+        record.write_text(
+            json.dumps(pick_signature(clips, build, gaps)), encoding="utf-8"
+        )
+    else:
+        record.unlink(missing_ok=True)
     offset = 0.0
     t3 = s3gen = 0
     for i, path in enumerate(paths):
@@ -737,25 +823,7 @@ def main(argv: list[str] | None = None) -> int:
             continue
         entry = picked.get(voice)
         if entry:
-            chosen = []
-            for fdid in entry.clips:
-                try:
-                    chosen.append(
-                        fetch_file(
-                            fdid,
-                            RAW_DIR / voice / f"{fdid}.ogg",
-                            build=entry.build or BETA_BUILD,
-                        )
-                    )
-                except FileNotFoundError as e:
-                    print("skip:", e)
-            if len(chosen) != len(entry.clips):
-                # Refuse rather than quietly build a shorter clip than was chosen
-                print(
-                    f"{voice}: {len(entry.clips) - len(chosen)} picked clip(s) missing, not rebuilt"
-                )
-                continue
-            build_picked_reference(voice, chosen, entry.gaps)
+            build_pick(voice, entry)
             continue
         folder = RAW_DIR / voice
         paths = []
