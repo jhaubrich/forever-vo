@@ -8,7 +8,9 @@ on:
   issue_comment:
     types: [created, edited]
   issues:
-    types: [opened, edited]
+    # labeled: an issue opened without the capture label (or with another) runs
+    # once the label is put on, and only for that label
+    types: [opened, edited, labeled]
 
 permissions:
   contents: write
@@ -18,7 +20,8 @@ jobs:
   ingest:
     if: >-
       (github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'capture-inbox')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'capture'))
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'capture') &&
+        (github.event.action != 'labeled' || github.event.label.name == 'capture'))
     runs-on: ubuntu-latest
     # No concurrency group: GitHub keeps one run waiting per group and cancels
     # the rest, and a multi-part export opens its issues seconds apart (six
