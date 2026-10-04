@@ -1,0 +1,77 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "2094|28b1f157": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1437,
+   "name": "James Halloran",
+   "npc": "2094",
+   "questID": null,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, $c. I'm in a bit of a pinch right now, running very low on hides.",
+   "time": 1791038858,
+   "title": null,
+   "wanted": null,
+   "zone": "Wetlands"
+  }
+ },
+ "npcs": {
+  "2094": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "James Halloran",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-742",
+ "quests": {
+  "471-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1437,
+   "name": "James Halloran",
+   "npc": "2094",
+   "questID": 471,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "My apprentice is like a son to me. It's going to be hard for him to live his life with only one leg.\n\nAh, $N, how goes it?  Do you have my skins?",
+   "time": 1791038829,
+   "title": "Apprentice's Duties",
+   "wanted": null,
+   "zone": "Wetlands"
+  },
+  "98072-accept": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1437,
+   "name": "James Halloran",
+   "npc": "2094",
+   "questID": 98072,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "You're quite the go-getter! I have just one more favor to ask, if you're up for something a bit more dangerous.\r\n\r\nThe crocolisk trade is steady money, but they're small fish compared to what whelp scales will bring. Folks will pay top dollar for a sack of those.\r\n\r\nCrocs of the sky, I call 'em! There's no way my apprentice could get them--but it seems right up your alley!\r\n\r\nYou'll find whelps far to the east, along the Green Belt. But be careful, there's nasty orcs in those hills!",
+   "time": 1791038859,
+   "title": "Crocs of the Sky",
+   "wanted": null,
+   "zone": "Wetlands"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
