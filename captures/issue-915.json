@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "823": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Deputy Willem",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "951": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Brother Paxton",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-915",
+ "quests": {
+  "18-progress": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Willem",
+   "npc": "823",
+   "questID": 18,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you gathered those bandanas for me yet?",
+   "time": 1791131026,
+   "title": "Brotherhood of Thieves",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "91743-progress": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Brother Paxton",
+   "npc": "951",
+   "questID": 91743,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you rescued my books yet, $N?!",
+   "time": 1791131510,
+   "title": "Rascally Rodents",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
