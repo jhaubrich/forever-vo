@@ -1,0 +1,80 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "-1585": {
+   "isObject": true,
+   "name": "Explosive Charge"
+  },
+  "1093": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 118355,
+   "name": "Chief Engineer Hinderweir VII",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-817",
+ "quests": {
+  "274-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Chief Engineer Hinderweir VII",
+   "npc": "1093",
+   "questID": 274,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "What is that you bring from Ashlan?",
+   "time": 1791097097,
+   "title": "A Dark Threat Looms",
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "278-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Chief Engineer Hinderweir VII",
+   "npc": "1093",
+   "questID": 278,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have the needed items?  Time is of the essence!!",
+   "time": 1791099307,
+   "title": "A Dark Threat Looms",
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "280-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1432,
+   "name": "Explosive Charge",
+   "npc": "-1585",
+   "questID": 280,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "The top of the keg slowly twists off.",
+   "time": 1791099339,
+   "title": "A Dark Threat Looms",
+   "wanted": null,
+   "zone": "Loch Modan"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
