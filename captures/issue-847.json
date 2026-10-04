@@ -1,0 +1,37 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "2274": {
+   "addon": "0.1.8",
+   "creatureType": "Beast",
+   "modelFileID": 126487,
+   "name": "Stanley",
+   "sex": 1
+  }
+ },
+ "origin": "issue-847",
+ "quests": {
+  "502-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Stanley",
+   "npc": "2274",
+   "questID": 502,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Woof?",
+   "time": 1791119247,
+   "title": "Elixir of Pain",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
