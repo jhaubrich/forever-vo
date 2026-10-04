@@ -1,0 +1,46 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "275270|56f11671": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Windshapers Dockmaster",
+   "npc": "275270",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "This skycutter will take you right to the wondrous open plains of Mulgore.",
+   "time": 1791079605,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "256635": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Peacekeeper",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "275270": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Windshapers Dockmaster",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-759",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
