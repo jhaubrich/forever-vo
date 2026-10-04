@@ -29,7 +29,10 @@ narrator_alternates = ["skyborne-female"]
 # Legion ghost, Jarod Shadowsong for the warrior archetype, and the nightborne
 # player and citizen sets, who read from nightelf-male.wav; and Legion's weeping
 # banshee, the one banshee speech this client ships: the WC3 banshee clip comes from
-# the Reforged install, and banshee_sylvanas_no_loc is all empty files). `fvo-soundpaths
+# the Reforged install, and banshee_sylvanas_no_loc is all empty files; and
+# Moira Bronzebeard's dialogue, Battle for Azeroth to The War Within, for
+# dwarf-female, whose speakers
+# bark nothing and include Moira herself). `fvo-soundpaths
 # --folders --only <folder>` lists a new one's real lines in
 # tools/data/named_folders.json.
 clip_folders = [
@@ -40,6 +43,7 @@ clip_folders = [
     "pc_-_nightborne_elf_male",
     "nightborne_male_citizen",
     "weeping_banshee",
+    "moira_thaurissan",
 ]
 
 # Races without a reference clip borrow a related one; the narrator without a
