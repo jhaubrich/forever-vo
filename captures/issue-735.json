@@ -1,0 +1,74 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "252479|35e66cbc": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Daeann Steelwind",
+   "npc": "252479",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Y gol valesh dyrstigost dana E me, rogesh lon nuff. Skilde Ruff lars an lo ras lars valesh E vohl lars. Ras valesh ve majis nuff Rothas Gloinador. Lo valesh gol barad ras ruff, noth far.",
+   "time": 1791071707,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251968": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Ayessa Dawnsinger",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "252479": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Daeann Steelwind",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "253474": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Peacekeeper",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-735",
+ "quests": {
+  "92871-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Ayessa Dawnsinger",
+   "npc": "251968",
+   "questID": 92871,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Valennia Stormfist and her peacekeepers have ever been the protectors of Zephras, and we've done our best to lend aid where we can. There are rumors of larger-scale cult movements around the island, and they are clearly gearing up for something.\r\n\r\nReport to Valennia and reiterate to her that the Windshapers offer their full support in Valanaar's efforts against the Al'Aketh, should the need arise.",
+   "time": 1791069411,
+   "title": "In Service of Zephras",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
