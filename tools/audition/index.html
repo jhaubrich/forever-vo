@@ -381,7 +381,7 @@
       <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these five do">?</button></div>
       <div class="fields knobs">
         <div><label for="exag" title="Chatterbox's exaggeration">Emotion</label><input id="exag" value="0.45, 0.75"><div class="hint">0&ndash;2 &middot; 0.5 default, 1.5 shouty</div></div>
-        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (pace)</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
+        <div><label for="cfg" title="Chatterbox's cfg_weight: classifier-free guidance">Adherence (delivery)</label><input id="cfg" value="0.5, 0.3"><div class="hint">0&ndash;1 &middot; lower is slower</div></div>
         <div><label for="tempo">Tempo</label><input id="tempo" value="1.0"><div class="hint">0.5&ndash;2.0; 1.0 as generated, a time stretch with pitch kept</div></div>
         <div><label for="pitch">Pitch, semitones</label><input id="pitch" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
         <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
@@ -409,7 +409,7 @@
             <tr><td>1.5</td><td>shouty</td></tr>
           </table>
           Higher also speeds a line up; a lower Adherence slows it back down.</td></tr>
-        <tr><td>Adherence (pace)<br><span class="note">cfg_weight</span></td><td>0&ndash;1. Classifier-free guidance. At each token the
+        <tr><td>Adherence (delivery)<br><span class="note">cfg_weight</span></td><td>0&ndash;1. Classifier-free guidance. At each token the
           model predicts twice, once with your text and reference and once without, and
           pushes away from the second: <code>logits = cond + cfg &times; (cond &minus; uncond)</code>.
           Higher tracks the prompt harder, and clips pauses as it goes;
