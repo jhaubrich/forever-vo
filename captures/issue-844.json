@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "235": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Salma Saldean",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "253092": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Alba Fairmoon",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "878": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Scout Galiaan",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-844",
+ "quests": {
+  "153-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Scout Galiaan",
+   "npc": "878",
+   "questID": 153,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Bring me 15 red leather bandanas and I'll pay you well.",
+   "time": 1791119114,
+   "title": "Red Leather Bandanas",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "22-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Salma Saldean",
+   "npc": "235",
+   "questID": 22,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "All I need for my famous meat pie are 8 Goretusk Livers!",
+   "time": 1791118927,
+   "title": "Goretusk Liver Pie",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "38-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Salma Saldean",
+   "npc": "235",
+   "questID": 38,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Come back with the following ingredients: \n \n 3 Stringy Vulture Meat \n 3 Goretusk Snouts \n 3 Murloc Eyes \n 3 Okra",
+   "time": 1791118930,
+   "title": "Westfall Stew",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "92742-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Alba Fairmoon",
+   "npc": "253092",
+   "questID": 92742,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Did you collect the samples?",
+   "time": 1791119148,
+   "title": "Testing the Wells",
+   "wanted": null,
+   "zone": "Westfall"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
