@@ -1,0 +1,84 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "252377": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Seena Skybreaker",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "256083": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Riaani Nightwind",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-809",
+ "quests": {
+  "93738-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Riaani Nightwind",
+   "npc": "256083",
+   "questID": 93738,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Brightwish, eh? So the High Order wanted to remove these components for some reason. But why though?\r\n\r\nThe High Order has always been meddlesome, constantly wanting to experiment with the wind spirits' magic. They are too bold by a mile, and we've strictly forbidden them from meddling with knowledge under Windshaper purview, but lately they've been testing our patience.\r\n\r\nI think you should report what you've learned back to Ayessa Dawnsinger. She can instruct you further on what to do.",
+   "time": 1791104242,
+   "title": "The Broken Construct",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "94003-complete": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Seena Skybreaker",
+   "npc": "252377",
+   "questID": 94003,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "You have done what I could not and restored my family honor. For this, I will bestow a gift that few on Zephras are worthy to receive. I will teach you the secrets of the Skybreaker Defense.\r\n\r\nAlso, you will need a shield to put what I have to teach you into practice. Please, take this one. I have little use for it now that the Skybreaker Bulwark has been returned to me.\r\n\r\nBanu'Adoraah, friend.",
+   "time": 1791104298,
+   "title": "The Skybreaker Bulwark",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "94003-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Seena Skybreaker",
+   "npc": "252377",
+   "questID": 94003,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "<Seena nods curtly at you.>",
+   "time": 1791104291,
+   "title": "The Skybreaker Bulwark",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
