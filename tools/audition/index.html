@@ -691,8 +691,11 @@ function voiceStar(s, r) {
 function voiceMatches(s, query) {
   return voiceRows(s).map(r => ({ r, score: fuzzyScore(query, `${r.voice} ${r.label || ""}`) }))
     .filter(h => h.score > 0)
-    // a tie goes to the shorter name: the plain voice before its archetypes
-    .sort((a, b) => b.score - a.score || a.r.voice.length - b.r.voice.length).map(h => h.r);
+    // a tie goes to a voice with a clip of its own, then to the one speaking more lines,
+    // then to the shorter name: built archetypes before unbuilt -s<N> sets, the plain
+    // voice before its archetypes
+    .sort((a, b) => b.score - a.score || (b.r.clip ? 1 : 0) - (a.r.clip ? 1 : 0)
+      || (b.r.lines || 0) - (a.r.lines || 0) || a.r.voice.length - b.r.voice.length).map(h => h.r);
 }
 
 // The list in groups, or while searching the voice in use and the matches best first.
@@ -789,7 +792,6 @@ function editDistance(a, b) {
 // keys move, Enter or a click takes one, Escape puts the voice back and closes, and
 // leaving the box closes it.
 let voiceActive = 0, voiceQuery = "";
-const VOICE_RESULTS_MAX = 15;
 function voiceRow(v) { return (state && voiceRows(state).find(r => r.voice === v)) || { voice: v }; }
 
 // Lines are picked and sessions restored by setting #voice's value outright, with no
@@ -837,11 +839,9 @@ function renderVoiceResults(scroll = true) {
       `${note ? ` <span class="m">${esc(note)}</span>` : ""}${r.voice === current ? ` <span class="m">(in use)</span>` : ""}</li>`;
   };
   for (const [label, list] of voiceGroups(state, voiceQuery)) {
-    // only the matches are cut short; the full list is a few hundred and scrolls
-    const shown = voiceQuery ? list.slice(0, VOICE_RESULTS_MAX) : list;
+    // every match is listed, as every voice is when browsing: the list scrolls
     if (!list.length) continue;
-    html += `<li class="group" role="presentation">${esc(label)}</li>` + shown.map(option).join("") +
-      (list.length > shown.length ? `<li class="none" role="presentation">… ${list.length - shown.length} more; keep typing</li>` : "");
+    html += `<li class="group" role="presentation">${esc(label)}</li>` + list.map(option).join("");
   }
   if (voiceQuery && !voiceGroups(state, voiceQuery)[1][1].length) html += `<li class="none" role="presentation">No voice matches “${esc(voiceQuery)}”</li>`;
   box.innerHTML = html;
