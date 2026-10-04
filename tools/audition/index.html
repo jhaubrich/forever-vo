@@ -189,6 +189,10 @@
   #clips-reference { margin: 10px 0 12px; border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 4px; background: var(--panel); padding: 8px 10px; }
   #clips-reference .ref-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
   #clips-reference .ref-head .spacer { flex: 1; }
+  /* export and import read as links, not buttons: they move a pick, they build nothing */
+  #clips-reference .ref-head button.linkish { background: none; border: 0; padding: 0 2px; font-size: 12px; color: var(--dim);
+    text-decoration: underline dotted; text-underline-offset: 3px; }
+  #clips-reference .ref-head button.linkish:hover { color: var(--gold); }
   /* the built reference's player sits at the right, under the picks' own controls */
   #clips-reference .ref-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 10px; margin-top: 8px; }
   /* wide, so the scrubber can find a place in a 20 s reference */
@@ -505,8 +509,8 @@
           <span class="sub-title">Reference</span>
           <span class="note" id="clips-budget"></span>
           <span class="spacer"></span>
-          <button id="clips-copy" title="Copy the picks in the Reference box (clips and gaps) to paste into another voice with Paste pick">Copy pick</button>
-          <button id="clips-paste" title="Load a pick copied with Copy pick, from this voice or another: its clips, gaps and build go into the Reference box, with the sources they need. Nothing is built until Build and keep.">Paste pick</button>
+          <button id="clips-copy" class="linkish" title="Copy the picks in the Reference box (clips and gaps), to import into another voice">export pick</button>
+          <button id="clips-paste" class="linkish" title="Load a pick exported from this voice or another: its clips, gaps and build go into the Reference box, with the sources they need. Nothing is built until Build and keep.">import pick</button>
           <button id="clips-reset" title="Drop every pick">Clear</button>
           <button id="clips-build" class="primary" title="Build the reference from these picks, in this order, and keep them under [voices.sources] in forever-vo.toml">Build and keep</button>
         </div>
@@ -1757,7 +1761,7 @@ function copyPick(h) {
   const text = JSON.stringify({ kind: "fvo-pick", voice: clipsVoice || $("voice").value, at: h.at, clips: h.clips, gaps: h.gaps || [], build: h.build || null });
   try { localStorage.setItem("fvo-pick-clipboard", text); } catch (e) { /* this browser only */ }
   (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => {});
-  toast(`Copied ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"} from ${clipsVoice || $("voice").value}. Pick another voice, Load candidates, then Paste pick.`, "ok");
+  toast(`Copied ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"} from ${clipsVoice || $("voice").value}. Pick another voice, Load candidates, then import pick.`, "ok");
 }
 async function readPick() {
   let text = "";
@@ -1779,9 +1783,9 @@ $("clips-copy").addEventListener("click", () => {
 });
 $("clips-paste").addEventListener("click", async () => {
   const voice = $("voice").value;
-  if (!clipsRows.length || clipsVoice !== voice) { toast("Load candidates for this voice first, then paste.", "warn"); return; }
+  if (!clipsRows.length || clipsVoice !== voice) { toast("Load candidates for this voice first, then import.", "warn"); return; }
   const p = await readPick();
-  if (!p) { toast("Nothing to paste: copy a pick with ⧉ under Earlier picks first.", "warn"); return; }
+  if (!p) { toast("Nothing to import: load a pick and export it first.", "warn"); return; }
   busy($("clips-paste"), true);
   try {
     // the sources the clips come from, so the pick lists in full under its own groups
