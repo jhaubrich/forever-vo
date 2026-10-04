@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "251913": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Aedi Thriceforged",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "263664": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Raan Wildwind",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-884",
+ "quests": {
+  "97964-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 97964,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "So, you've become a Blacksmith. That's a great choice if you want to make sure your blades never dull.\r\n\r\nI reckon I know someone that can help with that by teaching you how to craft a Sharpening Wheel. Bring one of these out at your camp and all the warriors and rogues in the area will be lining up to hone their weapons.",
+   "time": 1790986252,
+   "title": "Camping 101: Blacksmithing",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "97964-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Aedi Thriceforged",
+   "npc": "251913",
+   "questID": 97964,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I can teach you, if you have the aptitude.",
+   "time": 1790986790,
+   "title": "Camping 101: Blacksmithing",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
