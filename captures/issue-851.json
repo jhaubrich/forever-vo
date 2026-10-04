@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3391": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Gazlowe",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3453": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Wharfmaster Dizzywig",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "7161": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Wrenix the Wretched",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-851",
+ "quests": {
+  "890-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Wharfmaster Dizzywig",
+   "npc": "3453",
+   "questID": 890,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Wares to send on the next ship, $N?",
+   "time": 1791123509,
+   "title": "The Missing Shipment",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "892-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gazlowe",
+   "npc": "3391",
+   "questID": 892,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "So, what did Dizzywig have to say?",
+   "time": 1791123543,
+   "title": "The Missing Shipment",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "895-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gazlowe",
+   "npc": "3391",
+   "questID": 895,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "What's happening? Something I can help you with? Goods to ship, perhaps an engineering job?",
+   "time": 1791123429,
+   "title": "WANTED: Baron Longshore",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "97253-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Wrenix the Wretched",
+   "npc": "7161",
+   "questID": 97253,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Not another word out of you until your pockets are jingling with metal!",
+   "time": 1791123392,
+   "title": "Parts and Pieces",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
