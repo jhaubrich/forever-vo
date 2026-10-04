@@ -1,0 +1,92 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "259119|00001505": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Alaana Stormwalker",
+   "npc": "259119",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": " ",
+   "time": 1791079886,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "262492|ca9aee41": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Rimblat Earthshatter",
+   "npc": "262492",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "I've been expec...\n\n<Rimblat coughs.>\n\nExcuse me, old habit. I am Rimblat of the Earthen Ring. ",
+   "time": 1791080075,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "264074|2fbc72e3": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Mazu'kon",
+   "npc": "264074",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "What'ya need from ol' Mazu'kon, $c?",
+   "time": 1791080068,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "npcs": {
+  "259119": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Alaana Stormwalker",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "262492": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Rimblat Earthshatter",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "264074": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1022938,
+   "name": "Mazu'kon",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-760",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
