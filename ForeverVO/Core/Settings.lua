@@ -308,8 +308,7 @@ ns.OnInit(function()
     Checkbox(data, "debug", "Debug messages", "Print matching details to chat.")
     Checkbox(data, "devOverlay", "Developer overlay",
         "Show a window attached to the quest or gossip frame with the quest file name, the voice, and the speaker's display and model ids. For people working on the voice pack.",
-        function(value)
-            pcall(C_CVar.SetCVar, "ForeverVO_devOverlay", value and "1" or "0")
+        function()
             ns.UI.Debug:Apply()
         end)
 

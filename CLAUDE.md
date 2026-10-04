@@ -52,9 +52,9 @@ game's own recordings).
   beta wrote them on logout/reload but never read them back, so every session
   started from defaults; the owner and others confirmed the fix on 2026-09-25,
   and the capture DB on disk spans two days and four characters. Leftovers of
-  the old state, all harmless: the unvoiced-line reminders default on, the
-  welcome popup's "seen" flag and the narrator pick live in addon-registered
-  CVars as well as the settings, and ingest treats every write of the file as a
+  the old state: the unvoiced-line reminders default on, the welcome popup's
+  "seen" flag is also an addon-registered CVar (harmless, it is only ORed in),
+  and ingest treats every write of the file as a
   merge (it always did, and must keep doing so: the DB now accumulates across
   sessions and characters, so one write carries days of play). The reminders
   count what this session recorded apart from what was already waiting
@@ -911,8 +911,11 @@ of the 10 s window, then the knobs.
   nightelf-female, troll-female, orc-male) are still under `Sounds/*/Narrator/` and in
   `sound_index.json`; `rebuild_tables` and the release only look at the
   configured voices, so they are dead weight until deleted. The player's pick
-  lives in the `ForeverVO_narratorVoice` CVar as well as the settings, from
-  when saved variables did not survive a session on this beta.
+  is `narratorVoice` in the settings only. **The client does not keep
+  addon-registered CVars across a logout** (none is in any `.wtf` file), so
+  reading one back at login returns its registered default: the narrator pick
+  and the developer overlay were both stored there too until 0.1.9, and both
+  reset at every login (#887). Never restore a setting from an addon CVar.
 - The talking head defaults to the faction parchment; clearing `factionHead`
   gives Blizzard's dark panel (the "Normal" kit). Gold text vanished on the
   parchment until each kit got its own dark Name/Title/Text and no shadow:

@@ -181,7 +181,6 @@ end
 -- ---------------------------------------------------------------------------
 
 local DEFAULT_NARRATOR = "narrator"
-local NARRATOR_CVAR = "ForeverVO_narratorVoice"
 local RACE_LABELS = {
     human = "Human", dwarf = "Dwarf", nightelf = "Night elf", orc = "Orc", troll = "Troll",
     tauren = "Tauren", gnome = "Gnome", goblin = "Goblin", bloodelf = "Blood elf",
@@ -234,24 +233,13 @@ function Packs:NarratorVoice()
     return DEFAULT_NARRATOR -- the pack that carried it is no longer installed
 end
 
---- Picks the narrator voice, and remembers it in an addon CVar as well as the
---- settings: until 2026-09-25 this beta wrote saved variables but never read
---- them back, and the CVar is kept so the pick made before the fix survives.
+--- Picks the narrator voice. It lives in the settings alone: until 0.1.9 it was
+--- also an addon CVar, from when this beta did not read saved variables back,
+--- but the client does not keep addon CVars across a logout, and reading the
+--- CVar's default back at login reset every pick to the human male (#887).
 function Packs:SetNarratorVoice(voice)
     ns.db.narratorVoice = voice
-    pcall(C_CVar.SetCVar, NARRATOR_CVAR, voice)
 end
-
-ns.OnInit(function()
-    pcall(C_CVar.RegisterCVar, NARRATOR_CVAR, DEFAULT_NARRATOR)
-end)
-
-ns.OnLogin(function()
-    local stored = C_CVar.GetCVar(NARRATOR_CVAR)
-    if stored and stored ~= "" then
-        ns.db.narratorVoice = stored
-    end
-end)
 
 --- Where a voice sits in this pack's narratorVoices, or nil when it has none.
 local function NarratorIndex(pack, voice)

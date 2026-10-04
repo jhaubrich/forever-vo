@@ -15,6 +15,8 @@
   version for your character. When only a player of the other sex had sent
   the line in, you could hear theirs: Brock Stoneseeker told men about "her
   pick".
+- The **Narrator voice** you pick, and the developer overlay, stay as you set
+  them after logging out. Both went back to the default at every login.
 
 ## 0.1.8
 
