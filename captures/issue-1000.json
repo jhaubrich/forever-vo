@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "7088": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Thuwd",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1000",
+ "quests": {
+  "97908-progress": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Thuwd",
+   "npc": "7088",
+   "questID": 97908,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "If you have the skill, I can teach you.",
+   "time": 1791212808,
+   "title": "Camping 101: Skinning",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
