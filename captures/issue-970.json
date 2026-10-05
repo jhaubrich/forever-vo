@@ -1,0 +1,84 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1340": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Mountaineer Kadrell",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1572": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Thorgrum Borrelson",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-970",
+ "quests": {
+  "414-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Mountaineer Kadrell",
+   "npc": "1340",
+   "questID": 414,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, $C, and welcome to Thelsamar!",
+   "time": 1791194714,
+   "title": "Stout to Kadrell",
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "416-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Mountaineer Kadrell",
+   "npc": "1340",
+   "questID": 416,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Hail, $N.  How goes the rat catching?",
+   "time": 1791196163,
+   "title": "Rat Catching",
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "6387-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Thorgrum Borrelson",
+   "npc": "1572",
+   "questID": 6387,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you had your fill of Thelsamar so soon?  Are you ready to leave for another city?",
+   "time": 1791196124,
+   "title": "Honor Students",
+   "wanted": null,
+   "zone": "Loch Modan"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
