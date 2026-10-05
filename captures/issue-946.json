@@ -1,0 +1,92 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1661": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Novice Elreth",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "2119": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Dannal Stern",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "244808": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Aramis Hammerhand",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-946",
+ "quests": {
+  "3095-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Dannal Stern",
+   "npc": "2119",
+   "questID": 3095,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "Ah, so you've arrived. Good. I overheard that a few others were able to escape \"death\" and were heading into town. Perhaps that resilience will pay off in the future also.\n\nYou may thank Sylvanas for your freedom... freedom of mind and body. Though you still remain tortured by the plague and its effects, you are now free to come and go as you see fit.",
+   "time": 1791160610,
+   "title": "Simple Scroll",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "376-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Novice Elreth",
+   "npc": "1661",
+   "questID": 376,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "Do try your best to keep yourself unharmed until I get you some armor.",
+   "time": 1791161593,
+   "title": "The Damned",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "98389-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": 98389,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "Greetings, $C. Yes, I am a paladin. Not even death can stop the Light.\n\nThis my kind have in common with all Forsaken--we have overcome what the living view as their end. However, some even among our own fear us; they suspect we will smite them as some monstrosity.\n\nIn truth, our relationship with undeath is complex, but I am not here to hurt our own. Help me show the others this. Venture to Night's Web Hollow to the northwest and free the freshly raised fools trapped by the spiders there.",
+   "time": 1791160472,
+   "title": "A Light in the Darkness",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
