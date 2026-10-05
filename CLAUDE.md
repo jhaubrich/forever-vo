@@ -78,6 +78,21 @@ own recordings).
 - Voice pack format is documented at the top of `ForeverVO/Core/Packs.lua`.
   Quests are keyed by ID and event; gossip by speaker key (creature ID,
   negative for game objects) plus a text hash, with a Jaccard fuzzy fallback.
+- **Books** (since 2026-10-05): readable text (books in the bags, plaques and
+  lecterns in the world, all `ItemTextFrame`) is a third kind. A page is keyed
+  by `Util.TextKey` of its text with no speaker (`ItemTextGetItem` gives a name,
+  not an ID, and the `npc` unit is stale), found by `Packs:FindBook` (exact
+  hash, else Jaccard over the same title's pages), captured in `db.books`
+  (capture version 7) and exported as `k = "book"`; the narrator reads every
+  page in every narrator voice. Nothing plays on opening: a Play button under
+  the book (`UI/Book.lua`, the owner's call) reads the page on screen and every
+  voiced page after it. The client hands an addon only the page on screen, so
+  each page record carries `p` (its number) and `x` (the next voiced page's
+  key, `generate.link_pages`); a page turn or closing the book never stops a
+  reading, after Play a page turned to beyond the chain queues too, Stop clears
+  it, and Play again starts a fresh one. Pages are captured only as viewed: the
+  addon does not turn pages itself, and the client's `pagetextcache.wdb` is out
+  for the same reason as the quest cache (#317).
 - `luac -p` every changed Lua file (`./tools/run.sh luac -p <file>`). There is
   no in-game test harness; the owner tests by `/reload`.
 
@@ -165,8 +180,10 @@ artifact, never hand-edited):
 1. `ingest.py` merges `WTF/Account/*/SavedVariables/ForeverVO.lua` and
    `captures/*.json` into `tools/data/capture.json`.
 2. `classicdb.py` exports the VMaNGOS snapshot to `tools/data/bulk/classic.json`
-   (gitignored, regenerable), including every creature's display. Capture beats
-   Classic.
+   (gitignored, regenerable), including every creature's display and every
+   book page (`books`, version 4: `page_text` chains from items, type-9 text
+   objects and type-10 objects, 1,124 pages keyed by text, with each page's
+   `next`). Capture beats Classic.
 3. `generate.py` picks a voice per speaker (below), synthesises with Chatterbox,
    writes mp3s under `ForeverVO_Data/Sounds/`, rebuilds the tables every 25
    files, and records per file in `sound_index.json` the voice (`v`) and a
@@ -254,6 +271,12 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
   "release" files for 1.60.1. **The website caps a file at 1 GB**, and the API
   refuses far less, which is why Base is split. Building a Base pack records
   the baseline, so upload what you build.
+- **Base Books** "Data: Base Books" (`ForeverVO_Data_Base_Books`, `base_books`,
+  priority 100, ~230 MB with one alternate narrator): every book page, kept out
+  of Base for the 1 GB cap. Its project ID goes under
+  `[release.curseforge_projects]` once created. Until its baseline is recorded,
+  only pages read in game go in the delta, or the whole Classic set would flood
+  it.
 
 `release_pack.py` builds from the working folder `ForeverVO_Data` (never
 shipped), re-encodes to mono 32 kbps mp3 at 22.05 kHz **with no Xing/Info
@@ -276,7 +299,8 @@ is copied (`exportedAt`). Players file the "Contribute captured lines" issue
 form (label `capture`); the older inbox, comments on pinned issue #1 (label
 `capture-inbox`), still works. `.github/workflows/ingest-captures.yml` decodes
 with `tools/exportfile.py` (stdlib only) into `captures/`, commits, reacts and
-closes the issue. It runs on opened, edited and on the `capture` label being
+closes the issue. `exportfile.py` routes a kind it does not know to gossip, so a
+new export kind (`book`) must reach main before an addon that writes it ships. It runs on opened, edited and on the `capture` label being
 added, with no concurrency group (GitHub cancels queued runs in a group, and a
 multi-part export opens its issues seconds apart); the push retries.
 
@@ -386,6 +410,14 @@ voice after rebuilding its clip by hand: `generate.py --force --voice <voice>`.
   `Sex/` folders by design; they have their own scans.
 - The wago.tools export is complete, but the beta's `BroadcastText` really is
   12 rows; gossip is server-pushed.
+- 38 of Classic's book pages are SimpleHTML (`<HTML><BODY><H1>...`):
+  `textclean.book_text` reads them as prose (a heading or blank line ends a
+  sentence, tags and pictures go) and a picture-only page gets no file; the
+  addon does not capture one either.
+- `Audio.Exists` tests a file by playing it, and checks made in the frame the
+  first line starts (which also mutes the Dialog channel) failed in game, so
+  only a book's first page was queued; `Queue:AddMany` checks every item
+  before starting the first.
 - Chatterbox occasionally repeats a word or drifts voice mid-take (#805, #883);
   a fresh take (`generate.py --force --quest <id>`) fixes it.
 

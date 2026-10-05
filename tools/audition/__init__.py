@@ -83,6 +83,7 @@ from tools.config import (
     load_config,
 )
 from tools.generate import (
+    SUBFOLDERS,
     Item,
     Synth,
     TakeStopped,
@@ -994,7 +995,7 @@ def _known_voices(config: Config, voices_dir: Path = VOICES_DIR) -> list[str]:
 @dataclass(frozen=True)
 class LineRow:
     base: str  # file base name, e.g. 415-accept, m-170-accept, 5688-19cbe7de
-    subfolder: str  # Quests | Gossip
+    subfolder: str  # Quests | Gossip | Books
     title: str  # quest title or gossip speaker
     speaker: str
     voice: str
@@ -1963,7 +1964,7 @@ def create_app(
     def pack_audio(pack: str, subfolder: str, name: str) -> FileResponse:
         if pack not in packs_by_key:
             raise HTTPException(404, pack)
-        if subfolder not in ("Quests", "Gossip"):
+        if subfolder not in SUBFOLDERS.values():
             raise HTTPException(404, subfolder)
         return FileResponse(
             _under(packs_by_key[pack].sounds, f"{subfolder}/{_safe(name)}"),

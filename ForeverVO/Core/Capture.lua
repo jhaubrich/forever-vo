@@ -2,7 +2,7 @@ local _, ns = ...
 local Util = ns.Util
 
 --[[
-Records every quest and gossip line the player sees into the account-wide saved
+Records every quest and gossip line and every page of readable text the player sees into the account-wide saved
 variable ForeverVOCaptureDB, along with who said it and whether a pack had
 audio for it. tools/ingest.py merges these files; tools/generate.py voices what
 is missing. Nothing here affects playback.
@@ -18,7 +18,7 @@ ns.Capture = Capture
 
 local idleModelFrames = {} -- model frames whose one load has been read
 local modelAsked = {}       -- speaker keys whose model this session has asked for
-local session = {}   -- "quests:<key>" / "gossip:<key>" recorded since login
+local session = {}   -- "quests:<key>" / "gossip:<key>" / "books:<key>" recorded since login
 
 local function GetDB()
     local db = ForeverVOCaptureDB
@@ -35,9 +35,12 @@ local function GetDB()
     --    that read it; `recast` marks one that differs from the model its
     --    voice was cast from (Packs:SpeakerModel); `sexes` lists every sex
     --    the creature was met as
-    db.version = 6
+    -- 7: pages of readable text (books, letters, plaques) in `books`, keyed by
+    --    Util.TextKey of the page, with the title and page number
+    db.version = 7
     db.quests = db.quests or {}
     db.gossip = db.gossip or {}
+    db.books = db.books or {}
     db.npcs = db.npcs or {}
     return db
 end
@@ -138,13 +141,14 @@ local function DescribeSpeaker(db, speaker)
     return key
 end
 
---- @param line table { kind, event, questID?, title?, text, speaker, found, pack? }
+--- @param line table { kind, event, questID?, title?, page?, material?, text, speaker?, found, pack? }
 function Capture:Record(line)
     if not ns.db.capture or not line.text or line.text == "" then
         return
     end
     local db = GetDB()
-    local npcKey = DescribeSpeaker(db, line.speaker)
+    local speaker = line.speaker or {}
+    local npcKey = DescribeSpeaker(db, speaker)
     local mapID = C_Map.GetBestMapForUnit("player")
     -- The client resolves "$g lad:lass;" before we see the text, and unlike
     -- the name, class and race the other branch cannot be put back from one
@@ -163,8 +167,10 @@ function Capture:Record(line)
         title = line.title,
         text = Util.Tokenize(line.text),
         npc = npcKey,
-        name = line.speaker.name,
-        isObject = line.speaker.isObject or nil,
+        page = line.page,
+        material = line.material,
+        name = speaker.name,
+        isObject = speaker.isObject or nil,
         found = line.found or nil,
         wanted = wanted,
         differs = differs,
@@ -190,8 +196,12 @@ function Capture:Record(line)
         local key = format("%d-%s", line.questID, line.event)
         db.quests[key] = entry
         session["quests:" .. key] = true
+    elseif line.kind == "book" then
+        local key = Util.TextKey(entry.text)
+        db.books[key] = entry
+        session["books:" .. key] = true
     else
-        local key = format("%s|%s", npcKey or line.speaker.name or "?", Util.TextKey(entry.text))
+        local key = format("%s|%s", npcKey or speaker.name or "?", Util.TextKey(entry.text))
         db.gossip[key] = entry
         session["gossip:" .. key] = true
     end
@@ -239,6 +249,12 @@ function Capture:Refresh()
             end
         end
     end
+    for _, entry in pairs(db.books) do
+        if not entry.found and not Capture.Exported(entry) and entry.text
+            and ns.Packs:FindBook(entry.title, entry.text) then
+            entry.found = true
+        end
+    end
 end
 
 --- True when the entry was heard before the last export, which packed it.
@@ -252,7 +268,8 @@ end
 --- Counts of lines in the capture and of those an export would carry (not
 --- voiced, or wanted, and not packed by an earlier export), over the whole DB
 --- and then over what this session recorded:
---- quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing.
+--- quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing,
+--- books, booksMissing (pages; last so older callers keep their positions).
 function Capture:Summary()
     local db = GetDB()
     local quests, questsMissing, gossip, gossipMissing = 0, 0, 0, 0
@@ -275,11 +292,21 @@ function Capture:Summary()
             if contributes then sessionMissing = sessionMissing + 1 end
         end
     end
-    return quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing
+    local books, booksMissing = 0, 0
+    for key, entry in pairs(db.books) do
+        books = books + 1
+        local contributes = Capture.Contributes(entry) and not Capture.Exported(entry)
+        if contributes then booksMissing = booksMissing + 1 end
+        if session["books:" .. key] then
+            sessionSeen = sessionSeen + 1
+            if contributes then sessionMissing = sessionMissing + 1 end
+        end
+    end
+    return quests, questsMissing, gossip, gossipMissing, sessionSeen, sessionMissing, books, booksMissing
 end
 
 --- What an export would carry, counted the way a player thinks of it: distinct
---- quests (an offer and its turn-in are one quest) and gossip lines.
+--- quests (an offer and its turn-in are one quest), gossip lines and pages.
 function Capture:Pending()
     local db = GetDB()
     local quests, questCount, gossip = {}, 0, 0
@@ -295,7 +322,13 @@ function Capture:Pending()
             gossip = gossip + 1
         end
     end
-    return questCount, gossip
+    local books = 0
+    for _, entry in pairs(db.books) do
+        if Capture.Contributes(entry) and not Capture.Exported(entry) then
+            books = books + 1
+        end
+    end
+    return questCount, gossip, books
 end
 
 -- Before Welcome's handler counts what there is to send: Capture.lua loads first.

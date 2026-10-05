@@ -2,7 +2,7 @@ local _, ns = ...
 local Util, Packs, Queue = ns.Util, ns.Packs, ns.Queue
 
 --[[
-Turns the client's quest and gossip events into queue items. Every event also
+Turns the client's quest, gossip and readable-text events into queue items. Every event also
 goes to Capture so that lines without audio can be generated later.
 ]]
 
@@ -282,6 +282,45 @@ function Events.GOSSIP_CLOSED()
     selectedGossipOption = nil
     dialogGUID = nil
     C_Timer.After(0, ClearBarkIfIdle)
+end
+
+-- ---------------------------------------------------------------------------
+-- Readable text (books, letters, plaques)
+-- ---------------------------------------------------------------------------
+
+-- A book in the bags and a plaque or lectern in the world both open
+-- ItemTextFrame, and ITEM_TEXT_READY fires for the first page and for every
+-- page turned to. The page is the line: no speaker is attributed (the "npc"
+-- unit may still be whoever the player last spoke to, see CurrentSpeaker), so
+-- the narrator reads it under the book portrait. Nothing plays on its own: the
+-- page is captured here, and the Play button on the book (UI/Book.lua) reads
+-- it, on through page turns and the book closing.
+function Events.ITEM_TEXT_READY()
+    local text = Util.Plain(ItemTextGetText())
+    if not text or text == "" then
+        return
+    end
+    -- A SimpleHTML page that is only a picture (a map, a diagram) has nothing
+    -- to read; tools/textclean.book_text gives it no file either
+    if text:lower():find("<html") and not text:gsub("<[^<>]*>", ""):find("%w") then
+        return
+    end
+    local title = Util.Plain(ItemTextGetItem())
+    local page = ItemTextGetPage()
+    local path, duration, pack, _, voice, entry = Packs:FindBook(title, text)
+
+    ns.Capture:Record({
+        kind = "book", event = "page", title = title, page = page, text = text,
+        material = Util.Plain(ItemTextGetMaterial()), found = path ~= nil, pack = pack,
+    })
+    if not path then
+        NotifyUnvoiced(format("\"%s\"", title or "this book"), "book:" .. (title or "?"))
+    end
+    ns.UI.Book:ShowPage({
+        kind = "book", event = "page", text = text, name = title,
+        title = (page and (page > 1 or ItemTextHasNextPage())) and format("Page %d", page) or nil,
+        isObject = true, path = path, duration = duration, pack = pack, voice = voice, entry = entry,
+    })
 end
 
 -- ---------------------------------------------------------------------------

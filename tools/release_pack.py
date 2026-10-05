@@ -1,6 +1,6 @@
 """Builds and (optionally) uploads voice pack releases.
 
-Three packs are released from the one working folder (ForeverVO_Data holds
+Four packs are released from the one working folder (ForeverVO_Data holds
 everything on the maintainer's machine):
 
   base          ForeverVO_Data_Base          every line: quests to level 40
@@ -21,6 +21,13 @@ everything on the maintainer's machine):
                                              Until both Base packs have been
                                              built with a baseline, the old
                                              rule: lines read in game.
+  base_books    ForeverVO_Data_Base_Books    every page of every book, letter
+                                             and plaque, in every narrator
+                                             voice. Its own project, since the
+                                             Base packs are near the 1 GB cap.
+                                             Until it has been built with a
+                                             baseline, the delta carries only
+                                             the pages read in game.
 
     ./tools/run.sh tools/release_pack.py delta               # build zip only
     ./tools/run.sh tools/release_pack.py delta --upload      # and upload to CurseForge
@@ -83,6 +90,7 @@ STATE_FILE = DATA_DIR / "release_state.json"
 # written when a Base pack is built; the delta is whatever differs from it.
 BASELINE_FILE = DATA_DIR / "release_baseline.json"
 BASE_PACKS = ("base", "base_endgame")
+BOOKS_PACK = "base_books"  # its own baseline: book pages are judged against it alone
 CF_API = "https://wow.curseforge.com/api"
 GAME_VERSION_NAME = "1.60.1"
 
@@ -175,19 +183,39 @@ def delta_line(
     return False
 
 
-def load_baseline() -> dict[str, str] | None:
-    """Every file both Base packs last shipped, with its stamp; None until both
-    have been built since baselines were recorded (one alone would put the other's
-    whole set in the delta)."""
+def load_baseline(packs: tuple[str, ...] = BASE_PACKS) -> dict[str, str] | None:
+    """Every file the given packs last shipped, with its stamp; None until all of
+    them have been built since baselines were recorded (one alone would put the
+    other's whole set in the delta). Quests and gossip are judged against both
+    Base packs, book pages against Base Books (load_baseline((BOOKS_PACK,)))."""
     if not BASELINE_FILE.exists():
         return None
-    packs = json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
-    if not all(pack in packs for pack in BASE_PACKS):
+    recorded = json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
+    if not all(pack in recorded for pack in packs):
         return None
     merged: dict[str, str] = {}
-    for pack in BASE_PACKS:
-        merged.update(packs[pack])
+    for pack in packs:
+        merged.update(recorded[pack])
     return merged
+
+
+def delta_member(
+    item: Item,
+    config: Config,
+    baseline: dict[str, str] | None,
+    book_baseline: dict[str, str] | None,
+    index: dict,
+    sounds_dir: Path = SOUNDS_DIR,
+) -> bool:
+    """Whether a line belongs in the delta: `delta_line` against the baseline of
+    the pack that carries its kind, or while that pack has none, the old rule
+    (lines read in game). Book pages have their own pack, so until Base Books is
+    built the whole Classic set of pages stays out of the delta, which would
+    otherwise grow past delta_cap_mb at once."""
+    chosen = book_baseline if item.kind == "books" else baseline
+    if chosen is None:
+        return is_forever_line(item.entry)
+    return delta_line(item, config, chosen, index, sounds_dir)
 
 
 def record_baseline(pack: str, stats: dict, index_path: Path = SOUND_INDEX) -> None:
@@ -220,6 +248,13 @@ def base_part(entry: dict, split_level: int) -> int:
     return 1
 
 
+def is_book(item: Item) -> bool:
+    """Book pages ship in Base Books, never in Base or Base Endgame: those are
+    near CurseForge's 1 GB cap, and the pages in every narrator voice are about
+    230 MB."""
+    return item.kind == "books"
+
+
 @dataclass(frozen=True)
 class PackSpec:
     folder: str  # the addon folder the pack installs as; its global is <folder>Pack
@@ -230,7 +265,7 @@ class PackSpec:
     select: Callable[[Item], bool]  # line -> belongs to this pack
 
 
-PACK_NAMES = ("base", "base_endgame", "delta")
+PACK_NAMES = ("base", "base_endgame", "base_books", "delta")
 
 
 def pack_specs(release: Release) -> dict[str, PackSpec]:
@@ -242,7 +277,7 @@ def pack_specs(release: Release) -> dict[str, PackSpec]:
             pack_name="Classic",
             priority=100,
             notes=f"Quests to level {split} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
-            select=lambda item: base_part(item.entry, split) == 1,
+            select=lambda item: not is_book(item) and base_part(item.entry, split) == 1,
         ),
         "base_endgame": PackSpec(
             folder="ForeverVO_Data_Base_Endgame",
@@ -250,7 +285,15 @@ def pack_specs(release: Release) -> dict[str, PackSpec]:
             pack_name="Classic Endgame",
             priority=100,
             notes=f"Quests from level {split + 1}, voiced. Install with Forever Voiceover and Base.",
-            select=lambda item: base_part(item.entry, split) == 2,
+            select=lambda item: not is_book(item) and base_part(item.entry, split) == 2,
+        ),
+        "base_books": PackSpec(
+            folder="ForeverVO_Data_Base_Books",
+            title="Forever Voiceover Data: Base Books",
+            pack_name="Classic Books",
+            priority=100,
+            notes="Books, letters and plaques, read by the narrator. Install with Forever Voiceover.",
+            select=is_book,
         ),
         "delta": PackSpec(
             folder="ForeverVO_Data_Forever",
@@ -317,7 +360,8 @@ def write_manifest(stage: Path, spec: PackSpec, version: str) -> None:
     (stage / f"{folder}.toc").write_text(
         f"## Interface: 16001\n## Title: {spec.title}\n## Notes: {spec.notes}\n## Version: {version}\n"
         f"## Author: Quinn Dougherty\n## Dependencies: ForeverVO\n## X-ForeverVO-Pack: 1\n## X-Category: Quests & Leveling\n\n"
-        f"Data\\Pack.lua\nData\\Quests.lua\nData\\Gossip.lua\nData\\NPCs.lua\nData\\Narrator.lua\nData\\Register.lua\n",
+        f"Data\\Pack.lua\nData\\Quests.lua\nData\\Gossip.lua\nData\\Books.lua\nData\\NPCs.lua\nData\\Narrator.lua\n"
+        f"Data\\Register.lua\n",
         encoding="utf-8",
     )
     data = stage / "Data"
@@ -325,7 +369,7 @@ def write_manifest(stage: Path, spec: PackSpec, version: str) -> None:
     (data / "Pack.lua").write_text(
         f'-- Generated by tools/release_pack.py\n{pack_global} = {{\n    name = "{spec.pack_name}",\n'
         f'    version = "{version}",\n    priority = {spec.priority},\n    folder = "{folder}",\n'
-        f"    quests = {{}},\n    gossip = {{}},\n    npcs = {{}},\n    narrator = {{}},\n    narratorVoices = {{}},\n}}\n",
+        f"    quests = {{}},\n    gossip = {{}},\n    books = {{}},\n    npcs = {{}},\n    narrator = {{}},\n    narratorVoices = {{}},\n}}\n",
         encoding="utf-8",
     )
     (data / "Register.lua").write_text(
@@ -340,10 +384,18 @@ def stage_tables(pack: str, version: str, config: Config) -> tuple[Path, dict]:
     sources = load_sources()
     catalog = VoiceCatalog(config)
     items = load_items(sources, include_progress=True, catalog=catalog)
-    baseline = load_baseline() if pack == "delta" else None
-    if baseline is not None:
-        index = json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
-        items = [item for item in items if delta_line(item, config, baseline, index)]
+    if pack == "delta":
+        baseline, book_baseline = load_baseline(), load_baseline((BOOKS_PACK,))
+        index = (
+            json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
+            if baseline is not None or book_baseline is not None
+            else {}
+        )
+        items = [
+            item
+            for item in items
+            if delta_member(item, config, baseline, book_baseline, index)
+        ]
     else:
         items = [item for item in items if spec.select(item)]
     stage = RELEASE_DIR / spec.folder
@@ -402,6 +454,7 @@ def package(
     sex_files = len(stats.get("sexFiles", ()))
     print(
         f"{zip_path.name}: {stats['quests']} quests, {stats['gossip']} gossip lines, "
+        f"{stats.get('books', 0)} book pages, "
         f"{len(stats['files']) + narrator_files + sex_files} files ({narrator_files} alternate "
         f"narrator, {sex_files} in a speaker's other sex), {size_mb:.0f} MB"
     )
@@ -455,7 +508,8 @@ def upload(
             f"[release.curseforge_projects] in forever-vo.toml"
         )
     changelog = (
-        f"{version}: {stats['quests']} quests, {stats['gossip']} gossip lines, {len(stats['files'])} sound files.\n\n"
+        f"{version}: {stats['quests']} quests, {stats['gossip']} gossip lines, "
+        f"{stats.get('books', 0)} book pages, {len(stats['files'])} sound files.\n\n"
         f"Generated from lines captured by players; see https://github.com/quinn-dougherty/forever-vo"
     )
     metadata = {
@@ -629,7 +683,7 @@ def main(argv: list[str] | None = None) -> int:
         "content": content,
     }
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
-    if args.pack in BASE_PACKS:
+    if args.pack in BASE_PACKS or args.pack == BOOKS_PACK:
         record_baseline(args.pack, stats)
     return 0
 

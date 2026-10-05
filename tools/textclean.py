@@ -8,6 +8,7 @@ models that prefer short inputs. Respellings for names the model gets wrong are
 
 from __future__ import annotations
 
+import html
 import re
 
 from tools.config import Pronunciations, load_config
@@ -48,6 +49,34 @@ _STAGE_DIRECTION = re.compile(r"<[^<>]*>\s?")
 _STAGE_DIRECTION_TEXT = re.compile(r"<([^<>]*)>")
 _STAGE_SPLIT = re.compile(r"(<[^<>]*>)")
 _WHITESPACE = re.compile(r"\s+")
+
+
+_HTML_IMAGE = re.compile(r"<\s*img\b[^<>]*>", re.IGNORECASE)
+# A heading's end, or two line breaks or more with nothing but tags between:
+# where the page's layout starts a new sentence or a new item of a list. One
+# break, and a paragraph, only wrap a line ("The Eastern<BR/>Pylon accepts").
+_HTML_BREAK = re.compile(
+    r"<\s*/\s*h\d\s*>|(?:<\s*br\s*/?\s*>(?:\s|<(?!\s*br)[^<>]*>)*){2,}",
+    re.IGNORECASE,
+)
+_HTML_TAG = re.compile(r"<[^<>]*>")
+_HTML_PIECE_END = re.compile(r"[.!?:;,\"')]\s*$")
+
+
+def book_text(text: str) -> str:
+    """A book page as prose. Some pages are SimpleHTML (<HTML><BODY><H1>...),
+    which the client renders and the narrator must not read out: a heading or a
+    blank line ends a sentence, pictures and every other tag go, and entities
+    are decoded. A page that is only a picture comes out empty and gets no
+    file. Plain pages are returned as they are."""
+    if "<html" not in text.lower():
+        return text
+    pieces = []
+    for piece in _HTML_BREAK.split(_HTML_IMAGE.sub(" ", text)):
+        piece = " ".join(html.unescape(_HTML_TAG.sub(" ", piece)).split())
+        if piece:
+            pieces.append(piece if _HTML_PIECE_END.search(piece) else piece + ".")
+    return " ".join(pieces)
 
 
 def has_gender_branch(text: str) -> bool:

@@ -64,6 +64,7 @@ from tools.config import (
 )
 from tools.luatable import lua_string
 from tools.textclean import (
+    book_text,
     chunk,
     clean,
     has_gender_branch,
@@ -75,6 +76,11 @@ from tools.textkey import text_key
 from tools.wowdata import base_voice, display_model_file, is_archetype, voice_for_npc
 
 QUEST_EVENTS = {"accept": "a", "progress": "p", "complete": "c"}
+# A page of a book, letter or plaque (ItemTextFrame) is <hash>-page under Books/:
+# keyed by its text alone, since the client names the book but gives no ID, and
+# one page can be read from several items and objects.
+BOOK_EVENT = "page"
+SUBFOLDERS = {"quests": "Quests", "gossip": "Gossip", "books": "Books"}
 
 
 # ----------------------------------------------------------------------------
@@ -243,22 +249,32 @@ class Item:
     def __init__(
         self, kind: str, key: str, entry: dict, npc: dict | None, catalog: VoiceCatalog
     ):
-        self.kind = kind  # "quests" | "gossip"
+        self.kind = kind  # "quests" | "gossip" | "books"
         self.key = key
         self.entry = entry
         self.npc = npc
         self.catalog = catalog
         self.config = catalog.config
-        self.voice = voice_for_npc(
-            npc, entry.get("zone"), voices=self.config.voices, speaker=entry.get("npc")
+        # A book has no speaker: the narrator reads every page
+        self.voice = (
+            self.config.voices.narrator
+            if kind == "books"
+            else voice_for_npc(
+                npc,
+                entry.get("zone"),
+                voices=self.config.voices,
+                speaker=entry.get("npc"),
+            )
         )
         self.raw_text = entry.get("text") or ""
-        self.event = entry.get("event") or "gossip"
-        self.speaker_key = entry.get("npc")  # "288" or "-123" (game object)
+        self.event = entry.get("event") or (BOOK_EVENT if kind == "books" else "gossip")
+        self.speaker_key = (
+            None if kind == "books" else entry.get("npc")
+        )  # "288" or "-123" (game object)
 
     @property
     def subfolder(self) -> str:
-        return "Quests" if self.kind == "quests" else "Gossip"
+        return SUBFOLDERS[self.kind]
 
     @property
     def hash(self) -> str:
@@ -273,6 +289,8 @@ class Item:
     def base_name(self) -> str:
         if self.kind == "quests":
             return f"{int(self.entry['questID'])}-{self.event}"
+        if self.kind == "books":
+            return f"{self.hash}-{BOOK_EVENT}"
         speaker = self.speaker_key or "unknown"
         speaker = speaker.replace("-", "obj")
         return f"{speaker}-{self.hash}"
@@ -288,6 +306,8 @@ class Item:
         return has_gender_branch(self.clean(self.raw_text))
 
     def clean(self, text: str) -> str:
+        if self.kind == "books":
+            text = book_text(text)
         return clean(
             text,
             keep_stage_directions=self.is_narrator,
@@ -471,7 +491,7 @@ SOURCE_ORDER = ["classic", "capture"]  # later sources override earlier ones
 
 def load_sources() -> dict:
     """Merges tools/data/bulk/*.json and capture.json field by field, capture winning."""
-    merged = {"quests": {}, "gossip": {}, "npcs": {}}
+    merged = {"quests": {}, "gossip": {}, "books": {}, "npcs": {}}
     displays: dict[str, int] = {}
     files = {p.stem: p for p in (DATA_DIR / "bulk").glob("*.json")}
     if CAPTURE_JSON.exists():
@@ -481,7 +501,7 @@ def load_sources() -> dict:
         if not path:
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
-        for kind in ("quests", "gossip", "npcs"):
+        for kind in ("quests", "gossip", "books", "npcs"):
             for key, entry in data.get(kind, {}).items():
                 target = merged[kind].setdefault(str(key), {})
                 for field, value in entry.items():
@@ -494,7 +514,8 @@ def load_sources() -> dict:
                     target[field] = value
         displays.update(data.get("displays", {}))
         print(
-            f"source {name}: {len(data.get('quests', {}))} quest, {len(data.get('gossip', {}))} gossip, {len(data.get('npcs', {}))} npc entries"
+            f"source {name}: {len(data.get('quests', {}))} quest, {len(data.get('gossip', {}))} gossip, "
+            f"{len(data.get('books', {}))} book page, {len(data.get('npcs', {}))} npc entries"
         )
     filled = fill_displays(merged["npcs"], displays, display_model_file)
     if filled:
@@ -535,13 +556,16 @@ def load_items(
     capture: dict, include_progress: bool, catalog: VoiceCatalog
 ) -> list[Item]:
     items = []
-    for kind in ("quests", "gossip"):
+    for kind in ("quests", "gossip", "books"):
         for key, entry in capture.get(kind, {}).items():
             if (
                 kind == "quests"
                 and entry.get("event") == "progress"
                 and not include_progress
             ):
+                continue
+            if kind == "books":
+                items.append(Item(kind, key, entry, None, catalog))
                 continue
             npc = capture.get("npcs", {}).get(str(entry.get("npc") or ""))
             if npc is None and entry.get("isObject"):
@@ -795,8 +819,12 @@ def write_table(
 
 
 def sound_folder(base: str) -> str:
-    """Quests are <questID>-<event>, gossip is <speaker>-<hash>."""
-    return "Quests" if base.rsplit("-", 1)[-1] in QUEST_EVENTS else "Gossip"
+    """Quests are <questID>-<event>, gossip is <speaker>-<hash>, a book's page
+    <hash>-page."""
+    last = base.rsplit("-", 1)[-1]
+    if last in QUEST_EVENTS:
+        return "Quests"
+    return "Books" if last == BOOK_EVENT else "Gossip"
 
 
 def encode_filters(
@@ -1036,6 +1064,39 @@ def model_cast(item: Item) -> int | None:
     return int(model)
 
 
+def link_pages(books: dict[str, dict], sources: dict[str, dict]) -> None:
+    """Sets `x` on each voiced page to the key of the voiced page after it, so the
+    addon's Play reads a book on past the page on screen: the client hands an
+    addon only the page in front of the player.
+
+    The page after is the one with the same title and the next page number. A
+    page read in game wins over Classic's for that place (Forever reworded it,
+    so Classic's still sits beside it under its old key), then Classic's own
+    link, then a place only one page holds. Two books sharing a title and a
+    page number with nothing to tell them apart get no link; the player turns
+    the page and Play goes on from there."""
+    places: dict[tuple[str, int], list[str]] = {}
+    for key, record in books.items():
+        if record.get("b") and record.get("p"):
+            places.setdefault((record["b"], int(record["p"])), []).append(key)
+    for key, record in books.items():
+        if not record.get("b") or not record.get("p"):
+            continue
+        candidates = places.get((record["b"], int(record["p"]) + 1), [])
+        captured = [
+            c
+            for c in candidates
+            if sources.get(c, {}).get("player") or sources.get(c, {}).get("origin")
+        ]
+        stated = sources.get(key, {}).get("next")
+        if len(captured) == 1:
+            record["x"] = captured[0]
+        elif stated in books:
+            record["x"] = stated
+        elif len(candidates) == 1:
+            record["x"] = candidates[0]
+
+
 def rebuild_tables(
     items: list[Item],
     sound_index: dict[str, Any],
@@ -1078,7 +1139,7 @@ def rebuild_tables(
     for voice in alternate_voices:
         names = {
             p.stem
-            for subfolder in ("Quests", "Gossip")
+            for subfolder in SUBFOLDERS.values()
             for p in narrator_dir(sounds_dir, voice, subfolder).glob("*.mp3")
         }
         if not names:
@@ -1100,7 +1161,7 @@ def rebuild_tables(
     for letter in ("m", "f"):
         names = {
             p.stem
-            for subfolder in ("Quests", "Gossip")
+            for subfolder in SUBFOLDERS.values()
             for p in (sounds_dir / subfolder / "Sex" / letter).glob("*.mp3")
         }
         sex_present[letter] = names
@@ -1138,6 +1199,8 @@ def rebuild_tables(
     npcs: dict[int, str] = {}
     models: dict[int, int] = {}  # speaker -> the model file its voice was cast from
     narrator: dict[int, dict[str, dict]] = {}
+    books: dict[str, dict] = {}
+    book_sources: dict[str, dict] = {}  # page key -> its merged source entry
     used: set[str] = set()
     narrator_used: set[str] = set()
     sex_used: set[str] = set()
@@ -1291,6 +1354,20 @@ def rebuild_tables(
                 narrator.setdefault(quest_id, {}).setdefault(voice, {})[
                     QUEST_EVENTS[item.event]
                 ] = seconds
+        elif item.kind == "books":
+            if duration is None:
+                continue
+            # A page is a whole line in the narrator's voice: no parts, no other
+            # sex. Keyed by the text key the addon computes from the live page.
+            books[item.hash] = {
+                "d": duration,
+                "t": item.raw_text.replace("\r", " ").replace("\n", " "),
+                "b": item.entry.get("title") or None,
+                "p": item.entry.get("page") or None,
+                "g": gendered or None,
+                "n": alternates or None,  # voice -> duration, indices below
+            }
+            book_sources[item.hash] = item.entry
         else:
             if speaker is None:
                 continue
@@ -1320,6 +1397,9 @@ def rebuild_tables(
         for entry in entries
         for voice in list(entry["n"] or {}) + list(entry["nP"] or {})
     )
+    spoken_voices.update(
+        voice for entry in books.values() for voice in entry["n"] or {}
+    )
     voices = [voice for voice in alternate_voices if voice in spoken_voices]
 
     for rec in quests.values():
@@ -1344,6 +1424,15 @@ def rebuild_tables(
                 }
             gossip_lines.append(f"\t\t{lua_record(entry)},")
         gossip_lines.append("\t},")
+    link_pages(books, book_sources)
+    book_lines = []
+    for key, entry in sorted(books.items()):
+        if entry["n"]:
+            entry["n"] = {
+                voices.index(voice) + 1: seconds
+                for voice, seconds in entry["n"].items()
+            }
+        book_lines.append(f"\t[{lua_string(key)}] = {lua_record(entry)},")
     npc_lines = [
         f"\t[{key}] = {lua_string(name)}," for key, name in sorted(npcs.items())
     ]
@@ -1361,6 +1450,7 @@ def rebuild_tables(
 
     write_table("Quests.lua", "quests", quest_lines, data_dir, pack_global)
     write_table("Gossip.lua", "gossip", gossip_lines, data_dir, pack_global)
+    write_table("Books.lua", "books", book_lines, data_dir, pack_global)
     model_list = "".join(
         f"\t[{key}] = {model},\n" for key, model in sorted(models.items())
     )
@@ -1386,9 +1476,11 @@ def rebuild_tables(
     narrated_gossip = sum(
         1 for entries in gossip.values() for entry in entries if entry["n"]
     )
+    narrated_books = sum(1 for entry in books.values() if entry["n"])
     narrator_note = (
         (
-            f", {len(narrator)} quests and {narrated_gossip} gossip lines in {len(voices)} alternate "
+            f", {len(narrator)} quests, {narrated_gossip} gossip lines and {narrated_books} book "
+            f"pages in {len(voices)} alternate "
             f"narrator {'voice' if len(voices) == 1 else 'voices'} ({len(narrator_used)} files)"
         )
         if voices
@@ -1396,11 +1488,13 @@ def rebuild_tables(
     )
     print(
         f"pack tables ({data_dir.parent.name}): {len(quests)} quests, {gossip_count} gossip lines, "
+        f"{len(books)} book pages, "
         f"{len(npcs)} speakers, {len(used)} sound files{narrator_note}"
     )
     return {
         "quests": len(quests),
         "gossip": gossip_count,
+        "books": len(books),
         "npcs": len(npcs),
         "files": used,
         "narratorFiles": narrator_used,
@@ -1431,9 +1525,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--progress", action="store_true", help="include quest progress texts"
     )
-    parser.add_argument(
-        "--only", choices=["quests", "gossip"], help="restrict to one kind"
-    )
+    parser.add_argument("--only", choices=list(SUBFOLDERS), help="restrict to one kind")
     parser.add_argument(
         "--quest", type=int, action="append", help="restrict to quest ID(s)"
     )
@@ -1719,7 +1811,7 @@ def main(argv: list[str] | None = None) -> int:
         key=lambda t: (
             t.alternate,
             t.sex is not None,
-            t.item.kind != "quests",
+            list(SUBFOLDERS).index(t.item.kind),
             t.item.entry.get("level") or 0,
             t.base,
             t.voice,
