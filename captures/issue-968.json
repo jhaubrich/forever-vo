@@ -1,0 +1,119 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "5769": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Arch Druid Hamuul Runetotem",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5911": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Grunt Logmar",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6394": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Ruga Ragetotem",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "8418": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121961,
+   "name": "Falla Sagewind",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-968",
+ "quests": {
+  "1824-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Ruga Ragetotem",
+   "npc": "6394",
+   "questID": 1824,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have the antennae?  If so then give them to me quickly, for twitching antennae do not twitch forever...",
+   "time": 1791195214,
+   "title": "Trial at the Field of Giants",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "3369-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Arch Druid Hamuul Runetotem",
+   "npc": "5769",
+   "questID": 3369,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "May I help you with something?",
+   "time": 1791194066,
+   "title": "In Nightmares",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "6981-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Falla Sagewind",
+   "npc": "8418",
+   "questID": 6981,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Hello, $r. What can I do for you?",
+   "time": 1791192043,
+   "title": "The Glowing Shard",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "97250-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Grunt Logmar",
+   "npc": "5911",
+   "questID": 97250,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Any word from the border?",
+   "time": 1791194321,
+   "title": "Wrongly Blamed, Justly Corrected",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
