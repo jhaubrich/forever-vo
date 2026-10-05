@@ -1,0 +1,163 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "246344|942bf955": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Alodan the Hopeful",
+   "npc": "246344",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "You may not be a paladin, but you may yet find solace in the light should you seek it.",
+   "time": 1791153627,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "4046|d98be16b": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Magatha Grimtotem",
+   "npc": "4046",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "You must listen, young $c.  Listen to the whisperings in the darkness, for they offer guidance in these troubled times.",
+   "time": 1791153241,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "npcs": {
+  "2216": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Apothecary Lydon",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "246344": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Alodan the Hopeful",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3368": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Borstan",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3433": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Tatternack Steelforge",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3441": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Melor Stonehoof",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3539": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Ott",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4046": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 986648,
+   "name": "Magatha Grimtotem",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-981",
+ "quests": {
+  "1065-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Apothecary Lydon",
+   "npc": "2216",
+   "questID": 1065,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, are you here with my new test subjects?",
+   "time": 1791156601,
+   "title": "Journey to Tarren Mill",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "1131-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Melor Stonehoof",
+   "npc": "3441",
+   "questID": 1131,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you defeated the foul Steelsnap, $N?",
+   "time": 1791151876,
+   "title": "Steelsnap",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "1153-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Tatternack Steelforge",
+   "npc": "3433",
+   "questID": 1153,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "I saw the travelers again--the ones that would not sell me a sample of the ore. I spit at them for not helping the warchief.\n\nMay they die in battle like cowards and not like warriors as should be the right of all people who ally themselves with the Horde.",
+   "time": 1791151640,
+   "title": "A New Ore Sample",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
