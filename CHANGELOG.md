@@ -17,6 +17,8 @@
   pick".
 - The **Narrator voice** you pick, and the developer overlay, stay as you set
   them after logging out. Both went back to the default at every login.
+- The login window asking you to send quests shows once each time you start
+  the game, not on every `/reload` and every character you log in.
 
 ## 0.1.8
 

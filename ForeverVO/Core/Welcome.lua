@@ -3,8 +3,9 @@ local Util = ns.Util
 
 --[[
 The login prompt. The first login with the addon shows it once to explain where
-the voices come from; after that it shows at login whenever the capture holds
-lines an export would carry (Capture:Pending), until the player ticks the
+the voices come from; after that it shows at the first login of each run of the
+client whenever the capture holds lines an export would carry
+(Capture:Pending), until the player ticks the
 opt-out box, which sets crowdsourceOptOut (the same box is on the addon's
 own page under Options, to opt back in). "Send Quests to Project" opens the /fvo export window.
 
@@ -22,6 +23,12 @@ a popup an addon opened taints that path, the call is blocked, and the
 "blocked action" popup that reports it runs the same path again, freezing the
 client (issue #44). The manager only watches StaticPopups, UI panels and menus,
 so a plain frame shown directly never reaches it.
+
+"Each run of the client": PLAYER_LOGIN fires on every /reload and every
+character login, and the prompt came up on all of them. The saved
+welcomeShownAt holds when the client was started (time() - GetSessionTime())
+for the run that last showed it, which no /reload or relog changes and the next
+start of the game does.
 ]]
 
 local Welcome = {}
@@ -43,6 +50,20 @@ end
 local function MarkSeen()
     ns.db.welcomed = true
     C_CVar.SetCVar(CVAR, "1")
+end
+
+--- When this run of the client started, to the second or so: time() and
+--- GetSessionTime() tick separately, so two readings in one run can differ by
+--- one. SAME_RUN absorbs that; no client restarts faster.
+local SAME_RUN = 60
+
+local function ClientStart()
+    return time() - GetSessionTime()
+end
+
+local function ShownThisRun()
+    local at = ns.db.welcomeShownAt
+    return type(at) == "number" and math.abs(ClientStart() - at) < SAME_RUN
 end
 
 --- How many there are to send, counted as the Send button counts them.
@@ -157,9 +178,10 @@ ns.OnLogin(function()
         return
     end
     local first = not HasSeen()
-    if not first and Pending() == 0 then
+    if not first and (Pending() == 0 or ShownThisRun()) then
         return
     end
+    ns.db.welcomeShownAt = ClientStart()
     C_Timer.After(4, function()
         Welcome:Show(first)
     end)
