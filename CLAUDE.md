@@ -8,939 +8,389 @@ Voiced quests and NPC dialogue for **World of Warcraft: Forever** (the
 Classic-plus client, codename Camelot). Two addons plus a Python pipeline:
 
 - `ForeverVO/` — the player addon. Lua, Retail-engine APIs only, no libraries.
-- `ForeverVO_Data/` — the voice pack (generated Lua tables + mp3s). Only the
-  tables are in git; the audio lives on the maintainer's machine and ships as
-  a separate zip.
-- `tools/` — capture ingestion, bulk text sources, voice reference building,
-  Chatterbox TTS generation, pack table writer, packaging helpers.
+- `ForeverVO_Data/` — the owner's working voice pack (generated Lua tables +
+  mp3s). Only the tables are in git; the audio lives on the owner's machine and
+  ships as three CurseForge packs (Releases).
+- `tools/` — capture ingestion, text sources, voice reference building,
+  Chatterbox TTS generation, pack tables, release packaging.
 - `captures/` — community `/fvo export` submissions, committed by a GitHub
-  Action from comments on the pinned issue #1.
+  Action (Crowdsourcing).
 
-Owner: Quinn Dougherty (quinn@for-all.dev). CurseForge projects: addon 1705010,
-delta pack 1705094, base pack 1705100 (IDs under `[release]` in `forever-vo.toml`; API key only in the gitignored .env). Addon
-slug `forever-vo`, display name "Forever Voiceover". License MIT; voice packs
-are non-commercial fan content (Blizzard's text, voices cloned from the
-game's own recordings).
+Owner: Quinn Dougherty (quinn@for-all.dev). Addon slug `forever-vo`, display
+name "Forever Voiceover". CurseForge project IDs are under
+`[release.curseforge_projects]` in `forever-vo.toml`. License MIT; voice packs
+are non-commercial fan content (Blizzard's text, voices cloned from the game's
+own recordings).
 
 ## The client, and why so much is unusual
 
-- Product `wow_classic_beta`, version 1.60.1, **Interface 16001**, TOC suffix
-  `_Camelot`. It runs the **Retail engine** (`WOW_PROJECT_ID ==
-  WOW_PROJECT_MAINLINE`) with Classic data. Port from Retail code paths, never
-  from Classic ones.
-- Blizzard's UI source for this exact build is in the Gethe mirror, branch
-  `forever` (`github.com/Gethe/wow-ui-source`). A sparse checkout was used
-  at `~/Projects/wow-ui-source`. Check there before assuming an API or frame
-  exists. Camelot-specific overrides live in `*/Camelot/` folders.
-- `docs/forever_api.json` is a captured list of the client's global
-  functions, frames and `C_*` namespaces. `./tools/run.sh tools/apicheck.py`
-  diffs the addon against it. Run it after any Lua change.
+- Product `wow_classic_beta`, version 1.60.1, **Interface 16001**. It runs the
+  **Retail engine** (`WOW_PROJECT_ID == WOW_PROJECT_MAINLINE`) with Classic
+  data: port from Retail code paths, never Classic ones. The client picks
+  `_Camelot.toc` when present, else `.toc`; this addon uses the plain `.toc`.
+- Blizzard's UI source for this build: Gethe's `wow-ui-source`, branch
+  `forever`, sparse checkout at `~/Projects/wow-ui-source` (Camelot overrides in
+  `*/Camelot/`). Check there before assuming an API or frame exists.
+- `docs/forever_api.json` lists the client's globals, frames and `C_*`
+  namespaces; `./tools/run.sh tools/apicheck.py` diffs the addon against it.
+  Run it after any Lua change.
 - Removed globals that bite: `MouseIsOver` (use `frame:IsMouseOver()`),
-  `SetDesaturation` (use `texture:SetDesaturated()`),
-  `InterfaceOptions_AddCategory` (use the Settings API),
-  `GetGossipText` (use `C_GossipInfo.GetText()`). `GameTooltip:SetText`
-  rejects the old 6-argument form.
+  `SetDesaturation` (`texture:SetDesaturated()`), `InterfaceOptions_AddCategory`
+  (Settings API), `GetGossipText` (`C_GossipInfo.GetText()`).
+  `GameTooltip:SetText` rejects the old 6-argument form.
 - **Unit identity can be secret.** `UnitName`, `UnitGUID`, `UnitSex`,
-  `UnitRace` and `UnitClass` return a *secret value* while the unit's identity
-  is restricted (`ShouldUnitIdentityBeSecret`); it displays through `SetText`
-  but errors in any string operation, comparison or table key ("secret string
-  value", first seen at the Disciple of Naralex, 2026-09-25). Every read of a
-  unit's identity or of dialog text goes through `Util.Plain`, which turns a
-  secret into nil so the speaker falls back to the pack or the line is skipped.
-  Keep new reads behind it; `issecretvalue` is in `docs/forever_api.json`.
-- **Saved variables persist again since about 2026-09-24.** Until then this
-  beta wrote them on logout/reload but never read them back, so every session
-  started from defaults; the owner and others confirmed the fix on 2026-09-25,
-  and the capture DB on disk spans two days and four characters. Leftovers of
-  the old state: the unvoiced-line reminders default on, the welcome popup's
-  "seen" flag is also an addon-registered CVar (harmless, it is only ORed in),
-  and ingest treats every write of the file as a
-  merge (it always did, and must keep doing so: the DB now accumulates across
-  sessions and characters, so one write carries days of play). The reminders
-  count what this session recorded apart from what was already waiting
-  (`Capture:Summary`'s last two returns) since 0.1.6; before that the logout
-  reminder said "141 lines this session" for two days of captures.
-- The addon compartment exists in the code but does not show on the Camelot
-  minimap skin, hence our own minimap button.
-- Quest and gossip **text is not in the client files**. The server sends it.
-  Client tables on wago.tools (`QuestV2`, `BroadcastText`) carry no usable
-  text. Text comes only from: in-game capture and the open Classic database
-  snapshot (VMaNGOS, for unchanged Classic content). The client's own quest
-  cache (`Cache/WDB/enUS/questcache.wdb`, offers only) was a third source until
-  #317 (2026-09-28): it seeded the pipeline before captures came in, but only
-  ever from the owner's client, and it is gone, `wdbcache.py` and
-  `bulk/questcache.json` with it. Do not bring it back; what it did is done by
-  players re-reading lines (settled placeholders and `differs`, below).
+  `UnitRace`, `UnitClass` return a *secret value* while a unit's identity is
+  restricted; it displays through `SetText` but errors in any string op,
+  comparison or table key. Every read of a unit's identity or of dialog text
+  goes through `Util.Plain`, which turns a secret into nil. Keep new reads
+  behind it.
+- **Saved variables persist** (since about 2026-09-24; before that the beta
+  never read them back). **Addon-registered CVars do not**: they survive a
+  `/reload` and are gone at the next login. Never restore a setting from one;
+  the narrator pick and the developer overlay did and reset at every login
+  (#887). The welcome window's `ForeverVO_welcomed` CVar is harmless (only ORed
+  in). Ingest treats every write of the saved-variables file as a merge, and
+  must: the DB accumulates across sessions and characters.
+- New files under `AddOns` need a client restart, not a `/reload`, before
+  `PlaySoundFile` finds them.
+- The addon compartment does not show on the Camelot minimap skin, hence our
+  own minimap button.
+- Quest and gossip **text is not in the client files**; the server sends it
+  (wago.tools' `QuestV2`/`BroadcastText` carry none). Text comes only from
+  in-game capture and the VMaNGOS Classic snapshot. The client's
+  `questcache.wdb` was dropped as a source (#317); do not bring it back.
 
 ## Addon conventions
 
 - Every file starts `local _, ns = ...`; only `ForeverVO` (the namespace) and
   the three compartment handlers are globals. Modules register with
   `ns.OnInit`/`ns.OnLogin`.
-- UI follows Blizzard's own frames: the talking head is a rebuild of
-  `TalkingHeadFrame` (same atlases, anchors, animations); buttons use
-  `UIPanelButtonTemplate`; options use `Settings.RegisterAddOnSetting` and
-  friends; the queue is a `CallbackRegistryMixin`; rows use frame pools.
-  Keep that discipline: no embedded libraries, native look.
+- UI follows Blizzard's own frames: the talking head rebuilds
+  `TalkingHeadFrame`; buttons use `UIPanelButtonTemplate`; options use the
+  Settings API; the queue is a `CallbackRegistryMixin`; rows use frame pools.
+  No embedded libraries, native look. The talking head has two kits (faction
+  parchment, Blizzard's dark panel), each with its own text colours
+  (`FONT_COLORS` in `UI/TalkingHead.lua`); check both after touching it.
+- The login window (`Core/Welcome.lua`) is a plain frame, not a StaticPopup:
+  StaticPopups from addons taint the gamepad UI path and froze the client (#44).
+  It shows once per run of the client (`welcomeShownAt`, the client's start
+  time from `time() - GetSessionTime()`).
 - Voice pack format is documented at the top of `ForeverVO/Core/Packs.lua`.
-  Quests are keyed by ID and event with durations; gossip by speaker key
-  (creature ID, negative for game objects) plus a text hash, with a Jaccard
-  fuzzy fallback.
+  Quests are keyed by ID and event; gossip by speaker key (creature ID,
+  negative for game objects) plus a text hash, with a Jaccard fuzzy fallback.
+- `luac -p` every changed Lua file (`./tools/run.sh luac -p <file>`). There is
+  no in-game test harness; the owner tests by `/reload`.
+
+## Text, placeholders and capture repair
+
 - **The text hash must stay identical in Lua and Python**:
-  `Util.Tokenize`/`Util.NormalizeText`/`Util.HashText` in `Core/Util.lua` and
-  `tools/textkey.py`. If you touch one, touch the other and re-test with
-  `./tools/run.sh tools/textkey_parity.py` (the dev shell supplies lua 5.1),
-  which runs both over the real captures, Classic's raw text (when
-  `bulk/classic.json` is there; CI has none) and edge cases.
-- **The client expands `$n`, `$c` and `$r` before any addon sees the text.** A
-  line first heard on a rogue would otherwise be recorded saying "rogue" and
-  voiced that way for everyone, and its gossip hash would only match other
-  rogues. `Util.Tokenize` puts the placeholders back at capture time (capture
-  version 3 also records the reader's class and race), `FindGossip` tokenises
-  the live text before hashing, and `NormalizeText` drops the placeholders on
-  both sides so one recording matches every class. `[readers.legacy]` in
-  `forever-vo.toml` covers captures made before version 3; `ingest.py` re-runs
-  the reversal on every ingest, which is idempotent. Since addon 0.1.2 the
-  name is matched case-sensitively (the client always renders it capitalised,
-  so a lowercase match is the word, not the name) while class and race still
-  fold case (`$c` renders "rogue", `$C` "Rogue"); both sides are ASCII-only
-  on purpose, since Lua patterns cannot fold Unicode.
-- **Ingest repairs two ways Tokenize goes wrong**, in the same idempotent pass
-  (`repair_entry`: tokenize, un-glue, reconcile). Addon releases before the
-  whole-word fix tokenised inside words (`w$nh`, `$Cs`), and a placeholder
-  touching a letter or digit is treated as corruption: the literal word is put
-  back when the reader is known, otherwise the entry is dropped so the line
-  gets re-captured. Community exports carry no name, class or race, so
-  `[readers.community]` in `forever-vo.toml` maps an export's `origin` (the
-  issue comment id, stamped on each entry at ingest) to what the poster said;
-  `restore_name` marks a name that is an ordinary word ("It"), whose every `$n`
-  is put back; for exports from addon 0.1.2 on (`addon` in the decoded file,
-  stamped on each entry like `origin`) only `$N` is put back, since that addon
-  can only have written the name capitalised. The glued check skips the `B`
-  of a `$B` line break, or raw text (`$B$B$n`) would read as corruption.
-  Tokenize also cannot tell a Mage's expanded `$c` from a literal
-  "mage", so where the raw text is known (`bulk/classic.json`: quests by key,
-  gossip by speaker, closest line) a capture placeholder
-  that aligns to a plain word there is restored to that word, and (since
-  2026-09-25) a plain word that aligns to a placeholder there becomes that
-  placeholder, whatever got it past Tokenize; the alignment
-  must score 0.9 or better, so lines Forever rewrote are left alone. Only the
-  placeholders are reconciled; the capture's text otherwise wins. Two readers
-  of different class or race who capture the same quest also settle it in
-  `merge_entry` (gossip keys differ by hash, so that only helps quests), and
-  there only the placeholder side is corrected, since between two captures the
-  placeholder is the suspect (a Mage's "$c of Dalaran").
-- **Forever's own lines have no raw text, so a second reader settles `$c`/`$r`**
-  (#317, 2026-09-28). Where two trusted readings of a line disagree, a
-  placeholder in one and a word in the other, or their readers' known class or
-  race differ, `merge_entry` records `settled` (`c`, `r` or `cr`) on the entry;
-  it is kept whichever reading wins later, `tokenize_entry` leaves a settled
-  trait alone (otherwise the next backfill re-tokenises the fix away whenever
-  the reader who has the trait wins the line), and `needs_of` answers `mf` for
-  a quest line with a `$c` or `$r` that neither Classic's text nor a second
-  reader has settled (`unsettled_traits`). Community readings count as two
-  readers by `origin`. Dropping the quest cache put 109 lines into that ask on
-  2026-09-28 and two back to a placeholder (93951's "skyborne", 95042's
-  "paladin"), which the ask then repairs; a class quest only one class ever
-  reads stays asked, which costs a line in some exports and nothing else.
-- **A multi-word race renders `$r` as its last word alone**: UnitRace says
-  "Windshaper Skyborne" and Zamja's `$r` came out "skyborne", so until 0.1.5
-  no Skyborne capture ever had `$r` put back (2026-09-25; Mebok Mizzyrix's
-  "the orc I'm looking for" was the same shape on a legacy Orc reader whose
-  `[readers.legacy]` entry named only the class). Both tokenizers now also
-  match the race's last word, but ingest applies that rule only to captures
-  from 0.1.5 on (`SHORT_RACE_SINCE`, `short_race` on `tokenize`/`text_key`):
-  Forever's own text says "skyborne" literally all over Zephras Isle, and
-  re-tokenising an old capture would turn every one of those into `$r`. Older
-  captures are repaired from the raw text where it exists and re-asked where
-  it does not (see `KNOWN_FLAWS`, next item). Do not give a Skyborne legacy
-  reader a race in the TOML for the same reason.
-- **The client resolves `$g lad:lass;` too, and one reader cannot reverse it**:
-  the other branch is gone. Since addon 0.1.4 (capture version 4, export field
-  `g`) the capture records the reader's sex, and ingest puts the branch back
-  two ways, both idempotent: `restore_gender` hands the raw source text back
-  when a capture is that text read as one sex (jhaubrich's #28), and
-  `merge_gender` rebuilds `$g his:hers;` from a male and a female reading that
-  differ only in short aligned runs (`rebuild_gender`: at most three branches
-  of four words, alignment 0.6, no inserts). Identical readings settle the
-  line with `sex: "mf"`; a later reading that no longer matches (Forever
-  reworded the quest) outvotes a settled entry, so it is asked for again.
-  `needs_of` records on each quest entry which readers are still wanted
-  (`needs`: `f` after a male reading, `mf` when the reader is unknown, none
-  when the text matches raw source text without a branch), `rebuild_tables`
-  writes it as `wa`/`wp`/`wc` on the quest record, and the addon
-  (`Packs:QuestWanted`, `Capture.Contributes`) captures and exports such a
-  line even though it is voiced, with `wanted` set. That is the general hook
-  for any later change in what a capture must carry: make `needs_of` ask and
-  players re-supply the line; no hand-built exports, no sharing of
-  `questcache.wdb` (the owner declined both on #29, and dropped the owner's own
-  cache as a source on #317). Gossip stays resolved:
-  it is keyed by a hash of the live text. Note that `release_pack.py
-  --if-changed` fingerprints sound files only, so new `w*` markers reach
-  players with the next delta that carries a new file. `./tools/run.sh
-  tools/gender_check.py` runs fixed cases and Classic's quest 233 through all
-  of it; run it after touching any of those functions.
-- **Self-repair is a development principle**: every addon release so far has
-  recorded something wrong that a later one fixes, and the fix must reach
-  lines already captured through ongoing play, never by hand. Since 0.1.4
-  every capture carries the addon version (`addon`, on owner entries too) and
-  exports carry per-line time (`d`), and `merge_entry` ranks readings by
-  `capture_rank`: newer addon first, then later reading, unknown addon lowest.
-  `trusted_since` under `[readers]` in `forever-vo.toml` (0.1.4) names the first release
-  believed at face value: `needs_of` answers `mf` for any quest entry from
-  before it, so the pack asks everyone for the line until a trusted capture
-  wins it (unless, since 2026-09-25, the repaired text is Classic's own with no
-  branch and Classic names the same speaker: a re-read could show nothing the
-  raw text does not, and 179 of 510 legacy lines were being asked for on that
-  basis, Spron's two Sten Stoutarm lines among them), and `superseded_gossip` in `backfill` drops an untrusted gossip
-  line once a trusted one from the same speaker aligns at 0.9 (gossip keys by
-  hash, so the flawed reading would otherwise sit beside its correction for
-  good and the addon's fuzzy match could play it). Raise the constant when a
-  release fixes what its predecessor recorded *and the blast radius is
-  everything*; when it is narrower, add the flaw to `KNOWN_FLAWS` in
-  `ingest.py` instead (since 2026-09-25): a `(fixed_in, predicate)` pair, and
-  `trusted()` refuses an entry from an earlier addon that the predicate
-  matches, so `needs_of` re-asks exactly those lines and `superseded_gossip`
-  lets a fixed capture replace them, while the same reader's other lines stay
-  believed. The predicate tests the repaired text, so a line the raw source
-  already fixed drops out on its own; the first one is a pre-0.1.5 capture by
-  a multi-word-race reader whose text still holds that race's last word (7
-  lines on 2026-09-25, all Zephras Isle content with no raw text).
-  `superseded_gossip` also compares a flawed line as the fixed addon would
-  tokenise it, since a short line ("Help you, skyborne?") never reaches the
-  0.9 alignment on one changed word. When designing any capture
-  change ask how a line the previous version captured gets replaced. The
-  same goes for a line voiced from wrong source text (Classic's 752-complete
-  is two sentences of three): since addon 0.1.7 (capture version 5, #318) each
-  quest record carries `ha`/`hp`/`hc`, `Util.TextKey` of the text it was voiced
-  from (`"<m>,<f>"` when it branches), and `Packs:QuestTextMatches` compares the
-  live text, keyed with the player's class and race both tokenised and left as
-  words, so a settled literal does not count; a mismatch is captured with
-  `differs` (export field `v`) and exported although it is voiced. Ingest needs
-  no rule for it: a capture beats Classic, the text fingerprint restages the
-  file, and the line moves to the delta. `generate.py` does not skip a
-  `differs` line as covered by another pack. Gossip has no such check yet
-  (its Jaccard fallback plays near matches as found). The
-  cost is regeneration, which only happens when the spoken text or voice
-  actually changes; the owner accepts it. Checked by `gender_check.py` and
-  `tests/test_ingest.py`.
-- `luac -p` every changed Lua file (`./tools/run.sh luac -p <file>`; the dev
-  shell has lua 5.1).
-  There is no in-game test harness; the owner tests by `/reload`.
+  `Util.Tokenize`/`NormalizeText`/`HashText`/`ResolveGender` in `Core/Util.lua`
+  and `tools/textkey.py`/`textclean.split_gender`. Touch one, touch the other,
+  and run `./tools/run.sh tools/textkey_parity.py` (real captures, Classic's raw
+  text when `bulk/classic.json` exists, edge cases).
+- **The client expands `$n`, `$c`, `$r` before any addon sees the text.**
+  `Util.Tokenize` puts them back at capture (whole words only; the name
+  case-sensitive, class and race case-folded, ASCII only on both sides), and
+  `NormalizeText` drops placeholders so one recording matches every reader. A
+  multi-word race renders `$r` as its last word ("skyborne"); both tokenizers
+  match it, but ingest applies that only to captures from 0.1.5 on
+  (`SHORT_RACE_SINCE`), since Forever's own text says "skyborne" literally.
+- **Ingest repairs captures in one idempotent pass** (`repair_entry`): re-tokenise,
+  un-glue placeholders inside words (old addons wrote `w$nh`), and reconcile
+  against Classic's raw text (alignment ≥ 0.9) in both directions. Community
+  exports from before 0.1.7 carry no class or race; `[readers.community]` and
+  `[readers.legacy]` in the TOML say who read them.
+- **A second reader settles `$c`/`$r` on Forever's own lines** (no raw text):
+  `merge_entry` records `settled` where two trusted readings disagree, and
+  `tokenize_entry` leaves a settled trait alone.
+- **The client resolves `$g male:female;` too.** Captures record the reader's
+  sex; ingest restores the branch from raw text (`restore_gender`) or rebuilds it
+  from a male and a female reading (`merge_gender`/`rebuild_gender`). Gossip
+  stays resolved (keyed by live text), and the addon also matches a branching
+  pack entry resolved for the player's sex (`GossipExact`, #365).
+  `./tools/run.sh tools/gender_check.py` after touching any of this.
+- **Self-repair is a development principle**: every release has recorded
+  something wrong that a later one fixes, and the fix must reach lines already
+  captured through ongoing play, never by hand. When designing any capture
+  change, ask how a line the previous version captured gets replaced. The
+  machinery:
+  - Captures carry the addon version; `merge_entry` ranks readings by
+    `capture_rank` (newer addon, then later reading).
+  - `needs_of` decides which readers a quest line still wants (`needs`), written
+    to the pack as `wa`/`wp`/`wc`; the addon then captures and exports the line
+    although it is voiced (`wanted`). That is the general hook: make `needs_of`
+    ask and players re-supply the line. No hand-built exports.
+  - `trusted_since` under `[readers]` re-asks everything before a release when
+    its flaw touched everything; for a narrower flaw add a `(fixed_in,
+    predicate)` to `KNOWN_FLAWS` in `ingest.py` instead, so only matching lines
+    are re-asked. `superseded_gossip` drops an untrusted gossip line once a
+    trusted one from the same speaker aligns.
+  - Each quest record carries `ha`/`hp`/`hc`, the key of the text it was voiced
+    from; `Packs:QuestTextMatches` flags live text that differs (`differs`), and
+    the capture is exported and wins at ingest.
+  - At login `Capture:Refresh` re-checks waiting lines against the installed
+    packs, so a line a newer pack voiced stops counting as "to send".
+  Checked by `gender_check.py` and `tests/test_ingest.py`.
 
 ## Pipeline (tools/)
 
-`tools/` is the Python package of the root `pyproject.toml` (flat: no `src/`,
-`tools/__init__.py`, modules import each other as `from tools.config import
-...`). Since issue #31 (2026-09-24) the toolchain is pinned three ways:
-`.python-version` and `uv.lock` for the interpreter and every package,
-`flake.nix`/`flake.lock` for what is not Python (uv, ffmpeg, lua 5.1 and the
-shared libraries the CUDA wheels need, on the library path from the shell
-hook). **Python is only ever invoked through uv**: the dev shell sets
-`UV_PYTHON_PREFERENCE=only-managed`, uv fetches the interpreter itself (it
-runs on NixOS through nix-ld, which the host has), and there is no system
-Python fallback. `tools/run.sh` is `nix develop -c uv run "$@"` (plain
-`uv run` off NixOS), so `./tools/run.sh tools/<x>.py`, `./tools/run.sh
-fvo-<x>` (the console scripts in `pyproject.toml`), `./tools/run.sh python -c
-...` and `./tools/run.sh luac -p ...` all run against the same pins. The GPU
-stack (`chatterbox-tts`, pinned to the release every voice was generated on,
-and `setuptools<81` for perth) is the `tts` dependency group, on by default;
-`--no-group tts` skips the ~3 GB of torch for a checkout that only ingests or
-releases. `tts-rocm` is the same Chatterbox pin on the ROCm 6.2.4 wheel
-(`torch==2.6.0+rocm6.2.4`, the matching `torchaudio`, `pytorch-triton-rocm==3.2.0`),
-for audition on an AMD GPU. The groups conflict, so the lock holds both and the
-default stays `tts` — do not point the nightly at the ROCm index. Setup is in
-the README: the wheel bundles the ROCm userspace (~17 GB unpacked, so
-`.venv-rocm` needs a real disk, not a tmpfs), the machine needs `/dev/kfd`,
-and the run is
-`UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition`.
-Checked on gfx1030, where hipBLASLt falls back to hipblas and the line still completes.
-`Synth` loads that build only when audition asks (`allow_hip`); `fvo-generate`
-refuses it, and audition's "Write to pack" returns 400, because the sound index
-records text and tuning, not which GPU rendered the file. The GitHub ingest
-workflow runs `exportfile.py` (stdlib only) with `uv run --no-project`. Bump a
-pin with `uv lock --upgrade-package <name>` or `nix flake update`, and commit
-the lock; the sound index only regenerates a file when its text or voice
-changes, so a library bump changes no audio on its own.
+`tools/` is the Python package of the root `pyproject.toml` (flat, imports as
+`from tools.config import ...`). Pinned three ways: `.python-version` +
+`uv.lock` for Python, `flake.nix`/`flake.lock` for the rest (uv, `ffmpeg-full`
+for rubberband, lua 5.1, CUDA libraries). **Python is only ever invoked through
+uv**; `tools/run.sh` is `nix develop -c uv run "$@"`, so `./tools/run.sh
+tools/<x>.py`, `./tools/run.sh fvo-<x>`, `./tools/run.sh python -c ...` and
+`./tools/run.sh luac -p ...` all use the same pins (`tools.*` imports work from
+anywhere in the repo). The GPU stack is the `tts` dependency group, on by
+default; `--no-group tts` skips torch. `tts-rocm` is the same Chatterbox on
+ROCm for audition only (README; `fvo-generate` refuses it). Bump a pin with `uv
+lock --upgrade-package <name>` or `nix flake update` and commit the lock.
 
-**Configuration is `forever-vo.toml` at the root**, validated by the pydantic
-models in `tools/config.py` (`Voices`, `Tts`, `Pronunciations`, `Readers`,
-`Release`, together `Config`; an unknown key is an error). The rule for what
-goes there: if someone edits it, it is TOML; if nobody does (paths, the
-client's race IDs), it stays a Python constant. `load_config()` reads the file
-once, and a function that needs a section takes that model by type hint:
-`generate.load_items(..., catalog)` and `rebuild_tables(..., config)`, every
-ingest repair takes `readers: Readers`, `release_pack` takes `Release`. The two
-leaf helpers called from everywhere, `textclean.clean()` and
-`wowdata.voice_for_npc()`, accept their model as a keyword and default to the
-repository's file, so one-liners keep working. There is deliberately no
-per-line table (`[lines."91741-accept"]`): the file would grow without bound.
-`./tools/run.sh pytest` runs `tests/`, which loads the real TOML and checks
-the tuning resolution; `ruff check`, `ruff format --check` (ruff's defaults,
-no `[tool.ruff]`; the whole tree was formatted on 2026-09-27) and `ty check`
-are all clean and should stay so. `.github/workflows/check.yml` runs the first
-three and pytest (`--no-group tts`, so `fastapi` is in the `dev` group for the
-audition tests) plus `luac5.1 -p`, `apicheck` and `textkey_parity` on every
-pull request, and deliberately not on pushes to main, which are mostly
-captures and tables. A test must not depend on gitignored files (voice clips,
-`bulk/classic.json`); take the directory as a parameter instead.
+**Configuration is `forever-vo.toml`**, validated by the pydantic models in
+`tools/config.py` (an unknown key is an error). If someone edits it, it is TOML;
+if nobody does (paths, race IDs), it stays a Python constant. There is
+deliberately no per-line table: the file would grow without bound. Functions
+take the section they need by type hint; `textclean.clean()` and
+`wowdata.voice_for_npc()` default to the repository's file.
 
-**`uv run audition`** (`tools/audition/`, a FastAPI app and one `index.html`,
-no front-end framework, on port 8765) is the page for ear tests: pick a line
-from the corpus or type one, a voice, optionally a clip to clone from, a grid
-of exaggeration and cfg_weight values and a number of takes, and get a player
-per take with the resolved recipe beside it. "Keep these settings" writes
-`[tts.voices.<voice>]` (or a `[pronunciations]` entry from the sidebar, or
-for a picked line's speaker a `[voices.speakers]` pin, "Always read ... in") into
-`forever-vo.toml` through tomlkit, so the comments survive, validated by the
-models before the file is replaced. The "Approved by ear" box beside the voice
-list writes `[voices.approved]`, a note for people that nothing generates from:
-each voice maps to the `VoiceCatalog.recipe` heard (clip read from, knobs off
-the defaults, picks digest), so a re-pick or retuning of it or of a voice it
-borrows from, made anywhere, turns its ★ into ☆ until someone listens again
-(the ★ meant "has a `[tts.voices]` row" until 2026-10-01). Below it, folded
-away, a voice's tasting notes (since 2026-10-03): free text in `[voices.notes]`,
-saved as you type, marked ✎ in the voice list, read by people only. "Write to pack" regenerates one line's
-pack file under the *saved* configuration only and records the fingerprint
-`generate.py` would compute, so the nightly run neither redoes nor misses it;
-it is disabled until the row's recipe is the saved one. On the ROCm build
-that button is refused; keeping a voice's settings in the TOML still works,
-and the CUDA generator restages the voice from them. Takes go to
-`tools/data/audition/<session>/` (gitignored). A row's "in the pack now"
-plays the working folder's file, else the first installed `ForeverVO_Data*`
-pack under `WOW_DIR`'s `Interface/AddOns` that has it, in the addon's priority
-order (`sound_packs`; `--addons` names another folder): a contributor's working
-folder is mostly empty, and before 2026-09-28 every line read "no file in the
-pack yet" for them. The Source clips panel's "Also offer clips from" adds
-another voice's candidates to the table (Thrall's folder for an orc archetype),
-including the sound folders `[voices] clip_folders` names
-(Gul'dan's 156 Warlords and Legion lines, which no NPC here is cast with; add one
-with `fvo-soundpaths --folders --only <folder>`, which probes just that folder),
-and a saved pick found among none of them is still listed, linked from the
-download cache or another voice's raw folder (`local_clip`), so a rebuild never
-drops a borrowed clip. A run that ends raises a desktop notification from the
-server through `notify-send` (`run_finished`): the browser's Notification API
-never showed one on the owner's KDE desktop though permission was granted, and a
-server with no `notify-send` sends none. Stop, beside Generate, ends a run after
-the sentence in progress: Chatterbox's `generate()` cannot be interrupted, so the check
-is between takes and, since 2026-10-02, between the generate() calls of one take
-(`Synth.render`'s `stopped`, raising `TakeStopped`), since a long line is several
-chunks and a short one up to three tries (`Studio.stops`,
-`/api/generate/<session>/stop`). One model instance, loaded on
-the first take; `--config` points it at another TOML for experiments, `--cpu`
-allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
-we need are plain HTML, and the addon's own rule of no libraries and a native
-look carries over. Parts (`-p1-`) and alternate narrator files are not
-reachable from it yet.
+**Checks**: `./tools/run.sh pytest`, `ruff check`, `ruff format --check` (ruff's
+defaults, no `[tool.ruff]`), `ty check`, all clean. `check.yml` runs them plus
+`luac5.1 -p`, `apicheck` and `textkey_parity` on pull requests (not on pushes to
+main, which are mostly captures and tables). A test must not depend on
+gitignored files (voice clips, `bulk/classic.json`).
 
-Data flow (all JSON is the source of truth; `ForeverVO_Data/Data/*.lua` is a
-build artifact, never hand-edited):
+Data flow (JSON is the source of truth; `ForeverVO_Data/Data/*.lua` is a build
+artifact, never hand-edited):
 
 1. `ingest.py` merges `WTF/Account/*/SavedVariables/ForeverVO.lua` and
    `captures/*.json` into `tools/data/capture.json`.
-2. `classicdb.py` exports the VMaNGOS SQLite snapshot to
-   `tools/data/bulk/classic.json` (ignored, 7 MB, regenerable).
-   Precedence when merging: capture > classic.
-3. `generate.py` picks a voice per speaker, synthesises with Chatterbox on the
-   GPU, writes mp3s under `ForeverVO_Data/Sounds/`, rebuilds the tables every
-   25 files, and records the voice (`v`) and a hash of the spoken text (`t`)
-   per file in `sound_index.json`, so a file is regenerated when its resolved
-   voice changes (e.g. a guessed Skyborne male giver turns out female once
-   captured) or when the text itself is corrected — a quest file keeps its
-   `<questID>-<event>` name, so nothing else would notice. Entries written
-   before `t` existed have none and are left alone rather than all regenerated.
-   Narrator lines (quests and gossip from objects, items and speakers with no
-   gender) are generated once per voice in `[voices]` of `forever-vo.toml`: the
-   `narrator` is the default and keeps the plain path and `sound_index` key, the
-   `narrator_alternates`
-   rest go to `Sounds/<Quests|Gossip>/Narrator/<voice>/` with
-   `Narrator/<voice>/<base>` as their index key. The addon needs each
-   alternate's own duration, so quests get `Data/Narrator.lua`
-   (`pack.narrator`, indexed into `pack.narratorVoices`) and gossip entries get
-   an `n` field indexed the same
-   way. Alternates sort last in the todo list, so a time-boxed run still spends
-   its GPU on unvoiced lines; `--narrator-only` / `--narrator-voices` control a
-   dedicated pass.
-4. `build_voice_references.py` makes cloning clips under `tools/voices/`
-   from the client's own audio via wago.tools. **Only the first 6 s (t3) and
-   10 s (s3gen) of a reference reach the model**, which continues it, so a clip
-   is composed rather than pooled: a head of the race's spoken emote lines
-   (`EmotesTextSound`, JOKE and FLIRT - the rest are wordless), then that
-   speaker's own greetings starting inside the 10 s window. Each voice gets a
-   different slice of the shared emote pool, or archetypes of one race come out
-   byte-identical. Skyborne have no spoken emotes, so `VocalUISounds` is their
-   head. `--named` builds `npc-<displayID>.wav` for kits used by 3 or fewer
-   models (Varimathras, Thrall, Sylvanas, ...).
-   `wowdata.voice_for_npc` prefers `npc-<displayID>.wav`, then the archetype the
-   display is cast with (`CreatureDisplayInfo.NPCSoundID` ->
-   `<race>-<gender>-s<set>.wav`, at most 3 per race), then race+gender
-   from `CreatureDisplayInfoExtra` via the display ID, then the same via the
-   captured `modelFileID` (`CreatureModelData` -> the display rows using that
-   model, majority vote narrowed by UnitSex and the zone hint), then zone
-   hints, then narrator. The archetype step is skipped when its clip would be
-   identical to the race's, and when the set belongs to another race - 26 sets
-   span more than one, and trusting the name once had night elves read by a
-   blood elf recording. A set with no clip of its own reads a sibling's
-   (`wowdata.sibling_sets`, since 2026-10-02): the voice's other sets in the same
-   sound folder that hold at least half of its greetings, the same actor cast
-   again (121 is 59's fourteen files and two more). Only the most-used set of a
-   folder is minted a name and built, so the siblings used to fall to the plain
-   race voice; the change moved 1,816 lines of 189 speakers onto archetypes. The
-   shared files are required because Forever's skyborne sets sit in unnamed
-   folders (`7478494`) holding several actors.
+2. `classicdb.py` exports the VMaNGOS snapshot to `tools/data/bulk/classic.json`
+   (gitignored, regenerable), including every creature's display. Capture beats
+   Classic.
+3. `generate.py` picks a voice per speaker (below), synthesises with Chatterbox,
+   writes mp3s under `ForeverVO_Data/Sounds/`, rebuilds the tables every 25
+   files, and records per file in `sound_index.json` the voice (`v`) and a
+   fingerprint (`t`: spoken text, plus tuning knobs and picks digest that differ
+   from the defaults). A file is regenerated when either changes. Before
+   generating it rebuilds any picked reference whose wav was not built from its
+   current pick (`ensure_picked_references`, Voices).
+4. `build_voice_references.py` builds cloning clips under `tools/voices/` from
+   the client's own audio via wago.tools (Voices).
 
-Voice quality notes: Chatterbox on an RTX 3080 does ~6 s of audio in ~5 s
-with the game closed, roughly 3x slower with it open. Perth (the watermarker)
-needs `setuptools<81`. Text cleaning rules mirror the original VoiceOver
-tool (`$B` newlines, `$N`/`$C`/`$R` substitutions, `$G` gender branches as
-m-/f- file variants). Angle-bracket stage directions are the narrator's: a
-speaker's whole-line file leaves them out, and the line also gets *parts*
-(`textclean.segments`, `Item.variants().parts`), one file each in reading
-order, `<questID>-p<i>-<event>` / `<speaker>-p<i>-<hash>`, the speaker's in
-their voice and the stage directions in the narrator's (plus every alternate
-narrator voice, under `Narrator/<voice>/`). The tables record them as
-`aP`/`pP`/`cP` on the quest record, `P`/`nP` on a gossip entry and
-`<letter>P` in the narrator table; the addon plays them back to back and
-swaps in the chosen narrator. The whole-line file stays for older addons; a
-line that is only a stage direction has parts and no whole-line file. The
-part number sits *before* the last name segment on purpose: `sound_folder`
-and every older tool tell quests from gossip by that segment, and an older
-generator still running probes any file it finds under `Sounds/`.
+Generation details:
+
+- Text cleaning: `$B` newlines, `$N`/`$C`/`$R` substitutions, `$G` branches as
+  m-/f- file variants, `[pronunciations]` respellings (whole words, any case).
+- Angle-bracket stage directions are the narrator's: the line also gets *parts*,
+  `<questID>-p<i>-<event>` / `<speaker>-p<i>-<hash>`, played back to back
+  (`aP`/`pP`/`cP`, gossip `P`/`nP`). The part number sits before the last name
+  segment on purpose.
+- Sound names: quests `<questID>-<event>`, gossip `<speaker>-<hash>`. Tell them
+  apart by the last segment (`generate.sound_folder`), not by whether the first
+  is numeric.
+- Narrator lines (objects, items, genderless speakers) are made once per voice
+  in `[voices]`: `narrator` (human-male's clip) at the plain path, each of
+  `narrator_alternates` under `Sounds/<Quests|Gossip>/Narrator/<voice>/` (index
+  key `Narrator/<voice>/<base>`, `Data/Narrator.lua`, gossip `n`). Alternates
+  sort last in the to-do list. Releases only include configured voices; dropped
+  voices' files stay on disk unused.
+- A speaker met as both sexes (`sexes: "mf"`, one creature ID for male and female
+  guards, #304) gets the whole line in the other sex too under
+  `Sounds/*/Sex/<m|f>/` (tables `sa`/`sp`/`sc`, gossip `s`); the addon plays it
+  when the dialog unit's sex matches.
+
+**Audition** (`uv run audition`, `tools/audition/`, FastAPI + one `index.html`,
+port 8765) is the ear-test page: pick a voice and a line, source clips, knobs
+and takes. It writes picks (`[voices.sources]`), tuning (`[tts.voices]`),
+pronunciations, speaker pins, approvals (`[voices.approved]`, ★ while the
+recipe heard is current) and tasting notes (`[voices.notes]`) into the TOML
+through tomlkit, validated before the file is replaced. "Write to pack"
+regenerates one file under the *saved* configuration only. Takes go to
+`tools/data/audition/` (gitignored).
 
 ## Automation on the owner's machine (NixOS, systemd user units)
 
 Installed by `tools/install-timer.sh`:
 
-- `forever-vo-ingest.service` — `tools/ingest.sh` = pull, ingest, push
-  `capture.json`; the nightly run calls the script first, otherwise started
-  by hand. A `forever-vo-ingest.path` fired it on every write of the
-  saved-variables file until 2026-09-29, when saved variables persisting made
-  once a day enough (the capture DB only grows); `install-timer.sh` removes it.
-- `forever-vo-daily.timer` — 02:30 nightly, done by 07:00 (since 2026-09-28;
-  04:00 with a 2 h bulk pass before): sync, voice captured lines, work the bulk
-  backlog until 45 minutes before 07:00 (`FOREVER_VO_END_AT`,
-  `FOREVER_VO_TAIL_MINUTES`, optional cap `FOREVER_VO_BULK_HOURS`), rebuild
-  tables, upload the delta, commit and push. A catch-up start after the window
-  (`Persistent=true` after the machine was off) generates for 2 h.
-- `forever-vo-bulk.service` — the long bulk run, `Restart=on-failure` so a
-  CUDA context lost to suspend just resumes (existing files are skipped).
-  `WantedBy=default.target` (since 2026-09-21), so a reboot resumes it on its
-  own; `Restart=on-failure` only covers a crash while running, not a reboot.
-  Because it is then normally up at 02:30, `daily.sh` stops it for the duration
-  of the nightly run and restarts it from an `EXIT` trap — it used to just
-  bail out, which would have skipped the captured pass, the table rebuild and
-  the delta upload for as long as bulk stayed up. The service exits 0 once its
-  list is empty and nothing but a login starts it again, so since 2026-09-25
-  the trap also starts it when a `--dry-run` at the end of the nightly run
-  still counts files to generate: work that appears later (a rebuilt clip, a
-  voice change, a merged branch) gets the whole GPU, not two hours a night.
-  It runs `tools/bulk.sh`,
-  which starts `FOREVER_VO_WORKERS` (default 1 since 2026-09-24; 2 until the
-  Classic backlog finished on 2026-09-23) `generate.py --shard i/N`
-  processes: one autoregressive stream leaves the GPU about 60% idle, and on
-  the 3080 two together measured 2.59x realtime against 1.68x for one, while
-  three were no better than two and crowd the 16 GB. One worker is the
-  default now so a run that starts while the owner plays does not fight the
-  client for the GPU; set `FOREVER_VO_WORKERS=2` for a big run with the game
-  closed.
+- `forever-vo-daily.timer` — 02:30 nightly, done by 07:00: sync and ingest
+  (`tools/ingest.sh`), voice captured lines, work the backlog until 45 min
+  before 07:00, rebuild tables, upload the delta, commit and push. It stops the
+  bulk service for the duration and restarts it from an `EXIT` trap, also when a
+  final `--dry-run` still counts files.
+- `forever-vo-bulk.service` — `tools/bulk.sh`, the long resumable run:
+  `FOREVER_VO_WORKERS` (drop-in `workers.conf`; 1 so it can share the GPU with
+  the game, 2 for a big run with the game closed: 2.59x realtime against 1.68x)
+  `generate.py --shard i/N` processes. `Restart=on-failure`,
+  `WantedBy=default.target`, holds an idle inhibitor.
+- `forever-vo-watchdog.timer` (not in the repo: `~/.local/bin/forever-vo-watchdog.sh`)
+  notifies on failure, stall, completion and low disk every 10 minutes.
 
 Do not add a periodic pull timer; the owner declined it. Parallel *shards* are
-fine — `save_sound_index` merges only the keys a process wrote since its last
-save (`dirty`) into the file on disk, under an `flock`, and an entry never
-replaces one of higher `index_rank` (a duration probed by a table rebuild is
-rank 0, a generator's record with voice and fingerprint rank 3); the pack
-tables and the index are written through pid-named temporary files and
-renamed, and each mp3 is encoded to a `.part` file and renamed. Before
-2026-09-22 the merge let each worker's whole in-memory copy win, so the
-placeholders one worker probed for the other's fresh files erased the other's
-voice and fingerprint: 2,790 entries lost them in two days of two-worker runs
-(repaired from the journal, see `tools/repair_sound_index.py`). Two
-*unsharded* generators are still wrong: they would walk the same todo list and
-race for the same files.
+fine: `save_sound_index` merges only the keys a process wrote (`dirty`) under
+an `flock`, never over a higher `index_rank`, and every table, index and mp3 is
+written to a temporary file and renamed. Two *unsharded* generators are wrong:
+they walk the same to-do list. A one-off `generate.py --quest <id>` beside the
+bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
 
 ## Releases
 
-Three CurseForge projects, three release paths:
+- **Addon**: push a `v*` tag; the GitHub workflow builds with the BigWigs
+  packager, publishes a GitHub Release and uploads to CurseForge with the
+  `CF_API_KEY` GitHub secret. `.pkgmeta` ships only `ForeverVO/`; anything at
+  the root not in its ignore list ships as a stray folder, so add new root
+  files there. `CHANGELOG.md` is the release notes; the owner usually pushes
+  the tag. The packager's local dry run hangs walking `ForeverVO_Data/Sounds/`;
+  CI has no audio and is fine.
+- **Delta pack** "Forever Voiceover Data: Forever", priority 200: every line
+  whose files differ from what the Base packs last shipped (stamps in the
+  gitignored `tools/data/release_baseline.json`). `release_pack.py delta
+  --upload --if-changed` runs nightly. Past `delta_cap_mb` (400) the nightly
+  stops uploading and says a Base release is due.
+- **Base packs** "Data: Base" (quests to `base_split_level` 40, all gossip) and
+  "Data: Base Endgame" (quests from 41), priority 100, each with its narrator
+  alternates. Released by hand when the delta grows large: `release_pack.py
+  base` then `base_endgame` (~45 min, each re-encodes its whole set from a
+  freshly wiped staging folder), then **upload through the website** as
+  "release" files for 1.60.1. **The website caps a file at 1 GB**, and the API
+  refuses far less, which is why Base is split. Building a Base pack records
+  the baseline, so upload what you build.
 
-- **Addon** (1705010, slug `forever-vo`): `.pkgmeta` at the root uses
-  `move-folders` so only `ForeverVO/` ships. Push a `v*` tag: the GitHub
-  workflow builds a release with the BigWigs packager, publishes it on
-  GitHub Releases and uploads it to CurseForge with the `CF_API_KEY` GitHub
-  *secret* (set 2026-09-22; CurseForge's own source-linked packager never
-  picked the tags up, so v0.1.2 was re-run with the secret and the log shows
-  the upload succeed). The same name in the local `.env` is a different
-  thing and is also set: that one is for the voice packs, below. Anything at
-  the repo root not in `.pkgmeta`'s ignore list ships in the zip as a stray
-  `forever-vo/` folder (CLAUDE.md did in v0.1.2), so add new root files there.
-  `CHANGELOG.md` is the release notes. The packager's own dry run
-  (`release.sh -d -g 1.60.1`, needs zip, unzip, pandoc) is no longer practical
-  here: it walks the whole working tree, and `ForeverVO_Data/Sounds/` now holds
-  thousands of mp3s, so it hangs in `find` for many minutes. CI never hits this
-  because the mp3s are gitignored and the checkout has no audio. The TOC carries
-  `## X-Curse-Project-ID`; the packager maps Interface 16001 to game version
-  "1.60.1" itself, there is no version field to fill.
-- **Delta pack** "Forever Voiceover Data: Forever" (1705094), priority 200:
-  every line that differs from what the two Base packs last shipped (since
-  2026-09-29). Building a Base pack records each shipped file's stamp (text
-  fingerprint, voice, duration) in the gitignored
-  `tools/data/release_baseline.json`; `delta_line` puts a line in the delta
-  when any of its files (variants, parts, narrator and other-sex alternates) is
-  new, restamped or gone. Until both Base packs have been built with a
-  baseline the old rule holds: lines read in game (`is_forever_line`), which
-  grew with play, not with change (178 MB on 2026-09-29, half of it Classic
-  lines read in game with unchanged audio, 10 MB of it also in Base). Base now
-  takes every line at its level, so each Base release absorbs the delta and it
-  starts over; building a Base pack counts as releasing it, so upload what
-  you build. A restaged voice lands in the delta, and past `delta_cap_mb`
-  (400) the nightly stops uploading it and says a Base release is due. The
-  next Base came out at ~785 MB and Endgame ~388 MB when estimated.
-  `tools/release_pack.py delta --upload --if-changed` runs at the end of the
-  nightly job and uploads a dated beta when the file set changed.
-- **Base packs** "Forever Voiceover Data: Base" (1705100, installs as
-  `ForeverVO_Data_Base`) and "Forever Voiceover Data: Base Endgame" (project
-  created 2026-09-24, ID under `[release.curseforge_projects]`, installs as
-  `ForeverVO_Data_Base_Endgame`; the owner's working folder `ForeverVO_Data`
-  is never shipped): the Classic-sourced lines, priority 100, released by
-  hand, and now whenever the delta grows large. The complete Classic set with the five alternate narrators
-  it had until 2026-09-25 was 1.36 GB at 32 kbps (with orc-male alone about
-  1.08 GB, so the split stays for now), and **the CurseForge website caps a file at 1 GB**
-  (learned 2026-09-24 when the 1,378 MB zip was refused; the API's cap is
-  lower still, `413 Payload Too Large` at 887 MB on 2026-09-22 and at 574 MB
-  on 2026-09-24, while the 30
-  to 70 MB delta goes through). So the set is split by quest level in
-  `release_pack.py` (`base_split_level` under `[release]`): Base is quests to level 40 with all
-  gossip (~800 MB), Base Endgame quests from 41 (~570 MB), each with its
-  alternates, since the addon looks a quest's alternates up in the pack that
-  had the quest. Cutting at 50 would put Base back over the cap; a sixth
-  narrator voice costs ~65 MB per pack. Build both with `release_pack.py base`
-  then `release_pack.py base_endgame` (each re-encodes its whole set, ~45 min
-  together) and **upload through the website**, as "release" files for game
-  version 1.60.1 (the nightly delta is a "release" file too since 2026-09-24: the CurseForge app hides
-  beta files unless the user opts in). The script records
-  `tools/data/release_state.json` itself even without `--upload`. The first
-  Base went up 2026-09-22 before the bulk run finished, to get through
-  moderation early; the split versions are dated 2026-09-24.
-
-`release_pack.py` builds from the single working folder `ForeverVO_Data`
-(which holds everything on the owner's machine and is what the client loads
-locally), re-encodes to mono 32 kbps mp3 at 22.05 kHz with no Xing/Info
-header frame under
-`tools/data/release/` (48 kbps until 2026-09-22; the header frame was there
-until 2026-09-25, see the gotcha below; the originals in
-`ForeverVO_Data/Sounds/` stay at the generator's full quality, so the
-release bitrate can be raised again on any later build), streams the upload
-from disk (`requests-toolbelt`), writes
-a fresh manifest per pack (`<Folder>Pack` global, `Register.lua`), and
-uploads through the CurseForge upload API (`wow.curseforge.com/api`). Pack
-versions are date based (`2026.09.20`, `.2` on the same day) and tracked in
-`tools/data/release_state.json`. Project IDs, the split level, the bitrate and
-the transcode parallelism are `[release]` in `forever-vo.toml`; the API key is `CF_API_KEY` in the
-gitignored `.env`, read by `load_dotenv()` in `release_pack.py`
-(`CURSEFORGE_API_KEY` is still accepted; it was renamed 2026-09-21 to match
-the packager's name). This is the local file, not the GitHub secret of the
-same name, which stays unset — see the addon entry above.
-
-CurseForge moderation holds new projects and their first files for a day or
-so; nothing needs doing meanwhile. The project logo must be original art
-(`docs/logo.png`, a 1408x768 banner since 2026-09-22; the earlier square SVG
-icon is gone); Blizzard icons are fine inside the client but rejected as a
-storefront logo.
+`release_pack.py` builds from the working folder `ForeverVO_Data` (never
+shipped), re-encodes to mono 32 kbps mp3 at 22.05 kHz **with no Xing/Info
+header** (`-write_xing 0`: the client misreads LAME's CBR `Info` frame and cut
+every released line short until 2026-09-25), writes a manifest per pack, and
+uploads via `wow.curseforge.com/api` (the public `curseforge.com/api/v1` returns
+HTML to scripts). Versions are dates (`2026.09.20`, `.2` the same day), tracked
+in `tools/data/release_state.json`. The local API key is `CF_API_KEY` in the
+gitignored `.env`. CurseForge moderation holds new projects and first files for
+a day; the storefront logo must be original art (`docs/logo.png`).
 
 ## Crowdsourcing
 
-`/fvo export` packs a session's unvoiced lines (character name replaced by
-`$n`; since 0.1.7 each line carries the reader's class and race, `c`/`r`, so
-community readers settle `$c`/`$r` like known ones and `[readers.community]`
-is only for older exports), plus voiced lines the pack asked to hear again from a reader of the
-player's sex (`wanted`), via `C_EncodingUtil` into an `FVO1:` string. Players
-paste it into the "Contribute captured lines" issue form
-(`.github/ISSUE_TEMPLATE/capture.yml`, label `capture`, one issue per export,
-since 2026-09-24 when the inbox thread passed 50 comments; since 2026-09-30 an
-export past one link's worth, about 25 lines under the 6,000-character
-`URL_BUDGET`, is split into parts, each a whole `FVO1:` export filed as its
-own issue, and Copy Link advances `exportedAt` past the parts copied so far,
-so opening the window no longer counts as sending; All at Once instead sizes
-parts for the form's 65,536-character box, and the player pastes the string) or, the older way,
-as a comment on the pinned inbox issue #1 (label `capture-inbox`; the owner
-keeps it open for anyone following a stale note).
-`.github/workflows/ingest-captures.yml` handles both: it decodes the text with
-`tools/exportfile.py` (stdlib only) into `captures/`, reacts with a rocket, and
-closes a form issue as completed (a comment on #1 just gets the reaction). The
-owner's machine picks the files up on the next sync.
-
-## Gotchas already paid for
-
-- A bash heredoc inside a Python heredoc terminates at the inner `EOF`. Use
-  different terminators or the Write tool.
-- `pkill -f 'tools/generate.py'` matches the shell that runs it; use
-  `pgrep -f` to look and `systemctl --user stop forever-vo-bulk` to stop.
-- A suspend can kill the GPU outright, not just the CUDA context: on
-  2026-09-21 the resume logged `Xid 31` then `Xid 154, GPU recovery action
-  changed to 0x2 (Node Reboot Required)`, and every later process got "CUDA
-  unknown error" from `torch.cuda.is_available()` until a reboot. `nvidia-smi`
-  still answers in that state, so it is not a good health check; the kernel log
-  (`journalctl -k | grep Xid`) is. `generate.py` now refuses to run on the CPU
-  unless `--cpu` is given, because the silent fallback is ~18x slower than real
-  time and looks like a working run. The bulk unit holds a
-  `systemd-inhibit --what=idle` lock, but that only stops logind's own idle
-  action: GNOME's power plugin suspends on its own input-idle timer and never
-  consults logind inhibitors, and it did exactly that on 2026-09-22 at 00:53
-  (two hours after the last keypress, `sleep-inactive-ac-timeout` 7200) with
-  the lock held, killing the GPU again. The fix is on the desktop side:
-  `gsettings set org.gnome.settings-daemon.plugins.power
-  sleep-inactive-ac-type 'nothing'` (set 2026-09-22; battery left at
-  `suspend`). If a run dies at a round two-hour mark, check that setting first.
-- **Release mp3s carry no Xing/Info header frame** (`-write_xing 0` in
-  `release_pack.transcode`). LAME puts one in front of a CBR stream, sized for
-  the tag rather than the stream (56 kbps on a 32 kbps mono file), and the
-  client does not recognise the CBR `Info` variant: it takes that first frame's
-  bitrate as the file's and computes the length from the byte count, so until
-  2026-09-25 every released line stopped at 32/56 of its length (958-accept,
-  31 s, stopped at 16 s; reported on all three CurseForge packs). The owner
-  never heard it because the working folder's files are the generator's VBR
-  originals, whose `Xing` frame the client does read, and the client runs the
-  same Windows binary through Faugus, so it was never a Linux/Windows thing.
-  Found by timing the same line in game as CBR with and without the header at
-  22.05 and 44.1 kHz: the header was the whole story, the sample rate nothing
-  (a first guess at MPEG-2 framing was wrong). The fix costs no bytes, so the
-  1 GB cap is untouched; 64 kbps, as one commenter suggested, would have
-  doubled every pack. The release state records the encoding so
-  `--if-changed` re-releases on an encoding change. New files under `AddOns`
-  need a client restart, not a `/reload`, before `PlaySoundFile` finds them.
-- The wago.tools CSV export is complete for client tables, but the beta's
-  `BroadcastText` really is 12 rows; gossip is server-pushed on this engine.
-- **A captured model can belong to the previous NPC** (#352, 2026-09-29).
-  Until 0.1.7 one shared model frame read every speaker, and a model that
-  finished loading after the player moved on was written onto the next one:
-  Fizzlefuse (248200), a goblin (119376), came out tauren in one reader's
-  exports and orc in another's, and was voiced orc-male. Rare (0 wrong races
-  in 4,493 readings checked against Classic), but for a Forever-only NPC the
-  model *is* the race. Now each request gets its own frame; the NPC record
-  carries `addon`, and `merge_npc` in `ingest.py` keeps readings from
-  `MODEL_TRUSTED_SINCE` on in `modelReads`, one per source, taking the
-  majority, and uses an older reading only while no trusted one exists. The
-  pack records the model it cast each such speaker from (`pack.models` in
-  `NPCs.lua`, `generate.model_cast`); a player who sees another marks the NPC
-  `recast` and the export sends the record even with no line of its own.
-  `[voices.speakers]` in `forever-vo.toml` pins a speaker's voice outright
-  for a record that cannot heal (Fizzlefuse: his one line is voiced, so no
-  export would have carried him again before this).
-- **A player-race NPC's model file depends on the reader** (2026-10-04, #810,
-  #811, #816, #820): `GetModelFileID()` gives the HD model
-  (`scourgemale_hd.m2`, 959310) for some readers and the legacy one
-  (`scourgemale.m2`, 121768) for others, and no creature display in this client
-  uses a legacy file, so a legacy reading named no race and a Forever-only NPC
-  (no Classic display to fall back on) was read as human. Hadric Harlson and
-  Danitha Morr went human or undead as the `modelReads` majority swung. 641 of
-  856 unmapped readings were such files. `build_species_map.py` now also writes
-  `tools/data/character_models.json` (legacy FileDataID -> HD twin, 20 pairs,
-  committed), and `wowdata.model_race_sex` reads a legacy file as its twin.
-  Goblin has no HD twin and keeps its own displays.
-- `PlayerModel:GetDisplayInfo()` returns 0 until the model loads; the capture
-  reads it in `OnModelLoaded`, and the merge ignores zero display IDs. On the
-  Forever client it never yields anything at all (0 of 146 captured NPCs), only
-  `GetModelFileID()` does; the Classic export supplies display IDs for
-  unchanged NPCs and the `modelFileID` fallback covers Forever-only ones. Until
-  2026-09-29 "unchanged NPCs" meant only those Classic lets speak (quest givers,
-  gossip): Vol'jin (10540) has neither in 1.12, so his captured gossip read as
-  plain troll-male beside his own `npc-10357` clip. `classicdb.py` now also writes
-  `displays` (every creature's display, classic.json version 3) and
-  `generate.fill_displays` gives a captured NPC that display only when its model
-  file is the one the capture recorded, since Forever remodels some (Quarrymaster
-  Thesten, Morhan Coppertongue, Malorne Bladeleaf keep their voice). A filled NPC
-  is marked `displayVia: "model"` and `model_cast` still reports its model, so the
-  addon's recast check (#352) still covers it. 34 NPCs filled, 13 changed voice
-  (36 lines). Several
-  `CreatureModelData` rows can share one file (Jornah's 949470 has two), so the
-  reverse index is keyed by model ID, not by file.
-- `wowdata.voice_for_npc` once silently used an old field name
-  (`isObjectOrItem`) and a patch whose anchor text had drifted never applied.
-  After editing with search-and-replace, grep for the new text; do not trust
-  "patched".
-- **One creature ID can be either sex** (#304, 2026-09-29): Peacekeepers
-  (253474), city guards, grunts. `sex` on an NPC record is only the last one
-  met, so all 17 Peacekeeper lines were once voiced female. The addon keeps
-  every sex met in `sexes` ("mf"; capture version 6, exported), ingest
-  unions it (`merge_npc`, and `gather_sexes` over every export on every run,
-  since exports merged before the field existed are never merged again), and
-  `generate.Item.sex_alternate` gives a speaker met as both the whole line in
-  the other sex too, under `Sounds/<Quests|Gossip>/Sex/<m|f>/<base>` (index key
-  `Sex/<m|f>/<base>`, tables `sa`/`sp`/`sc` and gossip `s`, release
-  `sexFiles`). The other sex is the same race's plain voice (or its
-  `[voices.fallbacks]` race's), never a last-resort clip, and not for a pinned
-  speaker, a named `npc-*` clip or the narrator. The addon's `Events.SpeakerSex`
-  reads the dialog unit's sex (through `Util.Plain`, only when the unit is the
-  speaker) and `FindQuest`/`FindGossip` play the other file when it matches.
-  Parts are not doubled: a mixed line with stage directions plays in the
-  recorded sex. The `$g` m-/f- prefix in a base name stays the player's sex.
-- Sound file names: quests are `<questID>-<event>`, gossip `<speaker>-<hash>`.
-  Tell them apart by the last segment (`generate.sound_folder`), not by
-  whether the first segment is numeric, since speaker keys are numeric too.
-- Alternate narrator files keep the same base name and are told apart by their
-  folder (`Quests/Narrator/<voice>/`, `Gossip/Narrator/<voice>/`), so anything
-  that walks sounds by `glob("*/*.mp3")` (the two-level scan in
-  `rebuild_tables`) misses them by design; they have their own scan and their
-  own set in the stats (`narratorFiles`, paths relative to `Sounds/`).
-- A line that stops being narrated (a capture names the giver, a species clip
-  appears) leaves its whole-line alternate narrator files under
-  `Narrator/<voice>/`, and the addon plays an alternate whenever the table has
-  one for the quest and the player picked that voice. Since 2026-09-23
-  `rebuild_tables` lists whole-line alternates only for `is_narrator` items
-  and the generator deletes the leftovers (and their index entries: a dirty
-  key absent from memory is removed on save). Six quests (Tarindrella, Billy
-  Maclure) were already in that state.
-- The bulk generator's `sound_index.json` is written every 25 files; the
-  release script and the nightly table rebuild reload sources so files made
-  by another run are still indexed. An entry with `v: null` and no `t` is a
-  probed placeholder, not a generator record: the voice-change and
-  text-change checks are blind for it. `generate.py --reindex` restamps `t`;
-  the voice is only in the journal (`[voice]` on each generated line).
-- `./tools/run.sh python -c 'from tools.wowdata import voice_for_npc; ...'`
-  is the way to poke at the tools from a one-liner: the project is installed
-  in the environment, so `tools.*` imports work from anywhere in the repo.
-- CurseForge's public web API (`curseforge.com/api/v1/...`) returns HTML to
-  scripts; the authenticated `wow.curseforge.com/api` is what works.
-- The Forever client picks `_Camelot.toc` when present and `.toc` otherwise;
-  this addon uses the plain `.toc` with Interface 16001.
+`/fvo export` packs unvoiced lines, plus voiced lines the pack asked for
+(`wanted`, `differs`) and NPC records to recast, into an `FVO1:` string
+(`C_EncodingUtil`; name replaced by `$n`, class and race per line). Long exports
+split into parts of about 25 lines, one GitHub issue each via Copy Link, or one
+pasted string via All at Once; lines count as sent only once their part's link
+is copied (`exportedAt`). Players file the "Contribute captured lines" issue
+form (label `capture`); the older inbox, comments on pinned issue #1 (label
+`capture-inbox`), still works. `.github/workflows/ingest-captures.yml` decodes
+with `tools/exportfile.py` (stdlib only) into `captures/`, commits, reacts and
+closes the issue. It runs on opened, edited and on the `capture` label being
+added, with no concurrency group (GitHub cancels queued runs in a group, and a
+multi-part export opens its issues seconds apart); the push retries.
 
 ## Voices
 
 **Accent and delivery come from the source clips in the reference audio.
 `exaggeration` and `cfg_weight` are for colour and variety.** This is settled;
 do not propose the knobs as the fix for a wrong accent, a flat delivery or a
-voice that sounds like the wrong race. The owner has been told otherwise more
-than once and it was wrong each time.
+voice that sounds like the wrong race. The evidence: goblin-male's accent did
+not move across four settings pairs on two references, while changing the
+clips took it from "bad" to level with the shipped pack; fifteen head clips
+gave British, Southern and General American in turn, stably across takes.
+Some regional accents do not survive cloning at all. Order of attack for a
+voice that sounds wrong: the clips in the first 6 s, then the rest of the 10 s
+window, then the knobs. **Only the first 6 s (t3) and 10 s (s3gen) of a
+reference reach the model.**
 
-What the evidence is. goblin-male read as a gnome: four settings pairs from
-0.45/0.5 to 1.0/0.2, two takes each on two references, moved the accent not at
-all, while changing which clips fed the reference took the same voice from
-"bad delivery and accent" to level with the shipped pack. Fifteen different
-head clips produced British, Southern and General American in turn - the
-reference decided it every time, stably across takes, and no setting did.
-Where a knob has worked it was alongside a reference of connected speech, never
-instead of one (#18 dwarves: "it takes both changes together"). A strong
-regional accent may not survive cloning at all whatever you feed it - retail
-goblin's New York never did - so the honest answer is sometimes "this voice
-cannot have that accent", not "try 0.75/0.3".
+How a speaker gets a voice (`wowdata.voice_for_npc`), first match wins:
 
-Order of attack for a voice that sounds wrong: the clips in the first 6 s
-(`[voices.sources.<voice>]`, picked by ear in `uv run audition`), then the rest
-of the 10 s window, then the knobs.
+1. `[voices.speakers]` pins (creature ID, negative for objects), for a speaker
+   the data cannot fix; `generate.py` warns about a pinned voice with no clip.
+2. `npc-<displayID>.wav`, a named NPC's own clip.
+3. The display's race and sex (`CreatureDisplayInfoExtra`), cast as the
+   archetype for its NPCSounds set where one is built (or a sibling set's,
+   `wowdata.sibling_sets`: the same actor filed under several set IDs).
+4. Without a display (Forever-only NPCs; the Forever client never yields one),
+   race and sex from the captured `modelFileID` via `CreatureModelData`, majority
+   over its display rows. A legacy player-race model reads as its HD twin
+   (`tools/data/character_models.json`): the client reports either, by reader,
+   and the legacy file has no display rows (#810). Classic NPCs get Classic's
+   display (`generate.fill_displays`) when the model matches.
+5. A species clip by model file (`tools/data/species_models.json`,
+   `[voices.species_aliases]`), from Warcraft III unit sounds or retail.
+6. `[voices.sound_sets]` by NPCSounds set, then `[voices.zone_hints]`, then human.
+   Genderless speakers, objects and items go to the narrator.
 
-- Race voices: `tools/voices/<race>-<gender>.wav` for the archetype most of a
-  race is cast with, and one clip per other archetype, named for what Blizzard
-  files it as: `dwarf-male-guard`, `human-male-official`, `gnome-female-happy`.
-  The word comes from the CASC folder of that set's own recordings
-  (`tools/soundpaths.py`, map committed at `tools/data/sound_sets.json`,
-  refreshed with `fvo-soundpaths --refresh`); a set whose folder is shared with
-  a more-used set, or belongs to another race, or is unnamed keeps
-  `-s<NPCSounds row>` - 54 of the 182 castable archetypes get a word, 44 of the
-  49 built. A voice is `<race>-<gender>`, so a third segment is what makes an
-  archetype: `wowdata.base_voice` and `is_archetype` are the only things that
-  know it, and nothing matches `-s\d+` any more. They were `-s<set>` throughout
-  when first built on the owner's machine 2026-09-25 after #42: 49 archetype
-  clips, 7 dropped for a thin head, every plain race clip rebuilt, species and
-  named clips unchanged; the clips from before are kept in
-  `tools/voices/before-42/` (gitignored) for A/B listening. That build restaged
-  9,132 lines re-cast to an archetype (the voice-change check, plus dwarves
-  under "text changed" because the archetype's fingerprint drops the
-  `reference` knob) and nothing on a plain voice, since clip audio is not in
-  the fingerprint (#51). The rename itself restaged nothing: on 2026-09-26,
-  after #66 merged, the references were rebuilt under the new names and a
-  one-shot `fvo-migrate-voice-names` (deleted the same day) moved the 6,144
-  index entries recorded under an `-s<set>` name to the renamed voice. The
-  picks and the new `[tts.voices]` rows on the plain voices restaged ~15,800
-  files, nearly the whole pack, because human-male is also the narrator and
-  seven fallback races; a re-pick of a plain voice costs that again. The
-  sweep also deletes any three-segment wav it did not mint, so the owner's
-  `dwarf-female-emotes.wav` A/B clip is kept in `tools/voices/before-66/`
-  (gitignored).
-  The retail `SoundKitEntry` CSV is large and wago.tools timed out on it once;
-  a `curl` into `tools/data/db2/<build>/` with a long timeout is the workaround. Sorting
-  candidate clips longest-first used to hand the head to whichever set had the
-  longest lines, which is one-off character sets: seven voices were cloned from
-  a set used by a single creature display, tauren-female from an elder with one
-  (Magatha Grimtotem). Four voices have no spoken emotes in this client - both
-  blood elf and both goblin - because those races were playable only from
-  Burning Crusade and Cataclysm. Retail has the recordings, and
-  `speech_pool()` borrows them for exactly those voices (`RETAIL_BUILD` in
-  `config.py`, fetched by FileDataID like everything else, no local CASC
-  needed). It borrows for no one else: for every race this client covers,
-  retail holds the same 1.x files and fewer of them (troll-male 10 here
-  against 6 there), so there is nothing to gain and a re-record to risk.
-  `vulpera-male.wav` is built too and nothing uses it: one vulpera display
-  exists in the client (137545) and Blizzard casts it with set 49, a human
-  male set used by 249 other displays, so no speaker ever resolves to it.
-- **Three recipes, chosen per voice** (`recipe_for`): `speech-and-barks` is
-  the default and what every race with its own emotes gets. A borrowed-speech
-  race gets `pooled-barks` for its plain clip - every set's greetings, as the
-  base pack was built before this branch - and its archetypes take
-  `speech-and-barks` and `speech-only`, so the race keeps three personalities.
-  Narrowing the plain voice to the dominant set is what left goblin-male a
-  2.8 s reference that read as a gnome; rated by ear, goblin got worse the
-  more borrowed speech went in (pooled best, 5.4 s head next, 11.3 s
-  speech-only last), because the Classic bark actor and the Cataclysm emote
-  actor are different people. A `pooled-barks` clip holds no speech slice, or
-  it would keep the longest jokes for a clip that never reads them.
-- **Clips chosen by ear beat every rule tried.** `[voices.sources.<voice>]` in
-  `forever-vo.toml` lists FileDataIDs, head first, and `build_picked_reference`
-  concatenates exactly those: no sorting by duration, no 0.8-8.0 s filter, no
-  `TARGET_SECONDS`, no thin-head deletion, since each of those would undo the
-  choice. Picks are honoured by `--named` too and join the stale sweep's keep
-  set, or a rebuild would clobber or delete them. They join the fingerprint,
-  keyed on the clip actually cloned from, so a re-pick restages that voice by
-  itself - the clip's *bytes* still do not. The picks travel in git and the
-  wavs do not, so until 2026-10-04 a re-pick merged from another machine
-  restaged its voice here from the *old* wav and stamped the files current
-  (2,042 files after #563 and the archetype picks before it, found only by
-  comparing file times with wav times). Every picked wav now has
-  `<voice>.picks.json` beside it (`build_picked_reference`, from whichever
-  builder ran: the reference builder, audition, `fvo-refclips`), and
-  `generate.ensure_picked_references` rebuilds, under a lock the shards share,
-  every picked wav whose record is missing or disagrees with
-  `[voices.sources]` before anything is generated; a voice it cannot rebuild has
-  its lines left out of the run. An audition experiment that was never kept
-  leaves its record, so the next generator run puts the saved pick back. Pick them in the audition page's
-  Source clips panel, or with `fvo-refclips`. A pick may also carry `gaps`
-  (since 2026-10-03): seconds of silence after each clip but the last, aligned
-  with `clips`, at most 3 s, 0 when absent. Back-to-back clips inside the 6 s
-  window can run two deliveries together and throw the accent or the cadence.
-  With any gap `concat_to_wav` pads each clip in an ffmpeg filter graph instead of
-  the concat demuxer; a pick without gaps builds and digests exactly as before, and
-  adding one changes the digest, so that voice restages and its approval goes stale.
-  The audition page offers a gap, in the pick's own row, only where it would start
-  inside the 10 s window: past it silence only dilutes the averaged speaker vector,
-  and a gap spends the window too, so keep it to a breath (0.1-0.3 s).
-- Named NPCs: `npc-<displayID>.wav` for greeting kits used by 3 or fewer
-  models (64 of them: Varimathras, Thrall, Sylvanas, Cairne...). Thrall has
-  just two greetings, so his clone is rougher. The automatic build uses the kit
-  alone, but the kit is not all the client has: Sylvanas's set links four
-  greetings and her folder `sound/creature/sylvanaswindrunner/` holds ~90 more
-  lines this build ships (Wrath Gate, HoR), linked from no beta kit. So since
-  2026-09-29 a named voice's audition candidates are the kit plus every file in
-  its set's folder, one group per folder in the Source clips panel's select, and
-  a pick in `[voices.sources.npc-*]` is how those reach a reference.
-  `fvo-soundpaths --folders` (kept apart from `--refresh`, so it never renames an
-  archetype) streams the community listfile - the pinned verified one lacks real
-  lines, `vo_920_sylvanas_*` - keeps `.ogg` only (wago answers a `.ogg.meta` with
-  400), fetches each file once and commits the real ones with their lengths to
-  `tools/data/named_folders.json`. Every named set's folder is listed, stock and
-  Warcraft III ones (`dwarfmalegrimnpc`, `peon`) included, on the owner's call.
-  What a listed file can be instead of audio (`wowdata.is_dud`): empty
-  (`vo_1127_*`), zero bytes where it is encrypted (`vo_111_gazlowe_*`), or one
-  byte-identical 3,447-byte 0.0003 s Ogg. Test by content, never by a length
-  floor: real barks run to 0.1 s and a 0.286 s one is a saved pick. A character
-  filed under more than one folder gets the others from `[voices.named_folders]`,
-  keyed by the set's own folder, then a `--folders` run; never by name matching
-  (`anduin`, `anduin_lothar`, `anduinwrynn` are two people). Sylvanas's `sylvanas`
-  and `lady_sylvanas_windrunner` (Legion on, mostly real audio) are there,
-  commented out. Every `wowdata.fetch_file` download lands once per build in
-  `tools/data/casc/<build>/<fdid>.<ext>` (gitignored) and is hard-linked where it
-  is asked for, so the probe, each display's candidates and the reference
-  builders share one copy. Their lengths are kept beside them in `seconds.json`
-  (`refclips.ClipSeconds`, since 2026-10-01), so loading a voice's candidates
-  probes each file once per build instead of on every load and restart.
-- Species voices (PR #21, 2026-09-23): a speaker with no player race resolves
-  through its model file (`tools/data/species_models.json`, keyed by
-  `CreatureModelData.FileDataID`, which is also what `GetModelFileID()`
-  returns) to `<species>-<gender>.wav` when the clip exists. The clips come
-  from Warcraft III: `extract_wc3_units.py` reads the local Reforged install
-  through CascLib (built from source, `tools/data/libcasc.so`, gitignored;
-  build steps at the top of the script) into `tools/voices/raw-wc3/units/`,
-  and `build_wc3_references.py` cuts the "what"/"yes" acknowledgements into
-  dryad, keeper of the grove, ogre, satyr, banshee, dreadlord, flesh golem,
-  dire troll and naga clips. The two child voices come from retail's
-  `kul_tiran_kid` via `build_retail_references.py`. Built 2026-09-23; the
-  voice-change check then regenerated ~514 lines.
-- `[voices.speakers]` pins one speaker (creature ID, negative for a game
-  object) to any voice name, ahead of everything in `voice_for_npc` (#319,
-  2026-09-29). Per speaker, never per line, for a speaker the data cannot
-  fix; `config.Voices` checks the shape of key and name, and `generate.py`
-  warns at start about a pinned voice with no clip of its own
-  (`unclipped_speakers`), since the clips are not in git for CI to check.
-- `[voices.fallbacks]` and `[voices.zone_hints]` in `forever-vo.toml` cover races
-  without a clip and speakers without display data (Zephras Isle -> skyborne);
-  `[voices.species_aliases]` sends a model folder with no clip of its own to a
-  close one (orc children to the human child clips).
-- **Chatterbox conditioning is `[tts]` in `forever-vo.toml`**, with per-voice
-  overrides under `[tts.voices.<voice>]` that may also name a different clip to
-  clone from (`reference`). The knobs are `exaggeration`, `cfg_weight`,
-  `tempo` and `pitch`; the last two are not model parameters (Chatterbox's
-  `generate()` has no pace control) but ffmpeg filters applied by
-  `Synth.encode` after `Synth.render` (`generate.encode_filters`): tempo a
-  pitch-preserving `atempo` stretch, with the stretched length recorded as the
-  duration, and pitch (since 2026-09-29, #341) a length-keeping `rubberband`
-  shift in semitones, which is why the flake installs `ffmpeg-full` (nixpkgs
-  builds rubberband into the full variant only); `generate.py` checks for the
-  filter before loading the model (`require_filters`) rather than failing at the
-  first pitched line of a night's run. Chatterbox pulls every clone toward its own mid-range
-  voice: Varimathras's takes measured 153 Hz against his recordings' 86-89 Hz
-  on every pick of clips tried, and -3 to -5 semitones sounded right where
-  matching the number (-9) did not. That is a pitch correction after the
-  model, not the knobs-for-accent argument the section below warns against;
-  accent still comes from the reference. `speed` (since 2026-10-03) is the
-  third such filter and runs first: varispeed, `asetrate` and `aresample` at the
-  model's 24 kHz, so pace and pitch move together in one resample (0.9 is 10%
-  slower and ~1.8 semitones lower). Lowering tempo and pitch together ran a
-  stretch and then a shift, each compensating for the other; speed does neither.
-  The audition page renders a take once and encodes every tempo, pitch and speed
-  of its sweep from that audio. Only knobs that differ from the `[tts]` defaults join the
-  fingerprint (`Tts.differences`), so adding a knob later never restages what
-  was already stamped. `generate.VoiceCatalog` resolves a voice to the
-  clip it actually uses (its own, else its fallback race's, else the narrator's,
-  else human-male) and takes the tuning of *that* voice, so Dark Iron dwarves
-  and tuskarr, who borrow the dwarf clip, get the dwarf settings (#18). An
-  archetype (`<race>-<gender>-s<set>`) with no `[tts.voices]` row of its own
-  keeps its wav and takes the plain race voice's exaggeration, cfg weight and
-  tempo; the race's `reference` stays on the plain voice, and the knobs in the
-  fingerprint restage the archetype lines. The
-  settings join the text fingerprint only when they differ from the defaults,
-  so tuning one voice restages exactly its files (and a file with no
-  fingerprint in a tuned voice, which predates tuning); `--reindex` seeds the
-  untuned key so it can never mark such a file current. Rebuilding a clip's
-  audio is not in the fingerprint on purpose: `--force --voice <voice>` is the
-  targeted way to redo one voice and the voices cloned from its clip. dwarf-male
-  was tuned first (0.75 / 0.3 on npc-3597's four connected lines, set
-  2026-09-24, restaging ~3,100 files). dwarf-female followed the same day at
-  0.75 / 0.3 on her existing greeting montage: an A/B against a clip built from
-  her /joke and /flirt lines (`EmotesTextSound`, emotes 328 FLIRT and 329 JOKE,
-  the only long connected player-voice recordings the client has) lost to the
-  montage at the same settings, so for that voice the settings alone did it.
-  dwarf-male carried the same fix as `reference = "npc-3597"` at 0.75 / 0.3
-  until 2026-09-25, when its clips were picked by ear instead and the entry
-  went: a `reference` pointing elsewhere means the picks are never read. Both
-  results are about the reference, which is the rule at the top of this
-  section.
-- `narrator_alternates` under `[voices]` is the narrator menu: since 2026-10-01
-  just skyborne-female beside the default (human-male's clip), one male and one
-  female voice; orc-male held the slot from 2026-09-25 and was dropped for not
-  sounding good enough. It covers ~1,040 narrated
-  quest and ~336 narrated gossip lines in the full Classic set (1,340 files per
-  voice, ~4 h of GPU each). It was five alternates before: each cost about 6.5%
-  of every pack, together a third, and the base split by level exists because
-  of them. The five dropped voices' files (human-female, dwarf-male,
-  nightelf-female, troll-female, orc-male) are still under `Sounds/*/Narrator/` and in
-  `sound_index.json`; `rebuild_tables` and the release only look at the
-  configured voices, so they are dead weight until deleted. The player's pick
-  is `narratorVoice` in the settings only. **The client does not keep
-  addon-registered CVars across a logout** (none is in any `.wtf` file), so
-  reading one back at login returns its registered default: the narrator pick
-  and the developer overlay were both stored there too until 0.1.9, and both
-  reset at every login (#887). Never restore a setting from an addon CVar.
-- The talking head defaults to the faction parchment; clearing `factionHead`
-  gives Blizzard's dark panel (the "Normal" kit). Gold text vanished on the
-  parchment until each kit got its own dark Name/Title/Text and no shadow:
-  `FONT_COLORS` in `UI/TalkingHead.lua`. Check both kits after touching it.
+`[voices.fallbacks]` sends races without a clip to a close one.
+`generate.VoiceCatalog` resolves a voice to the clip it actually uses and takes
+*that* voice's tuning; an archetype without its own `[tts.voices]` row takes
+its race's knobs.
+
+Captured models: the NPC record keeps one reading per source in `modelReads`
+(from `MODEL_TRUSTED_SINCE` on; before 0.1.7 a shared model frame could record
+the previous NPC's model, #352) and takes the majority. The pack records the
+model it cast from (`pack.models`); a player who sees another marks the NPC
+`recast` and the export carries it. `sexes` unions every sex met.
+
+Clips:
+
+- **Names.** `<race>-<gender>.wav` for a race's main voice; an archetype adds
+  the word Blizzard's sound folder uses (`dwarf-male-guard`,
+  `human-female-official`), or `-s<NPCSounds row>` when there is none.
+  `wowdata.base_voice`/`is_archetype` are the only things that parse names. The
+  builder's stale sweep deletes three-segment wavs it did not mint.
+- **Automatic recipes** (`recipe_for`): a head of the race's spoken emote lines
+  (JOKE/FLIRT; each voice a different slice), then the set's own greetings.
+  Races with no spoken emotes in this client (blood elf, goblin) borrow
+  retail's (`RETAIL_BUILD`): their plain voice is `pooled-barks`, their
+  archetypes `speech-and-barks`/`speech-only`. Skyborne use `VocalUISounds`.
+- **Clips chosen by ear beat every rule.** `[voices.sources.<voice>]` lists
+  FileDataIDs, head first, optional `gaps` (silence after each clip, ≤ 3 s, keep
+  it a breath inside the 10 s window). `build_picked_reference` concatenates
+  exactly those, no sorting or filtering. Pick in audition's Source clips panel
+  or `fvo-refclips`. The picks join the fingerprint, so a re-pick restages its
+  voice; the wav's bytes do not.
+- **The wavs are not in git; the picks are.** Each picked wav has
+  `<voice>.picks.json` beside it, and `generate.py` rebuilds any picked wav
+  whose record is missing or disagrees before generating (#890). Without that, a
+  re-pick merged from another machine restaged its voice from the old wav and
+  stamped the files current (2,042 files, 2026-10-03). An audition experiment
+  that was never kept is put back the same way.
+- **Named NPCs** (`npc-<displayID>`, kits used by ≤ 3 models): audition offers
+  the kit plus every file in the set's sound folder (`fvo-soundpaths --folders`,
+  committed to `tools/data/named_folders.json`; extra folders via
+  `[voices.named_folders]` and `[voices] clip_folders`, never by name matching).
+  Test a listed file for audio by content (`wowdata.is_dud`), never by length.
+  Downloads are cached once per build in `tools/data/casc/<build>/`.
+- **Species clips**: Warcraft III units via CascLib (`extract_wc3_units.py`,
+  `build_wc3_references.py`), children from retail (`build_retail_references.py`).
+
+Tuning, `[tts]` with `[tts.voices.<voice>]` overrides (may name another clip as
+`reference`, which means its picks are never read): `exaggeration` and
+`cfg_weight` are model knobs; `speed` (varispeed), `tempo` (`atempo`) and
+`pitch` (`rubberband`, semitones) are ffmpeg filters after the model
+(`generate.encode_filters`), checked before the model loads
+(`require_filters`). Chatterbox pulls clones toward its own mid-range:
+Varimathras needed -3 to -5 semitones. Only knobs that differ from the defaults
+join the fingerprint, so tuning one voice restages exactly its files. To redo a
+voice after rebuilding its clip by hand: `generate.py --force --voice <voice>`.
+
+## Gotchas already paid for
+
+- A bash heredoc inside a Python heredoc terminates at the inner `EOF`.
+- `pkill -f 'tools/generate.py'` (and `pgrep -af`) match the shell running the
+  command; filter on `.venv/bin/python tools/generate.py` and stop with
+  `systemctl --user stop forever-vo-bulk`.
+- A suspend can kill the GPU until reboot (`journalctl -k | grep Xid`;
+  `nvidia-smi` still answers). `generate.py` refuses the CPU without `--cpu`.
+  GNOME suspends on its own idle timer regardless of logind inhibitors, so
+  `sleep-inactive-ac-type` is set to `'nothing'`; if a run dies at a round
+  two-hour mark, check that first.
+- After a search-and-replace edit, grep for the new text; a patch whose anchor
+  had drifted once silently never applied.
+- An index entry with `v: null` and no `t` is a probed placeholder, blind to the
+  voice and text checks; `generate.py --reindex` restamps `t`.
+- Anything that walks sounds by `glob("*/*.mp3")` misses the `Narrator/` and
+  `Sex/` folders by design; they have their own scans.
+- The wago.tools export is complete, but the beta's `BroadcastText` really is
+  12 rows; gossip is server-pushed.
+- Chatterbox occasionally repeats a word or drifts voice mid-take (#805, #883);
+  a fresh take (`generate.py --force --quest <id>`) fixes it.
 
 ## Things the owner wants next
 
-- Per-line configurability: let end users nudge text, voice, exaggeration or
-  pacing for a line and re-run Chatterbox for it themselves. `uv run audition`
-  (2026-09-24) covers the owner's side of this: hear variants, keep a voice's
-  settings or a respelling in the TOML, write one file into the pack. Not yet:
-  end users without the repo, pacing, parts and narrator alternates, and there
-  is deliberately no per-line table in the TOML.
+- Per-line configurability for end users without the repo (audition covers the
+  owner's side; not yet parts or narrator alternates).
 - A Discord bot as an alternative inbox for `FVO1:` strings (same decoder).
-- A complete base pack release once the Classic bulk run finishes (the first,
-  partial one went up 2026-09-22 with ~12,900 of ~18,000 files; the alternate
-  narrator voices were all still to come).
