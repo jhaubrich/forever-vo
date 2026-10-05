@@ -1,0 +1,92 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3516": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Arch Druid Fandral Staghelm",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4092": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Lariia",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "7999": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Tyrande Whisperwind",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1043",
+ "quests": {
+  "98046-accept": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1457,
+   "name": "Arch Druid Fandral Staghelm",
+   "npc": "3516",
+   "questID": 98046,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "<Arch $C Fandral Staghelm's gaze narrows.>\r\n\r\nYou're still here?\r\n\r\nTake the phial and get out of my sight, $c. It is clear my answers do not lie in the waters, just as they did not before. \r\n\r\nPerhaps one of the priestesses in the Temple of the Moon to the south will dispose of it.\r\n\r\n<Fandral looks away, no longer speaking to you.>\r\n\r\nI must look elsewhere if this is to work...",
+   "time": 1791242045,
+   "title": "Crown of the Earth",
+   "wanted": null,
+   "zone": "Darnassus"
+  },
+  "98046-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1457,
+   "name": "Lariia",
+   "npc": "4092",
+   "questID": 98046,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "How may I aid you?",
+   "time": 1791242340,
+   "title": "Crown of the Earth",
+   "wanted": null,
+   "zone": "Darnassus"
+  },
+  "98065-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1457,
+   "name": "Tyrande Whisperwind",
+   "npc": "7999",
+   "questID": 98065,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Please state your business. I have a city to run, and a people to lead.",
+   "time": 1791242695,
+   "title": "Crown of the Earth",
+   "wanted": null,
+   "zone": "Darnassus"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
