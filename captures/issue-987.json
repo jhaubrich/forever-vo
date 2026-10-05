@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1498": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Bethor Iceshard",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1937": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Apothecary Renferrel",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-987",
+ "quests": {
+  "444-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Bethor Iceshard",
+   "npc": "1498",
+   "questID": 444,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "My studies require great concentration.  So I hope your visit is not a frivolous one.",
+   "time": 1791204611,
+   "title": "Rot Hide Origins",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "446-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Apothecary Renferrel",
+   "npc": "1937",
+   "questID": 446,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, $N.  What did Bethor have to say?",
+   "time": 1791204891,
+   "title": "Thule Ravenclaw",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
