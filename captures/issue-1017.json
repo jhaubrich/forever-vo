@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "10537": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Cliffwatcher Longhorn",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "14242": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 986648,
+   "name": "Sulhasa",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3341": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Gann Stonespire",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1017",
+ "quests": {
+  "4542-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1441,
+   "name": "Cliffwatcher Longhorn",
+   "npc": "10537",
+   "questID": 4542,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "What do you want, $c? An urgent message - for me?\r\n",
+   "time": 1791107789,
+   "title": "Message to Freewind Post",
+   "wanted": null,
+   "zone": "Thousand Needles"
+  },
+  "843-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gann Stonespire",
+   "npc": "3341",
+   "questID": 843,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Many innocent $r lost their lives or were forced off their ancestral birthplace when the dwarves of Bael Modan arrived. My land must be reclaimed!",
+   "time": 1791105681,
+   "title": "Gann's Reclamation",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "846-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gann Stonespire",
+   "npc": "3341",
+   "questID": 846,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "I see you are back, $N.\n\nWhile Khazgorm's death might delay the digging in my ancestral lands some, it will by no means bring a total end to the destruction.\n\nThe Keep at Bael Modan is an increasing military threat. Built to defend the dig site, it is now poised for offensive force as well.\n\nIf you have the ingredients I requested, I can fashion a charge that will make the hasty dwarves reconsider their actions here in the Barrens.",
+   "time": 1791107265,
+   "title": "Revenge of Gann",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "98093-complete": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sulhasa",
+   "npc": "14242",
+   "questID": 98093,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Thank you for helping me out, $N. I'll let Camp Taurajo know you were able to rescue me. I'm so lucky you helped, I could have been stuck there all day!\r\n\r\nThis is all I have to spare, but I hope it's useful to you.\r\n\r\nI'll be making my exit once I make the careful climb down.",
+   "time": 1791105630,
+   "title": "Field to Clear",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
