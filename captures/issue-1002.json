@@ -1,0 +1,54 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "4596|256d7671": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "James Van Brunt",
+   "npc": "4596",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Very fine equipment you make, very fine indeed. Go to the Orc's home of Orgrimmar and seek out a smith named Saru Steelfury. One thing you must give the Orcs, they make beautiful instruments of death.",
+   "time": 1791216268,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "4596": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "James Van Brunt",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4598": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Brom Killian",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5819": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Mirelle Tremayne",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1002",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
