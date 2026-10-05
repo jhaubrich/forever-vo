@@ -1,5 +1,5 @@
 local _, ns = ...
-local Packs, Queue = ns.Packs, ns.Queue
+local Packs, Queue, Util = ns.Packs, ns.Queue, ns.Util
 
 --[[
 A "Play" button on the book window (ItemTextFrame, Blizzard_UIPanels_Game),
@@ -44,7 +44,13 @@ function Book:GetButton()
     end)
     button:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(self:IsEnabled() and "Read this page aloud" or "No voiceover for this page", 1, 1, 1)
+        local label = "No voiceover for this page"
+        if Book:ReadingActive() then
+            label = "Stop reading"
+        elseif self:IsEnabled() then
+            label = "Read this page aloud"
+        end
+        GameTooltip:SetText(label, 1, 1, 1)
         GameTooltip:Show()
     end)
     button:SetScript("OnLeave", GameTooltip_Hide)
@@ -56,12 +62,42 @@ end
 function Book:ShowPage(item)
     self.page = item
     if self.reading and self.reading ~= item.name then
-        self.reading, self.heard = nil, {}
+        self:StopReading()
     end
     if self.reading and item.path and not self.heard[item.path] then
         self:Enqueue(item)
     end
     self:Update()
+end
+
+--- True while this button still has pages in the queue. The page on screen
+--- finishes first and drops out of self.queued; the rest of the reading is
+--- still going, and Stop has to survive that.
+function Book:ReadingActive()
+    for _, each in pairs(self.queued) do
+        if Queue:Contains(each) then
+            return true
+        end
+    end
+    return false
+end
+
+--- Takes every page this button queued off the queue. The one that is playing
+--- goes last, so Remove does not start the next page only to stop it.
+function Book:StopReading()
+    self.reading, self.heard = nil, {}
+    local playing, rest = Queue:Current(), {}
+    for _, each in pairs(self.queued) do
+        if each ~= playing then
+            rest[#rest + 1] = each
+        end
+    end
+    for _, each in ipairs(rest) do
+        Queue:Remove(each)
+    end
+    if playing and self.queued[playing.path] == playing then
+        Queue:Remove(playing)
+    end
 end
 
 function Book:Update()
@@ -70,28 +106,18 @@ function Book:Update()
         return
     end
     local item = self.page
-    button:SetEnabled(item ~= nil and item.path ~= nil)
-    local queued = item and item.path and self.queued[item.path]
-    button:SetText(queued and Queue:Contains(queued) and "Stop" or "Play")
+    local stopping = self:ReadingActive()
+    button:SetEnabled(stopping or (item ~= nil and item.path ~= nil))
+    button:SetText(stopping and "Stop" or "Play")
 end
 
 function Book:OnClick()
-    local item = self.page
-    if not item or not item.path then
+    if self:ReadingActive() then
+        self:StopReading()
         return
     end
-    local path = item.path
-    local queued = self.queued[path]
-    if queued and Queue:Contains(queued) then
-        -- Stop ends the reading: the pages queued after this one go too
-        self.reading, self.heard = nil, {}
-        local all = {}
-        for _, each in pairs(self.queued) do
-            all[#all + 1] = each
-        end
-        for _, each in ipairs(all) do
-            Queue:Remove(each)
-        end
+    local item = self.page
+    if not item or not item.path then
         return
     end
     -- A new reading: every linked page is read again, except one still queued
@@ -110,7 +136,7 @@ function Book:OnClick()
         local waiting = self.queued[nextPath]
         if not self.heard[nextPath] and not (waiting and Queue:Contains(waiting)) then
             items[#items + 1] = self:Prepare({
-                kind = "book", event = "page", text = page.t, name = item.name,
+                kind = "book", event = "page", text = self:Spoken(page), name = item.name,
                 title = page.p and format("Page %d", page.p) or nil,
                 isObject = true, path = nextPath, duration = duration, pack = pack, voice = voice, entry = page,
             })
@@ -125,6 +151,23 @@ function Book:OnClick()
         end
     end
     self:Update()
+end
+
+--- What the talking head shows. The live page is already the client's prose.
+--- A page Play queues next is not on screen, so it uses `s` (the spoken
+--- prose); `t` stays raw for FindBook and would show $B or <HTML>. A $g
+--- branch in `s` is resolved for this character.
+function Book:Spoken(entry, live)
+    if type(live) == "string" and live ~= ""
+        and not live:lower():find("<html", 1, true)
+        and not live:find("%$[A-Za-z]") then
+        return live
+    end
+    local spoken = entry and entry.s
+    if type(spoken) == "string" and spoken ~= "" then
+        return Util.ResolveGender(spoken, Util.PlayerSexLetter())
+    end
+    return ""
 end
 
 function Book:Enqueue(item)

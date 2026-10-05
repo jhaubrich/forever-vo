@@ -317,7 +317,7 @@ function Events.ITEM_TEXT_READY()
         NotifyUnvoiced(format("\"%s\"", title or "this book"), "book:" .. (title or "?"))
     end
     ns.UI.Book:ShowPage({
-        kind = "book", event = "page", text = text, name = title,
+        kind = "book", event = "page", text = ns.UI.Book:Spoken(entry, text), name = title,
         title = (page and (page > 1 or ItemTextHasNextPage())) and format("Page %d", page) or nil,
         isObject = true, path = path, duration = duration, pack = pack, voice = voice, entry = entry,
     })

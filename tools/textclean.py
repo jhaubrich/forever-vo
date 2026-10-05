@@ -79,6 +79,16 @@ def book_text(text: str) -> str:
     return " ".join(pieces)
 
 
+def book_display(text: str) -> str:
+    """Prose for the talking head. HTML is read as sentences and dollar codes
+    become the words the narrator says, but a $g branch is left for the addon
+    to resolve and TTS respellings are not applied. The raw page stays on the
+    record for FindBook."""
+    text = _substitute(book_text(text))
+    text = _STAGE_DIRECTION_TEXT.sub(r"\1", text)
+    return _WHITESPACE.sub(" ", text.replace("\r", " ").replace("\n", " ")).strip()
+
+
 def has_gender_branch(text: str) -> bool:
     return bool(_GENDER.search(text))
 

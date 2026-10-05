@@ -57,15 +57,19 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- pipeline knows only by model (Forever's own NPCs have no display ID);
       -- a player who sees another model exports the NPC record (Capture.lua)
     books = {
-      ["1a2b3c4d"] = { d = 12.3, t = "original page text", b = "A Letter to Morgan", p = 1,
-                       x = "5e6f7a8b", g = true, n = { [1] = 12.9 } },
+      ["1a2b3c4d"] = { d = 12.3, t = "original page text", s = "original page text",
+                       b = "A Letter to Morgan", p = 1, x = "5e6f7a8b", g = true,
+                       n = { [1] = 12.9 } },
       -- one entry per page of readable text (a book in the bags, a plaque or
       -- lectern in the world: both open ItemTextFrame), keyed by
-      -- Util.TextKey of the page. Always the narrator. b: the title the
-      -- client shows (ItemTextGetItem), which bounds the fuzzy fallback to
-      -- that book's own pages; p: its page number; x: the key of the voiced
-      -- page after it, which Play reads on to without the player turning
-      -- (the client hands an addon only the page on screen); g and n as on a
+      -- Util.TextKey of the page. Always the narrator. t: the raw page, which
+      -- FindBook matches and which still holds $g. s: the prose the talking
+      -- head shows for a page that is not on screen ($ codes spoken, HTML read
+      -- as sentences, $g left for ResolveGender). b: the title the client
+      -- shows (ItemTextGetItem), which bounds the fuzzy fallback to that
+      -- book's own pages; p: its page number; x: the key of the voiced page
+      -- after it, which Play reads on to without the player turning (the
+      -- client hands an addon only the page on screen); g and n as on a
       -- gossip entry. Files are Sounds\Books\<key>-page.mp3.
     },
     narratorVoices = { "skyborne-female" },

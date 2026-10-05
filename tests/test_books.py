@@ -19,7 +19,7 @@ from tools.generate import (
 )
 from tools.ingest import Repairs, SourceTexts, backfill, book_key, ingest_file
 from tools.release_pack import delta_member, file_stamp, line_files, pack_specs
-from tools.textclean import book_text
+from tools.textclean import book_display, book_text
 from tools.textkey import text_key
 
 CONFIG = load_config()
@@ -172,34 +172,56 @@ def test_an_html_page_is_read_as_prose() -> None:
     )
     assert book_text(picture) == ""
     assert book_text("Plain <text> stays.") == "Plain <text> stays."
+    assert book_display(pylon) == book_text(pylon)
+    assert book_display(picture) == ""
+    assert book_display("Hello $B$B $n.") == "Hello adventurer."
+    assert "$g" in book_display(LETTER)
     variant = page(picture).variants()[0]
     assert variant.text == ""  # is_speakable refuses it, so no file
 
 
 def test_each_voiced_page_links_to_the_next() -> None:
-    def record(title: str, number: int) -> dict:
-        return {"d": 1.0, "t": "", "b": title, "p": number}
+    classic = "The five dragonflights watch over Azeroth from their temples."
+    reword = "The five dragonflights watch over Azeroth from their shrines."
+    other = "Bring the crate to the barn behind the inn before nightfall."
+
+    def record(title: str, number: int, text: str) -> dict:
+        return {"d": 1.0, "t": text, "b": title, "p": number}
 
     books = {
-        "a1": record("Charge", 1),
-        "a2": record("Charge", 2),
-        "a2-old": record("Charge", 2),  # Classic's page 2, reworded by Forever
-        "a3": record("Charge", 3),
-        "l1": record("Letter", 1),
-        "l2": record("Letter", 2),
-        "l2-other": record("Letter", 2),  # another letter of the same name
-        "n1": {"d": 1.0, "t": "", "b": None, "p": 1},
+        "a1": record("Charge", 1, "Page one of the charge."),
+        "a2": record("Charge", 2, reword),
+        "a2-old": record("Charge", 2, classic),  # Classic's page 2, reworded
+        "a3": record("Charge", 3, "Page three."),
+        "l1": record("Letter", 1, "Master Carevin,"),
+        "l2": record("Letter", 2, "Yours, Morgan."),
+        "l2-other": record("Letter", 2, other),  # another letter of the same name
+        "u1": record("Plaque", 1, "Only this plaque."),
+        "u2": record("Plaque", 2, "Its second page, worded nothing like a letter."),
+        "n1": {"d": 1.0, "t": "no title", "b": None, "p": 1},
     }
     sources = {
-        "a2": {"player": "Hepcat"},  # read in game: wins its place
-        "a2-old": {"source": "classic", "next": "a3"},
-        "l1": {"source": "classic", "next": "l2"},  # Classic's own link
+        "a1": {
+            "source": "classic",
+            "next": "a2-old",
+            "text": "Page one of the charge.",
+        },
+        "a2": {"player": "Hepcat", "text": reword},
+        "a2-old": {"source": "classic", "next": "a3", "text": classic},
+        "l1": {"source": "classic", "next": "l2", "text": "Master Carevin,"},
+        "l2-other": {"player": "Jesse", "text": other},
+        "u1": {"source": "classic", "next": "missing"},
+        "u2": {"player": "Jesse", "text": books["u2"]["t"]},
         "a3": {"source": "classic", "next": "gone"},  # a page with no audio
     }
     link_pages(books, sources)
-    assert books["a1"]["x"] == "a2"
+    assert books["a1"]["x"] == "a2"  # the reword of this page's own next
+    assert books["a2-old"]["t"] == classic  # Classic's page is still stored
     assert books["a2"]["x"] == "a3"  # the one page 3
-    assert books["l1"]["x"] == "l2"
+    assert books["l1"]["x"] == "l2"  # not the other letter, though that one was read
+    assert books["l2"]["t"] == "Yours, Morgan."
+    assert books["l2-other"]["t"] == other
+    assert books["u1"]["x"] == "u2"  # the only page of that number
     assert "x" not in books["a3"] and "x" not in books["n1"]
     assert "x" not in books["l2"]
 
@@ -229,6 +251,7 @@ def test_the_tables_carry_each_page_with_its_alternate_narrators(
     assert "pack.books = {" in books
     assert f'["{line.hash}"] = {{ d=4.500,' in books
     assert 'b="A Letter"' in books
+    assert 's="To the Honorable Headmaster Crillian."' in books
     assert "n={ [1]=4.700 }" in books
     narrator = (data / "Narrator.lua").read_text(encoding="utf-8")
     assert f'pack.narratorVoices = {{ "{alternate}" }}' in narrator

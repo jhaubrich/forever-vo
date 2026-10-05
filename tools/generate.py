@@ -62,8 +62,10 @@ from tools.config import (
     TtsSettings,
     load_config,
 )
+from tools.ingest import _aligned
 from tools.luatable import lua_string
 from tools.textclean import (
+    book_display,
     book_text,
     chunk,
     clean,
@@ -1064,17 +1066,20 @@ def model_cast(item: Item) -> int | None:
     return int(model)
 
 
-def link_pages(books: dict[str, dict], sources: dict[str, dict]) -> None:
-    """Sets `x` on each voiced page to the key of the voiced page after it, so the
-    addon's Play reads a book on past the page on screen: the client hands an
-    addon only the page in front of the player.
+def _book_page_text(key: str, books: dict[str, dict], sources: dict[str, dict]) -> str:
+    """The page's raw text, from its source entry or the table's `t`."""
+    source = sources.get(key) or {}
+    return source.get("text") or (books.get(key) or {}).get("t") or ""
 
-    The page after is the one with the same title and the next page number. A
-    page read in game wins over Classic's for that place (Forever reworded it,
-    so Classic's still sits beside it under its old key), then Classic's own
-    link, then a place only one page holds. Two books sharing a title and a
-    page number with nothing to tell them apart get no link; the player turns
-    the page and Play goes on from there."""
+
+def link_pages(books: dict[str, dict], sources: dict[str, dict]) -> None:
+    """Sets `x` on each voiced page to the key of the voiced page after it.
+
+    The page after has the same title and the next page number. A captured page
+    replaces Classic's own `next` only when it is that page reworded (the same
+    0.9 alignment ingest uses), or when it is the only page in that place.
+    Several books share titles (Crystallized Note, Decoded Twilight Text); one
+    captured page of another book must not take this book's link."""
     places: dict[tuple[str, int], list[str]] = {}
     for key, record in books.items():
         if record.get("b") and record.get("p"):
@@ -1089,7 +1094,18 @@ def link_pages(books: dict[str, dict], sources: dict[str, dict]) -> None:
             if sources.get(c, {}).get("player") or sources.get(c, {}).get("origin")
         ]
         stated = sources.get(key, {}).get("next")
-        if len(captured) == 1:
+        # A captured page may take this slot when it is the only one there, or
+        # when its text is this page's own next, reworded. Any other single
+        # capture is a different book of the same name.
+        reword = (
+            len(captured) == 1
+            and stated
+            and _aligned(
+                _book_page_text(captured[0], books, sources),
+                _book_page_text(stated, books, sources),
+            )
+        )
+        if len(captured) == 1 and (len(candidates) == 1 or reword):
             record["x"] = captured[0]
         elif stated in books:
             record["x"] = stated
@@ -1361,7 +1377,10 @@ def rebuild_tables(
             # sex. Keyed by the text key the addon computes from the live page.
             books[item.hash] = {
                 "d": duration,
+                # `t` is the raw page FindBook matches. `s` is the prose the
+                # talking head shows, so a later page is not $B or <HTML>.
                 "t": item.raw_text.replace("\r", " ").replace("\n", " "),
+                "s": book_display(item.raw_text) or None,
                 "b": item.entry.get("title") or None,
                 "p": item.entry.get("page") or None,
                 "g": gendered or None,

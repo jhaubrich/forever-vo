@@ -87,10 +87,15 @@ own recordings).
   page in every narrator voice. Nothing plays on opening: a Play button under
   the book (`UI/Book.lua`, the owner's call) reads the page on screen and every
   voiced page after it. The client hands an addon only the page on screen, so
-  each page record carries `p` (its number) and `x` (the next voiced page's
-  key, `generate.link_pages`); a page turn or closing the book never stops a
-  reading, after Play a page turned to beyond the chain queues too, Stop clears
-  it, and Play again starts a fresh one. Pages are captured only as viewed: the
+  each page record carries `p` (its number), `x` (the next voiced page's key)
+  and `s` (the prose the talking head shows; `t` stays the raw page FindBook
+  matches). `generate.link_pages` takes Classic's `next`, and lets a captured
+  page replace that next only when the capture rewords it or is the only page
+  of that number: one reading of a shared title must not chain every book of
+  that name. A page turn or closing the book never stops a reading; after Play
+  a page turned to beyond the chain queues too; Stop clears every page this
+  button queued, including ones already past the page on screen, and Play again
+  starts a fresh one. Pages are captured only as viewed: the
   addon does not turn pages itself, and the client's `pagetextcache.wdb` is out
   for the same reason as the quest cache (#317).
 - `luac -p` every changed Lua file (`./tools/run.sh luac -p <file>`). There is
