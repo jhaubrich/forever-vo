@@ -20,7 +20,7 @@ Voice packs, each its own CurseForge project, no line in two of them:
   (`ForeverVO_Data_Classic_Quests`) — Classic's quests up to level 40.
 - **[Forever Voiceover: Classic Endgame](https://www.curseforge.com/wow/addons/forever-voiceover-classic-endgame)**
   (`ForeverVO_Data_Classic_Endgame`) — Classic's quests from level 41 up.
-- **[Forever Voiceover: Classic Gossip](https://www.curseforge.com/wow/addons/forever-voiceover-classic-gossip)**
+- **[Forever Voiceover: Classic Gossip](https://www.curseforge.com/wow/addons/voiceover-forever-classic-gossip)**
   (`ForeverVO_Data_Classic_Gossip`) — what Classic's NPCs say when you talk to
   them.
 - **[Forever Voiceover: Forever Quests](https://www.curseforge.com/wow/addons/forever-voiceover-forever-quests)**
