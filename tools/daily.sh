@@ -81,12 +81,20 @@ if pgrep -f 'tools/generate.py' >/dev/null; then
     echo "a manual generate.py is running; leaving generation to it"
     exit 0
 fi
+# As many shards as the bulk service runs (its workers.conf drop-in), so one
+# knob sets both and a night with the game closed gets two workers throughout
+if [ -z "${FOREVER_VO_WORKERS:-}" ]; then
+    FOREVER_VO_WORKERS="$(systemctl --user show forever-vo-bulk.service -p Environment --value |
+        tr ' ' '\n' | sed -n 's/^FOREVER_VO_WORKERS=//p' | tail -1)"
+fi
+export FOREVER_VO_WORKERS="${FOREVER_VO_WORKERS:-1}"
 # Captured lines first, then the bulk backlog until GEN_UNTIL (timeout returns
-# 124 when it cuts a pass short; files already written are kept)
-echo "generating until $(date -d "@$GEN_UNTIL" +%H:%M)"
-timeout "$(remaining)" ./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+# 124 when it cuts a pass short, and bulk.sh passes the stop on to its shards;
+# files already written are kept)
+echo "generating until $(date -d "@$GEN_UNTIL" +%H:%M) with $FOREVER_VO_WORKERS worker(s)"
+timeout "$(remaining)" ./tools/bulk.sh --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 if [ "$(remaining)" -gt 60 ]; then
-    timeout "$(remaining)" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+    timeout "$(remaining)" ./tools/bulk.sh 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 fi
 ./tools/run.sh tools/generate.py --tables-only 2>&1 | tail -1 || true
 # What the timed run left behind, from the same todo list it walked (a dry run
