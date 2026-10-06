@@ -211,7 +211,7 @@ Generation details:
   apart by the last segment (`generate.sound_folder`), not by whether the first
   is numeric.
 - Narrator lines (objects, items, genderless speakers) are made once per voice
-  in `[voices]`: `narrator` (human-male's clip) at the plain path, each of
+  in `[voices]`: `narrator` (skyborne-male's clip, human-male's until 2026-10-06) at the plain path, each of
   `narrator_alternates` under `Sounds/<Quests|Gossip>/Narrator/<voice>/` (index
   key `Narrator/<voice>/<base>`, `Data/Narrator.lua`, gossip `n`). Alternates
   sort last in the to-do list. Releases only include configured voices; dropped

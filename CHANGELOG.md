@@ -9,6 +9,10 @@
   close the book, and a page you turn to beyond what was queued is read after
   it; **Stop** ends the reading. A page no voice pack
   has yet is saved for your next export, like unvoiced quests and gossip.
+- The default narrator is now a skyborne male voice instead of the human
+  male one, and the narrator menu says so. Skyborne female is still the
+  other choice. Lines switch over as the voice packs are regenerated, so
+  you will hear both for a while.
 - The count of quests to send (login window, Options, minimap button) leaves
   out lines a voice pack you installed since has voiced or stopped asking
   for. It used to keep counting them until your next export.
