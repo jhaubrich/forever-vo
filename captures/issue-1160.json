@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "5759|a28d29e1": {
+   "build": "70245",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Nurse Neela",
+   "npc": "5759",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "I can train you in First Aid techniques.",
+   "time": 1791329545,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "5759": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Nurse Neela",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1160",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
