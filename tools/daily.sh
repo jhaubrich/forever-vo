@@ -94,13 +94,13 @@ BULK_PENDING="$(./tools/run.sh tools/generate.py --dry-run 2>/dev/null | sed -n 
 BULK_PENDING="${BULK_PENDING:-0}"
 echo "backlog after this run: $BULK_PENDING files"
 
-# Publish to CurseForge when each pack is worth an update. Books (25+ new files)
+# Publish to CurseForge when each pack is worth an update. Books (10+ new files)
 # and Base Endgame (20+) first, since building one records its baseline, which
 # takes its lines out of the delta; a re-voiced line rides the delta meanwhile.
 # Then the Forever delta: 20+ new files, or a week with any change. A pack the
 # API refuses is recorded all the same and must be uploaded by hand soon, so
 # say so on the desktop; the tail keeps release_pack's instructions in this log.
-for args in "books --min-new 25" "base_endgame --min-new 20" "delta --min-new 20 --max-age-days 7"; do
+for args in "books --min-new 10" "base_endgame --min-new 20" "delta --min-new 20 --max-age-days 7"; do
     # shellcheck disable=SC2086
     OUT="$(./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true)"
     echo "$OUT"

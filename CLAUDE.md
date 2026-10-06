@@ -278,7 +278,7 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
   file at 1 GB**, and the API refuses far less, which is why Base is split.
 - **Books** "Data: Books" (`ForeverVO_Data_Books`, `books`, priority 100,
   ~230 MB with one alternate narrator): every book page, Classic's and
-  Forever's alike, kept out of Base for the 1 GB cap. Nightly once 25 files are
+  Forever's alike, kept out of Base for the 1 GB cap. Nightly once 10 files are
   new. A pack with no files yet is never released. Until its baseline is
   recorded, only pages read in game go in the delta, or the whole Classic set
   would flood it.
