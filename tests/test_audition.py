@@ -95,8 +95,9 @@ def test_write_speaker_voice_pins_and_unpins_and_keeps_comments(
     assert "# One speaker always in one voice" in text
     config = write_speaker_voice(toml_copy, "2991", "")
     assert "2991" not in config.voices.speakers
-    # the last entry takes the table with it
-    config = write_speaker_voice(toml_copy, "248200", "")
+    # the last entry takes the table with it, whichever pins the real file holds
+    for speaker in list(config.voices.speakers):
+        config = write_speaker_voice(toml_copy, speaker, "")
     assert config.voices.speakers == {}
     assert "[voices.speakers]" not in toml_copy.read_text(encoding="utf-8")
 
