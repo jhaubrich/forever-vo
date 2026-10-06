@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.9
 
 - Voice lines play at an even volume. They used to range from quite quiet to
   fairly loud, line to line; every voice pack file is now levelled to the
