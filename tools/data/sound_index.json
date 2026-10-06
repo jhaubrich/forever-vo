@@ -11396,7 +11396,7 @@
  },
  "1482-complete": {
   "d": 40.0,
-  "t": "caa7dfad+cfg_weight=0.1,clips=a724588e,exaggeration=0.7,pitch=-1.0",
+  "t": "retake-40s-cap",
   "v": "scourge-male-dark"
  },
  "14822-022d92ce": {
@@ -12641,7 +12641,7 @@
  },
  "15126-425e11b4": {
   "d": 40.0,
-  "t": "425e11b4+cfg_weight=0.1,clips=a724588e,exaggeration=0.7,pitch=-1.0",
+  "t": "retake-40s-cap",
   "v": "scourge-male-dark"
  },
  "15127-e2791228": {
@@ -16151,7 +16151,7 @@
  },
  "16283-9dc7dc4d": {
   "d": 40.0,
-  "t": "9dc7dc4d+cfg_weight=0.3,clips=264d8895,exaggeration=0.7",
+  "t": "retake-40s-cap",
   "v": "dwarf-male"
  },
  "16284-b614317f": {
@@ -19431,7 +19431,7 @@
  },
  "177-accept": {
   "d": 40.0,
-  "t": "2647f326",
+  "t": "retake-40s-cap",
   "v": "banshee-female"
  },
  "177-complete": {
@@ -23466,7 +23466,7 @@
  },
  "2391-11012350": {
   "d": 40.0,
-  "t": "11012350+cfg_weight=0.1,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5",
+  "t": "retake-40s-cap",
   "v": "scourge-male-standard"
  },
  "2391-5dffcf15": {
@@ -23476,7 +23476,7 @@
  },
  "2391-9a18bb90": {
   "d": 40.0,
-  "t": "9a18bb90+cfg_weight=0.1,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5",
+  "t": "retake-40s-cap",
   "v": "scourge-male-standard"
  },
  "2391-d1d4b01c": {
@@ -23916,7 +23916,7 @@
  },
  "2480-accept": {
   "d": 40.0,
-  "t": "cbd6d2ee+cfg_weight=0.1,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5",
+  "t": "retake-40s-cap",
   "v": "scourge-male-standard"
  },
  "2480-complete": {
@@ -39926,7 +39926,7 @@
  },
  "4109-complete": {
   "d": 40.0,
-  "t": "2837d889",
+  "t": "retake-40s-cap",
   "v": "tauren-female"
  },
  "411-accept": {
@@ -50911,7 +50911,7 @@
  },
  "5663-accept": {
   "d": 40.0,
-  "t": "c4be9f59+cfg_weight=0.1,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5",
+  "t": "retake-40s-cap",
   "v": "scourge-male-standard"
  },
  "5663-complete": {
@@ -58061,7 +58061,7 @@
  },
  "6739-f9fa0d11": {
   "d": 40.0,
-  "t": "f9fa0d11+cfg_weight=0.1,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5",
+  "t": "retake-40s-cap",
   "v": "scourge-male-standard"
  },
  "6739-fde1fb79": {
@@ -63671,7 +63671,7 @@
  },
  "758-accept": {
   "d": 40.0,
-  "t": "c45f1a64+cfg_weight=0.3,exaggeration=0.4",
+  "t": "retake-40s-cap",
   "v": "tauren-male-shaman"
  },
  "758-complete": {
@@ -64691,7 +64691,7 @@
  },
  "7714-f9fa0d11": {
   "d": 40.0,
-  "t": "f9fa0d11+cfg_weight=0.3,clips=3c6712d9,exaggeration=0.4",
+  "t": "retake-40s-cap",
   "v": "tauren-male"
  },
  "772-accept": {
@@ -66131,7 +66131,7 @@
  },
  "7783-4ef8d7d2": {
   "d": 40.0,
-  "t": "9448d017+cfg_weight=0.3,pitch=-1.0",
+  "t": "retake-40s-cap",
   "v": "nightelf-male-warrior"
  },
  "7783-648388c7": {
@@ -67086,12 +67086,12 @@
  },
  "7883-complete": {
   "d": 40.0,
-  "t": "0cacbd62+cfg_weight=0.1,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5",
+  "t": "retake-40s-cap",
   "v": "scourge-male-standard"
  },
  "7884-complete": {
   "d": 40.0,
-  "t": "939f012e+cfg_weight=0.1,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5",
+  "t": "retake-40s-cap",
   "v": "scourge-male-standard"
  },
  "7885-complete": {
@@ -133099,7 +133099,7 @@
  },
  "f-6362-complete": {
   "d": 40.0,
-  "t": "ad48073c+cfg_weight=0.3,exaggeration=0.4",
+  "t": "retake-40s-cap",
   "v": "tauren-male-shaman"
  },
  "f-64-complete": {
