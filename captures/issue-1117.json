@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "1287|ed056522": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Marda Weller",
+   "npc": "1287",
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Best deals in all of Stormwind my friend, won't find any better. Now, what can I help you with?",
+   "time": 1791297835,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "1287": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Marda Weller",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1117",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
