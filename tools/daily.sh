@@ -97,12 +97,14 @@ echo "backlog after this run: $BULK_PENDING files"
 
 # Publish to CurseForge when each pack is worth an update: every pack goes
 # whole through the API once enough of its files are new, gone or changed (a
-# re-voiced line counts), and the Forever packs, which players feed, after a
-# week with any change too. A build re-encodes only what changed. A pack the
+# re-voiced line counts), or after a week with any change, so the last few
+# files of a re-voicing do not wait for unrelated ones. A build re-encodes
+# only what changed. A pack the
 # API refuses is recorded all the same and must be uploaded by hand soon, so
 # say so on the desktop; the tail keeps release_pack's instructions in this log.
 for args in "classic_quests --min-new 20" "classic_endgame --min-new 20" "classic_gossip --min-new 20" \
-    "forever_quests --min-new 20 --max-age-days 7" "forever_gossip --min-new 20 --max-age-days 7" "books --min-new 10"; do
+    "forever_quests --min-new 20" "forever_gossip --min-new 20" "books --min-new 10"; do
+    args="$args --max-age-days 7"
     # shellcheck disable=SC2086
     OUT="$(./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true)"
     echo "$OUT"
