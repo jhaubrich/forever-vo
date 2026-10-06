@@ -111,6 +111,16 @@ voljin = ["warchief_voljin"]  # Legion and Battle for Azeroth, long speeches
 # model readings came out tauren and orc, read before 0.1.7 fixed the capture.
 [voices.speakers]
 "248200" = "goblin-male"
+# The druid spirits have no race to cast them from and fell to the narrator: the
+# bear speaks as a tauren elder, the cat as a night elf warrior.
+"11956" = "tauren-male-elder"
+"11957" = "nightelf-male-warrior"
+# Stand-ins for speakers that fell to the narrator, until they get voices of
+# their own: the dragons Anachronos (bronze) and Emberstrife (black) in a blood
+# elf's, Sayge (a hyena) in an old troll woman's.
+"15192" = "bloodelf-male"
+"10321" = "bloodelf-male"
+"14822" = "troll-female-old"
 
 # NPCSounds set -> voice, for a creature whose display the client tables give no
 # race and no species clip covers: the set Blizzard cast it with still says who it
