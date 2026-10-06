@@ -1,0 +1,77 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "1231": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 118355,
+   "name": "Grif Wildheart",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1073",
+ "quests": {
+  "6064-complete": {
+   "build": "70235",
+   "class": "Hunter",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Grif Wildheart",
+   "npc": "1231",
+   "questID": 6064,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "I know, I know; you're wondering what's next, aren't ya?!",
+   "time": 1791270473,
+   "title": "Taming the Beast",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "6064-progress": {
+   "build": "70235",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Grif Wildheart",
+   "npc": "1231",
+   "questID": 6064,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Don't worry, lad! You'll get ta try a few before you'll need to decide on just one.",
+   "time": 1791270471,
+   "title": "Taming the Beast",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  },
+  "6084-accept": {
+   "build": "70235",
+   "class": "Hunter",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Grif Wildheart",
+   "npc": "1231",
+   "questID": 6084,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Those crag boars are quite burly; maybe you'd like something with a little more finesse? Alright then, I've got jus' the thing. South and east of here, you'll find large white cats called snow leopards. Just like an elegantly-carved rifle, behind their beautiful exterior lies a powerful fighter, capable of doing extreme damage. You'll find them to be much more agile an' swift than the boar you tamed.\n\nTake this taming rod and see how you like the snow leopard.",
+   "time": 1791270475,
+   "title": "Taming the Beast",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
