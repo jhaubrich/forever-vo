@@ -1,0 +1,121 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "257020|1a6886aa": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Nasalanna Windsinger",
+   "npc": "257020",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, hello. You look as though you have a question for me.",
+   "time": 1791235226,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251903": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Rathiril Sunlance",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "256386": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Dokimi",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "257020": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Nasalanna Windsinger",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "263664": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Raan Wildwind",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1071",
+ "quests": {
+  "92596-accept": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Rathiril Sunlance",
+   "npc": "251903",
+   "questID": 92596,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "The aura of arcane energy that surrounds you is strong, even for a $c such as yourself. \r\n\r\nCome, let us sit and speak some on the nature of the arcane and the plight of our homeland.",
+   "time": 1791234848,
+   "title": "The High Order",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "97973-accept": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 97973,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Tailoring is a surprisingly potent tradeskill to invest in, and I'm sure it'll serve you well.\r\n\r\nI know someone that can teach you how to craft a Faction Banner for your camp, provided you have the skill for it. Inspiration and morale are a key part of success on any battlefield, and an inspirational banner can go a long way to keeping you energized.",
+   "time": 1791236031,
+   "title": "Camping 101: Tailoring",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "98286-accept": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Raan Wildwind",
+   "npc": "263664",
+   "questID": 98286,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Enchanters make everything better and are always welcome at any camp out in the wilds.\r\n\r\nI reckon I know someone that can teach you how to craft an Enchanted Lute for your camp. It's so important to find entertainment during your downtime, and this bit of magic can help ensure you are ready to weather all sorts of challenges when you hit the old dusty trail once again.",
+   "time": 1791236033,
+   "title": "Camping 101: Enchanting",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
