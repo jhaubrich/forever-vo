@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Voice lines play at an even volume. They used to range from quite quiet to
+  fairly loud, line to line; every voice pack file is now levelled to the
+  same loudness, a little louder than most were. The packs are re-released
+  once for this.
 - NPCs that come as men and women under one name (Ravenholdt Assassins,
   city guards, grunts, Commendation Officers, holiday revelers) speak in the
   voice of the one in front of you. The women among them were read in a
