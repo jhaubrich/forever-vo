@@ -30,8 +30,11 @@ Four addons on CurseForge: the player, and three voice packs that stack.
   are the lines being crowd sourced, so it grows as players run `/fvo export`.
   Its higher priority means it overrides the base pack wherever both have a
   line.
+- **[Forever Voiceover Data: Books](https://www.curseforge.com/wow/addons/forever-voiceover-data-books)**
+  (`ForeverVO_Data_Books`, priority 100) — books, letters and plaques, Classic's
+  and Forever's, read by the narrator when you press Play under the book.
 
-Install either pack, both, or neither — the player works on its own, it just has
+Install any of the packs, all of them, or none — the player works on its own, it just has
 nothing to say until a pack is there.
 
 Built for the Forever client only (Camelot, interface 16001). It uses the

@@ -236,7 +236,7 @@ Installed by `tools/install-timer.sh`:
 
 - `forever-vo-daily.timer` — 02:30 nightly, done by 07:00: sync and ingest
   (`tools/ingest.sh`), voice captured lines, work the backlog until 45 min
-  before 07:00, rebuild tables, upload the delta, commit and push. It stops the
+  before 07:00, rebuild tables, upload Books and the delta, commit and push. It stops the
   bulk service for the duration and restarts it from an `EXIT` trap, also when a
   final `--dry-run` still counts files.
 - `forever-vo-bulk.service` — `tools/bulk.sh`, the long resumable run:
@@ -278,11 +278,13 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
   the baseline, so upload what you build.
 - **Books** "Data: Books" (`ForeverVO_Data_Books`, `books`, priority 100,
   ~230 MB with one alternate narrator): every book page, Classic's and
-  Forever's alike, kept out of Base for the 1 GB cap. Between Books releases,
-  new and re-voiced pages ride the delta. Its project ID goes under
-  `[release.curseforge_projects]` once created. Until its baseline is recorded,
-  only pages read in game go in the delta, or the whole Classic set would flood
-  it.
+  Forever's alike, kept out of Base for the 1 GB cap. Small enough for the API,
+  so the nightly uploads it once 25+ files are new (`release_pack.py books --upload
+  --if-changed --min-new 25`, before the delta: building it records its baseline, which
+  takes its pages out of the delta). Over `delta_cap_mb` it stops and asks for
+  a website upload. A pack with no files yet is never released.
+  Until its baseline is recorded, only pages read in game go in the delta, or
+  the whole Classic set would flood it.
 
 `release_pack.py` builds from the working folder `ForeverVO_Data` (never
 shipped), re-encodes to mono 32 kbps mp3 at 22.05 kHz **with no Xing/Info

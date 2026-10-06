@@ -26,9 +26,11 @@ everything on the maintainer's machine):
                                              read in game, in every narrator
                                              voice. Its own project, since the
                                              Base packs are near the 1 GB cap.
-                                             Until it has been built with a
-                                             baseline, the delta carries only
-                                             the pages read in game.
+                                             About 230 MB whole, so it uploads
+                                             nightly through the API, before
+                                             the delta. Until it has been built
+                                             with a baseline, the delta carries
+                                             only the pages read in game.
 
     ./tools/run.sh tools/release_pack.py delta               # build zip only
     ./tools/run.sh tools/release_pack.py delta --upload      # and upload to CurseForge
@@ -631,6 +633,11 @@ def main(argv: list[str] | None = None) -> int:
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
     fingerprint = pack_files(stats)
+    if not fingerprint:
+        # Books before any page is voiced: an empty pack would only record an
+        # empty baseline and confuse players
+        print(f"{args.pack}: no sound files yet; nothing to release")
+        return 0
     content = content_tag(stats)
     if args.if_changed:
         last = state.get(args.pack, {})
@@ -670,6 +677,15 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"not uploading: the delta is {size_mb:.0f} MB, over delta_cap_mb "
             f"({release.delta_cap_mb}); release Base and Base Endgame, which absorb it"
+        )
+        return 0
+    if args.upload and args.pack == BOOKS_PACK and size_mb > release.delta_cap_mb:
+        # Books uploads nightly through the same API, so it gets the same cap.
+        # Nothing is recorded: the delta goes on carrying the pages read in game.
+        print(
+            f"not uploading: Books is {size_mb:.0f} MB, over delta_cap_mb "
+            f"({release.delta_cap_mb}); upload {zip_path} through the website and "
+            f"run without --upload to record it"
         )
         return 0
 

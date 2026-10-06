@@ -93,7 +93,11 @@ BULK_PENDING="$(./tools/run.sh tools/generate.py --dry-run 2>/dev/null | sed -n 
 BULK_PENDING="${BULK_PENDING:-0}"
 echo "backlog after this run: $BULK_PENDING files"
 
-# Publish the Forever delta pack to CurseForge when it is worth an update: 20+ new files, or a week with any change
+# Publish the Books pack to CurseForge once 25+ of its files are new (a re-voiced
+# page rides the delta meanwhile), then the Forever delta pack when it is worth
+# an update: 20+ new files, or a week with any change. Books goes first:
+# building it records its baseline, which takes its pages out of the delta.
+./tools/run.sh tools/release_pack.py books --upload --if-changed --min-new 25 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
 ./tools/run.sh tools/release_pack.py delta --upload --if-changed --min-new 20 --max-age-days 7 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
 
 # Publish the text side of the build so the repository matches this machine
