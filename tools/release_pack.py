@@ -7,9 +7,10 @@ everything on the maintainer's machine):
   base_endgame  ForeverVO_Data_Base_Endgame  with all gossip, and quests from
                                              41, split so each fits
                                              CurseForge's 1 GB website cap.
-                                             Huge, rarely released, uploaded by
-                                             hand. Building one records what
-                                             it shipped (release_baseline.json).
+                                             Base is huge and released by hand;
+                                             Base Endgame goes nightly once 20
+                                             files are new. Each records what it
+                                             shipped (release_baseline.json).
                                              (The maintainer's working folder
                                              stays ForeverVO_Data; they coexist
                                              because their pack names differ.)
@@ -26,14 +27,21 @@ everything on the maintainer's machine):
                                              read in game, in every narrator
                                              voice. Its own project, since the
                                              Base packs are near the 1 GB cap.
-                                             Until it has been built with a
-                                             baseline, the delta carries only
-                                             the pages read in game.
+                                             About 230 MB whole, so it uploads
+                                             nightly through the API, before
+                                             the delta. Until it has been built
+                                             with a baseline, the delta carries
+                                             only the pages read in game.
 
     ./tools/run.sh tools/release_pack.py delta               # build zip only
     ./tools/run.sh tools/release_pack.py delta --upload      # and upload to CurseForge
     ./tools/run.sh tools/release_pack.py delta --upload --if-changed   # nightly use
-    ./tools/run.sh tools/release_pack.py base && ./tools/run.sh tools/release_pack.py base_endgame
+    ./tools/run.sh tools/release_pack.py base base_endgame --upload   # several packs in one run
+
+With --upload every pack tries the API first. One the API refuses (Base is
+near 1 GB; the API turned away 574 and 887 MB) prints what the website needs
+and is recorded all the same, as every build is: upload what you build, soon,
+since the delta already leaves its lines to it.
 
 Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz with no
 Xing/Info header frame, about 14 MB per hour of speech; it was 48 kbps until
@@ -219,15 +227,30 @@ def delta_member(
     return delta_line(item, config, chosen, index, sounds_dir)
 
 
-def record_baseline(pack: str, stats: dict, index_path: Path = SOUND_INDEX) -> None:
+def baseline_stamps(stats: dict, index_path: Path = SOUND_INDEX) -> dict[str, str]:
+    """What every file of a built pack sounds like, as its baseline records it."""
     index = json.loads(index_path.read_text(encoding="utf-8"))
+    return {name: file_stamp(index, name) for name in pack_files(stats)}
+
+
+def record_baseline(pack: str, stamps: dict[str, str]) -> None:
     packs = (
         json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
         if BASELINE_FILE.exists()
         else {}
     )
-    packs[pack] = {name: file_stamp(index, name) for name in pack_files(stats)}
+    packs[pack] = stamps
     BASELINE_FILE.write_text(json.dumps(packs, indent=0, sort_keys=True), "utf-8")
+
+
+def record_release(pack: str, record: dict) -> None:
+    """Writes a released pack's state (what --if-changed compares against) and,
+    for a pack with one, its baseline (what the delta is judged against)."""
+    state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
+    state[pack] = record["state"]
+    STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
+    if record.get("baseline") is not None:
+        record_baseline(pack, record["baseline"])
 
 
 def pack_files(stats: dict) -> list[str]:
@@ -494,6 +517,18 @@ def game_version_id(key: str) -> int:
     raise SystemExit(f"CurseForge has no game version named {GAME_VERSION_NAME}")
 
 
+class UploadFailed(Exception):
+    """The API did not take the file; the pack waits on a hand upload."""
+
+
+def changelog_for(version: str, stats: dict) -> str:
+    return (
+        f"{version}: {stats['quests']} quests, {stats['gossip']} gossip lines, "
+        f"{stats.get('books', 0)} book pages, {len(stats['files'])} sound files.\n\n"
+        f"Generated from lines captured by players; see https://github.com/quinn-dougherty/forever-vo"
+    )
+
+
 def upload(
     pack: str,
     zip_path: Path,
@@ -508,13 +543,8 @@ def upload(
             f"upload needs CF_API_KEY in .env and a project id for {pack} under "
             f"[release.curseforge_projects] in forever-vo.toml"
         )
-    changelog = (
-        f"{version}: {stats['quests']} quests, {stats['gossip']} gossip lines, "
-        f"{stats.get('books', 0)} book pages, {len(stats['files'])} sound files.\n\n"
-        f"Generated from lines captured by players; see https://github.com/quinn-dougherty/forever-vo"
-    )
     metadata = {
-        "changelog": changelog,
+        "changelog": changelog_for(version, stats),
         "changelogType": "markdown",
         "displayName": f"{pack_specs(release)[pack].title} {version}",
         "gameVersions": [game_version_id(key)],
@@ -522,31 +552,30 @@ def upload(
     }
     # Streamed from disk: requests' own multipart encoding builds the whole body
     # in memory, which for the base pack is over a gigabyte.
-    with zip_path.open("rb") as f:
-        body = MultipartEncoder(
-            fields={
-                "metadata": json.dumps(metadata),
-                "file": (zip_path.name, f, "application/zip"),
-            }
-        )
-        response = requests.post(
-            f"{CF_API}/projects/{project}/upload-file",
-            headers={"X-Api-Token": key, "Content-Type": body.content_type},
-            data=body,
-            timeout=3600,
-        )
+    try:
+        with zip_path.open("rb") as f:
+            body = MultipartEncoder(
+                fields={
+                    "metadata": json.dumps(metadata),
+                    "file": (zip_path.name, f, "application/zip"),
+                }
+            )
+            response = requests.post(
+                f"{CF_API}/projects/{project}/upload-file",
+                headers={"X-Api-Token": key, "Content-Type": body.content_type},
+                data=body,
+                timeout=3600,
+            )
+    except requests.RequestException as error:
+        raise UploadFailed(f"upload failed: {error}") from error
     if response.status_code == 413:
         # Cloudflare in front of the upload API refuses large bodies (887 MB was
-        # refused on 2026-09-22; ~30 MB deltas pass). The website accepts up to 2 GB.
-        raise SystemExit(
-            f"upload refused as too large (HTTP 413) at {zip_path.stat().st_size / 1e6:.0f} MB.\n"
-            f"Upload it by hand instead: https://www.curseforge.com/project/{project}/files/upload\n"
-            f"  file: {zip_path}\n  game version: {GAME_VERSION_NAME}, type: {release_type}, "
-            f"display name: {metadata['displayName']}\n  changelog:\n{changelog}\n"
-            f"then add a '{pack}' entry to {STATE_FILE} (version, date, files, zip) as this script would have."
+        # refused on 2026-09-22; ~30 MB deltas pass). The website accepts up to 1 GB.
+        raise UploadFailed(
+            f"upload refused as too large (HTTP 413) at {zip_path.stat().st_size / 1e6:.0f} MB"
         )
     if response.status_code != 200:
-        raise SystemExit(
+        raise UploadFailed(
             f"upload failed: HTTP {response.status_code} {response.text[:300]}"
         )
     print(
@@ -586,7 +615,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("pack", choices=PACK_NAMES)
+    parser.add_argument("packs", nargs="+", choices=PACK_NAMES, metavar="pack")
     parser.add_argument(
         "--upload", action="store_true", help="upload to CurseForge after building"
     )
@@ -613,27 +642,42 @@ def main(argv: list[str] | None = None) -> int:
         help="CurseForge file type (default: release)",
     )
     args = parser.parse_args(argv)
-    release_type = args.release_type or "release"
     config = load_config()
-    release = config.release
+    refused = [pack for pack in args.packs if release_one(pack, args, config)]
+    if refused:
+        # Last, so the nightly log's tail shows it and daily.sh can find it
+        print(f"upload by hand: {' '.join(refused)} (details above)")
+        return 1
+    return 0
 
+
+def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
+    """Builds one pack and, with --upload, uploads it. True when the upload
+    failed and the pack now waits on a hand upload."""
+    release = config.release
+    release_type = args.release_type or "release"
     if args.upload:
-        key, project = curseforge_config(args.pack, release)
+        key, project = curseforge_config(pack, release)
         if not key or not project:
             print(
-                f"CurseForge upload not configured for {args.pack}: need CF_API_KEY in .env and a project id under "
+                f"CurseForge upload not configured for {pack}: need CF_API_KEY in .env and a project id under "
                 f"[release.curseforge_projects] in forever-vo.toml; skipping"
             )
-            return 0
+            return False
 
-    version = next_version(args.pack)
-    stage, stats = stage_tables(args.pack, version, config)
+    version = next_version(pack)
+    stage, stats = stage_tables(pack, version, config)
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
     fingerprint = pack_files(stats)
+    if not fingerprint:
+        # Books before any page is voiced: an empty pack would only record an
+        # empty baseline and confuse players
+        print(f"{pack}: no sound files yet; nothing to release")
+        return False
     content = content_tag(stats)
     if args.if_changed:
-        last = state.get(args.pack, {})
+        last = state.get(pack, {})
         previous = set(last.get("files", []))
         new_files = len(set(fingerprint) - previous)
         # Either a file appeared or went, or one of them now says something different.
@@ -656,14 +700,14 @@ def main(argv: list[str] | None = None) -> int:
         )
         if not due:
             print(
-                f"not due: {new_files} new files since the last release {age_days} days ago "
+                f"{pack} not due: {new_files} new files since the last release {age_days} days ago "
                 f"(need {args.min_new} new or {args.max_age_days} days); nothing to do"
             )
-            return 0
+            return False
 
-    zip_path = package(args.pack, version, stage, stats, release)
+    zip_path = package(pack, version, stage, stats, release)
     size_mb = zip_path.stat().st_size / 1e6
-    if args.upload and args.pack == "delta" and size_mb > release.delta_cap_mb:
+    if args.upload and pack == "delta" and size_mb > release.delta_cap_mb:
         # The upload API refused 574 MB once; well before that the delta has
         # outgrown its job. The Base packs absorb it (their build resets the
         # baseline), and until then players keep the last delta.
@@ -671,22 +715,40 @@ def main(argv: list[str] | None = None) -> int:
             f"not uploading: the delta is {size_mb:.0f} MB, over delta_cap_mb "
             f"({release.delta_cap_mb}); release Base and Base Endgame, which absorb it"
         )
-        return 0
+        return False
 
-    if args.upload:
-        upload(args.pack, zip_path, version, stats, release_type, release)
-    state[args.pack] = {
-        "version": version,
-        "date": today().isoformat(),
-        "files": fingerprint,
-        "zip": str(zip_path),
-        "encoding": encoding_tag(release),
-        "content": content,
+    record = {
+        "state": {
+            "version": version,
+            "date": today().isoformat(),
+            "files": fingerprint,
+            "zip": str(zip_path),
+            "encoding": encoding_tag(release),
+            "content": content,
+        },
+        # The Base packs and Books are what the delta is judged against
+        "baseline": baseline_stamps(stats)
+        if pack in BASE_PACKS or pack == BOOKS_PACK
+        else None,
     }
-    STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
-    if args.pack in BASE_PACKS or args.pack == BOOKS_PACK:
-        record_baseline(args.pack, stats)
-    return 0
+    refused = False
+    if args.upload:
+        try:
+            upload(pack, zip_path, version, stats, release_type, release)
+        except UploadFailed as error:
+            refused = True
+            _, project = curseforge_config(pack, release)
+            print(
+                f"{pack}: {error}.\n"
+                f"Upload it by hand: https://www.curseforge.com/project/{project}/files/upload\n"
+                f"  file: {zip_path}\n  game version: {GAME_VERSION_NAME}, type: {release_type}, "
+                f"display name: {pack_specs(release)[pack].title} {version}\n"
+                f"  changelog:\n{changelog_for(version, stats)}"
+            )
+    # Recorded whether or not the API took it: a refused pack is uploaded by
+    # hand straight after, so the delta already moves its lines out
+    record_release(pack, record)
+    return refused
 
 
 if __name__ == "__main__":

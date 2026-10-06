@@ -235,8 +235,9 @@ regenerates one file under the *saved* configuration only. Takes go to
 Installed by `tools/install-timer.sh`:
 
 - `forever-vo-daily.timer` — 02:30 nightly, done by 07:00: sync and ingest
-  (`tools/ingest.sh`), voice captured lines, work the backlog until 45 min
-  before 07:00, rebuild tables, upload the delta, commit and push. It stops the
+  (`tools/ingest.sh`), voice captured lines, work the backlog until 90 min
+  before 07:00, rebuild tables, upload Books, Base Endgame and the delta when
+  due, commit and push. It stops the
   bulk service for the duration and restarts it from an `EXIT` trap, also when a
   final `--dry-run` still counts files.
 - `forever-vo-bulk.service` — `tools/bulk.sh`, the long resumable run:
@@ -270,19 +271,23 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
   stops uploading and says a Base release is due.
 - **Base packs** "Data: Base" (quests to `base_split_level` 40, all gossip) and
   "Data: Base Endgame" (quests from 41), priority 100, each with its narrator
-  alternates. Released by hand when the delta grows large: `release_pack.py
-  base` then `base_endgame` (~45 min, each re-encodes its whole set from a
-  freshly wiped staging folder), then **upload through the website** as
-  "release" files for 1.60.1. **The website caps a file at 1 GB**, and the API
-  refuses far less, which is why Base is split. Building a Base pack records
-  the baseline, so upload what you build.
+  alternates. Each build re-encodes its whole set from a freshly wiped staging
+  folder (~45 min). Base Endgame (under 400 MB) goes nightly once 20 files are
+  new (`--min-new 20`, no age fallback). Base is released by hand when the
+  delta grows large (`release_pack.py base --upload`). **The website caps a
+  file at 1 GB**, and the API refuses far less, which is why Base is split.
 - **Books** "Data: Books" (`ForeverVO_Data_Books`, `books`, priority 100,
   ~230 MB with one alternate narrator): every book page, Classic's and
-  Forever's alike, kept out of Base for the 1 GB cap. Between Books releases,
-  new and re-voiced pages ride the delta. Its project ID goes under
-  `[release.curseforge_projects]` once created. Until its baseline is recorded,
-  only pages read in game go in the delta, or the whole Classic set would flood
-  it.
+  Forever's alike, kept out of Base for the 1 GB cap. Nightly once 10 files are
+  new. A pack with no files yet is never released. Until its baseline is
+  recorded, only pages read in game go in the delta, or the whole Classic set
+  would flood it.
+- **Every pack tries the API.** One it refuses prints the website form fields
+  ("release" file for 1.60.1) and the nightly raises a desktop notification,
+  but the build is recorded all the same, as every build is: upload what you
+  build, soon, since the delta already leaves its lines to that pack. Books and
+  Base Endgame go before the delta in the nightly: building one records its
+  baseline, which takes its lines out of the delta.
 
 `release_pack.py` builds from the working folder `ForeverVO_Data` (never
 shipped), re-encodes to mono 32 kbps mp3 at 22.05 kHz **with no Xing/Info

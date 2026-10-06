@@ -10,10 +10,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$ROOT/tools/data/daily.log"
 LOCK="$ROOT/tools/data/daily.lock"
 # The run starts at 02:30 (install-timer.sh) and must be done by END_AT. The
-# tail after generation (table rebuild, dry run, delta upload, push) took 6 to
-# 27 minutes in September 2026 and grows with the delta, hence TAIL_MINUTES.
+# tail after generation (table rebuild, dry run, uploads, push) took 6 to
+# 27 minutes in September 2026 with the delta alone; Base Endgame, nightly since
+# October, re-encodes its whole set (~45 min) when due, hence TAIL_MINUTES.
 END_AT="${FOREVER_VO_END_AT:-07:00}"
-TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-45}"
+TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-90}"
 BULK_HOURS="${FOREVER_VO_BULK_HOURS:-}"   # optional cap on the bulk pass; unset, it fills the window
 
 mkdir -p "$ROOT/tools/data"
@@ -93,8 +94,26 @@ BULK_PENDING="$(./tools/run.sh tools/generate.py --dry-run 2>/dev/null | sed -n 
 BULK_PENDING="${BULK_PENDING:-0}"
 echo "backlog after this run: $BULK_PENDING files"
 
-# Publish the Forever delta pack to CurseForge when it is worth an update: 20+ new files, or a week with any change
-./tools/run.sh tools/release_pack.py delta --upload --if-changed --min-new 20 --max-age-days 7 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
+# Publish to CurseForge when each pack is worth an update. Books (10+ new files)
+# and Base Endgame (20+) first, since building one records its baseline, which
+# takes its lines out of the delta; a re-voiced line rides the delta meanwhile.
+# Then the Forever delta: 20+ new files, or a week with any change. A pack the
+# API refuses is recorded all the same and must be uploaded by hand soon, so
+# say so on the desktop; the tail keeps release_pack's instructions in this log.
+for args in "books --min-new 10" "base_endgame --min-new 20" "delta --min-new 20 --max-age-days 7"; do
+    # shellcheck disable=SC2086
+    OUT="$(./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true)"
+    echo "$OUT"
+    REFUSED="$(printf '%s\n' "$OUT" | sed -n 's/^upload by hand: \(.*\) (details above)$/\1/p')"
+    if [ -n "$REFUSED" ]; then
+        /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
+            --object-path /org/freedesktop/Notifications \
+            --method org.freedesktop.Notifications.Notify \
+            "Forever VO" 0 "dialog-warning" "Upload by hand: $REFUSED" \
+            "CurseForge's API refused it. The zip and the form fields are in tools/data/daily.log." \
+            "[]" "{'urgency':<byte 1>}" 0 >/dev/null 2>&1 || true
+    fi
+done
 
 # Publish the text side of the build so the repository matches this machine
 git add tools/data/capture.json tools/data/sound_index.json ForeverVO_Data/Data captures 2>/dev/null || true
