@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "2429": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Novice Thaivand",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1081",
+ "quests": {
+  "552-progress": {
+   "build": "70235",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Novice Thaivand",
+   "npc": "2429",
+   "questID": 552,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you recovered Helcular's Rod yet?  There are so many Yeti in this region, it will be very difficult to locate.  But we must have it in order to proceed.",
+   "time": 1791279700,
+   "title": "Helcular's Revenge",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
