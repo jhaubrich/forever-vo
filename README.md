@@ -26,7 +26,7 @@ Voice packs, each its own CurseForge project, no line in two of them:
 - **[Forever Voiceover: Forever Quests](https://www.curseforge.com/wow/addons/forever-voiceover-forever-quests)**
   (`ForeverVO_Data_Forever_Quests`) — the quests Forever adds. These are the
   lines being crowd sourced, so it grows as players run `/fvo export`.
-- **[Forever Voiceover: Forever Gossip](https://www.curseforge.com/wow/addons/forever-voiceover-forever-gossip)**
+- **[Forever Voiceover: Forever Gossip](https://www.curseforge.com/wow/addons/voiceover-forever-forever-gossip)**
   (`ForeverVO_Data_Forever_Gossip`) — what Forever's NPCs say, crowd sourced
   the same way.
 - **[Forever Voiceover: Books](https://www.curseforge.com/wow/addons/forever-voiceover-books)**

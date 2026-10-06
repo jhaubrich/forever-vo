@@ -895,7 +895,7 @@ classic_quests = 1705100   # Forever Voiceover: Classic Quests (Base until 2026-
 classic_endgame = 1709884  # Forever Voiceover: Classic Endgame (Base Endgame until then)
 classic_gossip = 1729567   # Forever Voiceover: Classic Gossip
 forever_quests = 1705094   # Forever Voiceover: Forever Quests (the delta, Data: Forever, until then)
-# forever_gossip =         # Forever Voiceover: Forever Gossip (to create)
+forever_gossip = 1729570   # Forever Voiceover: Forever Gossip
 books = 1729514            # Forever Voiceover: Books
 
 # Voices someone has auditioned by ear and approved, set with the audition
