@@ -609,6 +609,22 @@ clips = [
 ]
 gaps = [0.1, 0.1]
 
+[voices.sources.dwarf-male-grim]
+clips = [
+    547868,
+    547875,
+    547871,
+    547865,
+    547863,
+    547872,
+    547873,
+    547870,
+    547874,
+    547867,
+    547864,
+]
+gaps = [0.1, 0.1, 0.1]
+
 [voices.notes]
 # Tasting notes, one per voice, written in the audition page's voice card: what
 # a voice sounds like by ear, which lines break it, what was tried and what to
@@ -617,6 +633,7 @@ dwarf-female = "Southern accent mostly eliminated by using barks for T3, but Sco
 nightelf-male = "sounds like malfurion."
 scourge-male-warrior = "set 84 has very high quality barks"
 troll-female-standard = "cannot get the accent right and out of ideas. It's actually better to not even try."
+dwarf-male-grim = "can't get a scottish accent. gave up and used barks for best voice texture. Joke lines make the accent muddled and just terrible."
 [tts]
 # Chatterbox conditioning for every voice that has no entry below. tempo is not
 # a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
@@ -1064,3 +1081,4 @@ npc-4527 = "cfg_weight=0.4,clip=npc-4527,clips=2ef25958,exaggeration=0.35,speed=
 nightelf-male-warrior = "cfg_weight=0.4,clip=nightelf-male-warrior,clips=f4429bcb,exaggeration=0.25,speed=0.99"
 nightelf-male-official = "cfg_weight=0.3,clip=nightelf-male-official,exaggeration=0.3,pitch=-1.0"
 troll-female-standard = "cfg_weight=0.3,clip=troll-female-standard,clips=49b8db2f,exaggeration=0.7"
+dwarf-male-grim = "cfg_weight=0.3,clip=dwarf-male-grim,clips=b50759e2,exaggeration=0.7"
