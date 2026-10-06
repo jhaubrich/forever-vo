@@ -596,6 +596,19 @@ clips = [
 ]
 gaps = [0.0, 0.1, 0.15, 0.15]
 
+[voices.sources.tauren-male-shaman]
+clips = [
+    543026,
+    561570,
+    561565,
+    543077,
+    561568,
+    561555,
+    561556,
+    561562,
+]
+gaps = [0.1, 0.1]
+
 [voices.notes]
 # Tasting notes, one per voice, written in the audition page's voice card: what
 # a voice sounds like by ear, which lines break it, what was tried and what to
@@ -819,9 +832,9 @@ cfg_weight = 0.1
 tempo = 1.1
 
 [tts.voices.goblin-male-zany]
-exaggeration = 1.2
-cfg_weight = 0.1
-tempo = 1.4
+exaggeration = 1.1
+cfg_weight = 0.2
+tempo = 1.2
 pitch = 1.0
 
 [tts.voices.dwarf-male]
@@ -876,6 +889,10 @@ cfg_weight = 0.3
 [tts.voices.troll-female-laidback]
 exaggeration = 0.6
 cfg_weight = 0.4
+
+[tts.voices.tauren-male-shaman]
+exaggeration = 0.3
+cfg_weight = 0.5
 [pronunciations]
 "Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
@@ -907,6 +924,10 @@ furbolg = "fur ballg"
 Jaina = "jay'nuh"
 "ya mon" = "yah mahn"
 "Zul'Gurub" = "Zul'Gahrub"
+
+draught = "droutt"
+draughts = "droutts"
+Malygos = "Mala'gos"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
@@ -1027,7 +1048,7 @@ human-female-standard = "cfg_weight=0.3,clip=human-female-standard,exaggeration=
 human-female-warrior = "cfg_weight=0.3,clip=human-female-warrior,clips=4c81c03c,exaggeration=0.6,pitch=-1.0"
 human-male-official = "cfg_weight=0.3,clip=human-male-official,clips=a89c7784,exaggeration=0.6,pitch=1.0,tempo=1.05"
 human-male-standard = "cfg_weight=0.1,clip=human-male-standard,exaggeration=0.5,tempo=1.1"
-goblin-male-zany = "cfg_weight=0.1,clip=goblin-male-zany,clips=3238493e,exaggeration=1.2,pitch=1.0,tempo=1.4"
+goblin-male-zany = "cfg_weight=0.2,clip=goblin-male-zany,clips=3238493e,exaggeration=1.1,pitch=1.0,tempo=1.2"
 tauren-female-official = "cfg_weight=0.2,clip=tauren-female-official,exaggeration=0.6,pitch=1.0,tempo=1.1"
 dwarf-female = "cfg_weight=0.3,clip=dwarf-female,clips=910d3eb7,exaggeration=0.75"
 dwarf-male = "cfg_weight=0.3,clip=dwarf-male,clips=264d8895,exaggeration=0.7"
