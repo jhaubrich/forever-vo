@@ -303,7 +303,9 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
 `release_pack.py` builds from the working folder `ForeverVO_Data` (never
 shipped), re-encodes to mono 32 kbps mp3 at 22.05 kHz **with no Xing/Info
 header** (`-write_xing 0`: the client misreads LAME's CBR `Info` frame and cut
-every released line short until 2026-09-25), writes a manifest per pack, and
+every released line short until 2026-09-25), brought to -16 LUFS by two-pass
+`loudnorm` with one gain per file (`LOUDNORM`, #513; the takes range from -34
+to -18), writes a manifest per pack, and
 uploads via `wow.curseforge.com/api` (the public `curseforge.com/api/v1` returns
 HTML to scripts). Versions are dates (`2026.09.20`, `.2` the same day), tracked
 in `tools/data/release_state.json`. The local API key is `CF_API_KEY` in the

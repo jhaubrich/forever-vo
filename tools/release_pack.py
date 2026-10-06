@@ -30,7 +30,8 @@ the website needs and is recorded all the same, as every build is: upload what
 you build, soon.
 
 Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz with no
-Xing/Info header frame, about 14 MB per hour of speech; it was 48 kbps until
+Xing/Info header frame, brought to -16 LUFS since 2026-10-06 (LOUDNORM), about
+14 MB per hour of speech; it was 48 kbps until
 2026-09-22, when the base pack came to 1.3 GB with a third of the lines still
 to go, and carried the header until 2026-09-25, when the client turned out to
 misread it and stop every line at 32/56 of its length, see the comment at
@@ -53,6 +54,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import shutil
 import subprocess
@@ -95,6 +97,14 @@ GAME_VERSION_NAME = "1.60.1"
 # line at 22.05 and 44.1 kHz, with and without the header. The sample rate
 # was never a factor; 22.05 kHz keeps the most bandwidth per bit.
 SAMPLE_RATE = 22050
+
+# Every release file is brought to one loudness (#513). Chatterbox's takes came
+# out anywhere from -34 to -18 LUFS (median -22.6 over 60 files, 2026-10-06), so
+# lines jumped in volume from one to the next and many were quiet under the
+# game's own sound. Two passes: the first measures, the second applies one gain
+# to the whole file (linear=true), so a line's own rise and fall is kept. The
+# working files under ForeverVO_Data/Sounds stay as the generator wrote them.
+LOUDNORM = "I=-16:TP=-1.5:LRA=11"
 
 
 def file_stamp(index: dict, name: str) -> str:
@@ -269,7 +279,44 @@ def next_version(pack: str) -> str:
 
 def encoding_tag(release: Release) -> str:
     """Names the audio encoding a pack was built with; a change is a reason to release again."""
-    return f"mp3 mono {SAMPLE_RATE} Hz {release.bitrate} no-xing"
+    return f"mp3 mono {SAMPLE_RATE} Hz {release.bitrate} no-xing loudnorm {LOUDNORM}"
+
+
+def loudnorm_filter(src: Path) -> list[str]:
+    """The second pass's -af for `src`, from a first pass that measures it; none
+    for a file with nothing to measure (silence reads -inf), which is left as it is."""
+    run = subprocess.run(
+        [
+            "ffmpeg",
+            "-hide_banner",
+            "-nostats",
+            "-i",
+            str(src),
+            "-af",
+            f"loudnorm={LOUDNORM}:print_format=json",
+            "-f",
+            "null",
+            "-",
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    measured = json.loads(
+        run.stderr[run.stderr.rindex("{") : run.stderr.rindex("}") + 1]
+    )
+    values = [
+        measured[key]
+        for key in ("input_i", "input_tp", "input_lra", "input_thresh", "target_offset")
+    ]
+    if any(not math.isfinite(float(value)) for value in values):
+        return []
+    i, tp, lra, thresh, offset = values
+    second = (
+        f"loudnorm={LOUDNORM}:measured_I={i}:measured_TP={tp}:measured_LRA={lra}"
+        f":measured_thresh={thresh}:offset={offset}:linear=true"
+    )
+    return ["-af", second]
 
 
 def transcode(src: Path, dst: Path, bitrate: str) -> None:
@@ -285,6 +332,7 @@ def transcode(src: Path, dst: Path, bitrate: str) -> None:
             "error",
             "-i",
             str(src),
+            *loudnorm_filter(src),
             "-ac",
             "1",
             "-ar",
