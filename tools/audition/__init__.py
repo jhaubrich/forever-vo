@@ -851,8 +851,8 @@ def _released() -> dict[str, int]:
 def released_files(row: dict[str, Any]) -> int:
     """How many pack files were generated from this pick, by its digest in main's
     sound_index.json: the index the nightly run commits as it voices and ships them.
-    The release records themselves (release_state, release_baseline) are gitignored
-    and live only on the machine that uploads, so this is what every checkout has."""
+    The release record itself (release_state.json) is gitignored
+    and lives only on the machine that uploads, so this is what every checkout has."""
     digest = generate.picks_digest(
         row.get("clips", []), row.get("build"), row.get("gaps", [])
     )

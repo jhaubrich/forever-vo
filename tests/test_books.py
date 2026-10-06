@@ -18,7 +18,7 @@ from tools.generate import (
     sound_folder,
 )
 from tools.ingest import Repairs, SourceTexts, backfill, book_key, ingest_file
-from tools.release_pack import delta_member, file_stamp, line_files, pack_specs
+from tools.release_pack import Classic, pack_of, pack_specs
 from tools.textclean import book_display, book_text
 from tools.textkey import text_key
 
@@ -258,7 +258,7 @@ def test_the_tables_carry_each_page_with_its_alternate_narrators(
 
 
 def test_books_ship_in_the_books_pack_alone() -> None:
-    specs = pack_specs(CONFIG.release)
+    classic_set = Classic({842: 12}, frozenset())
     quest = Item(
         "quests",
         "842-accept",
@@ -267,38 +267,7 @@ def test_books_ship_in_the_books_pack_alone() -> None:
         VoiceCatalog(CONFIG),
     )
     classic, read = page(), page(player="Jesse", source="capture")
-    assert specs["books"].select(classic) and specs["books"].select(read)
-    assert not specs["books"].select(quest)
-    for pack in ("base", "base_endgame"):
-        assert not specs[pack].select(classic)
-    assert specs["base"].select(quest)
-    assert specs["books"].folder == "ForeverVO_Data_Books"
-
-
-def test_the_delta_takes_only_pages_read_in_game_until_the_books_pack_is_built(
-    tmp_path: Path,
-) -> None:
-    classic, read = page(), page("A plaque.", player="Jesse", source="capture")
-    sounds = tmp_path / "Sounds"
-    (sounds / "Books").mkdir(parents=True)
     for line in (classic, read):
-        (sounds / "Books" / f"{line.base_name}.mp3").write_bytes(b"")
-    index = {
-        line.base_name: {"d": 3.0, "t": line.hash, "v": "narrator"}
-        for line in (classic, read)
-    }
-    base = {"842-accept": "x:y:1"}  # the quest and gossip baseline is no help here
-    assert not delta_member(classic, CONFIG, base, None, index, sounds)
-    assert delta_member(read, CONFIG, base, None, index, sounds)
-
-    # Once the Books pack has shipped them as they are, neither belongs in the delta
-    shipped = {
-        name: file_stamp(index, name)
-        for line in (classic, read)
-        for name in line_files(line, CONFIG)
-        if name in index
-    }
-    assert not delta_member(classic, CONFIG, base, shipped, index, sounds)
-    assert not delta_member(read, CONFIG, base, shipped, index, sounds)
-    retaken = dict(index, **{read.base_name: {"d": 3.4, "t": read.hash, "v": "x"}})
-    assert delta_member(read, CONFIG, base, shipped, retaken, sounds)
+        assert pack_of(line, classic_set, 40) == "books"
+    assert pack_of(quest, classic_set, 40) == "classic_quests"
+    assert pack_specs(CONFIG.release)["books"].folder == "ForeverVO_Data_Books"
