@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "12721": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122560,
+   "name": "Mitsuwa",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1116",
+ "quests": {
+  "6462-progress": {
+   "build": "70235",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Mitsuwa",
+   "npc": "12721",
+   "questID": 6462,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Did you find the charms, $N?  Every moment the furbolgs possess those sacred items, my blood boils with rage!",
+   "time": 1791301551,
+   "title": "Troll Charm",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
