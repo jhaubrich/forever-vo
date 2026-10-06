@@ -37,14 +37,11 @@ everything on the maintainer's machine):
     ./tools/run.sh tools/release_pack.py delta --upload      # and upload to CurseForge
     ./tools/run.sh tools/release_pack.py delta --upload --if-changed   # nightly use
     ./tools/run.sh tools/release_pack.py base base_endgame --upload   # several packs in one run
-    ./tools/run.sh tools/release_pack.py base --confirm      # after uploading a refused one by hand
 
 With --upload every pack tries the API first. One the API refuses (Base is
-near 1 GB; the API turned away 574 and 887 MB) keeps its zip, is recorded
-nowhere, and is listed with what the website needs, in
-release_pending.json; --confirm records it once it is up. Until then the
-delta goes on carrying its lines. Without --upload a build is recorded at
-once: upload what you build.
+near 1 GB; the API turned away 574 and 887 MB) prints what the website needs
+and is recorded all the same, as every build is: upload what you build, soon,
+since the delta already leaves its lines to it.
 
 Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz with no
 Xing/Info header frame, about 14 MB per hour of speech; it was 48 kbps until
@@ -101,9 +98,6 @@ STATE_FILE = DATA_DIR / "release_state.json"
 # What every file the Base packs last shipped sounded like ({pack: {name: stamp}}),
 # written when a Base pack is built; the delta is whatever differs from it.
 BASELINE_FILE = DATA_DIR / "release_baseline.json"
-# Packs built whose API upload failed, waiting on a hand upload ({pack: record});
-# `--confirm` records one once it is up. Absent when nothing is waiting.
-PENDING_FILE = DATA_DIR / "release_pending.json"
 BASE_PACKS = ("base", "base_endgame")
 BOOKS_PACK = "books"  # its own baseline: book pages are judged against it alone
 CF_API = "https://wow.curseforge.com/api"
@@ -257,33 +251,6 @@ def record_release(pack: str, record: dict) -> None:
     STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
     if record.get("baseline") is not None:
         record_baseline(pack, record["baseline"])
-
-
-def load_pending() -> dict[str, dict]:
-    if not PENDING_FILE.exists():
-        return {}
-    return json.loads(PENDING_FILE.read_text(encoding="utf-8"))
-
-
-def save_pending(pending: dict[str, dict]) -> None:
-    if pending:
-        PENDING_FILE.write_text(json.dumps(pending, indent=1), encoding="utf-8")
-    else:
-        PENDING_FILE.unlink(missing_ok=True)
-
-
-def confirm(pack: str) -> bool:
-    """Records a pack uploaded by hand after its API upload failed. Until then
-    nothing about it is recorded: the delta goes on carrying its lines."""
-    pending = load_pending()
-    record = pending.pop(pack, None)
-    if record is None:
-        print(f"{pack}: no build is waiting on a hand upload")
-        return False
-    record_release(pack, record)
-    save_pending(pending)
-    print(f"{pack}: recorded {record['state']['version']} as released")
-    return True
 
 
 def pack_files(stats: dict) -> list[str]:
@@ -653,11 +620,6 @@ def main(argv: list[str] | None = None) -> int:
         "--upload", action="store_true", help="upload to CurseForge after building"
     )
     parser.add_argument(
-        "--confirm",
-        action="store_true",
-        help="record packs uploaded by hand after their API upload failed; builds nothing",
-    )
-    parser.add_argument(
         "--if-changed",
         action="store_true",
         help="skip when the set of files is unchanged since the last release",
@@ -680,17 +642,11 @@ def main(argv: list[str] | None = None) -> int:
         help="CurseForge file type (default: release)",
     )
     args = parser.parse_args(argv)
-    if args.confirm:
-        confirmed = [confirm(pack) for pack in args.packs]  # each, not up to a miss
-        return 0 if all(confirmed) else 1
     config = load_config()
-    waiting = [pack for pack in args.packs if release_one(pack, args, config)]
-    if waiting:
-        # Last, so the nightly log's tail shows it
-        print(
-            f"upload by hand: {', '.join(waiting)} (above); then "
-            f"./tools/run.sh tools/release_pack.py {' '.join(waiting)} --confirm"
-        )
+    refused = [pack for pack in args.packs if release_one(pack, args, config)]
+    if refused:
+        # Last, so the nightly log's tail shows it and daily.sh can find it
+        print(f"upload by hand: {' '.join(refused)} (details above)")
         return 1
     return 0
 
@@ -775,14 +731,12 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
         if pack in BASE_PACKS or pack == BOOKS_PACK
         else None,
     }
-    pending = load_pending()
+    refused = False
     if args.upload:
         try:
             upload(pack, zip_path, version, stats, release_type, release)
         except UploadFailed as error:
-            # Nothing is recorded until the file is up: the delta goes on
-            # carrying this pack's lines, and the next --if-changed run tries
-            # again with whatever is current then
+            refused = True
             _, project = curseforge_config(pack, release)
             print(
                 f"{pack}: {error}.\n"
@@ -791,14 +745,10 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
                 f"display name: {pack_specs(release)[pack].title} {version}\n"
                 f"  changelog:\n{changelog_for(version, stats)}"
             )
-            pending[pack] = record
-            save_pending(pending)
-            return True
-    # Uploaded, or built for a hand upload without --upload (upload what you build)
+    # Recorded whether or not the API took it: a refused pack is uploaded by
+    # hand straight after, so the delta already moves its lines out
     record_release(pack, record)
-    if pending.pop(pack, None) is not None:
-        save_pending(pending)  # a newer release supersedes the build that waited
-    return False
+    return refused
 
 
 if __name__ == "__main__":

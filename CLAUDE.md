@@ -282,14 +282,12 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
   new. A pack with no files yet is never released. Until its baseline is
   recorded, only pages read in game go in the delta, or the whole Classic set
   would flood it.
-- **Every pack tries the API.** One it refuses keeps its zip, goes to the
-  gitignored `tools/data/release_pending.json` (the website form fields are printed),
-  and is recorded nowhere until `release_pack.py <pack> --confirm` after the
-  hand upload ("release" file for 1.60.1). Until then the delta keeps its lines
-  and the nightly tries again and raises a desktop notification. A build without
-  `--upload` is recorded at once, so upload what you build. Books and Base
-  Endgame go before the delta in the nightly: building one records its baseline,
-  which takes its lines out of the delta.
+- **Every pack tries the API.** One it refuses prints the website form fields
+  ("release" file for 1.60.1) and the nightly raises a desktop notification,
+  but the build is recorded all the same, as every build is: upload what you
+  build, soon, since the delta already leaves its lines to that pack. Books and
+  Base Endgame go before the delta in the nightly: building one records its
+  baseline, which takes its lines out of the delta.
 
 `release_pack.py` builds from the working folder `ForeverVO_Data` (never
 shipped), re-encodes to mono 32 kbps mp3 at 22.05 kHz **with no Xing/Info

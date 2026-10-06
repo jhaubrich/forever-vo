@@ -98,22 +98,22 @@ echo "backlog after this run: $BULK_PENDING files"
 # and Base Endgame (20+) first, since building one records its baseline, which
 # takes its lines out of the delta; a re-voiced line rides the delta meanwhile.
 # Then the Forever delta: 20+ new files, or a week with any change. A pack the
-# API refuses is left for a hand upload (release_pending.json) and tried again
-# the next night; the tail keeps release_pack's instructions in this log.
+# API refuses is recorded all the same and must be uploaded by hand soon, so
+# say so on the desktop; the tail keeps release_pack's instructions in this log.
 for args in "books --min-new 25" "base_endgame --min-new 20" "delta --min-new 20 --max-age-days 7"; do
     # shellcheck disable=SC2086
-    ./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true
+    OUT="$(./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true)"
+    echo "$OUT"
+    REFUSED="$(printf '%s\n' "$OUT" | sed -n 's/^upload by hand: \(.*\) (details above)$/\1/p')"
+    if [ -n "$REFUSED" ]; then
+        /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
+            --object-path /org/freedesktop/Notifications \
+            --method org.freedesktop.Notifications.Notify \
+            "Forever VO" 0 "dialog-warning" "Upload by hand: $REFUSED" \
+            "CurseForge's API refused it. The zip and the form fields are in tools/data/daily.log." \
+            "[]" "{'urgency':<byte 1>}" 0 >/dev/null 2>&1 || true
+    fi
 done
-if [ -e tools/data/release_pending.json ]; then
-    WAITING="$(grep -oE '^ "[a-z_]+": \{' tools/data/release_pending.json | tr -d ' ":{' | paste -sd' ')"
-    echo "waiting on a hand upload: $WAITING"
-    /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
-        --object-path /org/freedesktop/Notifications \
-        --method org.freedesktop.Notifications.Notify \
-        "Forever VO" 0 "dialog-warning" "Upload by hand: $WAITING" \
-        "CurseForge's API refused it. Zip and details in tools/data/daily.log; then release_pack.py $WAITING --confirm" \
-        "[]" "{'urgency':<byte 1>}" 0 >/dev/null 2>&1 || true
-fi
 
 # Publish the text side of the build so the repository matches this machine
 git add tools/data/capture.json tools/data/sound_index.json ForeverVO_Data/Data captures 2>/dev/null || true
