@@ -26,6 +26,7 @@ tools/data/ingest.lock
 tools/data/capture.sources.json
 tools/data/release/
 tools/data/release_state.json
+tools/data/release_pending.json
 tools/data/release_baseline.json
 tools/data/sound_index.lock
 ForeverVO_Data/Sounds/**/*.part

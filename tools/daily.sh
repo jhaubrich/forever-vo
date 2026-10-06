@@ -10,10 +10,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$ROOT/tools/data/daily.log"
 LOCK="$ROOT/tools/data/daily.lock"
 # The run starts at 02:30 (install-timer.sh) and must be done by END_AT. The
-# tail after generation (table rebuild, dry run, delta upload, push) took 6 to
-# 27 minutes in September 2026 and grows with the delta, hence TAIL_MINUTES.
+# tail after generation (table rebuild, dry run, uploads, push) took 6 to
+# 27 minutes in September 2026 with the delta alone; Base Endgame, nightly since
+# October, re-encodes its whole set (~45 min) when due, hence TAIL_MINUTES.
 END_AT="${FOREVER_VO_END_AT:-07:00}"
-TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-45}"
+TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-90}"
 BULK_HOURS="${FOREVER_VO_BULK_HOURS:-}"   # optional cap on the bulk pass; unset, it fills the window
 
 mkdir -p "$ROOT/tools/data"
@@ -93,12 +94,26 @@ BULK_PENDING="$(./tools/run.sh tools/generate.py --dry-run 2>/dev/null | sed -n 
 BULK_PENDING="${BULK_PENDING:-0}"
 echo "backlog after this run: $BULK_PENDING files"
 
-# Publish the Books pack to CurseForge once 25+ of its files are new (a re-voiced
-# page rides the delta meanwhile), then the Forever delta pack when it is worth
-# an update: 20+ new files, or a week with any change. Books goes first:
-# building it records its baseline, which takes its pages out of the delta.
-./tools/run.sh tools/release_pack.py books --upload --if-changed --min-new 25 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
-./tools/run.sh tools/release_pack.py delta --upload --if-changed --min-new 20 --max-age-days 7 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
+# Publish to CurseForge when each pack is worth an update. Books (25+ new files)
+# and Base Endgame (20+) first, since building one records its baseline, which
+# takes its lines out of the delta; a re-voiced line rides the delta meanwhile.
+# Then the Forever delta: 20+ new files, or a week with any change. A pack the
+# API refuses is left for a hand upload (release_pending.json) and tried again
+# the next night; the tail keeps release_pack's instructions in this log.
+for args in "books --min-new 25" "base_endgame --min-new 20" "delta --min-new 20 --max-age-days 7"; do
+    # shellcheck disable=SC2086
+    ./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true
+done
+if [ -e tools/data/release_pending.json ]; then
+    WAITING="$(grep -oE '^ "[a-z_]+": \{' tools/data/release_pending.json | tr -d ' ":{' | paste -sd' ')"
+    echo "waiting on a hand upload: $WAITING"
+    /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
+        --object-path /org/freedesktop/Notifications \
+        --method org.freedesktop.Notifications.Notify \
+        "Forever VO" 0 "dialog-warning" "Upload by hand: $WAITING" \
+        "CurseForge's API refused it. Zip and details in tools/data/daily.log; then release_pack.py $WAITING --confirm" \
+        "[]" "{'urgency':<byte 1>}" 0 >/dev/null 2>&1 || true
+fi
 
 # Publish the text side of the build so the repository matches this machine
 git add tools/data/capture.json tools/data/sound_index.json ForeverVO_Data/Data captures 2>/dev/null || true
