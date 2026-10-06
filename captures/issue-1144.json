@@ -1,0 +1,59 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "12724|39b67c2e": {
+   "build": "70235",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Pixel",
+   "npc": "12724",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "This forest can be confusing! Be careful out there.",
+   "time": 1791294690,
+   "title": null,
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "npcs": {
+  "12724": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125068,
+   "name": "Pixel",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1144",
+ "quests": {
+  "6581-progress": {
+   "build": "70235",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Pixel",
+   "npc": "12724",
+   "questID": 6581,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Direct from Ratchet, the Warsong saw blades! Yep, I have them right here.\n\n..But what sort of payment do you have for me? You can't just take them, you know! My time isn't cheap!\n\nWhat I really need is a good gun to carry with me on my travels. A girl's gotta protect herself, you know? There's a gun I really like that I'm sure an engineer would have no problem making.\n\nSo, if you bring me a deadly blunderbuss, I'll give you the saw blade shipment. Do we have a deal?",
+   "time": 1791294685,
+   "title": "Warsong Saw Blades",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
