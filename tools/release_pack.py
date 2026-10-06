@@ -21,8 +21,9 @@ everything on the maintainer's machine):
                                              Until both Base packs have been
                                              built with a baseline, the old
                                              rule: lines read in game.
-  base_books    ForeverVO_Data_Base_Books    every page of every book, letter
-                                             and plaque, in every narrator
+  books         ForeverVO_Data_Books         every page of every book, letter
+                                             and plaque, Classic's and those
+                                             read in game, in every narrator
                                              voice. Its own project, since the
                                              Base packs are near the 1 GB cap.
                                              Until it has been built with a
@@ -90,7 +91,7 @@ STATE_FILE = DATA_DIR / "release_state.json"
 # written when a Base pack is built; the delta is whatever differs from it.
 BASELINE_FILE = DATA_DIR / "release_baseline.json"
 BASE_PACKS = ("base", "base_endgame")
-BOOKS_PACK = "base_books"  # its own baseline: book pages are judged against it alone
+BOOKS_PACK = "books"  # its own baseline: book pages are judged against it alone
 CF_API = "https://wow.curseforge.com/api"
 GAME_VERSION_NAME = "1.60.1"
 
@@ -187,7 +188,7 @@ def load_baseline(packs: tuple[str, ...] = BASE_PACKS) -> dict[str, str] | None:
     """Every file the given packs last shipped, with its stamp; None until all of
     them have been built since baselines were recorded (one alone would put the
     other's whole set in the delta). Quests and gossip are judged against both
-    Base packs, book pages against Base Books (load_baseline((BOOKS_PACK,)))."""
+    Base packs, book pages against the Books pack (load_baseline((BOOKS_PACK,)))."""
     if not BASELINE_FILE.exists():
         return None
     recorded = json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
@@ -209,7 +210,7 @@ def delta_member(
 ) -> bool:
     """Whether a line belongs in the delta: `delta_line` against the baseline of
     the pack that carries its kind, or while that pack has none, the old rule
-    (lines read in game). Book pages have their own pack, so until Base Books is
+    (lines read in game). Book pages have their own pack, so until the Books pack is
     built the whole Classic set of pages stays out of the delta, which would
     otherwise grow past delta_cap_mb at once."""
     chosen = book_baseline if item.kind == "books" else baseline
@@ -249,7 +250,7 @@ def base_part(entry: dict, split_level: int) -> int:
 
 
 def is_book(item: Item) -> bool:
-    """Book pages ship in Base Books, never in Base or Base Endgame: those are
+    """Book pages ship in the Books pack, never in Base or Base Endgame: those are
     near CurseForge's 1 GB cap, and the pages in every narrator voice are about
     230 MB."""
     return item.kind == "books"
@@ -265,7 +266,7 @@ class PackSpec:
     select: Callable[[Item], bool]  # line -> belongs to this pack
 
 
-PACK_NAMES = ("base", "base_endgame", "base_books", "delta")
+PACK_NAMES = ("base", "base_endgame", "books", "delta")
 
 
 def pack_specs(release: Release) -> dict[str, PackSpec]:
@@ -287,10 +288,10 @@ def pack_specs(release: Release) -> dict[str, PackSpec]:
             notes=f"Quests from level {split + 1}, voiced. Install with Forever Voiceover and Base.",
             select=lambda item: not is_book(item) and base_part(item.entry, split) == 2,
         ),
-        "base_books": PackSpec(
-            folder="ForeverVO_Data_Base_Books",
-            title="Forever Voiceover Data: Base Books",
-            pack_name="Classic Books",
+        "books": PackSpec(
+            folder="ForeverVO_Data_Books",
+            title="Forever Voiceover Data: Books",
+            pack_name="Books",
             priority=100,
             notes="Books, letters and plaques, read by the narrator. Install with Forever Voiceover.",
             select=is_book,

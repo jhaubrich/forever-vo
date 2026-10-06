@@ -276,9 +276,10 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
   "release" files for 1.60.1. **The website caps a file at 1 GB**, and the API
   refuses far less, which is why Base is split. Building a Base pack records
   the baseline, so upload what you build.
-- **Base Books** "Data: Base Books" (`ForeverVO_Data_Base_Books`, `base_books`,
-  priority 100, ~230 MB with one alternate narrator): every book page, kept out
-  of Base for the 1 GB cap. Its project ID goes under
+- **Books** "Data: Books" (`ForeverVO_Data_Books`, `books`, priority 100,
+  ~230 MB with one alternate narrator): every book page, Classic's and
+  Forever's alike, kept out of Base for the 1 GB cap. Between Books releases,
+  new and re-voiced pages ride the delta. Its project ID goes under
   `[release.curseforge_projects]` once created. Until its baseline is recorded,
   only pages read in game go in the delta, or the whole Classic set would flood
   it.

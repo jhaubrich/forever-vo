@@ -1,5 +1,5 @@
 """Books, letters and plaques: a page is keyed by its text, read by the narrator
-in every narrator voice, and ships in its own Base Books pack."""
+in every narrator voice, and ships in its own Books pack, Classic's pages and Forever's alike."""
 
 from __future__ import annotations
 
@@ -257,7 +257,7 @@ def test_the_tables_carry_each_page_with_its_alternate_narrators(
     assert f'pack.narratorVoices = {{ "{alternate}" }}' in narrator
 
 
-def test_books_ship_in_base_books_alone() -> None:
+def test_books_ship_in_the_books_pack_alone() -> None:
     specs = pack_specs(CONFIG.release)
     quest = Item(
         "quests",
@@ -267,15 +267,15 @@ def test_books_ship_in_base_books_alone() -> None:
         VoiceCatalog(CONFIG),
     )
     classic, read = page(), page(player="Jesse", source="capture")
-    assert specs["base_books"].select(classic) and specs["base_books"].select(read)
-    assert not specs["base_books"].select(quest)
+    assert specs["books"].select(classic) and specs["books"].select(read)
+    assert not specs["books"].select(quest)
     for pack in ("base", "base_endgame"):
         assert not specs[pack].select(classic)
     assert specs["base"].select(quest)
-    assert specs["base_books"].folder == "ForeverVO_Data_Base_Books"
+    assert specs["books"].folder == "ForeverVO_Data_Books"
 
 
-def test_the_delta_takes_only_pages_read_in_game_until_base_books_is_built(
+def test_the_delta_takes_only_pages_read_in_game_until_the_books_pack_is_built(
     tmp_path: Path,
 ) -> None:
     classic, read = page(), page("A plaque.", player="Jesse", source="capture")
@@ -291,7 +291,7 @@ def test_the_delta_takes_only_pages_read_in_game_until_base_books_is_built(
     assert not delta_member(classic, CONFIG, base, None, index, sounds)
     assert delta_member(read, CONFIG, base, None, index, sounds)
 
-    # Once Base Books has shipped them as they are, neither belongs in the delta
+    # Once the Books pack has shipped them as they are, neither belongs in the delta
     shipped = {
         name: file_stamp(index, name)
         for line in (classic, read)
