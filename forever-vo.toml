@@ -625,6 +625,21 @@ clips = [
 ]
 gaps = [0.1, 0.1, 0.1]
 
+[voices.sources.human-male-warrior]
+clips = [
+    540715,
+    552221,
+    552222,
+    552229,
+    552219,
+    552213,
+    552220,
+    552223,
+    552218,
+    552214,
+    552211,
+]
+
 [voices.notes]
 # Tasting notes, one per voice, written in the audition page's voice card: what
 # a voice sounds like by ear, which lines break it, what was tried and what to
@@ -910,6 +925,11 @@ cfg_weight = 0.4
 [tts.voices.tauren-male-shaman]
 exaggeration = 0.3
 cfg_weight = 0.5
+
+[tts.voices.human-male-warrior]
+exaggeration = 0.55
+cfg_weight = 0.4
+speed = 0.99
 [pronunciations]
 "Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
@@ -1082,3 +1102,4 @@ nightelf-male-warrior = "cfg_weight=0.4,clip=nightelf-male-warrior,clips=f4429bc
 nightelf-male-official = "cfg_weight=0.3,clip=nightelf-male-official,exaggeration=0.3,pitch=-1.0"
 troll-female-standard = "cfg_weight=0.3,clip=troll-female-standard,clips=49b8db2f,exaggeration=0.7"
 dwarf-male-grim = "cfg_weight=0.3,clip=dwarf-male-grim,clips=b50759e2,exaggeration=0.7"
+human-male-warrior = "cfg_weight=0.4,clip=human-male-warrior,clips=5348e0e1,exaggeration=0.55,speed=0.99"
