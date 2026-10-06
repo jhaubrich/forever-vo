@@ -188,7 +188,9 @@ artifact, never hand-edited):
    (gitignored, regenerable), including every creature's display and every
    book page (`books`, version 4: `page_text` chains from items, type-9 text
    objects and type-10 objects, 1,124 pages keyed by text, with each page's
-   `next`). Capture beats Classic.
+   `next`). Version 5 marks a speaker whose four displays (`display_id1..4`)
+   come in both sexes `sexes: "mf"` (56 speakers, #1127). Capture beats
+   Classic, except that `sexes` is the union of every source.
 3. `generate.py` picks a voice per speaker (below), synthesises with Chatterbox,
    writes mp3s under `ForeverVO_Data/Sounds/`, rebuilds the tables every 25
    files, and records per file in `sound_index.json` the voice (`v`) and a
@@ -219,7 +221,12 @@ Generation details:
 - A speaker met as both sexes (`sexes: "mf"`, one creature ID for male and female
   guards, #304) gets the whole line in the other sex too under
   `Sounds/*/Sex/<m|f>/` (tables `sa`/`sp`/`sc`, gossip `s`); the addon plays it
-  when the dialog unit's sex matches.
+  when the dialog unit's sex matches. The sexes known are `generate.known_sexes`:
+  `sexes` (players' readings and Classic's displays), the captured `sex` and
+  the display's `sexID`. The pack lists that set per speaker (`pack.sexes`), and
+  a player who meets a sex not in it marks the NPC `newSex`, which goes out
+  with the next export like `recast`: a voiced Classic speaker exports no
+  lines, so its record never left the client before (#1127).
 
 **Audition** (`uv run audition`, `tools/audition/`, FastAPI + one `index.html`,
 port 8765) is the ear-test page: pick a voice and a line, source clips, knobs

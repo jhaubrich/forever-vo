@@ -144,6 +144,20 @@ def creature_displays(creatures: dict) -> dict[str, int]:
     return {str(entry): row[3] for entry, row in creatures.items() if row[3]}
 
 
+def display_sexes(display_ids: list[int | None]) -> str | None:
+    """ "mf" when a creature's displays come in both sexes, else None.
+
+    The server spawns a creature in any of its four displays, so one creature ID
+    can be either sex: two of the Ravenholdt Assassin's four are women (#1127),
+    and so are some of every city's guards. Only the first display picks the
+    voice; `sexes` has generate.py voice each line in the other sex too (#304),
+    which the addon plays when the unit in front of the player is that sex.
+    Capture's own `sexes` reached only the speakers whose lines were still being
+    exported, never a Classic speaker voiced from its display."""
+    seen = {display_race_sex(display)[1] for display in display_ids if display}
+    return "mf" if {0, 1} <= seen else None
+
+
 def main() -> int:
     db_path = ensure_snapshot()
     conn = sqlite3.connect(db_path)
@@ -155,7 +169,10 @@ def main() -> int:
         "QuestLevel, Title, Details, Objectives, RequestItemsText, OfferRewardText",
     )
     creatures = latest_patch_rows(
-        conn, "creature_template", "entry", "name, display_id1, gossip_menu_id"
+        conn,
+        "creature_template",
+        "entry",
+        "name, display_id1, gossip_menu_id, display_id2, display_id3, display_id4",
     )
     objects = latest_patch_rows(
         conn, "gameobject_template", "entry", "name, type, data0, data7"
@@ -179,7 +196,7 @@ def main() -> int:
     accept_by_item = {row[3]: row[0] for row in items.values() if row[3]}
 
     out: dict[str, Any] = {
-        "version": 4,
+        "version": 5,
         "source": "classic",
         "quests": {},
         "gossip": {},
@@ -200,6 +217,9 @@ def main() -> int:
                 "raceID": race,
                 "sexID": sex,
             }
+            sexes = display_sexes([row[3], *row[5:8]])
+            if sexes:
+                npcs[key]["sexes"] = sexes
         return key
 
     def object_speaker(entry: int) -> str | None:

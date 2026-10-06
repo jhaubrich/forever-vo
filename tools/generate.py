@@ -321,13 +321,13 @@ class Item:
         """(letter, voice) for the line in the speaker's other sex, or None.
 
         One creature ID can be either sex (Peacekeepers, city guards: #304), and
-        the NPC record keeps every sex it was seen as (`sexes`). The line's own
+        the NPC record keeps every sex it is known as (known_sexes). The line's own
         file is in the voice its record resolves to; this is the other one, which
         the addon plays when the unit in front of the player is that sex. None
         for a speaker seen as one sex, a narrator, a pinned voice, a named clip,
         and a voice whose other sex has no clip of its own (a fallback to
         another sex, or the narrator, would be worse than the one it has)."""
-        sexes = set((self.npc or {}).get("sexes") or "")
+        sexes = set(known_sexes(self.npc))
         if (
             not {"m", "f"} <= sexes
             or self.is_narrator
@@ -513,6 +513,15 @@ def load_sources() -> dict:
                         or (field in ("displayID", "modelFileID") and not value)
                     ):
                         continue
+                    if field == "sexes":
+                        # Every source's sexes count: Classic's displays say a
+                        # Ravenholdt Assassin is both, a capture that met only
+                        # one must not take that back (#1127)
+                        value = "".join(
+                            letter
+                            for letter in "mf"
+                            if letter in value or letter in target.get("sexes", "")
+                        )
                     target[field] = value
         displays.update(data.get("displays", {}))
         print(
@@ -523,6 +532,24 @@ def load_sources() -> dict:
     if filled:
         print(f"display IDs from Classic, model checked: {len(filled)} captured npcs")
     return merged
+
+
+SEX_LETTERS = {"sex": {2: "m", 3: "f"}, "sexID": {0: "m", 1: "f"}}  # UnitSex, display
+
+
+def known_sexes(npc: dict | None) -> str:
+    """Every sex the pipeline knows the speaker as, "m", "f", "mf" or "": its
+    `sexes` (every one a player met, and Classic's displays), its captured `sex`
+    and its display's `sexID`. Both, and the line gets the other sex's file too
+    (Item.sex_alternate); the pack records the set (`pack.sexes`), and a player
+    who meets a sex not in it exports the NPC record (Capture.lua), so the next
+    nightly voices it."""
+    npc = npc or {}
+    seen = set(npc.get("sexes") or "")
+    for field, letters in SEX_LETTERS.items():
+        if npc.get(field) in letters:
+            seen.add(letters[npc[field]])
+    return "".join(letter for letter in "mf" if letter in seen)
 
 
 def fill_displays(
@@ -1214,6 +1241,7 @@ def rebuild_tables(
     gossip: dict[int, list[dict]] = {}
     npcs: dict[int, str] = {}
     models: dict[int, int] = {}  # speaker -> the model file its voice was cast from
+    sexes: dict[int, str] = {}  # speaker -> every sex the pipeline knows it as
     narrator: dict[int, dict[str, dict]] = {}
     books: dict[str, dict] = {}
     book_sources: dict[str, dict] = {}  # page key -> its merged source entry
@@ -1249,6 +1277,8 @@ def rebuild_tables(
         cast_model = model_cast(item)
         if speaker is not None and cast_model:
             models[speaker] = cast_model
+        if speaker is not None and not (item.npc or {}).get("isObject"):
+            sexes[speaker] = known_sexes(item.npc)
 
         # The same line in the alternate narrator voices, each with its own
         # duration: voices differ in pace, and the text is paged against it.
@@ -1473,13 +1503,17 @@ def rebuild_tables(
     model_list = "".join(
         f"\t[{key}] = {model},\n" for key, model in sorted(models.items())
     )
+    sex_list = "".join(
+        f"\t[{key}] = {lua_string(letters)},\n"
+        for key, letters in sorted(sexes.items())
+    )
     write_table(
         "NPCs.lua",
         "npcs",
         npc_lines,
         data_dir,
         pack_global,
-        prelude=f"pack.models = {{\n{model_list}}}\n",
+        prelude=f"pack.models = {{\n{model_list}}}\npack.sexes = {{\n{sex_list}}}\n",
     )
     write_table(
         "Narrator.lua",
