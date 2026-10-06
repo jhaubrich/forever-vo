@@ -1,0 +1,115 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "-4141": {
+   "isObject": true,
+   "name": "Unknown"
+  },
+  "3292": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Brewmaster Drohn",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3338": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Sergra Darkthorn",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3442": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Sputtervalve",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1029",
+ "quests": {
+  "821-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Brewmaster Drohn",
+   "npc": "3292",
+   "questID": 821,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "How's the search going?",
+   "time": 1791230685,
+   "title": "Chen's Empty Keg",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "881-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sergra Darkthorn",
+   "npc": "3338",
+   "questID": 881,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "The great cat calls to you, $N.",
+   "time": 1791229963,
+   "title": "Echeyakee",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "901-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1413,
+   "name": "Unknown",
+   "npc": "-4141",
+   "questID": 901,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "The console lights are dimmed and the gauges and dials all read at their zero positions, everything idling.",
+   "time": 1791228999,
+   "title": "Samophlange",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "902-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sputtervalve",
+   "npc": "3442",
+   "questID": 902,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh, you're back, $N! Do you have the samophlange?",
+   "time": 1791230726,
+   "title": "Samophlange",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
