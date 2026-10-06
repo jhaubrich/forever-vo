@@ -1,0 +1,163 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "268684": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 125362,
+   "name": "Thra",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "268701": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Thatog",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3193": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Misha Tor'kren",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3293": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Rezlak",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3338": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Sergra Darkthorn",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3368": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Borstan",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5810": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Uzzek",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1119",
+ "quests": {
+  "1498-progress": {
+   "build": "70235",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Uzzek",
+   "npc": "5810",
+   "questID": 1498,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have the scales, $N?  Unless you can withstand the attacks of the thunder lizards, you will not benefit from my instruction.",
+   "time": 1791220980,
+   "title": "Path of Defense",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "816-progress": {
+   "build": "70235",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Misha Tor'kren",
+   "npc": "3193",
+   "questID": 816,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "I pray that Kron will return to me, but I'm almost certain I know his fate already.",
+   "time": 1791220595,
+   "title": "Lost But Not Forgotten",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "844-progress": {
+   "build": "70235",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Sergra Darkthorn",
+   "npc": "3338",
+   "questID": 844,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you collected the plainstrider beaks?",
+   "time": 1791225602,
+   "title": "Plainstrider Menace",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "97282-progress": {
+   "build": "70235",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Rezlak",
+   "npc": "3293",
+   "questID": 97282,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "It might come as a surprise that with a name like thunder lizard they shoot lightning instead of roaring like thunder.\r\n\r\nWell, they do. Shoot lightning, I mean.\r\n\r\nTrust me, it's a lesson you only get to learn once if you're lucky.",
+   "time": 1791221302,
+   "title": "Stormy Potential",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "97326-progress": {
+   "build": "70235",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Thra",
+   "npc": "268684",
+   "questID": 97326,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "It's nice to not have to always sit in the dirt!",
+   "time": 1791217660,
+   "title": "Rocks to Rests",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
