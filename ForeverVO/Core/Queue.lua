@@ -132,9 +132,9 @@ local function StopPlayback(item)
     end
 end
 
---- Adds an item whose audio has already been resolved (path + duration).
---- Returns true when it was queued.
-function Queue:Add(item)
+--- Whether an item may join the queue: it has a file that exists, is not
+--- queued already, and is not gossip cutting into quest text.
+local function Accepts(self, item)
     if not item.path then
         return false
     end
@@ -147,7 +147,8 @@ function Queue:Add(item)
             return false -- already queued
         end
     end
-    -- Gossip should not interrupt a run of quest text
+    -- Gossip should not interrupt a run of quest text. A book page is read
+    -- because the player pressed Play, so it queues behind quest text instead.
     if item.kind == "gossip" then
         for _, queued in ipairs(self.items) do
             if queued.kind == "quest" then
@@ -159,16 +160,50 @@ function Queue:Add(item)
         ns.Print(format("|cffff4040missing sound file|r %s (pack %s)", item.path, item.pack and item.pack.name or "?"))
         return false
     end
+    return true
+end
 
+local function Insert(self, item)
     self.nextID = self.nextID + 1
     item.id = self.nextID
     table.insert(self.items, item)
+end
 
+--- Adds an item whose audio has already been resolved (path + duration).
+--- Returns true when it was queued.
+function Queue:Add(item)
+    if not Accepts(self, item) then
+        return false
+    end
+    Insert(self, item)
     if #self.items == 1 and not self:IsPaused() then
         StartPlayback(self, item)
     end
     self:TriggerEvent("OnChanged")
     return true
+end
+
+--- Adds several items in order (a book read on past the page on screen),
+--- checking every file before the first one starts: Audio.Exists plays a
+--- file to test it, and checks made in the same frame as the first play (which
+--- also mutes the Dialog channel) failed in game, so only the first page was
+--- read. Returns how many were added.
+function Queue:AddMany(items)
+    local wasEmpty, added = #self.items == 0, 0
+    for _, item in ipairs(items) do
+        if Accepts(self, item) then
+            Insert(self, item)
+            added = added + 1
+        end
+    end
+    if added == 0 then
+        return 0
+    end
+    if wasEmpty and not self:IsPaused() then
+        StartPlayback(self, self.items[1])
+    end
+    self:TriggerEvent("OnChanged")
+    return added
 end
 
 --- Removes an item. The first item is stopped if it is playing.

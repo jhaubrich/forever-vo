@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Books, letters and plaques can be read aloud by the narrator, whether the
+  book is in your bags or out in the world: press **Play** under the book
+  and it reads on through the rest of the book, as far as the voice pack has
+  it, without you turning a page. It keeps reading when you turn the page or
+  close the book, and a page you turn to beyond what was queued is read after
+  it; **Stop** ends the reading. A page no voice pack
+  has yet is saved for your next export, like unvoiced quests and gossip.
 - The count of quests to send (login window, Options, minimap button) leaves
   out lines a voice pack you installed since has voiced or stopped asking
   for. It used to keep counting them until your next export.

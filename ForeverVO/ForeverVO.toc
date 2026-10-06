@@ -26,6 +26,7 @@ Core\Welcome.lua
 UI\TalkingHead.lua
 UI\QueueList.lua
 UI\QuestLog.lua
+UI\Book.lua
 UI\Report.lua
 UI\MinimapButton.lua
 UI\Debug.lua

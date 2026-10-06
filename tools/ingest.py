@@ -583,12 +583,14 @@ def merge_gender(base: dict, other: dict) -> dict:
 
 
 class SourceTexts:
-    """Raw quest and gossip text from tools/data/bulk/classic.json, for
+    """Raw quest, gossip and book text from tools/data/bulk/classic.json, for
     reconciliation. The beta quest cache was a second source until #317."""
 
     def __init__(self, bulk_dir: Path = DATA_DIR / "bulk"):
         self.quests: dict[str, str] = {}
         self.gossip: dict[str, list[str]] = {}
+        # book pages by title, each with its comparison keys
+        self.books: dict[str, list[tuple[str, list[str]]]] = {}
         self.speakers: dict[
             str, dict
         ] = {}  # quest key -> {npc, name, isObject} per Classic
@@ -619,6 +621,11 @@ class SourceTexts:
                 self.gossip.setdefault(str(key).split("|", 1)[0], []).append(
                     entry["text"]
                 )
+        for entry in data.get("books", {}).values():
+            if entry.get("text"):
+                self.books.setdefault(entry.get("title") or "", []).append(
+                    (entry["text"], _pieces(entry["text"])[1])
+                )
         self.loaded.append("classic")
 
     def quest(self, key: str) -> str | None:
@@ -636,6 +643,39 @@ class SourceTexts:
                 best, best_ratio = candidate, ratio
         return best
 
+    def book_for(self, title: str | None, text: str) -> str | None:
+        """The closest Classic page, if any is close enough: among the pages of a
+        book of the same title first, since the client names the book, then any
+        (Forever may have renamed it)."""
+        _, keys = _pieces(text)
+        same = self.books.get(title or "", [])
+        for candidates in (same, [c for t, cs in self.books.items() for c in cs]):
+            best, best_ratio = None, RECONCILE_RATIO
+            for candidate, candidate_keys in candidates:
+                matcher = difflib.SequenceMatcher(
+                    None, keys, candidate_keys, autojunk=False
+                )
+                if (
+                    matcher.real_quick_ratio() < best_ratio
+                    or matcher.quick_ratio() < best_ratio
+                ):
+                    continue
+                ratio = matcher.ratio()
+                if ratio >= best_ratio:
+                    best, best_ratio = candidate, ratio
+            if best is not None:
+                return best
+        return None
+
+    def source_for(self, entry: dict, kind: str, key: str) -> str | None:
+        """The raw text this line was read from, when Classic has it."""
+        if kind == "quests":
+            return self.quest(key)
+        text = entry.get("text") or ""
+        if kind == "books":
+            return self.book_for(entry.get("title"), text)
+        return self.gossip_for(key, text)
+
 
 def reconcile_entry(
     entry: dict, kind: str, key: str, sources: SourceTexts | None
@@ -643,7 +683,7 @@ def reconcile_entry(
     text = entry.get("text")
     if not text or sources is None:
         return entry, 0
-    source = sources.quest(key) if kind == "quests" else sources.gossip_for(key, text)
+    source = sources.source_for(entry, kind, key)
     if source is None:
         return entry, 0
     fixed, restored = reconcile_text(text, source, raw=True)
@@ -712,7 +752,14 @@ def repair_entry(
     if restored:
         stats.reconciled += 1
         stats.restored += restored
-    source = sources.quest(key) if sources is not None and kind == "quests" else None
+    # A $g branch the client resolved away is put back from the raw text: a
+    # quest's by its key, a book page's by the closest Classic page (gossip is
+    # keyed by its live hash, so it stays resolved)
+    source = (
+        sources.source_for(entry, kind, key)
+        if sources is not None and kind in ("quests", "books")
+        else None
+    )
     if source:
         fixed, branches = restore_gender(entry.get("text") or "", source)
         if branches:
@@ -742,6 +789,15 @@ def gossip_key(key: str, entry: dict, readers: Readers) -> str:
     return f"{speaker}|{text_key(entry.get('text'), *character_traits(entry, readers), short_race=short_race(entry))}"
 
 
+def book_key(entry: dict, readers: Readers) -> str:
+    """A book page's text hash, the key the addon looks the page up by."""
+    return text_key(
+        entry.get("text"),
+        *character_traits(entry, readers),
+        short_race=short_race(entry),
+    )
+
+
 def find_saved_variable_files() -> list[Path]:
     files: list[Path] = []
     for path in (BETA_DIR / "WTF" / "Account").glob(f"*/SavedVariables/{SV_NAME}*"):
@@ -756,6 +812,7 @@ def load_capture() -> dict:
         if CAPTURE_JSON.exists()
         else {"version": 2, "quests": {}, "gossip": {}, "npcs": {}}
     )
+    capture.setdefault("books", {})
     capture.pop("sources", None)  # older files kept it inline
     capture["sources"] = (
         json.loads(SOURCES_JSON.read_text(encoding="utf-8"))
@@ -914,7 +971,7 @@ def ingest_file(
     sources: SourceTexts | None,
     stats: Repairs,
     readers: Readers,
-) -> tuple[int, int, int]:
+) -> tuple[int, int, int, int]:
     if path.suffix == ".json":
         db = json.loads(path.read_text(encoding="utf-8"))
     else:
@@ -923,11 +980,11 @@ def ingest_file(
         )
         db = variables.get(CAPTURE_VAR)
     if not isinstance(db, dict):
-        return (0, 0, 0)
+        return (0, 0, 0, 0)
     # Community exports: the issue comment they came from, and the addon that
     # wrote them (absent before 0.1.2), both stamped on each entry
     stamp = {field: db[field] for field in ("origin", "addon") if db.get(field)}
-    quests = gossip = npcs = 0
+    quests = gossip = books = npcs = 0
     for key, entry in (db.get("quests") or {}).items():
         entry = repair_entry(
             {**entry, **stamp} if stamp else entry,
@@ -952,6 +1009,19 @@ def ingest_file(
             gossip += merge_entry(
                 capture["gossip"], gossip_key(key, entry, readers), entry, readers
             )
+    for key, entry in (db.get("books") or {}).items():
+        entry = repair_entry(
+            {**entry, **stamp} if stamp else entry,
+            "books",
+            str(key),
+            sources,
+            stats,
+            readers,
+        )
+        if entry is not None:
+            books += merge_entry(
+                capture["books"], book_key(entry, readers), entry, readers
+            )
     for key, npc in (db.get("npcs") or {}).items():
         old = capture["npcs"].get(str(key), {})
         merged = merge_npc(old, npc, db.get("origin") or "local", db.get("addon"))
@@ -960,12 +1030,12 @@ def ingest_file(
         capture["npcs"][str(key)] = merged
     stat = path.stat()
     capture["sources"][str(path)] = {"mtime": stat.st_mtime, "size": stat.st_size}
-    return quests, gossip, npcs
+    return quests, gossip, books, npcs
 
 
 def backfill(
     capture: dict, sources: SourceTexts | None, stats: Repairs, readers: Readers
-) -> tuple[int, int]:
+) -> tuple[int, int, int]:
     """Re-runs the repairs over text already in capture.json and re-keys any gossip
     line whose hash moves as a result. Idempotent, so it just runs on every ingest:
     it is what repairs everything captured before the addon recorded class and
@@ -996,7 +1066,19 @@ def backfill(
     stats.superseded += len(superseded)
     gossip += len(superseded)
     capture["gossip"] = rebuilt
-    return quests, gossip
+    # Book pages key by their text alone, like gossip without the speaker
+    books, rebuilt_books = 0, {}
+    for key, entry in capture.get("books", {}).items():
+        fixed = repair_entry(entry, "books", key, sources, stats, readers)
+        if fixed is None:
+            books += 1
+            continue
+        new_key = book_key(fixed, readers)
+        if fixed.get("text") != entry.get("text") or new_key != key:
+            books += 1
+        merge_entry(rebuilt_books, new_key, fixed, readers)
+    capture["books"] = rebuilt_books
+    return quests, gossip, books
 
 
 def superseded_gossip(gossip: dict, readers: Readers) -> set[str]:
@@ -1066,13 +1148,19 @@ def main(argv: list[str] | None = None) -> int:
             if path.suffix == ".json":
                 gather_sexes(capture, json.loads(path.read_text(encoding="utf-8")))
             continue
-        quests, gossip, npcs = ingest_file(capture, path, sources, stats, readers)
-        print(f"ingested   {path}: {quests} quest, {gossip} gossip, {npcs} npc changes")
+        quests, gossip, books, npcs = ingest_file(
+            capture, path, sources, stats, readers
+        )
+        print(
+            f"ingested   {path}: {quests} quest, {gossip} gossip, {books} book page, "
+            f"{npcs} npc changes"
+        )
 
     repaired = backfill(capture, sources, stats, readers)
     if any(repaired):
         print(
-            f"repaired   {repaired[0]} quest, {repaired[1]} gossip texts ($n/$c/$r put back, glued placeholders "
+            f"repaired   {repaired[0]} quest, {repaired[1]} gossip, {repaired[2]} book texts "
+            f"($n/$c/$r put back, glued placeholders "
             f"and literal words restored)"
         )
     if stats.reconciled:
@@ -1089,7 +1177,8 @@ def main(argv: list[str] | None = None) -> int:
         )
     if stats.gendered:
         print(
-            f"regendered {stats.branches} $g branch(es) in {stats.gendered} quest texts from the raw source text"
+            f"regendered {stats.branches} $g branch(es) in {stats.gendered} quest and book texts "
+            f"from the raw source text"
         )
     if stats.superseded:
         print(
@@ -1123,9 +1212,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     missing_q = sum(1 for e in capture["quests"].values() if not e.get("found"))
     missing_g = sum(1 for e in capture["gossip"].values() if not e.get("found"))
+    missing_b = sum(1 for e in capture["books"].values() if not e.get("found"))
     print(
         f"capture.json: {len(capture['quests'])} quest texts ({missing_q} without audio), "
-        f"{len(capture['gossip'])} gossip texts ({missing_g} without audio), {len(capture['npcs'])} NPCs"
+        f"{len(capture['gossip'])} gossip texts ({missing_g} without audio), "
+        f"{len(capture['books'])} book pages ({missing_b} without audio), {len(capture['npcs'])} NPCs"
     )
     return 0
 

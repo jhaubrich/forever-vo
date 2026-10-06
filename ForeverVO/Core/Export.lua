@@ -100,6 +100,7 @@ function Export:Collect(all)
             e = entry.event,
             q = entry.questID,
             t = entry.title,
+            p = entry.page,
             x = Util.Tokenize(entry.text, entry.player, entry.class, entry.race),
             n = entry.npc,
             s = entry.name,
@@ -122,6 +123,9 @@ function Export:Collect(all)
     end
     for _, entry in pairs(db.gossip or {}) do
         add("gossip", entry)
+    end
+    for _, entry in pairs(db.books or {}) do
+        add("book", entry)
     end
     local at = db.exportedAt
     for key, npc in pairs(known) do
@@ -608,10 +612,11 @@ function Export:CopyPaste()
 end
 
 --- How many lines an export would carry now, counted as the login window
---- counts them: distinct quests (an offer and its turn-in are one) and gossip.
+--- counts them: distinct quests (an offer and its turn-in are one), gossip and
+--- pages of books.
 function Export:PendingCount()
-    local quests, gossip = ns.Capture:Pending()
-    return quests + gossip
+    local quests, gossip, books = ns.Capture:Pending()
+    return quests + gossip + books
 end
 
 --- "Send 12 Quests to Project", or the plain label when there is nothing to
@@ -684,8 +689,8 @@ ns.OnInit(function()
     frame:RegisterEvent("PLAYER_CAMPING")
     frame:RegisterEvent("PLAYER_QUITING")
     frame:SetScript("OnEvent", function()
-        local _, questsMissing, _, gossipMissing, _, sessionMissing = ns.Capture:Summary()
-        local missing = questsMissing + gossipMissing
+        local _, questsMissing, _, gossipMissing, _, sessionMissing, _, booksMissing = ns.Capture:Summary()
+        local missing = questsMissing + gossipMissing + booksMissing
         if missing == 0 then
             return
         end

@@ -1,4 +1,4 @@
-"""Exports every Classic quest and gossip line from the VMaNGOS database snapshot
+"""Exports every Classic quest, gossip line and book page from the VMaNGOS database snapshot
 into tools/data/bulk/classic.json (same schema as capture.json).
 
 WoW Forever reuses Classic's quest IDs and, for most quests, the exact text, so
@@ -87,6 +87,51 @@ def collect_gossip_menus(conn: sqlite3.Connection) -> dict[int, set[int]]:
     return resolved
 
 
+# What a page_text entry holds when Blizzard never wrote the page
+PLACEHOLDER_PAGES = {"missing text"}
+
+
+def collect_books(
+    pages: dict[int, tuple[str, int]], starts: list[tuple[int, str]]
+) -> dict[str, dict]:
+    """Every readable page, keyed by its text key as the addon computes it from
+    the live page (Util.TextKey).
+
+    `pages` is page_text (entry -> text, next page); `starts` is (first page,
+    title) for each item and object that opens one, in order of preference for
+    the title: the first source to reach a page names it. A page shared by
+    several books, or by a book and a plaque, is one entry. `next` is the text
+    key of the page after it, so the pack can read a book on past the page on
+    screen (generate.link_pages)."""
+
+    def readable(page: int) -> str | None:
+        text = pages[page][0] if page in pages else None
+        if text and text.strip() and text.strip().lower() not in PLACEHOLDER_PAGES:
+            return text
+        return None
+
+    books: dict[str, dict] = {}
+    for first, title in starts:
+        page, number, seen = first, 1, set()
+        while page and page in pages and page not in seen:
+            seen.add(page)
+            text, following = readable(page), pages[page][1]
+            if text:
+                entry = {
+                    "event": "page",
+                    "text": text,
+                    "title": title,
+                    "page": number,
+                    "source": "classic",
+                }
+                after = readable(following) if following not in seen else None
+                if after:
+                    entry["next"] = text_key(after)
+                books.setdefault(text_key(text), entry)
+            page, number = following, number + 1
+    return books
+
+
 def creature_displays(creatures: dict) -> dict[str, int]:
     """Creature ID -> its Classic display, for every creature that has one.
 
@@ -112,8 +157,12 @@ def main() -> int:
     creatures = latest_patch_rows(
         conn, "creature_template", "entry", "name, display_id1, gossip_menu_id"
     )
-    objects = latest_patch_rows(conn, "gameobject_template", "entry", "name")
-    items = latest_patch_rows(conn, "item_template", "entry", "name, start_quest")
+    objects = latest_patch_rows(
+        conn, "gameobject_template", "entry", "name, type, data0, data7"
+    )
+    items = latest_patch_rows(
+        conn, "item_template", "entry", "name, start_quest, page_text"
+    )
 
     def relations(table: str) -> dict[int, int]:
         result: dict[int, int] = {}
@@ -130,7 +179,7 @@ def main() -> int:
     accept_by_item = {row[3]: row[0] for row in items.values() if row[3]}
 
     out: dict[str, Any] = {
-        "version": 3,
+        "version": 4,
         "source": "classic",
         "quests": {},
         "gossip": {},
@@ -279,6 +328,24 @@ def main() -> int:
                 }
                 gossip_count += 1
 
+    # Books, letters and plaques: an item's page_text, a text object's (type 9)
+    # data0 and a goober's (type 10, "The Lay of Ameth'Aran") data7, each the
+    # first page of a chain through next_page. Items first, then objects.
+    pages = {
+        entry: (text, following)
+        for entry, text, following in conn.execute(
+            "SELECT entry, text, next_page FROM page_text"
+        )
+    }
+    starts = [(row[4], row[2]) for _, row in sorted(items.items()) if row[4]]
+    for _, row in sorted(objects.items()):
+        kind, data0, data7 = row[3], row[4], row[5]
+        if kind == 9 and data0:
+            starts.append((data0, row[2]))
+        elif kind == 10 and data7:
+            starts.append((data7, row[2]))
+    out["books"] = collect_books(pages, starts)
+
     out["displays"] = creature_displays(creatures)
 
     BULK_DIR.mkdir(parents=True, exist_ok=True)
@@ -290,7 +357,7 @@ def main() -> int:
     progress = sum(1 for k in out["quests"] if k.endswith("-progress"))
     print(
         f"{OUTPUT}: {len(quests)} quests -> {accept} accept, {complete} complete, {progress} progress texts; "
-        f"{gossip_count} gossip lines; {len(npcs)} speakers; "
+        f"{gossip_count} gossip lines; {len(out['books'])} book pages; {len(npcs)} speakers; "
         f"{len(out['displays'])} creature displays"
     )
     return 0

@@ -177,7 +177,7 @@ def rows() -> list[dict]:
     out = []
     if CAPTURE.exists():
         data = json.loads(CAPTURE.read_text(encoding="utf-8"))
-        for section in ("quests", "gossip"):
+        for section in ("quests", "gossip", "books"):
             for entry in data.get(section, {}).values():
                 if entry.get("text"):
                     out.append(
@@ -185,7 +185,7 @@ def rows() -> list[dict]:
                     )
     if CLASSIC.exists():
         data = json.loads(CLASSIC.read_text(encoding="utf-8"))
-        for section in ("quests", "gossip"):
+        for section in ("quests", "gossip", "books"):
             for entry in data.get(section, {}).values():
                 if entry.get("text"):
                     out.append(

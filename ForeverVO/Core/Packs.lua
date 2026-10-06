@@ -56,6 +56,22 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- the model file a speaker's voice was cast from, for speakers the
       -- pipeline knows only by model (Forever's own NPCs have no display ID);
       -- a player who sees another model exports the NPC record (Capture.lua)
+    books = {
+      ["1a2b3c4d"] = { d = 12.3, t = "original page text", s = "original page text",
+                       b = "A Letter to Morgan", p = 1, x = "5e6f7a8b", g = true,
+                       n = { [1] = 12.9 } },
+      -- one entry per page of readable text (a book in the bags, a plaque or
+      -- lectern in the world: both open ItemTextFrame), keyed by
+      -- Util.TextKey of the page. Always the narrator. t: the raw page, which
+      -- FindBook matches and which still holds $g. s: the prose the talking
+      -- head shows for a page that is not on screen ($ codes spoken, HTML read
+      -- as sentences, $g left for ResolveGender). b: the title the client
+      -- shows (ItemTextGetItem), which bounds the fuzzy fallback to that
+      -- book's own pages; p: its page number; x: the key of the voiced page
+      -- after it, which Play reads on to without the player turning (the
+      -- client hands an addon only the page on screen); g and n as on a
+      -- gossip entry. Files are Sounds\Books\<key>-page.mp3.
+    },
     narratorVoices = { "skyborne-female" },
     narrator = {
       [questID] = { [1] = { a = 5.4, c = 3.3, cP = { [2] = 1.2 } }, [2] = { a = 5.1 } },
@@ -120,6 +136,15 @@ function ns.RegisterPack(pack)
     pack.models = pack.models or {}
     pack.narrator = pack.narrator or {}
     pack.narratorVoices = pack.narratorVoices or {}
+    pack.books = pack.books or {}
+    pack.bookTitles = {}
+    for hash, entry in pairs(pack.books) do
+        if entry.b then
+            local pages = pack.bookTitles[entry.b] or {}
+            pack.bookTitles[entry.b] = pages
+            table.insert(pages, hash)
+        end
+    end
     Packs.voices = nil -- the menu is the union over packs; rebuild it on demand
     pack.nameToKey = {}
     for key, name in pairs(pack.npcs) do
@@ -480,6 +505,91 @@ function Packs:FindGossip(speakerKey, text, sex)
         return otherPath, otherSeconds, bestPack, nil, otherVoice
     end
     return SoundPath(bestPack, "Gossip", base), bestEntry.d, bestPack, nil, bestEntry.v
+end
+
+--- Finds the narration of one page of readable text. Exact hash match in any
+--- pack first, then the most similar page of the same title above the fuzzy
+--- threshold (a title with no pages in a pack is skipped, so a miss never
+--- walks every book). Returns path, duration, pack, nil, voice, entry, score (1 for
+--- an exact match; below it, the page on screen is worded differently).
+---@param title string|nil
+---@param text string
+function Packs:FindBook(title, text)
+    if not text then
+        return nil
+    end
+    local tokenized = Util.Tokenize(text)
+    local hash = Util.TextKey(tokenized)
+    local letter = Util.PlayerSexLetter()
+    local bestEntry, bestHash, bestPack, bestScore
+
+    for _, pack in ipairs(self.list) do
+        local entry = pack.books[hash]
+        if entry then
+            bestEntry, bestHash, bestPack, bestScore = entry, hash, pack, 1
+            break
+        end
+        local pages = title and pack.bookTitles[title]
+        if pages then
+            for _, key in ipairs(pages) do
+                local page = pack.books[key]
+                -- A $g page is keyed on its raw text, as gossip is (GossipExact).
+                if page.g and letter and type(page.t) == "string"
+                    and Util.TextKey(Util.ResolveGender(page.t, letter)) == hash then
+                    bestEntry, bestHash, bestPack, bestScore = page, key, pack, 1
+                    break
+                end
+                local score = Util.Similarity(tokenized, page.t or "")
+                if score >= FUZZY_THRESHOLD and (not bestScore or score > bestScore) then
+                    bestEntry, bestHash, bestPack, bestScore = page, key, pack, score
+                end
+            end
+            if bestScore == 1 then
+                break
+            end
+        end
+    end
+
+    if not bestEntry then
+        return nil
+    end
+    ns.Debug(format("book match %.2f for %s", bestScore, bestHash))
+    local path, duration, voice = self:BookSound(bestPack, bestHash, bestEntry)
+    return path, duration, bestPack, nil, voice, bestEntry, bestScore
+end
+
+--- The file for one page of a pack, in the chosen narrator voice where the pack
+--- has it: path, duration, voice.
+function Packs:BookSound(pack, hash, entry)
+    local base = hash .. "-page"
+    if entry.g then
+        base = Util.PlayerGenderPrefix() .. base
+    end
+    local voice = self:NarratorVoice()
+    local index = voice ~= DEFAULT_NARRATOR and NarratorIndex(pack, voice) or nil
+    if index and entry.n then
+        local seconds = entry.n[index]
+        if seconds then
+            return SoundPath(pack, "Books\\Narrator\\" .. voice, base), seconds, voice
+        end
+    end
+    return SoundPath(pack, "Books", base), entry.d, DEFAULT_NARRATOR
+end
+
+--- The page a pack lists after this one (its x), looked up by key in every pack
+--- in priority order: key, entry, pack, or nil where the voiced chain ends.
+function Packs:NextBookPage(entry)
+    local hash = entry and entry.x
+    if not hash then
+        return nil
+    end
+    for _, pack in ipairs(self.list) do
+        local page = pack.books[hash]
+        if page then
+            return hash, page, pack
+        end
+    end
+    return nil
 end
 
 --- The file base, the voice the queue plays, and the archetype recorded on the

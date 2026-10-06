@@ -8,10 +8,11 @@ the minimap in modern clients).
 
 local function Status()
     local packs = ns.Packs:Count()
-    local quests, questsMissing, gossip, gossipMissing, sessionSeen = ns.Capture:Summary()
-    ns.Print(format("%d voice %s loaded. Captured: %d quest %s (%d to export), %d gossip %s (%d to export); %d %s this session.",
+    local quests, questsMissing, gossip, gossipMissing, sessionSeen, _, books, booksMissing = ns.Capture:Summary()
+    ns.Print(format("%d voice %s loaded. Captured: %d quest %s (%d to export), %d gossip %s (%d to export), %d book %s (%d to export); %d %s this session.",
         packs, ns.Util.Plural(packs, "pack"), quests, ns.Util.Plural(quests, "text"), questsMissing,
-        gossip, ns.Util.Plural(gossip, "text"), gossipMissing, sessionSeen, ns.Util.Plural(sessionSeen, "line")))
+        gossip, ns.Util.Plural(gossip, "text"), gossipMissing, books, ns.Util.Plural(books, "page"), booksMissing,
+        sessionSeen, ns.Util.Plural(sessionSeen, "line")))
     if packs == 0 then
         ns.Print("No voice pack found. Install Forever Voiceover Data: Base, Base Endgame and Data: Forever from CurseForge next to ForeverVO.")
     end
