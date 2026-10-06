@@ -8,9 +8,10 @@ on:
   issue_comment:
     types: [created, edited]
   issues:
-    # labeled: an issue opened without the capture label (or with another) runs
-    # once the label is put on, and only for that label
-    types: [opened, edited, labeled]
+    # labeled, not opened: an issue the form opens with the capture label also
+    # sends labeled, so listening to both acknowledged every issue twice. An
+    # issue opened without the label runs once it is put on, and only for that label
+    types: [edited, labeled]
 
 permissions:
   contents: write

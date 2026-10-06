@@ -315,7 +315,7 @@ form (label `capture`); the older inbox, comments on pinned issue #1 (label
 `capture-inbox`), still works. `.github/workflows/ingest-captures.yml` decodes
 with `tools/exportfile.py` (stdlib only) into `captures/`, commits, reacts and
 closes the issue. `exportfile.py` routes a kind it does not know to gossip, so a
-new export kind (`book`) must reach main before an addon that writes it ships. It runs on opened, edited and on the `capture` label being
+new export kind (`book`) must reach main before an addon that writes it ships. It runs on edited and on the `capture` label being
 added, with no concurrency group (GitHub cancels queued runs in a group, and a
 multi-part export opens its issues seconds apart); the push retries.
 
