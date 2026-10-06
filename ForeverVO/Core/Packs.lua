@@ -56,6 +56,10 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- the model file a speaker's voice was cast from, for speakers the
       -- pipeline knows only by model (Forever's own NPCs have no display ID);
       -- a player who sees another model exports the NPC record (Capture.lua)
+    sexes = { [speakerKey] = "mf" },
+      -- every sex the pipeline knows a speaker as ("m", "f", "mf", ""); "mf"
+      -- means its lines have the other sex's file too (sa/sp/sc, gossip s).
+      -- A player who meets a sex not listed exports the NPC record (Capture.lua)
     books = {
       ["1a2b3c4d"] = { d = 12.3, t = "original page text", s = "original page text",
                        b = "A Letter to Morgan", p = 1, x = "5e6f7a8b", g = true,
@@ -153,6 +157,7 @@ function ns.RegisterPack(pack)
     pack.gossip = pack.gossip or {}
     pack.npcs = pack.npcs or {}
     pack.models = pack.models or {}
+    pack.sexes = pack.sexes or {}
     pack.narrator = pack.narrator or {}
     pack.narratorVoices = pack.narratorVoices or {}
     pack.books = pack.books or {}
@@ -194,6 +199,22 @@ function Packs:SpeakerModel(key)
         local model = pack.models[key]
         if model then
             return model
+        end
+    end
+    return nil
+end
+
+--- Every sex the packs know a speaker as ("m", "f", "mf", ""), or nil when no
+--- installed pack records it (packs built before pack.sexes record none).
+function Packs:SpeakerSexes(key)
+    key = tonumber(key)
+    if not key then
+        return nil
+    end
+    for _, pack in ipairs(self.list) do
+        local sexes = pack.sexes[key]
+        if sexes then
+            return sexes
         end
     end
     return nil

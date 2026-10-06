@@ -34,7 +34,8 @@ local function GetDB()
     -- 6: an NPC's model is read on a frame of its own and carries the addon
     --    that read it; `recast` marks one that differs from the model its
     --    voice was cast from (Packs:SpeakerModel); `sexes` lists every sex
-    --    the creature was met as
+    --    the creature was met as; `newSex` marks one met as a sex the packs
+    --    do not know it as (Packs:SpeakerSexes)
     -- 7: pages of readable text (books, letters, plaques) in `books`, keyed by
     --    Util.TextKey of the page, with the title and page number
     db.version = 7
@@ -108,6 +109,16 @@ local function RequestModel(key, unit, npc)
     end)
 end
 
+--- Whether `known` ("m", "f", "mf", "") has every letter of `sexes`.
+local function KnowsAll(known, sexes)
+    for letter in (sexes or ""):gmatch(".") do
+        if not strfind(known, letter, 1, true) then
+            return false
+        end
+    end
+    return true
+end
+
 local function DescribeSpeaker(db, speaker)
     if not speaker.speakerKey then
         return nil
@@ -130,6 +141,17 @@ local function DescribeSpeaker(db, speaker)
         local letter = Util.SexLetter(npc.sex)
         if letter and not strfind(npc.sexes or "", letter, 1, true) then
             npc.sexes = (npc.sexes or "") .. letter
+        end
+        -- A sex the packs do not know this speaker as: its lines play in the
+        -- other one, and are not exported if they are voiced, so the record
+        -- rides along with the next export (a Ravenholdt Assassin, Classic's
+        -- and voiced from its first display: #1127).
+        -- It stays marked until a pack knows every sex met.
+        local known = ns.Packs:SpeakerSexes(key)
+        if letter and known and not strfind(known, letter, 1, true) then
+            npc.newSex = time()
+        elseif known and npc.newSex and KnowsAll(known, npc.sexes) then
+            npc.newSex = nil
         end
         npc.creatureType = Util.Plain(UnitCreatureType(unit))
         npc.level = Util.Plain(UnitLevel(unit))

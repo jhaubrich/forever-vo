@@ -34,7 +34,8 @@ line carries when it was heard ("d", a timestamp) and the file carries the addon
 version that heard it, so the pipeline can rank readings of the same line: a
 newer addon's capture wins over an older one's, and among equals the more recent.
 An NPC record goes along with its lines, and on its own when its model is not
-the one the pack cast its voice from (`recast`, see Capture.lua).
+the one the pack cast its voice from (`recast`) or it was met as a sex the
+packs do not know it as (`newSex`, see Capture.lua).
 tools/exportfile.py decodes it.
 ]]
 
@@ -86,7 +87,8 @@ end
 --- Builds the export table from ForeverVOCaptureDB: lines without audio, and
 --- voiced lines the pack asked to hear again from a reader like this one,
 --- heard since the last export unless `all`. `npcs` holds the record of every
---- speaker a line names; `recast` the records that go along on their own.
+--- speaker a line names; `recast` the records that go along on their own
+--- (a model or a sex the packs did not cast from).
 function Export:Collect(all)
     local db = ForeverVOCaptureDB or {}
     local known = db.npcs or {}
@@ -129,7 +131,8 @@ function Export:Collect(all)
     end
     local at = db.exportedAt
     for key, npc in pairs(known) do
-        if npc.recast and (all or at == nil or npc.recast >= at) then
+        local flagged = math.max(npc.recast or 0, npc.newSex or 0)
+        if flagged > 0 and (all or at == nil or flagged >= at) then
             recast[key] = NpcRecord(npc)
         end
     end

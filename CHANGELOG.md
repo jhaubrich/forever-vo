@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- NPCs that come as men and women under one name (Ravenholdt Assassins,
+  city guards, grunts, Commendation Officers, holiday revelers) speak in the
+  voice of the one in front of you. The women among them were read in a
+  man's voice. Meeting one the voice packs don't have in your sex yet saves
+  that NPC for your next export, so the next pack adds the other voice.
 - The voice packs are reorganised into six: **Classic Quests** (to level
   40), **Classic Endgame** (from 41), **Classic Gossip**, **Forever
   Quests**, **Forever Gossip** and **Books**. Install the ones you want
