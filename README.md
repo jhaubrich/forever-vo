@@ -16,20 +16,20 @@ Four addons on CurseForge: the player, and three voice packs that stack.
   generated for what is still missing.
 Voice packs, each its own CurseForge project, no line in two of them:
 
-- **[Forever Voiceover: Classic Quests](https://www.curseforge.com/wow/addons/forever-voiceover-classic-quests)**
+- **[Forever Voiceover: Classic Quests](https://www.curseforge.com/wow/addons/voiceover-forever-classic-quests)**
   (`ForeverVO_Data_Classic_Quests`) — Classic's quests up to level 40.
-- **[Forever Voiceover: Classic Endgame](https://www.curseforge.com/wow/addons/forever-voiceover-classic-endgame)**
+- **[Forever Voiceover: Classic Endgame](https://www.curseforge.com/wow/addons/voiceover-forever-classic-endgame)**
   (`ForeverVO_Data_Classic_Endgame`) — Classic's quests from level 41 up.
 - **[Forever Voiceover: Classic Gossip](https://www.curseforge.com/wow/addons/voiceover-forever-classic-gossip)**
   (`ForeverVO_Data_Classic_Gossip`) — what Classic's NPCs say when you talk to
   them.
-- **[Forever Voiceover: Forever Quests](https://www.curseforge.com/wow/addons/forever-voiceover-forever-quests)**
+- **[Forever Voiceover: Forever Quests](https://www.curseforge.com/wow/addons/voiceover-forever-forever-quests)**
   (`ForeverVO_Data_Forever_Quests`) — the quests Forever adds. These are the
   lines being crowd sourced, so it grows as players run `/fvo export`.
 - **[Forever Voiceover: Forever Gossip](https://www.curseforge.com/wow/addons/voiceover-forever-forever-gossip)**
   (`ForeverVO_Data_Forever_Gossip`) — what Forever's NPCs say, crowd sourced
   the same way.
-- **[Forever Voiceover: Books](https://www.curseforge.com/wow/addons/forever-voiceover-books)**
+- **[Forever Voiceover: Books](https://www.curseforge.com/wow/addons/voiceover-forever-books)**
   (`ForeverVO_Data_Books`) — books, letters and plaques, Classic's and
   Forever's, read by the narrator when you press Play under the book.
 
