@@ -1,0 +1,58 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "264|b3b21323": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1431,
+   "name": "Commander Althea Ebonlocke",
+   "npc": "264",
+   "questID": null,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "At ease, $C.  If you are just passing though I suggest you stick to the roads and only travel by day. If your business is here in Darkshire, consider lending your abilities to The Night Watch.  Our skill is unquestionable but our numbers are small.",
+   "time": 1791256261,
+   "title": null,
+   "wanted": null,
+   "zone": "Duskwood"
+  }
+ },
+ "npcs": {
+  "264": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119563,
+   "name": "Commander Althea Ebonlocke",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1061",
+ "quests": {
+  "98-accept": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1431,
+   "name": "Commander Althea Ebonlocke",
+   "npc": "264",
+   "questID": 98,
+   "race": "Gnome",
+   "sex": "m",
+   "source": "community",
+   "text": "Stalvan Mistmantle led a life of depravity.  Innocent victims died by his hand.  Undoubtedly he is guilty of countless crimes.  Now the lunatic threatens Darkshire.  The Light only knows what sordid acts he is plotting.  Travel to his cottage just north of town, $C, and execute Stalvan, once and for all.\n\nWhen the deed is done, travel to Madame Eva's and show her his family ring.  After all, it was her premonition that led to this gruesome discovery.  But Darkshire is safer because of her.",
+   "time": 1791256263,
+   "title": "The Legend of Stalvan",
+   "wanted": null,
+   "zone": "Duskwood"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
