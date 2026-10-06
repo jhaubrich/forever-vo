@@ -1,47 +1,33 @@
 """Builds and (optionally) uploads voice pack releases.
 
-Four packs are released from the one working folder (ForeverVO_Data holds
-everything on the maintainer's machine):
+Six packs are released from the one working folder (ForeverVO_Data holds
+everything on the maintainer's machine), each line in exactly one of them
+(pack_of):
 
-  base          ForeverVO_Data_Base          every line: quests to level 40
-  base_endgame  ForeverVO_Data_Base_Endgame  with all gossip, and quests from
-                                             41, split so each fits
-                                             CurseForge's 1 GB website cap.
-                                             Base is huge and released by hand;
-                                             Base Endgame goes nightly once 20
-                                             files are new. Each records what it
-                                             shipped (release_baseline.json).
-                                             (The maintainer's working folder
-                                             stays ForeverVO_Data; they coexist
-                                             because their pack names differ.)
-  delta         ForeverVO_Data_Forever       every line that differs from what
-                                             the two Base packs shipped: new,
-                                             re-worded, re-voiced, re-rolled.
-                                             Small, released nightly, higher
-                                             priority so it overrides the base.
-                                             Until both Base packs have been
-                                             built with a baseline, the old
-                                             rule: lines read in game.
-  books         ForeverVO_Data_Books         every page of every book, letter
-                                             and plaque, Classic's and those
-                                             read in game, in every narrator
-                                             voice. Its own project, since the
-                                             Base packs are near the 1 GB cap.
-                                             About 230 MB whole, so it uploads
-                                             nightly through the API, before
-                                             the delta. Until it has been built
-                                             with a baseline, the delta carries
-                                             only the pages read in game.
+  classic_quests   ForeverVO_Data_Classic_Quests   Classic's quests to level 40
+  classic_endgame  ForeverVO_Data_Classic_Endgame  Classic's quests from 41
+  classic_gossip   ForeverVO_Data_Classic_Gossip   Classic's gossip
+  forever_quests   ForeverVO_Data_Forever_Quests   every quest Classic lacks
+  forever_gossip   ForeverVO_Data_Forever_Gossip   every gossip line Classic lacks
+  books            ForeverVO_Data_Books            every book, letter and plaque
+                                                   page, in every narrator voice
 
-    ./tools/run.sh tools/release_pack.py delta               # build zip only
-    ./tools/run.sh tools/release_pack.py delta --upload      # and upload to CurseForge
-    ./tools/run.sh tools/release_pack.py delta --upload --if-changed   # nightly use
-    ./tools/run.sh tools/release_pack.py base base_endgame --upload   # several packs in one run
+What is Classic's is decided by the VMaNGOS snapshot (tools/data/bulk/classic.json)
+alone, a fixed set, so no line ever changes pack. The Classic packs are cut to
+stay under what CurseForge's upload API takes (it refused 574 and 887 MB and
+took 397), and the Forever packs are Forever's own content, which grows with
+play, so every pack uploads through the API whole when it has changed: there is
+no overlay of new lines on top (the delta pack, until 2026-10-06) and no hand
+upload of a pack near the website's 1 GB cap (Base, until then).
 
-With --upload every pack tries the API first. One the API refuses (Base is
-near 1 GB; the API turned away 574 and 887 MB) prints what the website needs
-and is recorded all the same, as every build is: upload what you build, soon,
-since the delta already leaves its lines to it.
+    ./tools/run.sh tools/release_pack.py books                # build zip only
+    ./tools/run.sh tools/release_pack.py books --upload       # and upload to CurseForge
+    ./tools/run.sh tools/release_pack.py books --upload --if-changed --min-new 10   # nightly use
+    ./tools/run.sh tools/release_pack.py classic_quests classic_gossip --upload   # several in one run
+
+With --upload every pack tries the API first. One the API refuses prints what
+the website needs and is recorded all the same, as every build is: upload what
+you build, soon.
 
 Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz with no
 Xing/Info header frame, about 14 MB per hour of speech; it was 48 kbps until
@@ -51,11 +37,11 @@ misread it and stop every line at 32/56 of its length, see the comment at
 SAMPLE_RATE) into tools/data/release/. The zip stores the files uncompressed,
 since mp3 does not deflate. Versions are date based (2026.09.21, then
 2026.09.21.2 on the same day). Packs upload as "release" files unless
---release-type says otherwise (the delta was "beta" until 2026-09-24: the
-CurseForge app hides beta files unless the user opts in, so default installs
-never got it). --if-changed compares the file set and the encoding with the
-last release recorded in release_state.json, so a change to either releases
-every file again.
+--release-type says otherwise (the CurseForge app hides beta files unless the
+user opts in). --if-changed compares each file's stamp (text, voice, length)
+and the encoding with the last release recorded in release_state.json; a new
+encoding releases every file again. A build re-encodes only the files whose
+stamp changed since that release and keeps the rest from the staging folder.
 
 The API key comes from the repo's .env (gitignored): CF_API_KEY=... (the name
 the BigWigs packager uses too; CURSEFORGE_API_KEY is still accepted).
@@ -66,14 +52,12 @@ parallelism are [release] in forever-vo.toml.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import shutil
 import subprocess
 import sys
 import zipfile
-from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
@@ -82,24 +66,19 @@ from pathlib import Path
 import requests
 from requests_toolbelt import MultipartEncoder
 
+from tools.classicdb import OUTPUT as CLASSIC_JSON
 from tools.config import DATA_DIR, SOUND_INDEX, SOUNDS_DIR, Config, Release, load_config
 from tools.generate import (
     Item,
     VoiceCatalog,
     load_items,
     load_sources,
-    part_name,
     rebuild_tables,
     sound_folder,
 )
 
 RELEASE_DIR = DATA_DIR / "release"
 STATE_FILE = DATA_DIR / "release_state.json"
-# What every file the Base packs last shipped sounded like ({pack: {name: stamp}}),
-# written when a Base pack is built; the delta is whatever differs from it.
-BASELINE_FILE = DATA_DIR / "release_baseline.json"
-BASE_PACKS = ("base", "base_endgame")
-BOOKS_PACK = "books"  # its own baseline: book pages are judged against it alone
 CF_API = "https://wow.curseforge.com/api"
 GAME_VERSION_NAME = "1.60.1"
 
@@ -118,18 +97,6 @@ GAME_VERSION_NAME = "1.60.1"
 SAMPLE_RATE = 22050
 
 
-def is_forever_line(entry: dict) -> bool:
-    """Delta pack membership before the first Base build that records a baseline:
-    lines players saw in game. Everything else is Classic's text and stays in the
-    base pack, so the delta does not grow as the bulk run works through Classic.
-
-    It grew anyway, with play: every quest a player reads is captured, and a
-    Classic line read in game moved to the delta with the same audio (half of its
-    178 MB on 2026-09-29, and 10 MB shipped in both). See `delta_line`."""
-    source = entry.get("source", "classic")
-    return bool(entry.get("player")) or source in ("capture", "community")
-
-
 def file_stamp(index: dict, name: str) -> str:
     """What a pack file says, from sound_index: text fingerprint, voice, duration
     (the duration gives away a re-rolled take, #333). `name` is a base name, or a
@@ -143,116 +110,6 @@ def file_stamp(index: dict, name: str) -> str:
     return f"{entry.get('t') or '?'}:{entry.get('v') or '?'}:{entry.get('d') or '?'}"
 
 
-def line_files(item: Item, config: Config) -> list[str]:
-    """Every file a line can have, named as rebuild_tables lists them: its gender
-    variants, their parts, the alternate narrators' recordings of whatever the
-    narrator reads, and the speaker's other sex."""
-    names: list[str] = []
-    folder = item.subfolder
-    voices = config.voices.narrator_alternates
-    for variant in item.variants():
-        names.append(variant.base)
-        if item.is_narrator:
-            names += [f"{folder}/Narrator/{v}/{variant.base}" for v in voices]
-        for index, (role, _) in enumerate(variant.parts, 1):
-            part = part_name(variant.base, index)
-            names.append(part)
-            if role == "narrator":
-                names += [f"{folder}/Narrator/{v}/{part}" for v in voices]
-        if item.sex_alternate:
-            names.append(f"{folder}/Sex/{item.sex_alternate[0]}/{variant.base}")
-    return names
-
-
-def on_disk(name: str, sounds_dir: Path = SOUNDS_DIR) -> bool:
-    if "/" in name:
-        return (sounds_dir / f"{name}.mp3").exists()
-    return (sounds_dir / sound_folder(name) / f"{name}.mp3").exists()
-
-
-def delta_line(
-    item: Item,
-    config: Config,
-    baseline: dict[str, str],
-    index: dict,
-    sounds_dir: Path = SOUNDS_DIR,
-) -> bool:
-    """Delta pack membership: a line any of whose files is new since the Base packs
-    were built, or says something else now (text, voice, a new take), or is gone.
-    A line the Base packs already carry as it is stays out, however many players
-    have read it; the next Base release absorbs the rest and the delta starts over."""
-    for name in line_files(item, config):
-        was = baseline.get(name)
-        if not on_disk(name, sounds_dir):
-            if was is not None:
-                return True  # shipped, and gone since (a line now only parts)
-            continue
-        if was is None or file_stamp(index, name) != was:
-            return True
-    return False
-
-
-def load_baseline(packs: tuple[str, ...] = BASE_PACKS) -> dict[str, str] | None:
-    """Every file the given packs last shipped, with its stamp; None until all of
-    them have been built since baselines were recorded (one alone would put the
-    other's whole set in the delta). Quests and gossip are judged against both
-    Base packs, book pages against the Books pack (load_baseline((BOOKS_PACK,)))."""
-    if not BASELINE_FILE.exists():
-        return None
-    recorded = json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
-    if not all(pack in recorded for pack in packs):
-        return None
-    merged: dict[str, str] = {}
-    for pack in packs:
-        merged.update(recorded[pack])
-    return merged
-
-
-def delta_member(
-    item: Item,
-    config: Config,
-    baseline: dict[str, str] | None,
-    book_baseline: dict[str, str] | None,
-    index: dict,
-    sounds_dir: Path = SOUNDS_DIR,
-) -> bool:
-    """Whether a line belongs in the delta: `delta_line` against the baseline of
-    the pack that carries its kind, or while that pack has none, the old rule
-    (lines read in game). Book pages have their own pack, so until the Books pack is
-    built the whole Classic set of pages stays out of the delta, which would
-    otherwise grow past delta_cap_mb at once."""
-    chosen = book_baseline if item.kind == "books" else baseline
-    if chosen is None:
-        return is_forever_line(item.entry)
-    return delta_line(item, config, chosen, index, sounds_dir)
-
-
-def baseline_stamps(stats: dict, index_path: Path = SOUND_INDEX) -> dict[str, str]:
-    """What every file of a built pack sounds like, as its baseline records it."""
-    index = json.loads(index_path.read_text(encoding="utf-8"))
-    return {name: file_stamp(index, name) for name in pack_files(stats)}
-
-
-def record_baseline(pack: str, stamps: dict[str, str]) -> None:
-    packs = (
-        json.loads(BASELINE_FILE.read_text(encoding="utf-8"))
-        if BASELINE_FILE.exists()
-        else {}
-    )
-    packs[pack] = stamps
-    BASELINE_FILE.write_text(json.dumps(packs, indent=0, sort_keys=True), "utf-8")
-
-
-def record_release(pack: str, record: dict) -> None:
-    """Writes a released pack's state (what --if-changed compares against) and,
-    for a pack with one, its baseline (what the delta is judged against)."""
-    state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
-    state[pack] = record["state"]
-    STATE_FILE.write_text(json.dumps(state, indent=1), encoding="utf-8")
-    if record.get("baseline") is not None:
-        record_baseline(pack, record["baseline"])
-
-
 def pack_files(stats: dict) -> list[str]:
     return (
         sorted(stats["files"])
@@ -261,22 +118,68 @@ def pack_files(stats: dict) -> list[str]:
     )
 
 
-def base_part(entry: dict, split_level: int) -> int:
-    """1 for the Base pack, 2 for Base Endgame. The Classic set with its alternate
-    narrators does not fit CurseForge's 1 GB cap in one file, so it is cut by
-    quest level ([release] base_split_level); a quest's alternates must sit in the
-    same pack as the quest, since the addon looks them up in the pack that had
-    the entry, so the cut cannot be by anything finer."""
-    if entry.get("questID") and int(entry.get("level") or 0) > split_level:
-        return 2
-    return 1
+def file_stamps(stats: dict, index_path: Path = SOUND_INDEX) -> dict[str, str]:
+    """What every file of a built pack says, by name: what the next build of the
+    pack is compared with (changed_files) and which re-encoded files it can keep."""
+    index = (
+        json.loads(index_path.read_text(encoding="utf-8"))
+        if index_path.exists()
+        else {}
+    )
+    return {name: file_stamp(index, name) for name in pack_files(stats)}
 
 
-def is_book(item: Item) -> bool:
-    """Book pages ship in the Books pack, never in Base or Base Endgame: those are
-    near CurseForge's 1 GB cap, and the pages in every narrator voice are about
-    230 MB."""
-    return item.kind == "books"
+def changed_files(previous: dict[str, str] | None, stamps: dict[str, str]) -> int:
+    """How many files a build adds, drops or changes against the last release: a
+    re-voiced or re-rolled line keeps its name and changes its stamp, so it counts
+    as much as a new one. A release recorded before stamps were has none, and every
+    file counts: what it held cannot be shown to be current."""
+    if previous is None:
+        return len(stamps) or 1
+    gone = set(previous) - set(stamps)
+    return len(gone) + sum(
+        previous.get(name) != stamp for name, stamp in stamps.items()
+    )
+
+
+@dataclass(frozen=True)
+class Classic:
+    """What the VMaNGOS snapshot holds, which is all that decides a line's pack:
+    the level of every Classic quest and the key of every Classic gossip line. The
+    snapshot is a fixed set, so no line ever moves to another pack."""
+
+    quest_levels: dict[int, int]
+    gossip: frozenset[str]
+
+
+def load_classic(path: Path = CLASSIC_JSON) -> Classic:
+    if not path.exists():
+        # Without it every line would read as Forever's and land in the Forever packs
+        raise SystemExit(f"{path} is missing: run classicdb.py before release_pack.py")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    levels: dict[int, int] = {}
+    for entry in data.get("quests", {}).values():
+        quest = int(entry["questID"])
+        levels[quest] = max(levels.get(quest, 0), int(entry.get("level") or 0))
+    return Classic(levels, frozenset(data.get("gossip", {})))
+
+
+def pack_of(item: Item, classic: Classic, split_level: int) -> str:
+    """The one pack a line ships in. Classic's lines (by quest ID, or gossip key)
+    fill three packs cut to fit CurseForge's upload API; whatever Classic does not
+    have is Forever's own, and grows with play: its quests and its gossip. A quest's
+    alternates sit in the pack with the quest, since the addon looks them up in the
+    pack that had the entry. A Classic quest Forever rewords stays Classic's, under
+    its quest ID; a Classic NPC's new gossip has a key Classic lacks and is Forever's.
+    """
+    if item.kind == "books":
+        return "books"
+    if item.kind == "quests":
+        level = classic.quest_levels.get(int(item.entry["questID"]))
+        if level is None:
+            return "forever_quests"
+        return "classic_endgame" if level > split_level else "classic_quests"
+    return "classic_gossip" if item.key in classic.gossip else "forever_gossip"
 
 
 @dataclass(frozen=True)
@@ -284,50 +187,68 @@ class PackSpec:
     folder: str  # the addon folder the pack installs as; its global is <folder>Pack
     title: str
     pack_name: str  # what the addon shows as the pack's name
-    priority: int  # a higher pack's line wins over a lower one's
     notes: str
-    select: Callable[[Item], bool]  # line -> belongs to this pack
 
 
-PACK_NAMES = ("base", "base_endgame", "books", "delta")
+PACK_NAMES = (
+    "classic_quests",
+    "classic_endgame",
+    "classic_gossip",
+    "forever_quests",
+    "forever_gossip",
+    "books",
+)
+# Every pack sits at one priority: no two hold the same line
+PRIORITY = 100
 
 
 def pack_specs(release: Release) -> dict[str, PackSpec]:
     split = release.base_split_level
     return {
-        "base": PackSpec(
-            folder="ForeverVO_Data_Base",
-            title="Forever Voiceover Data: Base",
-            pack_name="Classic",
-            priority=100,
-            notes=f"Quests to level {split} and all gossip, voiced. Install with Forever Voiceover and Base Endgame.",
-            select=lambda item: not is_book(item) and base_part(item.entry, split) == 1,
+        "classic_quests": PackSpec(
+            folder="ForeverVO_Data_Classic_Quests",
+            title="Forever Voiceover: Classic Quests",
+            pack_name="Classic Quests",
+            notes=f"Classic's quests to level {split}, voiced.",
         ),
-        "base_endgame": PackSpec(
-            folder="ForeverVO_Data_Base_Endgame",
-            title="Forever Voiceover Data: Base Endgame",
+        "classic_endgame": PackSpec(
+            folder="ForeverVO_Data_Classic_Endgame",
+            title="Forever Voiceover: Classic Endgame",
             pack_name="Classic Endgame",
-            priority=100,
-            notes=f"Quests from level {split + 1}, voiced. Install with Forever Voiceover and Base.",
-            select=lambda item: not is_book(item) and base_part(item.entry, split) == 2,
+            notes=f"Classic's quests from level {split + 1}, voiced.",
+        ),
+        "classic_gossip": PackSpec(
+            folder="ForeverVO_Data_Classic_Gossip",
+            title="Forever Voiceover: Classic Gossip",
+            pack_name="Classic Gossip",
+            notes="What Classic's NPCs say when you talk to them, voiced.",
+        ),
+        "forever_quests": PackSpec(
+            folder="ForeverVO_Data_Forever_Quests",
+            title="Forever Voiceover: Forever Quests",
+            pack_name="Forever Quests",
+            notes="The quests Forever adds, voiced from lines players capture. Updated as they come in.",
+        ),
+        "forever_gossip": PackSpec(
+            folder="ForeverVO_Data_Forever_Gossip",
+            title="Forever Voiceover: Forever Gossip",
+            pack_name="Forever Gossip",
+            notes="What Forever's NPCs say, voiced from lines players capture. Updated as they come in.",
         ),
         "books": PackSpec(
             folder="ForeverVO_Data_Books",
-            title="Forever Voiceover Data: Books",
+            title="Forever Voiceover: Books",
             pack_name="Books",
-            priority=100,
-            notes="Books, letters and plaques, read by the narrator. Install with Forever Voiceover.",
-            select=is_book,
-        ),
-        "delta": PackSpec(
-            folder="ForeverVO_Data_Forever",
-            title="Forever Voiceover Data: Forever",
-            pack_name="Forever",
-            priority=200,
-            notes="Lines new or revised since the Base packs, updated nightly. Sits on top of Forever Voiceover Data.",
-            select=lambda item: is_forever_line(item.entry),
+            notes="Books, letters and plaques, read by the narrator.",
         ),
     }
+
+
+def record_release(pack: str, state: dict) -> None:
+    """Writes a built pack's state: what --if-changed compares the next build with."""
+    states = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
+    states[pack] = state
+    STATE_FILE.write_text(json.dumps(states, indent=1), encoding="utf-8")
 
 
 def today() -> date:
@@ -352,7 +273,10 @@ def encoding_tag(release: Release) -> str:
 
 
 def transcode(src: Path, dst: Path, bitrate: str) -> None:
+    """Written to a temporary file and renamed, so a build cut short never leaves a
+    half-written file for the next one to keep."""
     dst.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dst.with_name(f"{dst.stem}.part.mp3")
     subprocess.run(
         [
             "ffmpeg",
@@ -371,10 +295,11 @@ def transcode(src: Path, dst: Path, bitrate: str) -> None:
             bitrate,
             "-write_xing",
             "0",
-            str(dst),
+            str(tmp),
         ],
         check=True,
     )
+    os.replace(tmp, dst)
 
 
 def write_manifest(stage: Path, spec: PackSpec, version: str) -> None:
@@ -392,7 +317,7 @@ def write_manifest(stage: Path, spec: PackSpec, version: str) -> None:
     data.mkdir(parents=True, exist_ok=True)
     (data / "Pack.lua").write_text(
         f'-- Generated by tools/release_pack.py\n{pack_global} = {{\n    name = "{spec.pack_name}",\n'
-        f'    version = "{version}",\n    priority = {spec.priority},\n    folder = "{folder}",\n'
+        f'    version = "{version}",\n    priority = {PRIORITY},\n    folder = "{folder}",\n'
         f"    quests = {{}},\n    gossip = {{}},\n    books = {{}},\n    npcs = {{}},\n    narrator = {{}},\n    narratorVoices = {{}},\n}}\n",
         encoding="utf-8",
     )
@@ -403,28 +328,24 @@ def write_manifest(stage: Path, spec: PackSpec, version: str) -> None:
 
 
 def stage_tables(pack: str, version: str, config: Config) -> tuple[Path, dict]:
-    """Writes the manifest and tables for the pack; returns (stage dir, stats with the file set)."""
+    """Writes the manifest and tables for the pack; returns (stage dir, stats with the
+    file set). The stage's Sounds stay: package keeps what has not changed."""
     spec = pack_specs(config.release)[pack]
+    classic = load_classic()
+    split = config.release.base_split_level
     sources = load_sources()
     catalog = VoiceCatalog(config)
-    items = load_items(sources, include_progress=True, catalog=catalog)
-    if pack == "delta":
-        baseline, book_baseline = load_baseline(), load_baseline((BOOKS_PACK,))
-        index = (
-            json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
-            if baseline is not None or book_baseline is not None
-            else {}
-        )
-        items = [
-            item
-            for item in items
-            if delta_member(item, config, baseline, book_baseline, index)
-        ]
-    else:
-        items = [item for item in items if spec.select(item)]
+    items = [
+        item
+        for item in load_items(sources, include_progress=True, catalog=catalog)
+        if pack_of(item, classic, split) == pack
+    ]
     stage = RELEASE_DIR / spec.folder
-    if stage.exists():
-        shutil.rmtree(stage)
+    for old in (stage / "Data", stage / f"{spec.folder}.toc"):
+        if old.is_dir():
+            shutil.rmtree(old)
+        elif old.exists():
+            old.unlink()
     write_manifest(stage, spec, version)
     sound_index = json.loads(SOUND_INDEX.read_text()) if SOUND_INDEX.exists() else {}
     stats = rebuild_tables(
@@ -439,31 +360,50 @@ def stage_tables(pack: str, version: str, config: Config) -> tuple[Path, dict]:
     return stage, stats
 
 
+def sound_path(name: str) -> Path:
+    """A pack file's path under Sounds/. Alternate narrator voices carry their folder
+    in the name (Quests/Narrator/<voice>/<base>), and so does a speaker's other sex
+    (Gossip/Sex/<m|f>/<base>, #304)."""
+    return (
+        Path(f"{name}.mp3") if "/" in name else Path(sound_folder(name), f"{name}.mp3")
+    )
+
+
 def package(
-    pack: str, version: str, stage: Path, stats: dict, release: Release
+    pack: str,
+    version: str,
+    stage: Path,
+    stats: dict,
+    release: Release,
+    keep: dict[str, str] | None = None,
 ) -> Path:
-    """Re-encodes the referenced audio into the stage dir and zips it."""
+    """Re-encodes the referenced audio into the stage dir and zips it. `keep` is the
+    stamps of the last release in this encoding: a file whose stamp is the same is
+    already in the stage as it should be, and is not encoded again (a whole Classic
+    pack takes about 20 minutes; a night's changes, seconds). Whatever the pack no
+    longer has leaves the stage."""
     spec = pack_specs(release)[pack]
+    sounds = stage / "Sounds"
+    names = pack_files(stats)
+    stamps = file_stamps(stats)
+    wanted = {sounds / sound_path(name) for name in names}
+    if sounds.exists():
+        for path in sounds.rglob("*.mp3"):
+            if path not in wanted:
+                path.unlink()
     jobs = [
-        (
-            SOUNDS_DIR / sound_folder(base) / f"{base}.mp3",
-            stage / "Sounds" / sound_folder(base) / f"{base}.mp3",
-        )
-        for base in sorted(stats["files"])
+        (SOUNDS_DIR / sound_path(name), sounds / sound_path(name))
+        for name in names
+        if not keep
+        or keep.get(name) != stamps[name]
+        or not (sounds / sound_path(name)).exists()
     ]
-    # Alternate narrator voices carry their folder in the name (Quests/Narrator/<voice>/<base>),
-    # and so does a speaker's other sex (Gossip/Sex/<m|f>/<base>, #304)
-    jobs += [
-        (SOUNDS_DIR / f"{relative}.mp3", stage / "Sounds" / f"{relative}.mp3")
-        for relative in sorted(
-            set(stats.get("narratorFiles", ())) | set(stats.get("sexFiles", ()))
-        )
-    ]
+    print(f"  re-encoding {len(jobs)} of {len(names)} files")
     with ThreadPoolExecutor(max_workers=release.transcode_workers) as pool:
         for n, _ in enumerate(
             pool.map(lambda job: transcode(job[0], job[1], release.bitrate), jobs), 1
         ):
-            if n % 1000 == 0 or n == len(jobs):
+            if n % 1000 == 0:
                 print(f"  re-encoded {n}/{len(jobs)}")
 
     zip_path = RELEASE_DIR / f"{spec.folder}-{version}.zip"
@@ -583,33 +523,6 @@ def upload(
     )
 
 
-def content_tag(stats: dict, index_path: Path = SOUND_INDEX) -> str:
-    """A digest of what the pack's files *say*, not just which files there are.
-
-    The release fingerprint was the list of names, so a release was due only when a
-    name appeared or vanished. Regenerating a file changes its audio and never its
-    name - a corrected text, a retuned voice, a reference cut from different clips -
-    so hours of GPU could land in the working folder and `--if-changed` would decide
-    nothing had happened. sound_index already carries the fingerprint generate.py
-    computes per file, which covers all three, so this is a hash of that rather than
-    of thousands of mp3s.
-
-    The duration joins it for the fourth: a take re-rolled because it came out
-    wrong (Kargal Battlescar's 842-accept jumped an octave on "Sergra Darkthorn",
-    #333) keeps its text and voice, so only its length says it is a new file.
-    """
-    index = (
-        json.loads(index_path.read_text(encoding="utf-8"))
-        if index_path.exists()
-        else {}
-    )
-
-    joined = "\n".join(
-        f"{name}={file_stamp(index, name)}" for name in pack_files(stats)
-    )
-    return hashlib.blake2b(joined.encode("utf-8"), digest_size=8).hexdigest()
-
-
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     parser = argparse.ArgumentParser(
@@ -622,13 +535,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--if-changed",
         action="store_true",
-        help="skip when the set of files is unchanged since the last release",
+        help="skip when no file is new, gone or changed since the last release",
     )
     parser.add_argument(
         "--min-new",
         type=int,
         default=0,
-        help="with --if-changed: skip unless at least this many files are new since the last release...",
+        help="with --if-changed: skip unless at least this many files are new, gone or changed since the last release...",
     )
     parser.add_argument(
         "--max-age-days",
@@ -669,67 +582,51 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
     stage, stats = stage_tables(pack, version, config)
 
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
+    last = state.get(pack, {})
     fingerprint = pack_files(stats)
     if not fingerprint:
-        # Books before any page is voiced: an empty pack would only record an
-        # empty baseline and confuse players
+        # A pack before any of its lines is voiced: an empty one would only confuse players
         print(f"{pack}: no sound files yet; nothing to release")
         return False
-    content = content_tag(stats)
+    stamps = file_stamps(stats)
+    same_encoding = last.get("encoding") == encoding_tag(release)
     if args.if_changed:
-        last = state.get(pack, {})
-        previous = set(last.get("files", []))
-        new_files = len(set(fingerprint) - previous)
-        # Either a file appeared or went, or one of them now says something different.
-        # A state written before content was recorded has none, and re-releasing once
-        # is the right answer there: what it holds cannot be shown to be current.
-        changed = last.get("files") != fingerprint or last.get("content") != content
-        # A new encoding re-releases every file, so it is due whatever --min-new says.
-        reencoded = last.get("encoding") != encoding_tag(release)
+        changed = changed_files(last.get("stamps"), stamps)
         age_days = (
             (today() - date.fromisoformat(last["date"])).days
             if last.get("date")
             else 10**6
         )
-        due = reencoded or (
-            changed
+        # A new encoding re-releases every file, so it is due whatever --min-new says
+        due = not same_encoding or (
+            changed > 0
             and (
-                new_files >= args.min_new
+                changed >= args.min_new
                 or (args.max_age_days and age_days >= args.max_age_days)
             )
         )
         if not due:
             print(
-                f"{pack} not due: {new_files} new files since the last release {age_days} days ago "
-                f"(need {args.min_new} new or {args.max_age_days} days); nothing to do"
+                f"{pack} not due: {changed} files new, gone or changed since the last release "
+                f"{age_days} days ago (need {args.min_new} or {args.max_age_days} days); nothing to do"
             )
             return False
 
-    zip_path = package(pack, version, stage, stats, release)
-    size_mb = zip_path.stat().st_size / 1e6
-    if args.upload and pack == "delta" and size_mb > release.delta_cap_mb:
-        # The upload API refused 574 MB once; well before that the delta has
-        # outgrown its job. The Base packs absorb it (their build resets the
-        # baseline), and until then players keep the last delta.
-        print(
-            f"not uploading: the delta is {size_mb:.0f} MB, over delta_cap_mb "
-            f"({release.delta_cap_mb}); release Base and Base Endgame, which absorb it"
-        )
-        return False
-
+    zip_path = package(
+        pack,
+        version,
+        stage,
+        stats,
+        release,
+        keep=last.get("stamps") if same_encoding else None,
+    )
     record = {
-        "state": {
-            "version": version,
-            "date": today().isoformat(),
-            "files": fingerprint,
-            "zip": str(zip_path),
-            "encoding": encoding_tag(release),
-            "content": content,
-        },
-        # The Base packs and Books are what the delta is judged against
-        "baseline": baseline_stamps(stats)
-        if pack in BASE_PACKS or pack == BOOKS_PACK
-        else None,
+        "version": version,
+        "date": today().isoformat(),
+        "files": fingerprint,
+        "zip": str(zip_path),
+        "encoding": encoding_tag(release),
+        "stamps": stamps,
     }
     refused = False
     if args.upload:
@@ -745,8 +642,8 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
                 f"display name: {pack_specs(release)[pack].title} {version}\n"
                 f"  changelog:\n{changelog_for(version, stats)}"
             )
-    # Recorded whether or not the API took it: a refused pack is uploaded by
-    # hand straight after, so the delta already moves its lines out
+    # Recorded whether or not the API took it: a refused pack is uploaded by hand
+    # straight after, and its stage holds what was built
     record_release(pack, record)
     return refused
 

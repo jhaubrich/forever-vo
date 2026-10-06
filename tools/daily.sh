@@ -11,8 +11,9 @@ LOG="$ROOT/tools/data/daily.log"
 LOCK="$ROOT/tools/data/daily.lock"
 # The run starts at 02:30 (install-timer.sh) and must be done by END_AT. The
 # tail after generation (table rebuild, dry run, uploads, push) took 6 to
-# 27 minutes in September 2026 with the delta alone; Base Endgame, nightly since
-# October, re-encodes its whole set (~45 min) when due, hence TAIL_MINUTES.
+# 27 minutes in September 2026 with the delta alone. Each pack now re-encodes
+# only its changed files, but a re-voiced set (a new narrator) re-encodes and
+# uploads several whole packs in one night, hence TAIL_MINUTES.
 END_AT="${FOREVER_VO_END_AT:-07:00}"
 TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-90}"
 BULK_HOURS="${FOREVER_VO_BULK_HOURS:-}"   # optional cap on the bulk pass; unset, it fills the window
@@ -54,7 +55,7 @@ remaining() {
 # The bulk service now starts at boot, so it is normally running when this job
 # fires. Stop it for the duration: this run needs the GPU and sole ownership of
 # sound_index.json, and bailing out instead would skip the captured-line pass,
-# the table rebuild and the delta pack upload for as long as bulk stays up.
+# the table rebuild and the pack uploads for as long as bulk stays up.
 BULK_WAS_ACTIVE=0
 if systemctl --user is-active --quiet forever-vo-bulk.service; then
     BULK_WAS_ACTIVE=1
@@ -94,13 +95,14 @@ BULK_PENDING="$(./tools/run.sh tools/generate.py --dry-run 2>/dev/null | sed -n 
 BULK_PENDING="${BULK_PENDING:-0}"
 echo "backlog after this run: $BULK_PENDING files"
 
-# Publish to CurseForge when each pack is worth an update. Books (10+ new files)
-# and Base Endgame (20+) first, since building one records its baseline, which
-# takes its lines out of the delta; a re-voiced line rides the delta meanwhile.
-# Then the Forever delta: 20+ new files, or a week with any change. A pack the
+# Publish to CurseForge when each pack is worth an update: every pack goes
+# whole through the API once enough of its files are new, gone or changed (a
+# re-voiced line counts), and the Forever packs, which players feed, after a
+# week with any change too. A build re-encodes only what changed. A pack the
 # API refuses is recorded all the same and must be uploaded by hand soon, so
 # say so on the desktop; the tail keeps release_pack's instructions in this log.
-for args in "books --min-new 10" "base_endgame --min-new 20" "delta --min-new 20 --max-age-days 7"; do
+for args in "classic_quests --min-new 20" "classic_endgame --min-new 20" "classic_gossip --min-new 20" \
+    "forever_quests --min-new 20 --max-age-days 7" "forever_gossip --min-new 20 --max-age-days 7" "books --min-new 10"; do
     # shellcheck disable=SC2086
     OUT="$(./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true)"
     echo "$OUT"

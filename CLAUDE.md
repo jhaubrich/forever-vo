@@ -236,8 +236,8 @@ Installed by `tools/install-timer.sh`:
 
 - `forever-vo-daily.timer` — 02:30 nightly, done by 07:00: sync and ingest
   (`tools/ingest.sh`), voice captured lines, work the backlog until 90 min
-  before 07:00, rebuild tables, upload Books, Base Endgame and the delta when
-  due, commit and push. It stops the
+  before 07:00, rebuild tables, upload each pack that is due, commit and
+  push. It stops the
   bulk service for the duration and restarts it from an `EXIT` trap, also when a
   final `--dry-run` still counts files.
 - `forever-vo-bulk.service` — `tools/bulk.sh`, the long resumable run:
@@ -264,30 +264,34 @@ bulk run is fine, GPU memory permitting (the game takes ~4 GB, a worker ~7 GB).
   files there. `CHANGELOG.md` is the release notes; the owner usually pushes
   the tag. The packager's local dry run hangs walking `ForeverVO_Data/Sounds/`;
   CI has no audio and is fine.
-- **Delta pack** "Forever Voiceover Data: Forever", priority 200: every line
-  whose files differ from what the Base packs last shipped (stamps in the
-  gitignored `tools/data/release_baseline.json`). `release_pack.py delta
-  --upload --if-changed` runs nightly. Past `delta_cap_mb` (400) the nightly
-  stops uploading and says a Base release is due.
-- **Base packs** "Data: Base" (quests to `base_split_level` 40, all gossip) and
-  "Data: Base Endgame" (quests from 41), priority 100, each with its narrator
-  alternates. Each build re-encodes its whole set from a freshly wiped staging
-  folder (~45 min). Base Endgame (under 400 MB) goes nightly once 20 files are
-  new (`--min-new 20`, no age fallback). Base is released by hand when the
-  delta grows large (`release_pack.py base --upload`). **The website caps a
-  file at 1 GB**, and the API refuses far less, which is why Base is split.
-- **Books** "Data: Books" (`ForeverVO_Data_Books`, `books`, priority 100,
-  ~230 MB with one alternate narrator): every book page, Classic's and
-  Forever's alike, kept out of Base for the 1 GB cap. Nightly once 10 files are
-  new. A pack with no files yet is never released. Until its baseline is
-  recorded, only pages read in game go in the delta, or the whole Classic set
-  would flood it.
-- **Every pack tries the API.** One it refuses prints the website form fields
-  ("release" file for 1.60.1) and the nightly raises a desktop notification,
-  but the build is recorded all the same, as every build is: upload what you
-  build, soon, since the delta already leaves its lines to that pack. Books and
-  Base Endgame go before the delta in the nightly: building one records its
-  baseline, which takes its lines out of the delta.
+- **Six voice packs**, each its own CurseForge project, all priority 100, no
+  line in two of them (`release_pack.pack_of`, from the VMaNGOS snapshot
+  alone, so a line never changes pack):
+  - "Classic Quests" (`ForeverVO_Data_Classic_Quests`, quests to
+    `base_split_level` 40, ~345 MB), "Classic Endgame" (quests from 41,
+    ~400 MB), "Classic Gossip" (~375 MB): Classic's set, fixed in size. A
+    quest is Classic's by quest ID (Forever's rewording stays in it), gossip by
+    key (a Classic NPC's new line is Forever's).
+  - "Forever Quests" and "Forever Gossip" (`ForeverVO_Data_Forever_*`):
+    whatever Classic lacks, which grows with play. The beta stops at level 30,
+    so they will grow faster after launch; captures carry no quest level, so a
+    further cut would go by zone (`mapID`).
+  - "Books" (`ForeverVO_Data_Books`, ~230 MB): every book page.
+  Each carries its own lines' narrator alternates. Until 2026-10-06 it was
+  Base, Base Endgame (by level, with all gossip and Forever's quests in Base)
+  and a priority-200 delta of changed lines; the addon still registers a pack
+  from those folders (`RETIRED_FOLDERS` in `Core/Packs.lua`) below every
+  other, renamed, and asks the player to delete it.
+- **Every pack uploads whole through the API**, nightly once enough files are
+  new, gone or changed (`--min-new`, against the stamps recorded in
+  `release_state.json`; a re-voiced line counts). The API refused 574 and
+  887 MB and took 397, so keep each pack near 400 MB: split a growing one
+  rather than overlay it. A build keeps the staging folder's mp3s whose stamp
+  matches the last release in the same encoding and re-encodes only the rest.
+  One the API refuses prints the website form fields ("release" file for
+  1.60.1) and the nightly raises a desktop notification, but the build is
+  recorded all the same: upload it by hand soon. **The website caps a file at
+  1 GB.**
 
 `release_pack.py` builds from the working folder `ForeverVO_Data` (never
 shipped), re-encodes to mono 32 kbps mp3 at 22.05 kHz **with no Xing/Info

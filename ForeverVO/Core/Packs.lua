@@ -83,7 +83,9 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
 
 Files live at Sounds\Quests\<questID>-accept.mp3 (with m-/f- prefix when g is
 set) and Sounds\Gossip\<f>.mp3. Higher priority packs are consulted first, so a
-pack of new or revised lines can sit on top of a base pack.
+pack of new or revised lines can sit on top of a base pack. The released packs
+all sit at 100 and hold no line twice: Classic's quests (to level 40, and from
+41), Classic's gossip, Forever's own quests and gossip, and books.
 
 Lines with no speaker to clone - quests and gossip from objects and items - are
 read by a narrator. Packs may carry those lines again in other voices, under
@@ -123,8 +125,25 @@ local function GossipExact(entry, hash, letter)
 end
 local QUEST_FIELD = { accept = "a", progress = "p", complete = "c" }
 
+--- Packs of the layout before 2026-10-06 (Base, Base Endgame and the delta), which
+--- the six that replaced them make redundant. A copy left in AddOns still
+--- registers, below every other pack, so it fills only what the player has not
+--- installed the new packs for, and it is named apart: the old Base Endgame was
+--- "Classic Endgame" too, and the first to register would have shut out the other.
+local RETIRED_FOLDERS = {
+    ForeverVO_Data_Base = true,
+    ForeverVO_Data_Base_Endgame = true,
+    ForeverVO_Data_Forever = true,
+}
+local RETIRED_PRIORITY = -1000
+
 function ns.RegisterPack(pack)
     assert(type(pack) == "table" and pack.name and pack.folder, "ForeverVO.RegisterPack: pack needs name and folder")
+    if RETIRED_FOLDERS[pack.folder] then
+        pack.name = pack.name .. " (retired)"
+        pack.priority = RETIRED_PRIORITY
+        pack.retired = true
+    end
     if Packs.byName[pack.name] then
         ns.Print(format("voice pack %q registered twice, ignoring the second copy", pack.name))
         return
@@ -186,6 +205,17 @@ end
 
 function Packs:Iterate()
     return ipairs(self.list)
+end
+
+--- The folders of retired packs still installed, to tell the player to delete them.
+function Packs:Retired()
+    local folders = {}
+    for _, pack in self:Iterate() do
+        if pack.retired then
+            table.insert(folders, pack.folder)
+        end
+    end
+    return folders
 end
 
 --- "<name> <version>" for each installed pack, highest priority first.

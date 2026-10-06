@@ -873,12 +873,11 @@ class = "Paladin"
 restore_name = true
 
 [release]
-# The CurseForge website takes files up to 1 GB (the API less, see CLAUDE.md),
-# and the Classic set with five alternate narrators was 1.36 GB, so it ships as
-# two projects, cut by quest level: 1 to base_split_level with all gossip on
-# one side (800 MB), the rest on the other (570 MB). With orc-male as the only
-# alternate (2026-09-25) the whole set is about 1.08 GB, still over the cap, so
-# the split stays. Cutting at 50 instead would put the first side back over it.
+# Every pack uploads through CurseForge's API, which refused 574 and 887 MB and
+# took 397, so each stays near 400 MB. Classic's set is fixed (about 1.1 GB with
+# one alternate narrator in October 2026) and ships as three packs: quests to
+# base_split_level (~345 MB), quests above it (~400 MB) and gossip (~375 MB).
+# Forever's own quests and gossip ship as two more, which grow with play.
 base_split_level = 40
 # Release mp3s are mono at 22.05 kHz with no Xing/Info header frame (the
 # client misreads that frame and stops the line early; see release_pack.py);
@@ -887,21 +886,17 @@ base_split_level = 40
 # generator's full quality, so this can go back up on any later build.
 bitrate = "32k"
 transcode_workers = 4
-# The delta is every line the Base packs do not already ship as it is (a
-# baseline recorded when both are built), so it grows with changes, not with
-# play, and each Base release absorbs it. A restaged voice lands in it too;
-# past this size the nightly stops uploading it and says a Base release is due.
-# The upload API refused 574 MB once (2026-09-24).
-delta_cap_mb = 400
 
 # CurseForge project IDs. The player addon's ID also lives in its TOC. The API
 # key stays out of git (.env: CF_API_KEY, or CURSEFORGE_API_KEY).
 [release.curseforge_projects]
-addon = 1705010          # Forever Voiceover
-delta = 1705094          # Forever Voiceover Data: Forever
-base = 1705100           # Forever Voiceover Data: Base (Classic quests to level 40, all gossip)
-base_endgame = 1709884   # Forever Voiceover Data: Base Endgame (Classic quests from 41)
-books = 1729514          # Forever Voiceover Data: Books (every book page, uploaded nightly)
+addon = 1705010            # Forever Voiceover
+classic_quests = 1705100   # Forever Voiceover: Classic Quests (Base until 2026-10-06)
+classic_endgame = 1709884  # Forever Voiceover: Classic Endgame (Base Endgame until then)
+classic_gossip = 1729567   # Forever Voiceover: Classic Gossip
+forever_quests = 1705094   # Forever Voiceover: Forever Quests (the delta, Data: Forever, until then)
+forever_gossip = 1729570   # Forever Voiceover: Forever Gossip
+books = 1729514            # Forever Voiceover: Books
 
 # Voices someone has auditioned by ear and approved, set with the audition
 # page's "Approved by ear" box. Each holds the recipe heard (the clip read from,

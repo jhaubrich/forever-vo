@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- The voice packs are reorganised into six: **Classic Quests** (to level
+  40), **Classic Endgame** (from 41), **Classic Gossip**, **Forever
+  Quests**, **Forever Gossip** and **Books**. Install the ones you want
+  from CurseForge. The old Base, Base Endgame and Data: Forever packs still
+  work, but only for lines the new packs don't have, and the addon tells you
+  at login that you can delete them.
 - Books, letters and plaques can be read aloud by the narrator, whether the
   book is in your bags or out in the world: press **Play** under the book
   and it reads on through the rest of the book, as far as the voice pack has

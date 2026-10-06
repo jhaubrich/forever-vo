@@ -6,6 +6,9 @@ Slash commands and the addon compartment entry (the addon list button next to
 the minimap in modern clients).
 ]]
 
+ns.PACKS_TO_INSTALL = "Install the Forever Voiceover packs from CurseForge next to ForeverVO: Classic Quests, "
+    .. "Classic Endgame, Classic Gossip, Forever Quests, Forever Gossip and Books."
+
 local function Status()
     local packs = ns.Packs:Count()
     local quests, questsMissing, gossip, gossipMissing, sessionSeen, _, books, booksMissing = ns.Capture:Summary()
@@ -14,7 +17,7 @@ local function Status()
         gossip, ns.Util.Plural(gossip, "text"), gossipMissing, books, ns.Util.Plural(books, "page"), booksMissing,
         sessionSeen, ns.Util.Plural(sessionSeen, "line")))
     if packs == 0 then
-        ns.Print("No voice pack found. Install Forever Voiceover Data: Base, Base Endgame, Data: Forever and Data: Books from CurseForge next to ForeverVO.")
+        ns.Print("No voice pack found. " .. ns.PACKS_TO_INSTALL)
     end
 end
 
@@ -146,7 +149,12 @@ function ForeverVO_OnCompartmentLeave()
 end
 
 ns.OnLogin(function()
+    local retired = ns.Packs:Retired()
+    if #retired > 0 then
+        ns.Print(format("%s %s from an older layout and can be deleted from AddOns once you have the new packs. %s",
+            table.concat(retired, ", "), #retired == 1 and "is" or "are", ns.PACKS_TO_INSTALL))
+    end
     if ns.Packs:Count() == 0 then
-        ns.Print("no voice pack found. Install Forever Voiceover Data: Base, Base Endgame, Data: Forever and Data: Books from CurseForge next to ForeverVO, or generate one with the tools in the repository.")
+        ns.Print("no voice pack found. " .. ns.PACKS_TO_INSTALL .. " Or generate one with the tools in the repository.")
     end
 end)
