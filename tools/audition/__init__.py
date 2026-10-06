@@ -1142,6 +1142,77 @@ def sound_packs(
     return [SoundPack(PACK_NAME, "working folder", 0, working), *installed]
 
 
+class WorkingCopies:
+    """Whether the working folder's file of a line is the one sound_index.json records.
+
+    A contributor's working folder keeps every line they once generated, and the
+    index in git follows the owner's machine: when a voice is restaged there, the
+    contributor's copy stays the old take while the installed packs carry the new one
+    (Frezza's 9564-8d6952f8, a 19.95 s take from before goblin-male-zany was tuned,
+    beside the 17.02 s the index and the game have). A copy whose length is not the
+    index's is stale, and "in the pack now" plays the installed pack's file instead.
+    Lengths are probed once per file version; an index that cannot be read (a merge
+    left in conflict) or holds no length for the line trusts the copy, as before."""
+
+    # seconds: ffprobe reads a generator mp3 at its exact length, which is what the
+    # index records (some older entries rounded to 0.01), while Chatterbox takes
+    # differ in 0.04 s steps, so even a near miss is another take
+    TOLERANCE = 0.02
+
+    def __init__(self, index_path: Path = SOUND_INDEX):
+        self.index_path = index_path
+        self.lock = threading.Lock()
+        self._index: dict[str, Any] = {}
+        self._index_stamp: tuple[int, int] | None = None
+        self._seconds: dict[tuple[str, int, int], float | None] = {}
+
+    def index(self) -> dict[str, Any]:
+        try:
+            stat = self.index_path.stat()
+        except OSError:
+            return {}
+        stamp = (stat.st_mtime_ns, stat.st_size)
+        with self.lock:
+            if stamp != self._index_stamp:
+                try:
+                    loaded = json.loads(self.index_path.read_text(encoding="utf-8"))
+                except (OSError, ValueError):
+                    loaded = {}
+                self._index = loaded if isinstance(loaded, dict) else {}
+                self._index_stamp = stamp
+            return self._index
+
+    def seconds(self, path: Path) -> float | None:
+        try:
+            stat = path.stat()
+        except OSError:
+            return None
+        key = (str(path), stat.st_mtime_ns, stat.st_size)
+        if key not in self._seconds:
+            try:
+                self._seconds[key] = generate.probe_duration(path)
+            except (OSError, ValueError, subprocess.CalledProcessError):
+                self._seconds[key] = None
+        return self._seconds[key]
+
+    def prime(self, paths: list[Path]) -> None:
+        """Probe many files at once, so a voice's few hundred lines list in seconds."""
+        from concurrent.futures import ThreadPoolExecutor
+
+        todo = [path for path in paths if path.exists()]
+        if todo:
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                list(pool.map(self.seconds, todo))
+
+    def stale(self, path: Path, base: str) -> bool:
+        entry = self.index().get(generate.index_key(base))
+        recorded = entry.get("d") if isinstance(entry, dict) else entry
+        if not isinstance(recorded, int | float):
+            return False
+        seconds = self.seconds(path)
+        return seconds is not None and abs(seconds - recorded) > self.TOLERANCE
+
+
 class Studio:
     def __init__(self, config_path: Path = CONFIG_TOML, allow_cpu: bool = False):
         self.config_path = config_path
@@ -1904,10 +1975,14 @@ def _under(root: Path, relative: str) -> Path:
 
 
 def create_app(
-    studio: Studio, dev: bool = False, addons: Path | None = ADDONS_DIR
+    studio: Studio,
+    dev: bool = False,
+    addons: Path | None = ADDONS_DIR,
+    sound_index: Path = SOUND_INDEX,
 ) -> FastAPI:
     """`dev` re-reads index.html on every request, so page edits show on a browser
-    refresh; Python edits still need a restart (main's --reload does that)."""
+    refresh; Python edits still need a restart (main's --reload does that).
+    `sound_index` is what a working folder copy is checked against (WorkingCopies)."""
     app = FastAPI(title="Forever Voiceover audition")
     page_file = resources.files(__package__) / "index.html"
     page = page_file.read_text(encoding="utf-8")
@@ -1923,15 +1998,24 @@ def create_app(
     packs = sound_packs(addons)
     packs_by_key = {pack.key: pack for pack in packs}
 
+    working = WorkingCopies(sound_index)
+
     def payload(row: LineRow) -> dict[str, Any]:
-        found = next(
-            (
-                pack
-                for pack in packs
-                if sound_path(row.subfolder, row.base, sounds_dir=pack.sounds).exists()
-            ),
-            None,
-        )
+        """The first pack that has the line's file, skipping a working folder copy
+        that is an older take than the index records; that copy still plays when no
+        installed pack has the line, marked `stale`."""
+        found, stale = None, False
+        for pack in packs:
+            path = sound_path(row.subfolder, row.base, sounds_dir=pack.sounds)
+            if not path.exists():
+                continue
+            if pack.key == PACK_NAME and working.stale(path, row.base):
+                stale = True
+                continue
+            found = pack
+            break
+        if found is None and stale:
+            found = packs[0]
         return {
             **row.__dict__,
             "exists": found is not None,
@@ -1939,7 +2023,18 @@ def create_app(
             "pack_url": f"/api/pack/{found.key}/{row.subfolder}/{row.base}.mp3"
             if found
             else None,
+            # the working folder's copy is an older take (WorkingCopies)
+            "stale": stale,
         }
+
+    def payloads(rows: list[LineRow]) -> list[dict[str, Any]]:
+        working.prime(
+            [
+                sound_path(row.subfolder, row.base, sounds_dir=packs[0].sounds)
+                for row in rows
+            ]
+        )
+        return [payload(row) for row in rows]
 
     @app.get("/api/lines")
     def lines(q: str = "", voice: str = "", limit: int = 60) -> dict[str, Any]:
@@ -1953,7 +2048,7 @@ def create_app(
             found = lines_in_voice(rows, voice, limit=limit or len(rows), moving=moving)
             total = sum(1 for row in rows if _in_voice(row, voice, moving))
             return {
-                "rows": [payload(row) for row in found],
+                "rows": payloads(found),
                 "total": total,
                 "voice": voice,
             }
@@ -1962,7 +2057,7 @@ def create_app(
                 400, "give q= words to search for, or voice= to list a voice's lines"
             )
         return {
-            "rows": [payload(row) for row in search(rows, q)],
+            "rows": payloads(search(rows, q)),
             "total": None,
             "voice": None,
         }

@@ -335,6 +335,46 @@ def test_sound_packs_without_a_client_is_just_the_working_folder(
     assert [(p.key, p.label) for p in packs] == [("ForeverVO_Data", "working folder")]
 
 
+def test_a_working_copy_of_another_length_than_the_index_is_stale(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+
+    from tools import generate
+    from tools.audition import WorkingCopies
+
+    sounds = tmp_path / "Sounds" / "Gossip"
+    sounds.mkdir(parents=True)
+    lengths = {"9564-8d6952f8": 19.95, "1-aaaaaaaa": 4.0, "2-bbbbbbbb": 3.0}
+    for base in lengths:
+        (sounds / f"{base}.mp3").write_bytes(b"mp3")
+    probed: list[str] = []
+
+    def probe(path: Path) -> float:
+        probed.append(path.stem)
+        return lengths[path.stem]
+
+    monkeypatch.setattr(generate, "probe_duration", probe)
+    index = tmp_path / "sound_index.json"
+    index.write_text(
+        json.dumps({"9564-8d6952f8": {"d": 17.02}, "1-aaaaaaaa": {"d": 4.01}}),
+        encoding="utf-8",
+    )
+    copies = WorkingCopies(index)
+
+    # Frezza's take from before goblin-male-zany was tuned
+    assert copies.stale(sounds / "9564-8d6952f8.mp3", "9564-8d6952f8")
+    # within the tolerance, and a line the index has no length for, are trusted
+    assert not copies.stale(sounds / "1-aaaaaaaa.mp3", "1-aaaaaaaa")
+    assert not copies.stale(sounds / "2-bbbbbbbb.mp3", "2-bbbbbbbb")
+    # probed once per file version
+    copies.stale(sounds / "9564-8d6952f8.mp3", "9564-8d6952f8")
+    assert probed.count("9564-8d6952f8") == 1
+    # an index left in conflict trusts every copy
+    index.write_text("<<<<<<< Updated upstream\n", encoding="utf-8")
+    assert not copies.stale(sounds / "9564-8d6952f8.mp3", "9564-8d6952f8")
+
+
 def test_stop_ends_a_run_after_the_take_in_progress(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
