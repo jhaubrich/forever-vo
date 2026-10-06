@@ -510,7 +510,8 @@ end
 --- Finds the narration of one page of readable text. Exact hash match in any
 --- pack first, then the most similar page of the same title above the fuzzy
 --- threshold (a title with no pages in a pack is skipped, so a miss never
---- walks every book). Returns path, duration, pack, nil, voice, entry.
+--- walks every book). Returns path, duration, pack, nil, voice, entry, score (1 for
+--- an exact match; below it, the page on screen is worded differently).
 ---@param title string|nil
 ---@param text string
 function Packs:FindBook(title, text)
@@ -554,7 +555,7 @@ function Packs:FindBook(title, text)
     end
     ns.Debug(format("book match %.2f for %s", bestScore, bestHash))
     local path, duration, voice = self:BookSound(bestPack, bestHash, bestEntry)
-    return path, duration, bestPack, nil, voice, bestEntry
+    return path, duration, bestPack, nil, voice, bestEntry, bestScore
 end
 
 --- The file for one page of a pack, in the chosen narrator voice where the pack

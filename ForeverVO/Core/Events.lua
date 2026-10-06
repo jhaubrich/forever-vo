@@ -307,11 +307,11 @@ function Events.ITEM_TEXT_READY()
     end
     local title = Util.Plain(ItemTextGetItem())
     local page = ItemTextGetPage()
-    local path, duration, pack, _, voice, entry = Packs:FindBook(title, text)
+    local path, duration, pack, _, voice, entry, score = Packs:FindBook(title, text)
 
     ns.Capture:Record({
         kind = "book", event = "page", title = title, page = page, text = text,
-        material = Util.Plain(ItemTextGetMaterial()), found = path ~= nil, pack = pack,
+        material = Util.Plain(ItemTextGetMaterial()), found = path ~= nil, pack = pack, exact = score == 1,
     })
     if not path then
         NotifyUnvoiced(format("\"%s\"", title or "this book"), "book:" .. (title or "?"))

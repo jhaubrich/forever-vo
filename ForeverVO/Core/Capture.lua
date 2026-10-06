@@ -161,6 +161,11 @@ function Capture:Record(line)
     -- short, and Forever rewords): export it so the pipeline replaces it.
     local differs = line.found and line.kind == "quest"
         and not ns.Packs:QuestTextMatches(line.pack, line.questID, line.event, line.text) or nil
+    -- A page found only by the fuzzy fallback is Classic's page that Forever
+    -- reworded (or a Forever book sharing a title): it plays, and is sent too
+    if line.found and line.kind == "book" and not line.exact then
+        differs = true
+    end
     local entry = {
         event = line.event,
         questID = line.questID,
@@ -250,9 +255,13 @@ function Capture:Refresh()
         end
     end
     for _, entry in pairs(db.books) do
-        if not entry.found and not Capture.Exported(entry) and entry.text
-            and ns.Packs:FindBook(entry.title, entry.text) then
-            entry.found = true
+        if Capture.Contributes(entry) and not Capture.Exported(entry) and entry.text then
+            local path, _, _, _, _, _, score = ns.Packs:FindBook(entry.title, entry.text)
+            if path then
+                -- Still sent while only a reworded page matches; an exact
+                -- page (a later pack voiced this text) settles it
+                entry.found, entry.differs = true, score < 1 or nil
+            end
         end
     end
 end
