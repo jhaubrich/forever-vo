@@ -1258,7 +1258,7 @@ function showLinePin() {
   if (!box || !current) return;
   const p = current.pin;
   if (current.parts) {
-    box.innerHTML = `<span title="The speaker's words and the narrator's stage directions play as separate files; a pin decides only the whole-line file, which players do not hear.">plays as parts: can't be pinned</span>`;
+    box.innerHTML = `<span title="The speaker's words are split between several parts with the narrator's stage directions between them, and the addon plays the parts, so no one take is what players hear.">narration splits the speaker's words: can't be pinned</span>`;
     return;
   }
   if (!p) { box.innerHTML = ""; return; }
@@ -1476,8 +1476,9 @@ function onEvent(ev) {
       "forever-vo.toml, and the next generate run makes the file from it.\n\n" +
       "Only a take of the line's own text under the voice's saved settings can be pinned; " +
       "keep the settings first. The pin is for the line's own file in its own voice: the " +
-      "other sex's recording and the alternate narrators are drawn as before, and a line " +
-      "that plays as parts cannot be pinned.\n\n" +
+      "other sex's recording and the alternate narrators are drawn as before. A line with a " +
+      "stage direction (\"<Sob> Oh please...\") keeps its narration and the pin decides the " +
+      "speaker's part; one whose words narration splits cannot be pinned.\n\n" +
       "On this machine the seed makes this exact take. On the CUDA machine that builds the " +
       "pack it makes a different take, but always the same one. The pin stops applying " +
       "when the line's text or the voice's settings change.";

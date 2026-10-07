@@ -516,6 +516,9 @@ class Target(NamedTuple):
     voice: str
     alternate: bool = False  # an alternate narrator voice rather than the line's own
     sex: str | None = None  # "m"/"f": the line in the speaker's other sex (#304)
+    # the line whose [lines] pin this file follows, when it is not its own key: the
+    # speaker's part of a line whose one speaker part is the whole-line text
+    pin_key: str | None = None
     speaker: str | None = None  # another speaker of the quest line (#948)
 
     @property
@@ -532,11 +535,12 @@ class Target(NamedTuple):
 
     @property
     def live_pin(self) -> LinePin | None:
-        """The line's pinned seed, for its own whole-line file only: the other sex's
-        file, the alternate narrators and the parts are drawn as before."""
+        """The line's pinned seed, for its own whole-line file and, where the line has
+        one speaker part saying the same words, that part (pin_key); the other sex's
+        file, the alternate narrators and every other part are drawn as before."""
         if self.alternate or self.sex:
             return None
-        return self.item.catalog.pin(self.key, self.voice, self.text)
+        return self.item.catalog.pin(self.pin_key or self.key, self.voice, self.text)
 
     @property
     def fingerprint(self) -> str:
@@ -765,6 +769,19 @@ def index_record(
     return record
 
 
+def pinnable_part(variant: Any) -> int | None:
+    """The part number (from 1) a line's pin also decides: its one speaker part, when
+    that part says exactly the whole-line text, as in "<Sob> Oh please, don't look at
+    me!..." whose narrator part is the sob alone. The current addon plays the parts,
+    so the pin reaches players through this file; None for a line with no parts, or
+    with the speaker's words split between several parts."""
+    speaker = [i for i, (role, _) in enumerate(variant.parts, 1) if role == "npc"]
+    if len(speaker) != 1:
+        return None
+    index = speaker[0]
+    return index if variant.parts[index - 1][1] == variant.text else None
+
+
 def pin_report(
     items: list[Item], catalog: VoiceCatalog, include_progress: bool = True
 ) -> list[str]:
@@ -795,10 +812,10 @@ def pin_report(
                 f"pinned seed for {key} no longer holds (its text or voice settings "
                 "changed since it was heard); the line is drawn afresh"
             )
-        elif variant.parts:
+        elif variant.parts and pinnable_part(variant) is None:
             notes.append(
-                f"pinned seed for {key}: the line plays as parts, so the file it pins "
-                "is not what players hear"
+                f"pinned seed for {key}: narration splits the line's speech into "
+                "several parts, so no file it pins is what players hear"
             )
     return notes
 
@@ -2204,7 +2221,17 @@ def main(argv: list[str] | None = None) -> int:
                 part = part_name(base, index)
                 if role == "npc":
                     if not args.narrator_only:
-                        candidates.append(Target(item, part, words, item.voice))
+                        candidates.append(
+                            Target(
+                                item,
+                                part,
+                                words,
+                                item.voice,
+                                pin_key=base
+                                if pinnable_part(variant) == index
+                                else None,
+                            )
+                        )
                     continue
                 if not args.narrator_only:
                     candidates.append(Target(item, part, words, narrator))
