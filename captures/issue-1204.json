@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.7",
+ "books": {},
+ "gossip": {
+  "3143|e14f5e15": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Gornek",
+   "npc": "3143",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "The Valley of Trials will temper even the weakest into a warrior worthy to join the Horde. Those who cannot rise to its tests will be left to bake in the scorching desert sun.",
+   "time": 1791372547,
+   "title": null,
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "3707|10137e12": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Ken'jai",
+   "npc": "3707",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "I do what me can to train you in the priestly ways, if that what you be here for.",
+   "time": 1791372730,
+   "title": null,
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "npcs": {
+  "3143": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Gornek",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3707": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 1022938,
+   "name": "Ken'jai",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1204",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
