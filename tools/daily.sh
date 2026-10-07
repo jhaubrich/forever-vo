@@ -108,6 +108,8 @@ echo "backlog after this run: $BULK_PENDING files"
 # only what changed. A pack the
 # API refuses is recorded all the same and must be uploaded by hand soon, so
 # say so on the desktop; the tail keeps release_pack's instructions in this log.
+# One whose upload failed on the way (the Wi-Fi card) is uploaded again the
+# next night; say that too, so a failure there is not a surprise.
 for args in "classic_quests --min-new 20" "classic_endgame --min-new 20" "classic_gossip --min-new 20" \
     "forever_quests --min-new 20" "forever_gossip --min-new 20" "books --min-new 10"; do
     args="$args --max-age-days 7"
@@ -115,6 +117,15 @@ for args in "classic_quests --min-new 20" "classic_endgame --min-new 20" "classi
     OUT="$(./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true)"
     echo "$OUT"
     REFUSED="$(printf '%s\n' "$OUT" | sed -n 's/^upload by hand: \(.*\) (details above)$/\1/p')"
+    RETRY="$(printf '%s\n' "$OUT" | sed -n 's/^upload failed, retried next run: \(.*\) (details above)$/\1/p')"
+    if [ -n "$RETRY" ]; then
+        /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
+            --object-path /org/freedesktop/Notifications \
+            --method org.freedesktop.Notifications.Notify \
+            "Forever VO" 0 "dialog-information" "Upload failed: $RETRY" \
+            "The connection failed after retries; tomorrow night's run uploads it again. Details in tools/data/daily.log." \
+            "[]" "{}" 0 >/dev/null 2>&1 || true
+    fi
     if [ -n "$REFUSED" ]; then
         /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
             --object-path /org/freedesktop/Notifications \

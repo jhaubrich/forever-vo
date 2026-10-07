@@ -25,9 +25,12 @@ upload of a pack near the website's 1 GB cap (Base, until then).
     ./tools/run.sh tools/release_pack.py books --upload --if-changed --min-new 10   # nightly use
     ./tools/run.sh tools/release_pack.py classic_quests classic_gossip --upload   # several in one run
 
-With --upload every pack tries the API first. One the API refuses prints what
-the website needs and is recorded all the same, as every build is: upload what
-you build, soon.
+With --upload every pack tries the API first, UPLOAD_ATTEMPTS times when the
+connection fails or the server errs (the owner's Wi-Fi card corrupts about a
+third of large uploads). One that still fails that way is recorded as not
+uploaded, and the next --if-changed run uploads it whatever --min-new says. One
+the API refuses outright (HTTP 413, too large) prints what the website needs and
+is recorded as released: upload what you build, soon.
 
 Audio is re-encoded for release (mono 32 kbps mp3 at 22.05 kHz with no
 Xing/Info header frame, brought to -16 LUFS since 2026-10-06 (LOUDNORM), about
@@ -505,8 +508,17 @@ def game_version_id(key: str) -> int:
     raise SystemExit(f"CurseForge has no game version named {GAME_VERSION_NAME}")
 
 
+UPLOAD_ATTEMPTS = 3
+
+
 class UploadFailed(Exception):
-    """The API did not take the file; the pack waits on a hand upload."""
+    """The API did not take the file. A transient failure (the connection, or
+    the server erring) is retried the next night; any other waits on a hand
+    upload."""
+
+    def __init__(self, message: str, transient: bool = False) -> None:
+        super().__init__(message)
+        self.transient = transient
 
 
 def changelog_for(version: str, stats: dict) -> str:
@@ -538,6 +550,17 @@ def upload(
         "gameVersions": [game_version_id(key)],
         "releaseType": release_type,
     }
+    for attempt in range(1, UPLOAD_ATTEMPTS + 1):
+        try:
+            post_file(key, project, zip_path, metadata)
+            return
+        except UploadFailed as error:
+            if not error.transient or attempt == UPLOAD_ATTEMPTS:
+                raise
+            print(f"{pack}: {error}; trying again ({attempt + 1}/{UPLOAD_ATTEMPTS})")
+
+
+def post_file(key: str, project: int, zip_path: Path, metadata: dict) -> None:
     # Streamed from disk: requests' own multipart encoding builds the whole body
     # in memory, which for the base pack is over a gigabyte.
     try:
@@ -555,7 +578,7 @@ def upload(
                 timeout=3600,
             )
     except requests.RequestException as error:
-        raise UploadFailed(f"upload failed: {error}") from error
+        raise UploadFailed(f"upload failed: {error}", transient=True) from error
     if response.status_code == 413:
         # Cloudflare in front of the upload API refuses large bodies (887 MB was
         # refused on 2026-09-22; ~30 MB deltas pass). The website accepts up to 1 GB.
@@ -564,7 +587,8 @@ def upload(
         )
     if response.status_code != 200:
         raise UploadFailed(
-            f"upload failed: HTTP {response.status_code} {response.text[:300]}"
+            f"upload failed: HTTP {response.status_code} {response.text[:300]}",
+            transient=response.status_code >= 500,
         )
     print(
         f"uploaded to CurseForge project {project} as file {response.json().get('id')}"
@@ -604,17 +628,21 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     config = load_config()
-    refused = [pack for pack in args.packs if release_one(pack, args, config)]
+    outcomes = {pack: release_one(pack, args, config) for pack in args.packs}
+    retry = [pack for pack, outcome in outcomes.items() if outcome == "retry"]
+    refused = [pack for pack, outcome in outcomes.items() if outcome == "refused"]
+    # Last, so the nightly log's tail shows them and daily.sh can find them
+    if retry:
+        print(f"upload failed, retried next run: {' '.join(retry)} (details above)")
     if refused:
-        # Last, so the nightly log's tail shows it and daily.sh can find it
         print(f"upload by hand: {' '.join(refused)} (details above)")
-        return 1
-    return 0
+    return 1 if retry or refused else 0
 
 
-def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
-    """Builds one pack and, with --upload, uploads it. True when the upload
-    failed and the pack now waits on a hand upload."""
+def release_one(pack: str, args: argparse.Namespace, config: Config) -> str | None:
+    """Builds one pack and, with --upload, uploads it. "retry" when the upload
+    failed on the way and the next run tries again, "refused" when the API
+    refused it and it waits on a hand upload."""
     release = config.release
     release_type = args.release_type or "release"
     if args.upload:
@@ -624,7 +652,7 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
                 f"CurseForge upload not configured for {pack}: need CF_API_KEY in .env and a project id under "
                 f"[release.curseforge_projects] in forever-vo.toml; skipping"
             )
-            return False
+            return None
 
     version = next_version(pack)
     stage, stats = stage_tables(pack, version, config)
@@ -635,7 +663,7 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
     if not fingerprint:
         # A pack before any of its lines is voiced: an empty one would only confuse players
         print(f"{pack}: no sound files yet; nothing to release")
-        return False
+        return None
     stamps = file_stamps(stats)
     same_encoding = last.get("encoding") == encoding_tag(release)
     if args.if_changed:
@@ -645,12 +673,17 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
             if last.get("date")
             else 10**6
         )
-        # A new encoding re-releases every file, so it is due whatever --min-new says
-        due = not same_encoding or (
-            changed > 0
-            and (
-                changed >= args.min_new
-                or (args.max_age_days and age_days >= args.max_age_days)
+        # A new encoding re-releases every file, and a build that never reached
+        # CurseForge is still owed, so either is due whatever --min-new says
+        due = (
+            not same_encoding
+            or last.get("uploaded") is False
+            or (
+                changed > 0
+                and (
+                    changed >= args.min_new
+                    or (args.max_age_days and age_days >= args.max_age_days)
+                )
             )
         )
         if not due:
@@ -658,7 +691,7 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
                 f"{pack} not due: {changed} files new, gone or changed since the last release "
                 f"{age_days} days ago (need {args.min_new} or {args.max_age_days} days); nothing to do"
             )
-            return False
+            return None
 
     zip_path = package(
         pack,
@@ -676,24 +709,30 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> bool:
         "encoding": encoding_tag(release),
         "stamps": stamps,
     }
-    refused = False
+    outcome = None
     if args.upload:
         try:
             upload(pack, zip_path, version, stats, release_type, release)
         except UploadFailed as error:
-            refused = True
-            _, project = curseforge_config(pack, release)
-            print(
-                f"{pack}: {error}.\n"
-                f"Upload it by hand: https://www.curseforge.com/project/{project}/files/upload\n"
-                f"  file: {zip_path}\n  game version: {GAME_VERSION_NAME}, type: {release_type}, "
-                f"display name: {pack_specs(release)[pack].title} {version}\n"
-                f"  changelog:\n{changelog_for(version, stats)}"
-            )
-    # Recorded whether or not the API took it: a refused pack is uploaded by hand
-    # straight after, and its stage holds what was built
+            if error.transient:
+                outcome = "retry"
+                record["uploaded"] = False
+                print(f"{pack}: {error}.\nThe next nightly run uploads it again.")
+            else:
+                outcome = "refused"
+                _, project = curseforge_config(pack, release)
+                print(
+                    f"{pack}: {error}.\n"
+                    f"Upload it by hand: https://www.curseforge.com/project/{project}/files/upload\n"
+                    f"  file: {zip_path}\n  game version: {GAME_VERSION_NAME}, type: {release_type}, "
+                    f"display name: {pack_specs(release)[pack].title} {version}\n"
+                    f"  changelog:\n{changelog_for(version, stats)}"
+                )
+    # Recorded whether or not the API took it: the stage holds what was built. A
+    # refused pack is uploaded by hand straight after; one that failed on the way
+    # carries uploaded: false, which makes the next run due
     record_release(pack, record)
-    return refused
+    return outcome
 
 
 if __name__ == "__main__":
