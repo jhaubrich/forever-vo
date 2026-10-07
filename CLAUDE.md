@@ -241,10 +241,10 @@ regenerates one file under the *saved* configuration only. Takes go to
 
 Installed by `tools/install-timer.sh`:
 
-- `forever-vo-daily.timer` — 02:30 nightly, done by 07:00: sync and ingest
-  (`tools/ingest.sh`), voice captured lines, work the backlog until 90 min
-  before 07:00, rebuild tables, upload each pack that is due, commit and
-  push. It stops the
+- `forever-vo-daily.timer` — 02:30 nightly, GPU free from 07:00 (for the
+  owner's WoW client): sync and ingest (`tools/ingest.sh`), voice captured
+  lines, work the backlog until 07:00, then rebuild tables, upload each pack
+  that is due, commit and push, on the CPU and past 07:00 if need be. It stops the
   bulk service for the duration and restarts it from an `EXIT` trap, also when a
   final `--dry-run` still counts files.
 - `forever-vo-bulk.service` — `tools/bulk.sh`, the long resumable run:

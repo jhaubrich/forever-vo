@@ -9,13 +9,12 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$ROOT/tools/data/daily.log"
 LOCK="$ROOT/tools/data/daily.lock"
-# The run starts at 02:30 (install-timer.sh) and must be done by END_AT. The
-# tail after generation (table rebuild, dry run, uploads, push) took 6 to
-# 27 minutes in September 2026 with the delta alone. Each pack now re-encodes
-# only its changed files, but a re-voiced set (a new narrator) re-encodes and
-# uploads several whole packs in one night, hence TAIL_MINUTES.
+# The run starts at 02:30 (install-timer.sh) and the GPU is free from END_AT,
+# for the owner's WoW client. Generation stops there; what follows (table
+# rebuild, dry run, re-encoding and uploading the packs, push) is CPU and
+# network only, at Nice=10, and may run past it: a new encoding or a re-voiced
+# set re-encodes every pack, about an hour of ffmpeg.
 END_AT="${FOREVER_VO_END_AT:-07:00}"
-TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-90}"
 BULK_HOURS="${FOREVER_VO_BULK_HOURS:-}"   # optional cap on the bulk pass; unset, it fills the window
 
 mkdir -p "$ROOT/tools/data"
@@ -29,10 +28,9 @@ if ! flock -n 9; then
     exit 0
 fi
 cd "$ROOT"
-# Generation stops TAIL_MINUTES before END_AT. A run that starts too late for
-# that (the timer's catch-up after the machine was off at 02:30) gets two hours,
+# Generation stops at END_AT. A run that starts too late for that (the timer's catch-up after the machine was off at 02:30) gets two hours,
 # the old fixed bound, so a daytime catch-up does not hold the GPU all day.
-GEN_UNTIL="$(date -d "today $END_AT $TAIL_MINUTES minutes ago" +%s)"
+GEN_UNTIL="$(date -d "today $END_AT" +%s)"
 if [ "$GEN_UNTIL" -le "$(date +%s)" ]; then
     GEN_UNTIL="$(date -d "now 2 hours" +%s)"
     echo "started after the window; generating until $(date -d "@$GEN_UNTIL" +%H:%M)"

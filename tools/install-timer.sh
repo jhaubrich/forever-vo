@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Installs systemd user units:
-#   forever-vo-daily.timer   nightly from 02:30, done by 07:00 (daily.sh): sync
+#   forever-vo-daily.timer   nightly from 02:30, GPU free by 07:00 (daily.sh): sync
 #                            (pull, ingest, push), voice captured lines, continue
 #                            the bulk backlog, rebuild the pack tables
 #   forever-vo-ingest.service the sync alone, started by hand when wanted
