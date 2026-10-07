@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "256386": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Dokimi",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1262",
+ "quests": {
+  "91904-progress": {
+   "build": "70245",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Dokimi",
+   "npc": "256386",
+   "questID": 91904,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Another delivery! Fantastic. Set it over by the pile and we can discuss your compensation.",
+   "time": 1791405720,
+   "title": "A Sealed Crate",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
