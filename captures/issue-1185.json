@@ -1,0 +1,102 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "6739|fde1fb79": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Innkeeper Bates",
+   "npc": "6739",
+   "questID": null,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "Rest your weary bones for a spell.",
+   "time": 1791366844,
+   "title": null,
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "npcs": {
+  "1938": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Dalar Dawnweaver",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1952": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "High Executor Hadrec",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "248840": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Trevan Rol",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6739": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Innkeeper Bates",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1185",
+ "quests": {
+  "421-progress": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Dalar Dawnweaver",
+   "npc": "1938",
+   "questID": 421,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "If you wish to prove yourself to me, you must kill 5 Moonrage Whitescalps.  Accomplish that task, and I will see to it your skill is put to more worthy assignments.",
+   "time": 1791366893,
+   "title": "Prove Your Worth",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "437-progress": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "High Executor Hadrec",
+   "npc": "1952",
+   "questID": 437,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "Have you defeated Nightlash, $N?  Our success against the rot hides depends on her destruction!",
+   "time": 1791366857,
+   "title": "The Dead Fields",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
