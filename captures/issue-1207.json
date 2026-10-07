@@ -1,0 +1,132 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "10537|c27b3101": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1441,
+   "name": "Cliffwatcher Longhorn",
+   "npc": "10537",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "We cannot take care of all the threats in this area alone. We could use another fighting hand, $N. ",
+   "time": 1791342652,
+   "title": null,
+   "wanted": null,
+   "zone": "Thousand Needles"
+  }
+ },
+ "npcs": {
+  "10377": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Elu",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "10537": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Cliffwatcher Longhorn",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "10539": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Hagar Lightninghoof",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1207",
+ "quests": {
+  "4767-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1441,
+   "name": "Elu",
+   "npc": "10377",
+   "questID": 4767,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "$N, have you retrieved the wyvern eggs that I seek? I'm really anxious to start my wind rider training!",
+   "time": 1791342641,
+   "title": "Wind Rider",
+   "wanted": null,
+   "zone": "Thousand Needles"
+  },
+  "4821-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1441,
+   "name": "Hagar Lightninghoof",
+   "npc": "10539",
+   "questID": 4821,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "I must know more about this mysterious egg, who knows what will hatch from it.",
+   "time": 1791340250,
+   "title": "Alien Egg",
+   "wanted": null,
+   "zone": "Thousand Needles"
+  },
+  "5064-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1441,
+   "name": "Cliffwatcher Longhorn",
+   "npc": "10537",
+   "questID": 5064,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you discovered what the Grimtotem are up to?",
+   "time": 1791342653,
+   "title": "Grimtotem Spying",
+   "wanted": null,
+   "zone": "Thousand Needles"
+  },
+  "5147-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1441,
+   "name": "Cliffwatcher Longhorn",
+   "npc": "10537",
+   "questID": 5147,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you any news of that murderous Arnak Grimtotem?",
+   "time": 1791342658,
+   "title": "WANTED: Arnak Grimtotem",
+   "wanted": null,
+   "zone": "Thousand Needles"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
