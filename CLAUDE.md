@@ -232,11 +232,15 @@ Generation details:
   seed heard in audition. `heard` (the line's fingerprint) and `spoken`
   (`spoken_hash` of its exact text) must still match (`VoiceCatalog.pin`, "against
   this checkout": clips are per machine), and then `Target.fingerprint` appends
-  `seed=,chunk=,pin=PIN_VERSION` for that file only, never the other-sex file,
-  alternate narrators, parts or `recipe()`. `wanted()` compares a pinned file whole
+  `seed=,chunk=,pin=PIN_VERSION` for that file, and for the line's one speaker
+  part when it says exactly the whole-line text (`pinnable_part`, `Target.pin_key`:
+  "<Sob> Oh please..." keeps its narrated sob and the pin decides the speech the
+  addon plays), never the other-sex file, alternate narrators, other parts or
+  `recipe()`. `wanted()` compares a pinned file whole
   and an unpinned one without the pin terms (`text_current`, `strip_pin`): pinning
   restages the file, unpinning keeps it, a pinned take is never redone for the cap.
-  Every run reports pins that no longer hold, are gone, play as parts, or are
+  Every run reports pins that no longer hold, are gone, sit on a line whose speech
+  narration splits into several parts, or are
   progress texts outside a `--progress` run (`pin_report`). Bump `PIN_VERSION` when
   what a seed draws changes. The pack is built on CUDA, where a ROCm seed draws a
   different but fixed take; the owner accepted that.
@@ -281,7 +285,8 @@ recipe heard is current) and tasting notes (`[voices.notes]`) into the TOML
 through tomlkit, validated before the file is replaced. "Pin this take" (it
 replaced "Write to pack" on 2026-10-06) writes a take's seed to `[lines]`; the
 server proves the take from its sidecar (the picked line, in its voice, its exact
-text, the fingerprint it was made under) and refuses a line that plays as parts.
+text, the fingerprint it was made under) and refuses a line whose speech narration
+splits into several parts.
 Each take shows numbered chunk marks (where each model call starts; a click plays
 from the gap before it), its seed ("use this seed"), and Chunk length, Seed and
 "same for every chunk" are run options; a preview under the Text box (`/api/chunks`,

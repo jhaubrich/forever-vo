@@ -2142,7 +2142,8 @@ def create_app(
             }
             if pin
             else None,
-            "parts": bool(variant.parts),
+            # plays as parts that a pin cannot decide: the speaker's words split
+            "parts": bool(variant.parts) and generate.pinnable_part(variant) is None,
         }
 
     def payload(row: LineRow, catalog: VoiceCatalog | None = None) -> dict[str, Any]:
@@ -2604,11 +2605,11 @@ def create_app(
         if line is None:
             raise HTTPException(404, f"no line {base} now")
         item, variant = line
-        if variant.parts:
+        if variant.parts and generate.pinnable_part(variant) is None:
             raise HTTPException(
                 400,
-                "this line plays as parts (the speaker and the narrator's stage "
-                "directions in turn), so the whole-line file a pin decides is not what "
+                "this line plays as parts with the speaker's words split between "
+                "several of them (narration in between), so no one take is what "
                 "players hear",
             )
         if about.get("line_voice") != item.voice:

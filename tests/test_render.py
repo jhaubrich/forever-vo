@@ -383,9 +383,10 @@ def test_the_run_reports_pins_that_no_longer_apply() -> None:
     gone: Any = SimpleNamespace(voice="human-male", variants=lambda: [changed])
     assert "no longer holds" in pin_report([gone], catalog)[0]
     assert "no such line" in pin_report([], catalog)[0]
-    parted = SimpleNamespace(base="1-accept", text=LINE, parts=[("npc", LINE)])
+    split = [("npc", "Bring me"), ("narrator", "Sigh"), ("npc", "the head.")]
+    parted = SimpleNamespace(base="1-accept", text=LINE, parts=split)
     parts: Any = SimpleNamespace(voice="human-male", variants=lambda: [parted])
-    assert "plays as parts" in pin_report([parts], catalog)[0]
+    assert "narration splits" in pin_report([parts], catalog)[0]
 
 
 # --- the audition side of pins --------------------------------------------------
@@ -509,7 +510,11 @@ def test_a_pin_is_refused_for_a_take_the_pack_would_not_draw(pin_studio: Any) ->
     response = pin(take_of(client, voice="human-female"))
     assert response.status_code == 400 and "read in" in response.json()["detail"]
     # a line that plays as parts
-    pin_studio.variant.parts = [("npc", LINE)]
+    pin_studio.variant.parts = [
+        ("npc", "Bring me"),
+        ("narrator", "Sigh"),
+        ("npc", "it."),
+    ]
     response = pin(take_of(client))
     assert response.status_code == 400 and "parts" in response.json()["detail"]
 
@@ -594,3 +599,37 @@ def test_the_cached_config_follows_an_edit_made_outside_the_page(
     stamp = pin_studio.toml.stat().st_mtime_ns + 1_000_000_000
     os.utime(pin_studio.toml, ns=(stamp, stamp))
     assert studio.config_cached().lines.root["1-accept"].seed == 5
+
+
+def test_a_pin_decides_the_one_speaker_part_that_says_the_whole_line() -> None:
+    from tools.generate import pinnable_part
+
+    catalog, plain = pinned_catalog()
+    sob = SimpleNamespace(text=LINE, parts=[("narrator", "Sob"), ("npc", LINE)])
+    assert pinnable_part(sob) == 2
+    # the speech split by narration: no one take is what players hear
+    split = SimpleNamespace(
+        text=LINE, parts=[("npc", "Bring me"), ("narrator", "Sigh"), ("npc", "it.")]
+    )
+    assert pinnable_part(split) is None
+    assert pinnable_part(SimpleNamespace(text=LINE, parts=[])) is None
+    # the part follows the line's pin; the narrator's part does not
+    part = target(LINE, catalog, base="1-p2-accept", pin_key="1-accept")
+    assert part.live_pin is not None and "seed=42" in part.fingerprint
+    assert target("Sob", catalog, base="1-p1-accept").live_pin is None
+    assert target(LINE, catalog, base="1-p2-accept").fingerprint == plain.fingerprint(
+        "human-male", LINE
+    )
+
+
+def test_a_take_of_a_line_with_a_narrated_sob_pins(pin_studio: Any) -> None:
+    from tools.config import load_config
+
+    pin_studio.variant.parts = [("narrator", "Sob"), ("npc", LINE)]
+    take = take_of(pin_studio.client)
+    response = pin_studio.client.post(
+        "/api/pin-seed", json={"session": take["session"], "name": take["name"]}
+    )
+    assert response.status_code == 200, response.text
+    load_config.cache_clear()
+    assert "1-accept" in load_config(pin_studio.toml).lines.root
