@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "2086": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Valstag Ironjaw",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1192",
+ "quests": {
+  "98197-accept": {
+   "build": "70245",
+   "class": "Druid",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1437,
+   "name": "Valstag Ironjaw",
+   "npc": "2086",
+   "questID": 98197,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "This harbor was first built by the Old Horde as a staging ground for their naval invasion of Hillsbrad. Completely circumvented Lordaeron's defenses!\r\n\r\nSo many lives lost...\r\n\r\nWhat's worse is that fleet was built with the very resources they stole from Khaz Modan!\r\n\r\nPlenty of it remains in the harbor after Admiral Proudmoore routed the brutes and built this place for the Alliance. We'll need it to bolster the town's defenses with the Dragonmaw on the move.",
+   "time": 1791370816,
+   "title": "Spoils of War",
+   "wanted": null,
+   "zone": "Wetlands"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
