@@ -11,7 +11,8 @@ string in it, the same way /fvo report does. A GitHub link holds about 25
 lines, so a longer export comes in parts, one issue each, every part a whole
 export of its own (Export:Parts). All at Once is the other way: the link opens
 the form without the string, and the player copies the string into it from a
-box of its own, one issue for up to ~250 lines (the form's 65,536 characters). Copy Link stamps
+box of its own, one issue for up to ~250 lines (the form's 65,536 characters). Copy Link
+(or Ctrl+C in the text) stamps
 ForeverVOCaptureDB.exportedAt past the parts copied so far (Export:MarkSent),
 and Capture.Exported skips what an earlier export packed: before that, every export carried the
 whole DB, and a player who exported after each quest, as the per-line
@@ -335,16 +336,37 @@ function Export:GetFrame()
     frame.Hint:SetSpacing(3)
     frame.Hint:SetPoint("TOPLEFT", 20, -38)
     frame.Hint:SetPoint("RIGHT", -20, 0)
-    frame.Hint:SetText("Add a note if you like, then click Copy Link and paste it into your browser. It opens a GitHub form with all of this filled in.\n\nOne export covers everything you have seen since the last one, so there is no need to do this after every quest.")
+    frame.Hint:SetText("Add a note if you like, then click Copy Link and paste it into your browser. It opens a GitHub form with all of this filled in.\n\nOne export covers everything you have seen since the last one, so there is no need to do this after every quest. Closed without copying, the lines wait for the next one.")
 
     local function Hide()
         frame:Hide()
     end
+    -- Only a copy counts a part as sent (MarkSent), and before 0.1.8 merely
+    -- opening the window did, so say what closing it kept (#1199).
+    frame:SetScript("OnHide", function()
+        local waiting = 0
+        for i, part in ipairs(frame.parts or {}) do
+            if not frame.copied[i] then
+                waiting = waiting + #part.lines
+            end
+        end
+        if waiting > 0 then
+            ns.Print(format("%d %s not copied, kept for your next |cffffd100/fvo export|r.",
+                waiting, Util.Plural(waiting, "line")))
+        end
+    end)
 
     local scroll = CreateFrame("ScrollFrame", nil, frame, "InputScrollFrameTemplate")
     scroll.EditBox:SetMaxLetters(0)
     scroll.EditBox:SetFontObject("GameFontHighlightSmall")
     scroll.EditBox:SetScript("OnEscapePressed", Hide)
+    -- Copying the issue text by hand, to paste into the form or the inbox
+    -- issue, sends the part as surely as Copy Link does (#1199).
+    scroll.EditBox:SetScript("OnKeyDown", function(_, key)
+        if key == "C" and (IsControlKeyDown() or IsMetaKeyDown()) and frame.index then
+            Export:MarkSent(frame.index)
+        end
+    end)
     scroll.EditBox:SetScript("OnTextChanged", function(_, userInput)
         if userInput then
             Export:ClearStatus()
