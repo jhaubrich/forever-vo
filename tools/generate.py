@@ -42,11 +42,13 @@ import functools
 import hashlib
 import json
 import os
+import random
 import subprocess
 import sys
 import tempfile
 import time
 from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
 
@@ -59,16 +61,19 @@ from tools.config import (
     SOUNDS_DIR,
     VOICES_DIR,
     Config,
+    LinePin,
     TtsSettings,
     load_config,
 )
 from tools.ingest import _aligned
 from tools.luatable import lua_string
 from tools.textclean import (
+    CHUNK_CHARS,
     book_display,
     book_text,
     chunk,
     clean,
+    halve,
     has_gender_branch,
     is_speakable,
     segments,
@@ -237,6 +242,20 @@ class VoiceCatalog:
             **self.conditioning(voice),
         }
         return ",".join(f"{name}={value}" for name, value in sorted(fields.items()))
+
+    def pin(self, key: str, voice: str, text: str) -> LinePin | None:
+        """The [lines] pin for this line's file while it still holds: heard under
+        today's fingerprint and spoken from today's exact text. A retune, a re-pick, a
+        respelling or a corrected text makes the same seed another take, so the pin
+        then stands aside and the line is drawn afresh."""
+        pin = self.config.lines.root.get(key)
+        if pin is None:
+            return None
+        if pin.heard != self.fingerprint(voice, text) or pin.spoken != spoken_hash(
+            text
+        ):
+            return None
+        return pin
 
     def tuned(self, voice: str) -> bool:
         return not self.config.tts.is_default(self.resolve(voice).settings)
@@ -512,8 +531,18 @@ class Target(NamedTuple):
         return index_key(self.base, self.location)
 
     @property
+    def live_pin(self) -> LinePin | None:
+        """The line's pinned seed, for its own whole-line file only: the other sex's
+        file, the alternate narrators and the parts are drawn as before."""
+        if self.alternate or self.sex:
+            return None
+        return self.item.catalog.pin(self.key, self.voice, self.text)
+
+    @property
     def fingerprint(self) -> str:
-        return self.item.catalog.fingerprint(self.voice, self.text)
+        return with_pin(
+            self.item.catalog.fingerprint(self.voice, self.text), self.live_pin
+        )
 
     @property
     def path(self) -> Path:
@@ -673,6 +702,162 @@ class TakeStopped(Exception):
     """Synth.render was asked to stop between two generate() calls."""
 
 
+# Chatterbox ends a generate() call at 1000 speech tokens, 25 a second: 40.0 s. The
+# English model has no alignment analyzer (chatterbox t3.py builds one for the
+# multilingual model only), so nothing forces the end of speech, and a call that
+# misses its stop token babbles on to the cap: 49 pack files sat at exactly 40.0 s,
+# 200-character lines among them, kept because the longest try used to win.
+TOKEN_CAP_SECONDS = 39.9
+CHUNK_GAP_SECONDS = 0.35  # silence between two chunks of one line
+
+
+# Bumped when what a seed draws changes (derive_seed, chunking, the retry rules), so
+# pinned files are drawn again from their seeds; unpinned files never carry it.
+PIN_VERSION = 1
+PIN_TERMS = ("seed", "chunk", "pin", "same_seed")
+
+
+def spoken_hash(text: str) -> str:
+    """The exact text a pin was heard saying. text_key folds case and punctuation
+    away, and both change what the model says and where a line is cut into chunks."""
+    return hashlib.blake2b(text.encode("utf-8"), digest_size=8).hexdigest()
+
+
+def with_pin(fingerprint: str, pin: LinePin | None) -> str:
+    """A file's fingerprint with its pinned seed in it, so pinning or re-pinning a line
+    restages exactly its file; the fingerprint itself when there is no live pin."""
+    if pin is None:
+        return fingerprint
+    terms = f"seed={pin.seed},chunk={pin.chunk_chars},pin={PIN_VERSION}" + (
+        ",same_seed=1" if pin.same_seed else ""
+    )
+    return fingerprint + ("," if "+" in fingerprint else "+") + terms
+
+
+def strip_pin(fingerprint: str) -> str:
+    """`fingerprint` without with_pin's terms: an unpinned line's file is current when
+    this matches, so unpinning keeps the take the pin drew rather than rolling again."""
+    key, plus, fields = fingerprint.partition("+")
+    if not plus:
+        return fingerprint
+    kept = [f for f in fields.split(",") if f.partition("=")[0] not in PIN_TERMS]
+    return key + "+" + ",".join(kept) if kept else key
+
+
+def index_record(
+    duration: float,
+    target: Target,
+    take: RenderedTake | None,
+    max_chars: int,
+    same_seed: bool = False,
+) -> dict[str, Any]:
+    """A generated file's sound_index.json entry: its length, voice and fingerprint,
+    and the seed and chunk length it was drawn with (`s`, `c`, since 2026-10-07), so a
+    take that turns out perfect can be pinned from the pack itself. The seed replays
+    exactly only on the machine and libraries that drew it; files from before seeds
+    have none. Nothing that reads the index needs `s` or `c`."""
+    record: dict[str, Any] = {"d": duration, "v": target.voice, "t": target.fingerprint}
+    if take is not None:
+        record["s"] = take.seed
+        record["c"] = max_chars
+        if same_seed:
+            record["same"] = 1  # every chunk drawn from the take's first seed
+    return record
+
+
+def pin_report(
+    items: list[Item], catalog: VoiceCatalog, include_progress: bool = True
+) -> list[str]:
+    """What the run says about [lines]: a pin whose line is gone, one that no longer
+    holds (the text or the voice's settings changed since it was heard), and one on a
+    line the addon plays as parts, where the whole-line file it pins is not heard. A
+    pinned progress text in a run without --progress is not gone, only not in the
+    run, and is said so: the nightly's bulk pass voices progress texts for captured
+    lines only."""
+    pins = catalog.config.lines.root
+    if not pins:
+        return []
+    lines = {v.base: (item, v) for item in items for v in item.variants()}
+    notes = []
+    for key in sorted(pins):
+        if key not in lines:
+            if not include_progress and key.endswith("-progress"):
+                notes.append(
+                    f"pinned seed for {key}: a progress text, which a run voices only "
+                    "with --progress"
+                )
+            else:
+                notes.append(f"pinned seed for {key}: no such line now; unpin it")
+            continue
+        item, variant = lines[key]
+        if catalog.pin(key, item.voice, variant.text) is None:
+            notes.append(
+                f"pinned seed for {key} no longer holds (its text or voice settings "
+                "changed since it was heard); the line is drawn afresh"
+            )
+        elif variant.parts:
+            notes.append(
+                f"pinned seed for {key}: the line plays as parts, so the file it pins "
+                "is not what players hear"
+            )
+    return notes
+
+
+def text_current(recorded: str, fingerprint: str, pinned: bool) -> bool:
+    """Whether a file's recorded fingerprint is today's. A pinned line is compared
+    whole, so pinning or re-pinning restages its file; an unpinned one leaves the pin
+    terms out, so unpinning keeps the take the pin drew instead of rolling again."""
+    return (recorded if pinned else strip_pin(recorded)) == fingerprint
+
+
+def ran_into_cap(recorded: Any, target: Target, catalog: VoiceCatalog) -> bool:
+    """Whether a pack file is a take that ran into the token cap: a line short enough
+    for one chunk whose length before tempo and speed is the cap's 40.0 s. Those were
+    kept because the longest try used to win; the next run replaces them. A line of
+    several chunks runs past 40 s honestly, so only single chunks are judged."""
+    if not isinstance(recorded, dict) or not recorded.get("d"):
+        return False
+    pin = target.live_pin
+    if pin is not None and recorded.get("t") == target.fingerprint:
+        return False  # drawn from its pinned seed already: it would come out the same
+    if len(chunk(target.text, pin.chunk_chars if pin else CHUNK_CHARS)) != 1:
+        return False
+    settings = catalog.resolve(target.voice).settings
+    raw = recorded["d"] * (settings.tempo or 1.0) * (settings.speed or 1.0)
+    return TOKEN_CAP_SECONDS <= raw <= 40.1
+
+
+def derive_seed(take_seed: int, chunk: int, attempt: int) -> int:
+    """The torch seed for one generate() call of a take: chunk by chunk and try by
+    try, so a take replays from its seed alone and no two calls share one by accident."""
+    digest = hashlib.blake2b(
+        f"{take_seed}:{chunk}:{attempt}".encode(), digest_size=8
+    ).digest()
+    return int.from_bytes(digest, "big") & 0x7FFFFFFF
+
+
+@dataclass
+class ChunkMark:
+    """One generate() call's place in a take, in seconds of the rendered audio."""
+
+    start: float
+    end: float
+    text: str
+    seed: int  # the seed of the try that was kept
+    attempts: int
+    capped: bool = False  # every try ran into the token cap; kept as the last resort
+    split: bool = False  # half of a chunk that ran into the cap on every try
+    source: int = 0  # which chunk of chunk() it is, the same for both halves of a split
+
+
+@dataclass
+class RenderedTake:
+    audio: Any  # a torch tensor (1, samples); torch is imported lazily
+    seconds: float
+    seed: int
+    chunks: list[ChunkMark]
+
+
 class Synth:
     def __init__(
         self,
@@ -724,11 +909,24 @@ class Synth:
         self.model = ChatterboxTTS.from_pretrained(device=device)
         self.sr = self.model.sr
         self.catalog = catalog
+        self.last_take: RenderedTake | None = None  # speak()'s, for the journal line
 
-    def speak(self, text: str, voice: str, out_mp3: Path) -> float:
+    def speak(
+        self,
+        text: str,
+        voice: str,
+        out_mp3: Path,
+        seed: int | None = None,
+        same_seed: bool = False,
+        max_chars: int = CHUNK_CHARS,
+    ) -> float:
         settings = self.catalog.resolve(voice).settings
+        take = self.render_take(
+            text, voice, seed=seed, same_seed=same_seed, max_chars=max_chars
+        )
+        self.last_take = take
         return self.encode(
-            self.render(text, voice),
+            take.audio,
             out_mp3,
             settings.tempo,
             settings.pitch,
@@ -736,47 +934,118 @@ class Synth:
         )
 
     def render(self, text: str, voice: str, stopped=None):
-        """The model's audio for `text` in `voice`, before tempo and pitch.
+        """The model's audio for `text` in `voice`, before tempo and pitch."""
+        return self.render_take(text, voice, stopped).audio
 
-        Apart from encode so the audition page can hear one take several ways: tempo
-        and pitch are applied afterwards, so a sweep over them needs no second take.
+    def render_take(
+        self,
+        text: str,
+        voice: str,
+        stopped=None,
+        seed: int | None = None,
+        same_seed: bool = False,
+        max_chars: int = CHUNK_CHARS,
+    ) -> RenderedTake:
+        """The model's audio for `text` in `voice`, before tempo and pitch, with where
+        each chunk sits in it and the seed it was drawn from.
+
+        Apart from encode so the audio can be heard several ways: tempo and pitch are
+        applied afterwards, so the audition page's sweep over them needs no second take.
         `stopped`, a callable, is asked before each generate() call; when it answers
         true the take is abandoned with TakeStopped. A long line is several chunks and
         a short one up to three tries, so checking only between takes left the
         audition page's Stop waiting minutes on the ROCm card.
+
+        Every generate() call is seeded from the take's `seed` (derive_seed), drawn at
+        random when none is given, so every take is a new one. `same_seed` gives every
+        chunk the seed of the first, an experiment in whether a shared draw holds a
+        voice across chunks; torch's seed is process-wide, which is safe only because
+        one take renders at a time (the audition model lock, one generator process).
+        `max_chars` is the chunk length (textclean.chunk).
         """
         resolved = self.catalog.resolve(voice)
         settings = resolved.settings
-        pieces = []
-        silence = self.torch.zeros(1, int(self.sr * 0.35))
-        for part in chunk(text):
-            kwargs = {"audio_prompt_path": str(resolved.clip)} if resolved.clip else {}
+        kwargs = {"audio_prompt_path": str(resolved.clip)} if resolved.clip else {}
+        take_seed = random.randrange(2**31) if seed is None else seed
+        gap = int(self.sr * CHUNK_GAP_SECONDS)
+        pieces: list[Any] = []
+        marks: list[ChunkMark] = []
+        position = 0  # samples
+        calls = 0  # chunks drawn so far, halves of a split one included
+
+        def speak_part(part: str, depth: int, split: bool, source: int) -> None:
+            nonlocal position, calls
+            index = 0 if same_seed else calls
+            calls += 1
             # Chatterbox sometimes answers a short standalone sentence with a
             # blip: "Galgar wipes his brow." came back as 0.36 s where the other
             # narrator voices took 2 s, and 17 stage-direction parts of two to
             # four words were like it (2026-09-23). The output is sampled, so a
-            # second try usually speaks; keep the longest of a few.
+            # second try usually speaks; keep the longest of a few. A try that ran
+            # into the token cap is a failure, never kept over one that did not.
             floor = max(0.5, 0.15 * len(part.split()))
-            best = None
+            best, best_capped, best_seed, attempts = None, True, 0, 0
             for attempt in range(3):
                 if stopped is not None and stopped():
                     raise TakeStopped
+                call_seed = derive_seed(take_seed, index, attempt)
+                self.torch.manual_seed(call_seed)
                 wav = self.model.generate(
                     part,
                     exaggeration=settings.exaggeration,
                     cfg_weight=settings.cfg_weight,
                     **kwargs,
                 ).cpu()
-                if best is None or wav.shape[-1] > best.shape[-1]:
-                    best = wav
+                attempts += 1
+                capped = wav.shape[-1] / self.sr >= TOKEN_CAP_SECONDS
+                if (
+                    best is None
+                    or (best_capped and not capped)
+                    or (capped == best_capped and wav.shape[-1] > best.shape[-1])
+                ):
+                    best, best_capped, best_seed = wav, capped, call_seed
+                if capped:
+                    print(
+                        f"    ran into the token cap ({len(part)} characters), retrying"
+                    )
+                    continue
                 if best.shape[-1] / self.sr >= floor:
                     break
                 print(
                     f"    short output ({wav.shape[-1] / self.sr:.2f}s for {len(part.split())} words), retrying"
                 )
+            if best_capped and depth < 2:
+                halves = halve(part)
+                if len(halves) == 2:
+                    print(f"    capped on every try, splitting: {part[:50]}…")
+                    for half in halves:
+                        speak_part(half, depth + 1, True, source)
+                    return
+            assert best is not None
+            if pieces:
+                pieces.append(self.torch.zeros(1, gap))
+                position += gap
+            start = position
             pieces.append(best)
-            pieces.append(silence)
-        return self.torch.cat(pieces[:-1], dim=-1)
+            position += best.shape[-1]
+            marks.append(
+                ChunkMark(
+                    round(start / self.sr, 3),
+                    round(position / self.sr, 3),
+                    part,
+                    best_seed,
+                    attempts,
+                    best_capped,
+                    split,
+                    source,
+                )
+            )
+
+        for source, part in enumerate(chunk(text, max_chars)):
+            speak_part(part, 0, False, source)
+        return RenderedTake(
+            self.torch.cat(pieces, dim=-1), position / self.sr, take_seed, marks
+        )
 
     def encode(
         self,
@@ -1787,6 +2056,8 @@ def main(argv: list[str] | None = None) -> int:
         else {}
     )
     items = load_items(capture, include_progress=args.progress, catalog=catalog)
+    for note in pin_report(items, catalog, include_progress=args.progress):
+        print(note)
 
     todo: list[Target] = []
     skipped: dict[str, int] = {}
@@ -1800,7 +2071,15 @@ def main(argv: list[str] | None = None) -> int:
             return True
         recorded = sound_index.get(target.key)
         previous_text = recorded.get("t") if isinstance(recorded, dict) else None
-        if previous_text is not None and previous_text != target.fingerprint:
+        if ran_into_cap(recorded, target, catalog):
+            skipped["ran into the token cap, regenerating"] = (
+                skipped.get("ran into the token cap, regenerating", 0) + 1
+            )
+            stale.add(target.key)
+            return True
+        if previous_text is not None and not text_current(
+            previous_text, target.fingerprint, target.live_pin is not None
+        ):
             skipped["text changed, regenerating"] = (
                 skipped.get("text changed, regenerating", 0) + 1
             )
@@ -2016,7 +2295,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.dry_run:
         for target in todo[:50]:
-            print(f"  {target.label}  [{target.voice}]  {target.text[:90]}…")
+            pin = target.live_pin
+            print(
+                f"  {target.label}  [{target.voice}]"
+                + (f"  (pinned seed {pin.seed})" if pin else "")
+                + f"  {target.text[:90]}…"
+            )
         if len(todo) > 50:
             print(f"  … and {len(todo) - 50} more")
         return 0
@@ -2030,15 +2314,33 @@ def main(argv: list[str] | None = None) -> int:
         for n, target in enumerate(todo, 1):
             item = target.item
             t0 = time.time()
-            duration = synth.speak(target.text, target.voice, target.path)
-            sound_index[target.key] = {
-                "d": duration,
-                "v": target.voice,
-                "t": target.fingerprint,
-            }
+            pin = target.live_pin
+            duration = synth.speak(
+                target.text,
+                target.voice,
+                target.path,
+                seed=pin.seed if pin else None,
+                same_seed=pin.same_seed if pin else False,
+                max_chars=pin.chunk_chars if pin else CHUNK_CHARS,
+            )
+            take = synth.last_take
+            sound_index[target.key] = index_record(
+                duration,
+                target,
+                take,
+                pin.chunk_chars if pin else CHUNK_CHARS,
+                pin.same_seed if pin else False,
+            )
             dirty.add(target.key)
             print(
                 f"[{n}/{len(todo)}] {target.label} {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{target.voice}] {item.entry.get('title') or item.entry.get('name')}"
+                + (f"  seed {take.seed}" if take else "")
+                + ("  (pinned)" if pin else "")
+                + (
+                    "  (ran into the token cap)"
+                    if take and any(mark.capped for mark in take.chunks)
+                    else ""
+                )
             )
             if n % 25 == 0:
                 # Keep the pack tables current so a client restart picks up what exists so far.

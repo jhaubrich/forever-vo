@@ -9,9 +9,6 @@ default CUDA one (what the nightly run generates with) stays put:
 
     UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition
 
-"Write to pack" is refused on that build. The sound index would treat the file
-as current, and the CUDA nightly would ship it.
-
 One model instance, loaded on the first take and kept. Nothing here goes around
 the pipeline's bookkeeping:
 
@@ -19,9 +16,9 @@ the pipeline's bookkeeping:
   [voices.speakers] entry (one NPC always in one voice) into
   forever-vo.toml through tomlkit, so the comments survive, and the file is
   validated by the same models before the old one is replaced;
-- "write to pack" regenerates a pack file only under the configuration as
-  saved, and stamps the fingerprint generate.py would compute, so the nightly
-  run agrees the file is current instead of redoing it or missing the change.
+- "pin this take" writes the take's seed to [lines], for one line's pack file,
+  only for a take of that line's exact text under its saved settings, which the
+  server reads from the take's own sidecar rather than from the page.
 
 Takes land under tools/data/audition/<session>/ (gitignored) and are served
 from there. The page is index.html beside this file: one HTML file, no build.
@@ -70,6 +67,7 @@ from tools.config import (
     CONFIG_TOML,
     DATA_DIR,
     GENDER_DICT,
+    LINE_BASE,
     PACK_NAME,
     RETAIL_BUILD,
     ROOT,
@@ -93,14 +91,16 @@ from tools.generate import (
     load_sources,
     sound_path,
 )
-from tools.textclean import clean
+from tools.textclean import CHUNK_CHARS, chunk, clean
 from tools.wowdata import (
     archetype_names,
+    archetype_of,
     base_voice,
     dominant_sound_set,
     fetch_file,
     is_archetype,
     set_voice,
+    sibling_sets,
     sound_set_displays,
 )
 
@@ -303,6 +303,25 @@ def write_speaker_voice(path: Path, speaker: str, voice: str) -> Config:
             del speakers[speaker]
         if not speakers:
             del voices["speakers"]
+        return _validated_write(path, doc)
+
+
+def write_line_pin(path: Path, base: str, pin: dict[str, Any] | None) -> Config:
+    """Sets [lines].<base> to one inline table, or removes it when `pin` is None. The
+    table itself stays, with its comment, when the last pin goes."""
+    with _config_lock(path):
+        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+        lines = doc.get("lines")
+        if lines is None:
+            lines = tomlkit.table()
+            doc["lines"] = lines
+        if pin is None:
+            if base in lines:
+                del lines[base]
+        else:
+            entry = tomlkit.inline_table()
+            entry.update(pin)
+            lines[base] = entry
         return _validated_write(path, doc)
 
 
@@ -1114,7 +1133,7 @@ def sound_packs(
     addons: Path | None = ADDONS_DIR, working: Path = SOUNDS_DIR
 ) -> list[SoundPack]:
     """Where a line's "in the pack now" comes from: the working folder first, since
-    it is what "Write to pack" writes and what the owner's machine holds complete,
+    it is what the generator writes and what the owner's machine holds complete,
     then each pack installed in the client, in the order the addon consults them
     (Packs.lua: higher priority first, then name). A contributor's working folder
     holds a few hundred files and the rest of their audio is in the CurseForge packs,
@@ -1139,6 +1158,77 @@ def sound_packs(
         )
     installed.sort(key=lambda pack: (-pack.priority, pack.label))
     return [SoundPack(PACK_NAME, "working folder", 0, working), *installed]
+
+
+class WorkingCopies:
+    """Whether the working folder's file of a line is the one sound_index.json records.
+
+    A contributor's working folder keeps every line they once generated, and the
+    index in git follows the owner's machine: when a voice is restaged there, the
+    contributor's copy stays the old take while the installed packs carry the new one
+    (Frezza's 9564-8d6952f8, a 19.95 s take from before goblin-male-zany was tuned,
+    beside the 17.02 s the index and the game have). A copy whose length is not the
+    index's is stale, and "in the pack now" plays the installed pack's file instead.
+    Lengths are probed once per file version; an index that cannot be read (a merge
+    left in conflict) or holds no length for the line trusts the copy, as before."""
+
+    # seconds: ffprobe reads a generator mp3 at its exact length, which is what the
+    # index records (some older entries rounded to 0.01), while Chatterbox takes
+    # differ in 0.04 s steps, so even a near miss is another take
+    TOLERANCE = 0.02
+
+    def __init__(self, index_path: Path = SOUND_INDEX):
+        self.index_path = index_path
+        self.lock = threading.Lock()
+        self._index: dict[str, Any] = {}
+        self._index_stamp: tuple[int, int] | None = None
+        self._seconds: dict[tuple[str, int, int], float | None] = {}
+
+    def index(self) -> dict[str, Any]:
+        try:
+            stat = self.index_path.stat()
+        except OSError:
+            return {}
+        stamp = (stat.st_mtime_ns, stat.st_size)
+        with self.lock:
+            if stamp != self._index_stamp:
+                try:
+                    loaded = json.loads(self.index_path.read_text(encoding="utf-8"))
+                except (OSError, ValueError):
+                    loaded = {}
+                self._index = loaded if isinstance(loaded, dict) else {}
+                self._index_stamp = stamp
+            return self._index
+
+    def seconds(self, path: Path) -> float | None:
+        try:
+            stat = path.stat()
+        except OSError:
+            return None
+        key = (str(path), stat.st_mtime_ns, stat.st_size)
+        if key not in self._seconds:
+            try:
+                self._seconds[key] = generate.probe_duration(path)
+            except (OSError, ValueError, subprocess.CalledProcessError):
+                self._seconds[key] = None
+        return self._seconds[key]
+
+    def prime(self, paths: list[Path]) -> None:
+        """Probe many files at once, so a voice's few hundred lines list in seconds."""
+        from concurrent.futures import ThreadPoolExecutor
+
+        todo = [path for path in paths if path.exists()]
+        if todo:
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                list(pool.map(self.seconds, todo))
+
+    def stale(self, path: Path, base: str) -> bool:
+        entry = self.index().get(generate.index_key(base))
+        recorded = entry.get("d") if isinstance(entry, dict) else entry
+        if not isinstance(recorded, int | float):
+            return False
+        seconds = self.seconds(path)
+        return seconds is not None and abs(seconds - recorded) > self.TOLERANCE
 
 
 class Studio:
@@ -1167,6 +1257,19 @@ class Studio:
     def config(self) -> Config:
         load_config.cache_clear()
         return load_config(self.config_path)
+
+    def config_cached(self) -> Config:
+        """The config as last read, read again only when the file has changed: for the
+        chunk preview, which asks on every pause in typing, where config() would clear
+        the process-wide cache each time."""
+        stamp = self.config_path.stat().st_mtime_ns
+        cached = getattr(self, "_config_cached", None)
+        if cached is None or cached[0] != stamp:
+            # load_config is cached by path, so it would hand back the old file
+            load_config.cache_clear()
+            cached = (stamp, load_config(self.config_path))
+            self._config_cached = cached
+        return cached[1]
 
     def catalog(self, config: Config | None = None) -> VoiceCatalog:
         return VoiceCatalog(config or self.config())
@@ -1321,6 +1424,13 @@ class Studio:
         except KeyError:
             raise HTTPException(404, f"no line with base name {base!r}") from None
 
+    def line_if_loaded(self, base: str | None) -> tuple[Item, Variant] | None:
+        """The line, without waiting on a corpus that is loading (a Keep reloads it):
+        None while it loads or when there is no such line."""
+        if not base or self._rows is None:
+            return None
+        return self._by_base.get(base)
+
     def voices(self) -> list[str]:
         return sorted(p.stem for p in VOICES_DIR.glob("*.wav"))
 
@@ -1432,8 +1542,21 @@ class Studio:
                             "offers": name in speaking or name in counts,
                         }
                     )
+        from tools.soundpaths import folders
+
+        sets = folders()
         for row in rows:
             row["expansion"] = voice_expansion(row["voice"])
+            # an archetype is one actor's NPC bark set: which, its folder, and the
+            # sibling sets the same actor was cast under, for the voice card
+            cast = archetype_of(row["voice"]) if row["archetype"] else None
+            if cast:
+                race_gender, sound_id = cast
+                row["barks"] = {
+                    "set": sound_id,
+                    "folder": sets.get(sound_id),
+                    "siblings": list(sibling_sets(race_gender, sound_id)),
+                }
         return sorted(rows, key=lambda r: r["voice"])
 
     def state(self) -> dict[str, Any]:
@@ -1471,6 +1594,15 @@ class Studio:
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
             "speakers": config.voices.speakers,
+            # [lines], as written; whether each still holds is the line's to say
+            "pins": {
+                base: {
+                    "seed": pin.seed,
+                    "chunk_chars": pin.chunk_chars,
+                    "same_seed": pin.same_seed,
+                }
+                for base, pin in config.lines.root.items()
+            },
             # offered beside the voices in "Also offer clips from", as folder-<name>
             "clip_folders": config.voices.clip_folders,
             # the order the "Also offer clips from" list groups voices in
@@ -1533,6 +1665,15 @@ class GenerateRequest(BaseModel):
     pitch: list[float] = Field(default=[0.0], min_length=1, max_length=4)
     speed: list[float] = Field(default=[1.0], min_length=1, max_length=4)
     takes: int = Field(default=1, ge=1, le=5)
+    # characters per generate() call (textclean.chunk); the pack uses CHUNK_CHARS
+    chunk_chars: int = Field(default=CHUNK_CHARS, ge=120, le=500)
+    # every chunk of a take drawn from the same seed (Synth.render_take)
+    same_seed: bool = False
+    # draw every take of the run from this seed (shown on each take's row): one take,
+    # since a second would be the first again; a sweep of settings on one draw is fine
+    seed: int | None = Field(default=None, ge=0, lt=2**31)
+    # the picked line, stamped on its takes so one can be pinned to it
+    base: str | None = None
 
 
 class KeepTuning(BaseModel):
@@ -1560,8 +1701,15 @@ class KeepSpeakerVoice(BaseModel):
     voice: str = ""  # empty: back to the voice the capture resolves to
 
 
-class WritePack(BaseModel):
-    base: str
+class PinTake(BaseModel):
+    session: str
+    name: str  # the take's mp3
+
+
+class ChunkPreview(BaseModel):
+    text: str
+    chars: int = Field(default=CHUNK_CHARS, ge=120, le=500)
+    base: str | None = None  # the picked line, whose own text is used as it stands
 
 
 class RevertVoice(BaseModel):
@@ -1889,11 +2037,77 @@ def _under(root: Path, relative: str) -> Path:
     return path
 
 
+def take_about(rendered: Any, seconds: float, request: GenerateRequest) -> dict:
+    """A take's seed and chunk marks for the page, the marks moved into the encoded
+    file's time: tempo and speed stretch the render evenly (pitch keeps its length),
+    so one ratio maps every mark, whatever encode did."""
+    ratio = seconds / rendered.seconds if rendered.seconds else 1.0
+    return {
+        "seed": rendered.seed,
+        "same_seed": request.same_seed,
+        "chunk_chars": request.chunk_chars,
+        "chunks": [
+            {
+                "start": round(mark.start * ratio, 2),
+                "end": round(mark.end * ratio, 2),
+                "text": mark.text,
+                "seed": mark.seed,
+                "attempts": mark.attempts,
+                "capped": mark.capped,
+                "split": mark.split,
+                "source": mark.source,
+            }
+            for mark in rendered.chunks
+        ],
+    }
+
+
+SIDECAR_KEYS = (
+    "seed",
+    "same_seed",
+    "chunk_chars",
+    "chunks",
+    # what Pin this take checks: the line, its voice, the exact text spoken and the
+    # fingerprint the take was made under
+    "base",
+    "line_voice",  # the voice the take was read in, for a take of a line
+    "spoken",
+    "fingerprint",
+    "clip",
+    "source",
+    "reference",
+)
+
+
+def write_sidecar(mp3: Path, about: dict) -> None:
+    """`<take>.json` beside the take, so a past run keeps its seed and chunk marks;
+    written whole and renamed, since /api/sessions may read it while a run goes on."""
+    tmp = mp3.with_name(f"{mp3.stem}.json.{os.getpid()}.tmp")
+    tmp.write_text(json.dumps(about, indent=1), encoding="utf-8")
+    os.replace(tmp, mp3.with_suffix(".json"))
+
+
+def read_sidecar(mp3: Path) -> dict:
+    """What write_sidecar kept for a take, for the page; nothing for a take from
+    before sidecars or one whose file cannot be read."""
+    try:
+        about = json.loads(mp3.with_suffix(".json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    if not isinstance(about, dict):
+        return {}
+    return {key: about[key] for key in SIDECAR_KEYS if key in about}
+
+
 def create_app(
-    studio: Studio, dev: bool = False, addons: Path | None = ADDONS_DIR
+    studio: Studio,
+    dev: bool = False,
+    addons: Path | None = ADDONS_DIR,
+    sound_index: Path = SOUND_INDEX,
 ) -> FastAPI:
     """`dev` re-reads index.html on every request, so page edits show on a browser
-    refresh; Python edits still need a restart (main's --reload does that)."""
+    refresh; Python edits still need a restart (main's --reload does that).
+    `sound_index` is what a working folder copy is checked against (WorkingCopies)."""
     app = FastAPI(title="Forever Voiceover audition")
     page_file = resources.files(__package__) / "index.html"
     page = page_file.read_text(encoding="utf-8")
@@ -1909,15 +2123,45 @@ def create_app(
     packs = sound_packs(addons)
     packs_by_key = {pack.key: pack for pack in packs}
 
-    def payload(row: LineRow) -> dict[str, Any]:
-        found = next(
-            (
-                pack
-                for pack in packs
-                if sound_path(row.subfolder, row.base, sounds_dir=pack.sounds).exists()
-            ),
-            None,
-        )
+    working = WorkingCopies(sound_index)
+
+    def line_pin(row: LineRow, catalog: VoiceCatalog) -> dict[str, Any]:
+        """The line's [lines] pin and whether it still holds, and whether the line
+        plays as parts, where a pin would change nothing heard."""
+        line = studio.line_if_loaded(row.base)
+        if line is None:
+            return {"pin": None, "parts": False}
+        item, variant = line
+        pin = catalog.config.lines.root.get(row.base)
+        return {
+            "pin": {
+                "seed": pin.seed,
+                "chunk_chars": pin.chunk_chars,
+                "same_seed": pin.same_seed,
+                "live": catalog.pin(row.base, item.voice, variant.text) is not None,
+            }
+            if pin
+            else None,
+            "parts": bool(variant.parts),
+        }
+
+    def payload(row: LineRow, catalog: VoiceCatalog | None = None) -> dict[str, Any]:
+        """The first pack that has the line's file, skipping a working folder copy
+        that is an older take than the index records; that copy still plays when no
+        installed pack has the line, marked `stale`."""
+        catalog = catalog or VoiceCatalog(studio.config_cached())
+        found, stale = None, False
+        for pack in packs:
+            path = sound_path(row.subfolder, row.base, sounds_dir=pack.sounds)
+            if not path.exists():
+                continue
+            if pack.key == PACK_NAME and working.stale(path, row.base):
+                stale = True
+                continue
+            found = pack
+            break
+        if found is None and stale:
+            found = packs[0]
         return {
             **row.__dict__,
             "exists": found is not None,
@@ -1925,7 +2169,20 @@ def create_app(
             "pack_url": f"/api/pack/{found.key}/{row.subfolder}/{row.base}.mp3"
             if found
             else None,
+            # the working folder's copy is an older take (WorkingCopies)
+            "stale": stale,
+            **line_pin(row, catalog),
         }
+
+    def payloads(rows: list[LineRow]) -> list[dict[str, Any]]:
+        working.prime(
+            [
+                sound_path(row.subfolder, row.base, sounds_dir=packs[0].sounds)
+                for row in rows
+            ]
+        )
+        catalog = VoiceCatalog(studio.config_cached())
+        return [payload(row, catalog) for row in rows]
 
     @app.get("/api/lines")
     def lines(q: str = "", voice: str = "", limit: int = 60) -> dict[str, Any]:
@@ -1939,7 +2196,7 @@ def create_app(
             found = lines_in_voice(rows, voice, limit=limit or len(rows), moving=moving)
             total = sum(1 for row in rows if _in_voice(row, voice, moving))
             return {
-                "rows": [payload(row) for row in found],
+                "rows": payloads(found),
                 "total": total,
                 "voice": voice,
             }
@@ -1948,7 +2205,7 @@ def create_app(
                 400, "give q= words to search for, or voice= to list a voice's lines"
             )
         return {
-            "rows": [payload(row) for row in search(rows, q)],
+            "rows": payloads(search(rows, q)),
             "total": None,
             "voice": None,
         }
@@ -2006,6 +2263,8 @@ def create_app(
                         "pitch": float(recipe["p"]) if recipe and recipe["p"] else 0.0,
                         "speed": float(recipe["s"]) if recipe and recipe["s"] else 1.0,
                         "take": int(recipe["take"]) if recipe else None,
+                        # seed and chunk marks, from takes made since they were kept
+                        **read_sidecar(path),
                     }
                 )
             if takes:
@@ -2018,9 +2277,32 @@ def create_app(
         if request.reference:
             _safe(request.reference)
         config = studio.config()
-        spoken = clean(request.text, pronunciations=config.pronunciations)
+        if request.seed is not None and request.takes > 1:
+            raise HTTPException(
+                400,
+                "a seed makes every take the same; ask for one take (a sweep of "
+                "settings on that one draw is fine)",
+            )
+        line = studio.line_if_loaded(request.base)
+        if line is not None and request.text == line[1].text:
+            # the picked line's own text is spoken as the generator speaks it: it was
+            # cleaned and respelled already, and a second pass could respell twice or
+            # read a narrator's stage directions differently
+            spoken = line[1].text
+        else:
+            spoken = clean(request.text, pronunciations=config.pronunciations)
         if not spoken:
             raise HTTPException(400, "nothing to say once the text is cleaned")
+        # what Pin this take checks, from the take's sidecar: the line it was made
+        # for, the voice it was read in (the page's, which need not be the line's), the
+        # exact text and the fingerprint it was made under. The fingerprint holds no
+        # clip name, so two untuned voices without picks share one, and only this
+        # tells a take in another voice from one in the line's.
+        line_about = (
+            {"base": request.base, "line_voice": request.voice}
+            if line is not None
+            else {"base": None, "line_voice": None}
+        )
         # Build one tuning before the stream opens. The settings come from three free
         # text boxes and the models have bounds - tempo is 0.5 to 2.0 - so a typo used
         # to raise inside the generator, after 200 had been sent, and the page could
@@ -2126,8 +2408,13 @@ def create_app(
                     try:
                         with studio.model_lock:
                             synth.catalog = catalog
-                            audio = synth.render(
-                                spoken, request.voice, stopped=stop.is_set
+                            rendered = synth.render_take(
+                                spoken,
+                                request.voice,
+                                stopped=stop.is_set,
+                                seed=request.seed,
+                                same_seed=request.same_seed,
+                                max_chars=request.chunk_chars,
                             )
                     except TakeStopped:
                         yield json.dumps({"event": "stopped", "count": n}) + "\n"
@@ -2135,11 +2422,12 @@ def create_app(
                     for tempo, pitch, speed in itertools.product(
                         request.tempo, request.pitch, request.speed
                     ):
-                        resolved = VoiceCatalog(
+                        variant_catalog = VoiceCatalog(
                             variant_config(
                                 exaggeration, cfg_weight, tempo, pitch, speed
                             )
-                        ).resolve(request.voice)
+                        )
+                        resolved = variant_catalog.resolve(request.voice)
                         settings = resolved.settings
                         n += 1
                         # speed joins the name only when it is not 1, so the takes of
@@ -2151,16 +2439,38 @@ def create_app(
                             + f"-take{take}.mp3"
                         )
                         seconds = synth.encode(
-                            audio,
+                            rendered.audio,
                             out_dir / name,
                             settings.tempo,
                             settings.pitch,
                             settings.speed,
                         )
+                        about = {
+                            **take_about(rendered, seconds, request),
+                            **line_about,
+                            "spoken": spoken,
+                            "fingerprint": variant_catalog.fingerprint(
+                                request.voice, spoken
+                            ),
+                        }
+                        write_sidecar(
+                            out_dir / name,
+                            {
+                                **about,
+                                "seconds": round(seconds, 2),
+                                "clip": resolved.clip.name if resolved.clip else None,
+                                "source": resolved.source,
+                                "reference": request.reference,
+                            },
+                        )
                         yield (
                             json.dumps(
                                 {
+                                    **about,
                                     "event": "take",
+                                    # the voice it was made for, which Keep these
+                                    # settings saves to, whatever is selected later
+                                    "voice": request.voice,
                                     "n": n,
                                     "take": take,
                                     "name": name,
@@ -2243,43 +2553,102 @@ def create_app(
         studio.forget_corpus()
         return studio.state()
 
-    @app.post("/api/write-pack")
-    def write_pack(request: WritePack) -> dict[str, Any]:
-        """Regenerates one pack file under the saved configuration and records it
-        in sound_index.json the way generate.py would."""
-        item, variant = studio.line(_safe(request.base))
-        catalog = studio.catalog()
-        synth = studio.synth()
-        if synth.hip:
+    @app.post("/api/chunks")
+    def chunk_preview(request: ChunkPreview) -> dict[str, Any]:
+        """How a text is cut into model calls at a chunk length, as the model hears
+        it (respelled), with the picked line's pinned length when it has a live pin.
+        Reads the config only when the file has changed: the page asks as you type."""
+        config = studio.config_cached()
+        line = studio.line_if_loaded(request.base)
+        if line is not None and request.text == line[1].text:
+            spoken = line[1].text
+        else:
+            spoken = clean(request.text, pronunciations=config.pronunciations)
+        pin = (
+            VoiceCatalog(config).pin(request.base or "", line[0].voice, line[1].text)
+            if line is not None
+            else None
+        )
+        return {
+            "spoken": spoken,
+            "chars": request.chars,
+            "chunks": chunk(spoken, request.chars) if spoken else [],
+            "pinned_chars": pin.chunk_chars if pin else None,
+        }
+
+    @app.post("/api/pin-seed")
+    def pin_seed(request: PinTake) -> dict[str, Any]:
+        """Pins a take's seed to its line. Everything comes from the take's own
+        sidecar, written when it was made, and is checked against the line as it reads
+        today: its text exactly, its voice, and the fingerprint the take was made under,
+        which holds the clip, its picks and the tuning, so only a take of what the pack
+        would generate can be pinned."""
+        try:
+            mp3 = _under(
+                AUDITION_DIR, f"{_safe(request.session)}/{_safe(request.name)}"
+            )
+        except HTTPException:
+            raise HTTPException(
+                404, "that take is no longer on disk (tools/data/audition)"
+            ) from None
+        about = read_sidecar(mp3)
+        base = about.get("base")
+        if not base or "seed" not in about:
             raise HTTPException(
                 400,
-                "This is the ROCm build. Write to pack stays on the CUDA wheel: "
-                "a file made here would fingerprint as current and the nightly run would ship it. "
-                "Keep the settings; they are numbers in forever-vo.toml, and the CUDA generator "
-                "restages the voice from them.",
+                "this take names no line: pick a line from the corpus, then generate",
             )
-        path = sound_path(item.subfolder, variant.base)
-        t0 = time.time()
-        with studio.model_lock:
-            synth.catalog = catalog
-            seconds = synth.speak(variant.text, item.voice, path)
-        index = (
-            json.loads(SOUND_INDEX.read_text(encoding="utf-8"))
-            if SOUND_INDEX.exists()
-            else {}
+        if studio.rows_if_loaded() is None:
+            raise HTTPException(409, "the lines are reloading; try again in a moment")
+        line = studio.line_if_loaded(base)
+        if line is None:
+            raise HTTPException(404, f"no line {base} now")
+        item, variant = line
+        if variant.parts:
+            raise HTTPException(
+                400,
+                "this line plays as parts (the speaker and the narrator's stage "
+                "directions in turn), so the whole-line file a pin decides is not what "
+                "players hear",
+            )
+        if about.get("line_voice") != item.voice:
+            raise HTTPException(
+                400,
+                f"the take was read in {about.get('line_voice')}, the line is read in {item.voice}",
+            )
+        if about.get("spoken") != variant.text:
+            raise HTTPException(
+                400,
+                "the take said other words than the line's own text (edited in the box?)",
+            )
+        heard = studio.catalog().fingerprint(item.voice, variant.text)
+        if about.get("fingerprint") != heard:
+            raise HTTPException(
+                400,
+                "the take was made under other settings than the voice's saved ones: "
+                "keep its settings first, or the pack would not draw this take",
+            )
+        write_line_pin(
+            studio.config_path,
+            base,
+            {
+                "seed": about["seed"],
+                "chunk_chars": about.get("chunk_chars", CHUNK_CHARS),
+                "same_seed": bool(about.get("same_seed")),
+                "heard": heard,
+                "spoken": generate.spoken_hash(variant.text),
+            },
         )
-        fingerprint = catalog.fingerprint(item.voice, variant.text)
-        index[variant.base] = {"d": seconds, "v": item.voice, "t": fingerprint}
-        generate.save_sound_index(index, {variant.base})
-        return {
-            "base": variant.base,
-            "voice": item.voice,
-            "seconds": round(seconds, 1),
-            "elapsed": round(time.time() - t0, 1),
-            "fingerprint": fingerprint,
-            "pack": "working folder",
-            "pack_url": f"/api/pack/{PACK_NAME}/{item.subfolder}/{variant.base}.mp3?t={int(time.time())}",
-        }
+        return studio.state()
+
+    @app.delete("/api/pin-seed/{base}")
+    def unpin_seed(base: str) -> dict[str, Any]:
+        """Removes a line's pin. The file the pin drew stays (generate.text_current);
+        the line is drawn afresh only when something else changes it."""
+        if not LINE_BASE.match(base):
+            raise HTTPException(400, f"not a line's file name: {base}")
+        write_line_pin(studio.config_path, base, None)
+        return studio.state()
 
     @app.post("/api/clips/history/forget")
     def forget_history(request: ForgetPick) -> dict[str, Any]:
@@ -2296,6 +2665,15 @@ def create_app(
                 voice, config.voices.sources.get(voice), None, config
             )
         }
+
+    @app.get("/api/clips/sources")
+    def clip_sources(voice: str, clips: str) -> dict[str, Any]:
+        """The other voices and folders that offer these clips, for a pick pasted from
+        another voice: what "Also offer clips from" needs so the whole pick is listed."""
+        _safe(voice)
+        fdids = [int(c) for c in clips.split(",") if c.strip().isdigit()]
+        own = {c["fdid"] for c in studio.clips(voice) or []}
+        return {"uses": pick_sources(voice, fdids, own, studio.config())}
 
     @app.post("/api/voice/notes")
     def voice_notes(request: VoiceNotes) -> dict[str, Any]:

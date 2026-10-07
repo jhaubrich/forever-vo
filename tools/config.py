@@ -456,12 +456,52 @@ class Release(Strict):
     )
 
 
+class LinePin(Strict):
+    """One line's pack file drawn from a seed heard in the audition page.
+
+    `heard` is the line's fingerprint (VoiceCatalog.fingerprint) and `spoken` a hash
+    of its exact text when the take was pinned: the pin holds only while both still
+    match, since the same seed under another clip, tuning or text is another take.
+    Every field is written, none defaulted, so a later change of the pack's chunk
+    length cannot quietly change what a pinned seed draws."""
+
+    seed: int = Field(ge=0, lt=2**31)
+    chunk_chars: int = Field(ge=120, le=500)
+    same_seed: bool
+    heard: str
+    spoken: str
+
+
+# A pin names a line's own whole-line file: <questID>-<event> or <speaker>-<hash>,
+# behind an m-/f- for a $g line. Parts, other-sex and alternate narrator files have
+# keys of their own and cannot be pinned.
+LINE_BASE = re.compile(
+    r"^(?:[mf]-)?(?:\d+-(?:accept|progress|complete)|(?:\d+|obj\d+|unknown)-[0-9a-f]{8})$"
+)
+
+
+class Lines(RootModel[dict[str, LinePin]]):
+    """[lines]: a pinned seed per line, written by the audition page's Pin this take."""
+
+    @field_validator("root")
+    @classmethod
+    def _whole_line_bases(cls, value: dict[str, LinePin]) -> dict[str, LinePin]:
+        bad = [key for key in value if not LINE_BASE.match(key)]
+        if bad:
+            raise ValueError(
+                f"not a line's file name: {', '.join(bad)} (e.g. 415-accept, "
+                "m-170-accept, 5688-19cbe7de; parts and alternate files cannot be pinned)"
+            )
+        return value
+
+
 class Config(Strict):
     voices: Voices = Voices()
     tts: Tts = Tts()
     pronunciations: Pronunciations = Pronunciations({})
     readers: Readers = Readers()
     release: Release = Release()
+    lines: Lines = Lines({})
 
 
 class ConfigError(ValueError):

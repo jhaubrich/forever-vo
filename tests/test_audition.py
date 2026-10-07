@@ -95,8 +95,9 @@ def test_write_speaker_voice_pins_and_unpins_and_keeps_comments(
     assert "# One speaker always in one voice" in text
     config = write_speaker_voice(toml_copy, "2991", "")
     assert "2991" not in config.voices.speakers
-    # the last entry takes the table with it
-    config = write_speaker_voice(toml_copy, "248200", "")
+    # the last entry takes the table with it, whichever pins the real file holds
+    for speaker in list(config.voices.speakers):
+        config = write_speaker_voice(toml_copy, speaker, "")
     assert config.voices.speakers == {}
     assert "[voices.speakers]" not in toml_copy.read_text(encoding="utf-8")
 
@@ -245,10 +246,17 @@ def test_write_voice_sources_adds_and_removes_and_keeps_the_reference_field(
 ) -> None:
     # a voice the real file has no picks for, so the round trip is about this write and
     # not about whatever has been chosen by ear since
+    from tools.config import RACE_DICT
+
+    picked = load_config(toml_copy).voices.sources
     voice = next(
         v
-        for v in ("tauren-male", "gnome-male", "orc-female")
-        if v not in load_config(toml_copy).voices.sources
+        for v in (
+            f"{race}-{sex}"
+            for race in sorted(set(RACE_DICT.values()) - {"narrator"})
+            for sex in ("male", "female")
+        )
+        if v not in picked
     )
     load_config.cache_clear()
     before = toml_copy.read_text(encoding="utf-8")
@@ -335,6 +343,46 @@ def test_sound_packs_without_a_client_is_just_the_working_folder(
     assert [(p.key, p.label) for p in packs] == [("ForeverVO_Data", "working folder")]
 
 
+def test_a_working_copy_of_another_length_than_the_index_is_stale(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+
+    from tools import generate
+    from tools.audition import WorkingCopies
+
+    sounds = tmp_path / "Sounds" / "Gossip"
+    sounds.mkdir(parents=True)
+    lengths = {"9564-8d6952f8": 19.95, "1-aaaaaaaa": 4.0, "2-bbbbbbbb": 3.0}
+    for base in lengths:
+        (sounds / f"{base}.mp3").write_bytes(b"mp3")
+    probed: list[str] = []
+
+    def probe(path: Path) -> float:
+        probed.append(path.stem)
+        return lengths[path.stem]
+
+    monkeypatch.setattr(generate, "probe_duration", probe)
+    index = tmp_path / "sound_index.json"
+    index.write_text(
+        json.dumps({"9564-8d6952f8": {"d": 17.02}, "1-aaaaaaaa": {"d": 4.01}}),
+        encoding="utf-8",
+    )
+    copies = WorkingCopies(index)
+
+    # Frezza's take from before goblin-male-zany was tuned
+    assert copies.stale(sounds / "9564-8d6952f8.mp3", "9564-8d6952f8")
+    # within the tolerance, and a line the index has no length for, are trusted
+    assert not copies.stale(sounds / "1-aaaaaaaa.mp3", "1-aaaaaaaa")
+    assert not copies.stale(sounds / "2-bbbbbbbb.mp3", "2-bbbbbbbb")
+    # probed once per file version
+    copies.stale(sounds / "9564-8d6952f8.mp3", "9564-8d6952f8")
+    assert probed.count("9564-8d6952f8") == 1
+    # an index left in conflict trusts every copy
+    index.write_text("<<<<<<< Updated upstream\n", encoding="utf-8")
+    assert not copies.stale(sounds / "9564-8d6952f8.mp3", "9564-8d6952f8")
+
+
 def test_stop_ends_a_run_after_the_take_in_progress(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -365,13 +413,15 @@ def test_stop_ends_a_run_after_the_take_in_progress(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str, stopped=None) -> str:
+        def render_take(self, text: str, voice: str, **kwargs: object) -> object:
+            from tools.generate import RenderedTake
+
             # the page presses Stop while the first take is being made
             (session,) = studio.stops
             assert client.post(f"/api/generate/{session}/stop").json() == {
                 "stopping": True
             }
-            return "audio"
+            return RenderedTake("audio", 1.0, 7, [])
 
         def encode(
             self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
@@ -419,9 +469,11 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str, stopped=None) -> str:
+        def render_take(self, text: str, voice: str, **kwargs: object) -> object:
+            from tools.generate import RenderedTake
+
             renders.append(text)
-            return f"audio{len(renders)}"
+            return RenderedTake(f"audio{len(renders)}", 1.0, 7, [])
 
         def encode(
             self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
@@ -445,6 +497,8 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
         },
     )
     takes = [json.loads(line) for line in response.text.splitlines()]
+    # each take names the voice it was made for: Keep these settings saves to it
+    assert {t["voice"] for t in takes if t["event"] == "take"} == {"human-male"}
     assert len(renders) == 2
     assert encodes == [
         ("audio1", 1.0, 0.0),
@@ -770,19 +824,22 @@ def test_a_take_stops_between_the_sentences_of_a_long_line() -> None:
         def generate(self, text: str, **kwargs: object) -> object:
             Model.calls += 1
             pressed.append(True)  # Stop is pressed while the first sentence renders
-            return SimpleNamespace(shape=(1, 48_000), cpu=lambda: self.wav)
+            return SimpleNamespace(shape=(1, 240_000), cpu=lambda: self.wav)
 
-        wav = SimpleNamespace(shape=(1, 48_000))
+        wav = SimpleNamespace(shape=(1, 240_000))  # 10 s: speech, not a blip
 
     synth: Any = object.__new__(Synth)  # a Synth with a stand-in model, no GPU
     synth.sr = 24_000
-    synth.torch = SimpleNamespace(zeros=lambda *shape: None)
+    synth.torch = SimpleNamespace(
+        zeros=lambda *shape: None, manual_seed=lambda seed: None
+    )
     synth.model = Model()
     settings = SimpleNamespace(exaggeration=0.5, cfg_weight=0.5)
     synth.catalog = SimpleNamespace(
         resolve=lambda voice: SimpleNamespace(clip=None, settings=settings)
     )
-    text = "The first sentence is long enough. " * 3 + "And so is the second one here."
+    # two chunks at the pack's 300 characters
+    text = "The first sentence is long enough to stand on its own. " * 6
     with pytest.raises(TakeStopped):
         synth.render(text, "human-male", stopped=lambda: bool(pressed))
     assert Model.calls == 1  # the second sentence was never started
@@ -804,6 +861,8 @@ def test_a_voice_lists_every_line_when_asked_for_all(
 
     rows = [row(i) for i in range(1, 76)]
     studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio._rows = None  # no corpus behind the rows: no pins to look up
     monkeypatch.setattr(studio, "rows", lambda: rows)
     monkeypatch.setattr(studio, "moving_to", lambda voice: frozenset())
     client = TestClient(audition.create_app(studio, addons=None))
@@ -1076,3 +1135,33 @@ def test_tasting_notes_are_kept_per_voice_and_removed_when_emptied(
     assert NOTES_COMMENT[0] in toml_copy.read_text(encoding="utf-8")  # the table stays
     with pytest.raises(HTTPException):  # refused: not a voice name
         write_notes(toml_copy, "Not A Voice", "x")
+
+
+def test_clip_sources_names_what_a_pasted_pick_needs(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from tools import audition
+
+    seen: list[tuple] = []
+
+    def sources(
+        voice: str, clips: list[int], own: set[int], config: object
+    ) -> list[str]:
+        seen.append((voice, clips, own))
+        return ["folder-pc_-_nightborne_elf_male"]
+
+    monkeypatch.setattr(audition, "pick_sources", sources)
+    studio = object.__new__(audition.Studio)
+    monkeypatch.setattr(
+        studio, "clips", lambda voice, refresh=False: [{"fdid": 556587}]
+    )
+    monkeypatch.setattr(studio, "config", lambda: None)
+    client = TestClient(audition.create_app(studio, addons=None))
+    d = client.get(
+        "/api/clips/sources?voice=nightelf-male-warrior&clips=1730262,556587,x"
+    ).json()
+    assert d == {"uses": ["folder-pc_-_nightborne_elf_male"]}
+    # the voice's own candidates are passed as own; a stray value is ignored
+    assert seen == [("nightelf-male-warrior", [1730262, 556587], {556587})]

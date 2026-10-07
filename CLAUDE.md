@@ -177,8 +177,9 @@ lock --upgrade-package <name>` or `nix flake update` and commit the lock.
 
 **Configuration is `forever-vo.toml`**, validated by the pydantic models in
 `tools/config.py` (an unknown key is an error). If someone edits it, it is TOML;
-if nobody does (paths, race IDs), it stays a Python constant. There is
-deliberately no per-line table: the file would grow without bound. Functions
+if nobody does (paths, race IDs), it stays a Python constant. The one
+per-line table is `[lines]`, a pinned seed per line written by the audition
+page (since 2026-10-06, on the owner's call though it grows with every pin). Functions
 take the section they need by type hint; `textclean.clean()` and
 `wowdata.voice_for_npc()` default to the repository's file.
 
@@ -214,6 +215,31 @@ Generation details:
 
 - Text cleaning: `$B` newlines, `$N`/`$C`/`$R` substitutions, `$G` branches as
   m-/f- file variants, `[pronunciations]` respellings (whole words, any case).
+- **A try that runs into the token cap is thrown away** (since 2026-10-06).
+  Chatterbox stops a `generate()` call at 1000 tokens, 40.0 s, and the English
+  model has no alignment analyzer (`t3.py` builds one for the multilingual model
+  only), so a call that misses its stop token babbles to the cap. `render_take`
+  retries such a try and halves the chunk (`textclean.halve`) after three; it
+  used to keep the longest try, so the runaway won. `ran_into_cap` in `wanted()`
+  regenerates a file that fits one chunk and is 40.0 s before tempo and speed.
+- Every `generate()` call is seeded (`derive_seed(take, chunk, try)` from a random
+  take seed); since 2026-10-07 each file's index entry keeps it (`s`, chunk length
+  `c`, `same: 1`; `index_record`). Files from before then were drawn unseeded. A
+  seed replays exactly only on the machine and libraries that drew it. The chunk
+  length (`CHUNK_CHARS`, 300; the slowest voices read about 10 characters a
+  second, so much more risks the cap) is not in the fingerprint.
+- **Seed pins** (`[lines]`, `LinePin`): one line's own whole-line file drawn from a
+  seed heard in audition. `heard` (the line's fingerprint) and `spoken`
+  (`spoken_hash` of its exact text) must still match (`VoiceCatalog.pin`, "against
+  this checkout": clips are per machine), and then `Target.fingerprint` appends
+  `seed=,chunk=,pin=PIN_VERSION` for that file only, never the other-sex file,
+  alternate narrators, parts or `recipe()`. `wanted()` compares a pinned file whole
+  and an unpinned one without the pin terms (`text_current`, `strip_pin`): pinning
+  restages the file, unpinning keeps it, a pinned take is never redone for the cap.
+  Every run reports pins that no longer hold, are gone, play as parts, or are
+  progress texts outside a `--progress` run (`pin_report`). Bump `PIN_VERSION` when
+  what a seed draws changes. The pack is built on CUDA, where a ROCm seed draws a
+  different but fixed take; the owner accepted that.
 - A quest taken in by more than one NPC (Dokimi and Marcy Baker share the
   crates of "A Sealed Crate", #948): ingest keeps every trusted speaker
   (0.1.3 on, creatures only) in the line's `speakers` (key -> mapID) and the
@@ -252,8 +278,15 @@ port 8765) is the ear-test page: pick a voice and a line, source clips, knobs
 and takes. It writes picks (`[voices.sources]`), tuning (`[tts.voices]`),
 pronunciations, speaker pins, approvals (`[voices.approved]`, ★ while the
 recipe heard is current) and tasting notes (`[voices.notes]`) into the TOML
-through tomlkit, validated before the file is replaced. "Write to pack"
-regenerates one file under the *saved* configuration only. Takes go to
+through tomlkit, validated before the file is replaced. "Pin this take" (it
+replaced "Write to pack" on 2026-10-06) writes a take's seed to `[lines]`; the
+server proves the take from its sidecar (the picked line, in its voice, its exact
+text, the fingerprint it was made under) and refuses a line that plays as parts.
+Each take shows numbered chunk marks (where each model call starts; a click plays
+from the gap before it), its seed ("use this seed"), and Chunk length, Seed and
+"same for every chunk" are run options; a preview under the Text box (`/api/chunks`,
+the generator's own `chunk()`) shows where the chunks fall, and a picked line's
+live pin fills the Seed box. Takes and their `<take>.json` sidecars go to
 `tools/data/audition/` (gitignored).
 
 ## Automation on the owner's machine (NixOS, systemd user units)
@@ -468,5 +501,5 @@ voice after rebuilding its clip by hand: `generate.py --force --voice <voice>`.
 ## Things the owner wants next
 
 - Per-line configurability for end users without the repo (audition covers the
-  owner's side; not yet parts or narrator alternates).
+  owner's side, seed pins included; not yet parts or narrator alternates).
 - A Discord bot as an alternative inbox for `FVO1:` strings (same decoder).
