@@ -174,7 +174,15 @@ clips = [540633, 540639, 540622, 540643, 540617]
 clips = [540710]
 
 [voices.sources.nightelf-female]
-clips = [556536, 541059, 541035, 541067]
+clips = [
+    556536,
+    541059,
+    541035,
+    541067,
+    541060,
+    541044,
+    541056,
+]
 
 [voices.sources.nightelf-male]
 clips = [2430109, 2430130, 1241515]
@@ -592,8 +600,6 @@ clips = [
 
 [voices.sources.troll-female-laidback]
 clips = [
-    543278,
-    562807,
     562806,
     562809,
     562816,
@@ -603,8 +609,10 @@ clips = [
     562817,
     562814,
     562808,
+    562807,
+    562813,
 ]
-gaps = [0.0, 0.1, 0.15, 0.15]
+gaps = [0.15, 0.15, 0.05]
 
 [voices.sources.tauren-male-shaman]
 clips = [
@@ -680,6 +688,39 @@ clips = [
     562896,
     562884,
 ]
+
+[voices.sources.nightelf-female-standard]
+clips = [
+    556540,
+    556544,
+    556546,
+    556553,
+    556543,
+    556554,
+    556555,
+    556552,
+    556551,
+    556542,
+    556550,
+    556547,
+    556549,
+]
+gaps = [0.1, 0.2, 0.2]
+
+[voices.sources.tauren-female-standard]
+clips = [
+    561524,
+    561521,
+    561531,
+    561528,
+    561529,
+    561525,
+    561530,
+    561533,
+    561526,
+    561520,
+]
+gaps = [0.2, 0.1]
 
 [voices.notes]
 # Tasting notes, one per voice, written in the audition page's voice card: what
@@ -960,8 +1001,9 @@ exaggeration = 0.7
 cfg_weight = 0.3
 
 [tts.voices.troll-female-laidback]
-exaggeration = 0.6
+exaggeration = 0.45
 cfg_weight = 0.4
+speed = 0.99
 
 [tts.voices.tauren-male-shaman]
 exaggeration = 0.3
@@ -979,6 +1021,11 @@ cfg_weight = 0.3
 [tts.voices.troll-male-shaman]
 exaggeration = 0.6
 cfg_weight = 0.5
+
+[tts.voices.nightelf-female-standard]
+exaggeration = 0.55
+cfg_weight = 0.3
+speed = 0.99
 [pronunciations]
 "Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
@@ -1014,6 +1061,11 @@ Jaina = "jay'nuh"
 draught = "droutt"
 draughts = "droutts"
 Malygos = "Mala'gos"
+Maraudon = "Maraadon"
+Zaetar = "Zaytar"
+Desolace = "DeSOlace"
+phial = "file"
+Runetotem = "Rune totem"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
@@ -1141,7 +1193,7 @@ dwarf-male = "cfg_weight=0.3,clip=dwarf-male,clips=264d8895,exaggeration=0.7"
 orc-male = "cfg_weight=0.2,clip=orc-male,clips=e8326d21,exaggeration=0.6,tempo=1.1"
 orc-male-guard = "cfg_weight=0.3,clip=orc-male-guard,clips=af44c428,exaggeration=0.6,pitch=-0.5,tempo=1.1"
 orc-male-shady = "cfg_weight=0.2,clip=orc-male-shady,clips=4c1a666d,exaggeration=0.6,pitch=-1.0"
-nightelf-female = "cfg_weight=0.3,clip=nightelf-female,clips=ac26026c,exaggeration=0.6"
+nightelf-female = "cfg_weight=0.3,clip=nightelf-female,clips=0ed3481b,exaggeration=0.6"
 nightelf-male = "cfg_weight=0.3,clip=nightelf-male,clips=65a0ac92,exaggeration=0.3,pitch=-1.0"
 spirithealer-female = "cfg_weight=0.2,clip=spirithealer-female,clips=a1ba39fd,exaggeration=0.5,pitch=-4.0,tempo=0.7"
 tauren-male = "cfg_weight=0.3,clip=tauren-male,clips=3c6712d9,exaggeration=0.4"
@@ -1150,10 +1202,14 @@ npc-4527 = "cfg_weight=0.4,clip=npc-4527,clips=2ef25958,exaggeration=0.35,speed=
 nightelf-male-warrior = "cfg_weight=0.4,clip=nightelf-male-warrior,clips=f4429bcb,exaggeration=0.25,speed=0.99"
 nightelf-male-official = "cfg_weight=0.3,clip=nightelf-male-official,exaggeration=0.3,pitch=-1.0"
 troll-female-standard = "cfg_weight=0.3,clip=troll-female-standard,clips=49b8db2f,exaggeration=0.7"
+troll-female-laidback = "cfg_weight=0.4,clip=troll-female-laidback,clips=8acba507,speed=0.99"
 dwarf-male-grim = "cfg_weight=0.3,clip=dwarf-male-grim,clips=b50759e2,exaggeration=0.7"
 human-male-warrior = "cfg_weight=0.4,clip=human-male-warrior,clips=5348e0e1,exaggeration=0.55,speed=0.99"
 tauren-male-elder = "cfg_weight=0.3,clip=tauren-male-elder,clips=44972650,exaggeration=0.4"
 troll-male-shaman = "clip=troll-male-shaman,clips=126a04ef,exaggeration=0.6"
+nightelf-female-standard = "cfg_weight=0.3,clip=nightelf-female-standard,clips=d25cef22,exaggeration=0.55,speed=0.99"
+tauren-female-standard = "clip=tauren-female-standard,clips=6765acd5"
+troll-female = "clip=troll-female,clips=0675346a,exaggeration=0.6"
 
 [lines]
 # A seed pinned per line, written by the audition page's "Pin this take": the line's
