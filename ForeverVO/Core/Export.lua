@@ -30,7 +30,8 @@ character's sex (one letter) goes along too: the client resolves a "$g lad:lass;
 branch before the addon sees a quest text, and the pipeline can only put the
 branch back by comparing a male and a female reading, so a voiced line whose
 pack still wants this sex's reading (Capture.Contributes) is packed too, as is
-("v") a voiced quest line whose live text is not the one its pack voiced. Each
+("v") a voiced quest line whose live text is not the one its pack voiced, and
+a voiced quest line from a speaker its pack does not list (`newSpeaker`). Each
 line carries when it was heard ("d", a timestamp) and the file carries the addon
 version that heard it, so the pipeline can rank readings of the same line: a
 newer addon's capture wins over an older one's, and among equals the more recent.

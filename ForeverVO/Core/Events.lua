@@ -57,9 +57,11 @@ local function CurrentSpeaker(forQuest)
     }
 end
 
---- For quests handed out by items or shared by players, and turn-ins at a game
---- object the client leaves unattributed, fall back to the speaker recorded in
---- the packs so the portrait and name are still right.
+--- For quests handed out by items or shared by players, turn-ins at a game
+--- object the client leaves unattributed, and a unit whose identity is secret,
+--- fall back to the speaker recorded in the packs (for a quest handed in to
+--- more than one NPC, the one met on this map) so the portrait and name are
+--- still right.
 local function ResolveQuestSpeaker(speaker, questID, event)
     if speaker.speakerKey or speaker.startItemID then
         return speaker
@@ -134,7 +136,7 @@ local function QueueQuest(event, text, startItemID)
     end
     local speaker = startItemID and ItemSpeaker(startItemID) or CurrentSpeaker(true)
     speaker = ResolveQuestSpeaker(speaker, questID, event)
-    local path, duration, pack, parts, voice = Packs:FindQuest(questID, event, SpeakerSex(speaker))
+    local path, duration, pack, parts, voice = Packs:FindQuest(questID, event, SpeakerSex(speaker), speaker.speakerKey)
 
     ns.Capture:Record({
         kind = "quest", event = event, questID = questID, title = title, text = text,

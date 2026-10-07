@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- A quest that more than one NPC takes in speaks in the voice of the one in
+  front of you. The crates of "A Sealed Crate" go to Dokimi in the Barrens
+  and to Marcy Baker in Redridge, and both were read in whichever voice the
+  last pack happened to pick; Owen Thadd and Garion Wendell share their
+  turn-ins the same way. Turning such a quest in to an NPC the voice packs
+  don't know for it yet saves the line for your next export.
 - Only an English game client captures and sends lines. The voice packs are
   English, and a line read on a client in another language was sent as a
   change to the English one and replaced it.

@@ -847,7 +847,8 @@ def merge_entry(
     readers = readers or load_config().readers
     old = store.get(key)
     if old is None:
-        store[key] = entry
+        quest = entry.get("questID") is not None
+        store[key] = add_speaker(entry, entry) if quest else entry
         return True
     newer = capture_rank(entry) >= capture_rank(old)
     base, other = (dict(entry), old) if newer else (dict(old), entry)
@@ -875,9 +876,97 @@ def merge_entry(
     if settled:
         base["settled"] = "".join(sorted(settled))
     base = merge_gender(base, other)
+    if base.get("questID") is not None:
+        base = merge_speakers(base, old, entry)
     changed = base != old
     store[key] = base
     return changed
+
+
+# One quest can be handed in to more than one NPC: the crates of "A Sealed
+# Crate" go to Dokimi, an orc in the Barrens, and to Marcy Baker, a human in
+# Redridge, who say the same words (#948). The line kept one speaker, the
+# latest capture's, so its voice flipped between them from night to night. A
+# quest line now keeps every speaker a trusted capture met it from
+# (`speakers`, speaker key -> the map the reader stood on), and its `npc`
+# stays the one it had; generate.py voices the line again for a speaker
+# whose voice differs, and the addon plays the one in front of the player.
+# From 0.1.3 a quest's speaker is the unit whose dialog is up (a lingering
+# NPC was credited before it, see reattribute_entry), so older captures and
+# game objects add no speaker.
+SPEAKER_TRUSTED_SINCE = (0, 1, 3)
+
+
+def speaker_of(entry: dict) -> str | None:
+    """The creature a trusted capture heard the line from, or None."""
+    npc = str(entry.get("npc") or "")
+    if (
+        not npc
+        or npc.startswith("-")
+        or entry.get("isObject")
+        or addon_version(entry) < SPEAKER_TRUSTED_SINCE
+    ):
+        return None
+    return npc
+
+
+def with_speaker(entry: dict, npc: str | None, map_id: int | None) -> dict:
+    """`entry` with `npc` among its speakers; a speaker keeps the first map
+    recorded for it."""
+    if npc is None:
+        return entry
+    speakers = dict(entry.get("speakers") or {})
+    if speakers.get(npc) is None:
+        speakers[npc] = map_id
+    if speakers == entry.get("speakers"):
+        return entry
+    return {**entry, "speakers": speakers}
+
+
+def add_speaker(entry: dict, reading: dict) -> dict:
+    """`entry` with the speaker of `reading` among its speakers, where the
+    reading is trusted."""
+    return with_speaker(entry, speaker_of(reading), reading.get("mapID"))
+
+
+SPEAKER_FIELDS = ("npc", "name", "isObject", "zone", "subzone", "mapID")
+
+
+def merge_speakers(base: dict, old: dict, entry: dict) -> dict:
+    """The merged line's speakers: both readings' and every one either had. The
+    line keeps the speaker it had (with its name and where it was heard) while
+    that one is trusted, whichever reading wins the text, so the voice of its
+    own file does not move with whoever played it last. A winning reading
+    that names no creature (one whose identity the client kept secret reads
+    "Unknown") takes the other's."""
+    for reading in (old, entry):
+        base = add_speaker(base, reading)
+        for npc, map_id in (reading.get("speakers") or {}).items():
+            base = with_speaker(base, npc, map_id)
+    if speaker_of(old) is not None:
+        keep = old
+    elif speaker_of(base) is None and speaker_of(entry) is not None:
+        keep = entry
+    else:
+        return base
+    if str(base.get("npc") or "") != str(keep["npc"]):
+        base = {k: v for k, v in base.items() if k not in SPEAKER_FIELDS}
+        base.update({k: keep[k] for k in SPEAKER_FIELDS if k in keep})
+    return base
+
+
+def gather_speakers(capture: dict, db: dict) -> None:
+    """Adds the speaker of every quest line in an export to capture.json's line.
+
+    merge_entry keeps the speakers of a file as it is ingested; the exports
+    ingested before `speakers` existed (#948) are never merged again, and they
+    are how Marcy Baker is known to take Dokimi's crates. Cheap and idempotent,
+    like gather_sexes."""
+    addon = {"addon": db["addon"]} if db.get("addon") else {}
+    for key, reading in (db.get("quests") or {}).items():
+        line = capture["quests"].get(str(key))
+        if line is not None:
+            capture["quests"][str(key)] = add_speaker(line, {**reading, **addon})
 
 
 # From this addon version the capture reads each speaker's model on a frame no
@@ -1378,8 +1467,11 @@ def main(argv: list[str] | None = None) -> int:
             continue
         if unchanged:
             print(f"unchanged  {path}")
-            if path.suffix == ".json":
-                gather_sexes(capture, json.loads(path.read_text(encoding="utf-8")))
+            db = load_db(path)
+            if db is not None:
+                if path.suffix == ".json":
+                    gather_sexes(capture, db)
+                gather_speakers(capture, db)
             continue
         quests, gossip, books, npcs = ingest_file(
             capture, path, sources, stats, readers

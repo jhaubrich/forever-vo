@@ -114,7 +114,8 @@ def file_stamp(index: dict, name: str) -> str:
     """What a pack file says, from sound_index: text fingerprint, voice, duration
     (the duration gives away a re-rolled take, #333). `name` is a base name, or a
     path under Sounds/ for an alternate (Quests/Narrator/<voice>/<base>,
-    Gossip/Sex/<m|f>/<base>), whose index key drops the Quests/Gossip folder."""
+    Gossip/Sex/<m|f>/<base>, Quests/Speaker/<speaker>/<base>), whose index key
+    drops the Quests/Gossip folder."""
     if "/" in name:
         name = name.split("/", 1)[1]
     entry = index.get(name)
@@ -128,6 +129,7 @@ def pack_files(stats: dict) -> list[str]:
         sorted(stats["files"])
         + sorted(stats.get("narratorFiles", ()))
         + sorted(stats.get("sexFiles", ()))
+        + sorted(stats.get("speakerFiles", ()))
     )
 
 
@@ -413,8 +415,9 @@ def stage_tables(pack: str, version: str, config: Config) -> tuple[Path, dict]:
 
 def sound_path(name: str) -> Path:
     """A pack file's path under Sounds/. Alternate narrator voices carry their folder
-    in the name (Quests/Narrator/<voice>/<base>), and so does a speaker's other sex
-    (Gossip/Sex/<m|f>/<base>, #304)."""
+    in the name (Quests/Narrator/<voice>/<base>), and so do a speaker's other sex
+    (Gossip/Sex/<m|f>/<base>, #304) and a quest line's other speakers
+    (Quests/Speaker/<speaker>/<base>, #948)."""
     return (
         Path(f"{name}.mp3") if "/" in name else Path(sound_folder(name), f"{name}.mp3")
     )
@@ -467,11 +470,13 @@ def package(
     size_mb = zip_path.stat().st_size / 1e6
     narrator_files = len(stats.get("narratorFiles", ()))
     sex_files = len(stats.get("sexFiles", ()))
+    speaker_files = len(stats.get("speakerFiles", ()))
     print(
         f"{zip_path.name}: {stats['quests']} quests, {stats['gossip']} gossip lines, "
         f"{stats.get('books', 0)} book pages, "
-        f"{len(stats['files']) + narrator_files + sex_files} files ({narrator_files} alternate "
-        f"narrator, {sex_files} in a speaker's other sex), {size_mb:.0f} MB"
+        f"{len(stats['files']) + narrator_files + sex_files + speaker_files} files "
+        f"({narrator_files} alternate narrator, {sex_files} in a speaker's other sex, "
+        f"{speaker_files} for a quest's other speakers), {size_mb:.0f} MB"
     )
     return zip_path
 
