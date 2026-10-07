@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "4608|8fca8484": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Father Lazarus",
+   "npc": "4608",
+   "questID": null,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "If you desire, in addition to training, I have it within my power to erase the knowledge of your talents from your mind.  Be warned that every time you undergo this procedure the more difficult it is to perform, and therefore the more expensive it becomes.",
+   "time": 1791402839,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "4608": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Father Lazarus",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1243",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
