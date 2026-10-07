@@ -722,6 +722,37 @@ clips = [
 ]
 gaps = [0.2, 0.1]
 
+[voices.sources.orc-female]
+clips = [
+    541356,
+    541327,
+    541351,
+    541371,
+    541357,
+    541349,
+    541341,
+    541344,
+    541350,
+    541346,
+    541368,
+    541363,
+]
+gaps = [0.1]
+
+[voices.sources.troll-female-old]
+clips = [
+    562825,
+    562828,
+    562821,
+    562819,
+    562827,
+    562824,
+    562832,
+    562829,
+    562831,
+]
+gaps = [0.0, 0.1, 0.1]
+
 [voices.notes]
 # Tasting notes, one per voice, written in the audition page's voice card: what
 # a voice sounds like by ear, which lines break it, what was tried and what to
@@ -1026,6 +1057,11 @@ cfg_weight = 0.5
 exaggeration = 0.55
 cfg_weight = 0.3
 speed = 0.99
+
+[tts.voices.troll-female-old]
+exaggeration = 0.45
+cfg_weight = 0.4
+speed = 0.98
 [pronunciations]
 "Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
@@ -1210,6 +1246,8 @@ troll-male-shaman = "clip=troll-male-shaman,clips=126a04ef,exaggeration=0.6"
 nightelf-female-standard = "cfg_weight=0.3,clip=nightelf-female-standard,clips=d25cef22,exaggeration=0.55,speed=0.99"
 tauren-female-standard = "clip=tauren-female-standard,clips=6765acd5"
 troll-female = "clip=troll-female,clips=0675346a,exaggeration=0.6"
+orc-female = "clip=orc-female,clips=13caec09,exaggeration=0.7"
+troll-female-old = "cfg_weight=0.4,clip=troll-female-old,clips=c63fd24c,speed=0.98"
 
 [lines]
 # A seed pinned per line, written by the audition page's "Pin this take": the line's
