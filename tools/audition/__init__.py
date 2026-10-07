@@ -1264,6 +1264,8 @@ class Studio:
         stamp = self.config_path.stat().st_mtime_ns
         cached = getattr(self, "_config_cached", None)
         if cached is None or cached[0] != stamp:
+            # load_config is cached by path, so it would hand back the old file
+            load_config.cache_clear()
             cached = (stamp, load_config(self.config_path))
             self._config_cached = cached
         return cached[1]
@@ -2067,7 +2069,7 @@ SIDECAR_KEYS = (
     # what Pin this take checks: the line, its voice, the exact text spoken and the
     # fingerprint the take was made under
     "base",
-    "line_voice",
+    "line_voice",  # the voice the take was read in, for a take of a line
     "spoken",
     "fingerprint",
     "clip",
@@ -2291,9 +2293,12 @@ def create_app(
         if not spoken:
             raise HTTPException(400, "nothing to say once the text is cleaned")
         # what Pin this take checks, from the take's sidecar: the line it was made
-        # for and that line's voice, the exact text and the fingerprint it was made under
+        # for, the voice it was read in (the page's, which need not be the line's), the
+        # exact text and the fingerprint it was made under. The fingerprint holds no
+        # clip name, so two untuned voices without picks share one, and only this
+        # tells a take in another voice from one in the line's.
         line_about = (
-            {"base": request.base, "line_voice": line[0].voice}
+            {"base": request.base, "line_voice": request.voice}
             if line is not None
             else {"base": None, "line_voice": None}
         )
@@ -2608,7 +2613,7 @@ def create_app(
         if about.get("line_voice") != item.voice:
             raise HTTPException(
                 400,
-                f"the take was made for {about.get('line_voice')}, the line is read in {item.voice}",
+                f"the take was read in {about.get('line_voice')}, the line is read in {item.voice}",
             )
         if about.get("spoken") != variant.text:
             raise HTTPException(

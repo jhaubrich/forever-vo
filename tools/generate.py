@@ -650,10 +650,15 @@ def index_record(
     return record
 
 
-def pin_report(items: list[Item], catalog: VoiceCatalog) -> list[str]:
+def pin_report(
+    items: list[Item], catalog: VoiceCatalog, include_progress: bool = True
+) -> list[str]:
     """What the run says about [lines]: a pin whose line is gone, one that no longer
     holds (the text or the voice's settings changed since it was heard), and one on a
-    line the addon plays as parts, where the whole-line file it pins is not heard."""
+    line the addon plays as parts, where the whole-line file it pins is not heard. A
+    pinned progress text in a run without --progress is not gone, only not in the
+    run, and is said so: the nightly's bulk pass voices progress texts for captured
+    lines only."""
     pins = catalog.config.lines.root
     if not pins:
         return []
@@ -661,7 +666,13 @@ def pin_report(items: list[Item], catalog: VoiceCatalog) -> list[str]:
     notes = []
     for key in sorted(pins):
         if key not in lines:
-            notes.append(f"pinned seed for {key}: no such line now; unpin it")
+            if not include_progress and key.endswith("-progress"):
+                notes.append(
+                    f"pinned seed for {key}: a progress text, which a run voices only "
+                    "with --progress"
+                )
+            else:
+                notes.append(f"pinned seed for {key}: no such line now; unpin it")
             continue
         item, variant = lines[key]
         if catalog.pin(key, item.voice, variant.text) is None:
@@ -1724,7 +1735,7 @@ def main(argv: list[str] | None = None) -> int:
         else {}
     )
     items = load_items(capture, include_progress=args.progress, catalog=catalog)
-    for note in pin_report(items, catalog):
+    for note in pin_report(items, catalog, include_progress=args.progress):
         print(note)
 
     todo: list[Target] = []
@@ -1945,7 +1956,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.dry_run:
         for target in todo[:50]:
-            print(f"  {target.label}  [{target.voice}]  {target.text[:90]}…")
+            pin = target.live_pin
+            print(
+                f"  {target.label}  [{target.voice}]"
+                + (f"  (pinned seed {pin.seed})" if pin else "")
+                + f"  {target.text[:90]}…"
+            )
         if len(todo) > 50:
             print(f"  … and {len(todo) - 50} more")
         return 0

@@ -485,7 +485,7 @@ def test_a_take_of_the_line_pins_and_unpins(pin_studio: Any) -> None:
     assert preview["pinned_chars"] == 300 and preview["chunks"] == [LINE]
     assert client.delete("/api/pin-seed/1-accept").status_code == 200
     load_config.cache_clear()
-    assert load_config(pin_studio.toml).lines.root == {}
+    assert "1-accept" not in load_config(pin_studio.toml).lines.root
 
 
 def test_a_pin_is_refused_for_a_take_the_pack_would_not_draw(pin_studio: Any) -> None:
@@ -505,6 +505,9 @@ def test_a_pin_is_refused_for_a_take_the_pack_would_not_draw(pin_studio: Any) ->
     # a take of free text names no line
     response = pin(take_of(client, base=None))
     assert response.status_code == 400 and "names no line" in response.json()["detail"]
+    # a take of the line read in another voice than the line's
+    response = pin(take_of(client, voice="human-female"))
+    assert response.status_code == 400 and "read in" in response.json()["detail"]
     # a line that plays as parts
     pin_studio.variant.parts = [("npc", LINE)]
     response = pin(take_of(client))
@@ -552,3 +555,42 @@ def test_a_generated_files_entry_keeps_its_seed() -> None:
     assert index_record(4.0, own, take, 420, same_seed=True)["same"] == 1
     # a probe or a run without a take records what it always did
     assert set(index_record(4.0, own, None, 300)) == {"d", "v", "t"}
+
+
+def test_a_pinned_progress_text_outside_a_progress_run_is_not_called_gone() -> None:
+    from tools.config import Lines, load_config
+    from tools.generate import pin_report
+
+    config = load_config()
+    pin = {
+        "seed": 1,
+        "chunk_chars": 300,
+        "same_seed": False,
+        "heard": "x",
+        "spoken": "y",
+    }
+    lines = Lines.model_validate({"8190-progress": pin})
+    catalog = VoiceCatalog(config.model_copy(update={"lines": lines}))
+    (note,) = pin_report([], catalog, include_progress=False)
+    assert "--progress" in note and "no such line" not in note
+    (note,) = pin_report([], catalog, include_progress=True)
+    assert "no such line" in note
+
+
+def test_the_cached_config_follows_an_edit_made_outside_the_page(
+    pin_studio: Any,
+) -> None:
+    import os
+
+    studio = pin_studio.studio
+    assert "1-accept" not in studio.config_cached().lines.root
+    text = pin_studio.toml.read_text(encoding="utf-8")
+    pin = '"1-accept" = {seed = 5, chunk_chars = 300, same_seed = false, heard = "x", spoken = "y"}\n'
+    if "\n[lines]\n" in text:
+        text = text.replace("\n[lines]\n", "\n[lines]\n" + pin, 1)
+    else:
+        text += "\n[lines]\n" + pin
+    pin_studio.toml.write_text(text, encoding="utf-8")
+    stamp = pin_studio.toml.stat().st_mtime_ns + 1_000_000_000
+    os.utime(pin_studio.toml, ns=(stamp, stamp))
+    assert studio.config_cached().lines.root["1-accept"].seed == 5
