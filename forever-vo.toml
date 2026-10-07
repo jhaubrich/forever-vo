@@ -772,6 +772,43 @@ clips = [
     561513,
 ]
 
+[voices.sources.orc-female-standard]
+clips = [
+    541341,
+    541368,
+    557765,
+    557779,
+    557770,
+    557767,
+    557768,
+    557773,
+    557771,
+    557769,
+    557778,
+    557775,
+    557764,
+]
+
+[voices.sources.nightelf-female-priestess]
+clips = [
+    541060,
+    556510,
+    556523,
+    556515,
+    556516,
+    556509,
+    556508,
+    556520,
+    556521,
+    556514,
+    556507,
+    556512,
+    556513,
+    556518,
+    556511,
+]
+gaps = [0.1, 0.1]
+
 [voices.notes]
 # Tasting notes, one per voice, written in the audition page's voice card: what
 # a voice sounds like by ear, which lines break it, what was tried and what to
@@ -1087,6 +1124,20 @@ speed = 0.98
 [tts.voices.troll-male-standard]
 exaggeration = 0.55
 cfg_weight = 0.4
+
+[tts.voices.orc-female-warrior]
+exaggeration = 0.45
+cfg_weight = 0.5
+tempo = 1.1
+
+[tts.voices.nightelf-female-priestess]
+exaggeration = 0.6
+cfg_weight = 0.35
+
+[tts.voices.nightelf-female-sentinel]
+exaggeration = 0.4
+cfg_weight = 0.5
+tempo = 1.1
 [pronunciations]
 "Ahn'Qiraj" = "Awnkeraj"
 Gnomeregan = "Nomer-gahn"
@@ -1127,6 +1178,8 @@ Zaetar = "Zaytar"
 Desolace = "DeSOlace"
 phial = "file"
 Runetotem = "Rune totem"
+Blazerunner = "Blaze Runner"
+Irontree = "Iron Tree"
 
 [readers]
 # The first addon release whose captures are taken at face value. Everything
@@ -1278,6 +1331,13 @@ tauren-male-warrior = "cfg_weight=0.7,clip=tauren-male-warrior,exaggeration=0.3,
 tauren-female-shaman = "clip=tauren-female-shaman,clips=2afc55cd"
 troll-male-standard = "cfg_weight=0.4,clip=troll-male-standard,clips=d76114c8,exaggeration=0.55"
 troll-male-dark = "clip=troll-male-dark,clips=e08e20a9"
+orc-male-standard = "cfg_weight=0.2,clip=orc-male-standard,exaggeration=0.6,tempo=1.1"
+orc-female-standard = "clip=orc-female-standard,clips=d5b076e5,exaggeration=0.7"
+orc-female-shaman = "clip=orc-female-shaman,exaggeration=0.7"
+orc-female-warrior = "clip=orc-female-warrior,tempo=1.1"
+scourge-female-standard = "cfg_weight=0.6,clip=scourge-female-standard,exaggeration=0.3"
+nightelf-female-priestess = "cfg_weight=0.35,clip=nightelf-female-priestess,clips=f342d661,exaggeration=0.6"
+nightelf-female-sentinel = "clip=nightelf-female-sentinel,exaggeration=0.4,tempo=1.1"
 
 [lines]
 # A seed pinned per line, written by the audition page's "Pin this take": the line's
@@ -1288,3 +1348,5 @@ troll-male-dark = "clip=troll-male-dark,clips=e08e20a9"
 # another GPU than the audition ran on, so there the seed draws a different take,
 # though always the same one.
 8190-progress = {seed = 1232072802, chunk_chars = 300, same_seed = false, heard = "d76af624+cfg_weight=0.4,clips=d76114c8,exaggeration=0.55", spoken = "f2349f592dd9f19a"}
+3561-accept = {seed = 1067938660, chunk_chars = 300, same_seed = false, heard = "1354e10c+tempo=1.1", spoken = "d6e798bb068d0e13"}
+4084-accept = {seed = 1916274430, chunk_chars = 300, same_seed = false, heard = "77594fa7+cfg_weight=0.35,clips=f342d661,exaggeration=0.6", spoken = "b465d51863713fc5"}
