@@ -629,6 +629,27 @@ def strip_pin(fingerprint: str) -> str:
     return key + "+" + ",".join(kept) if kept else key
 
 
+def index_record(
+    duration: float,
+    target: Target,
+    take: RenderedTake | None,
+    max_chars: int,
+    same_seed: bool = False,
+) -> dict[str, Any]:
+    """A generated file's sound_index.json entry: its length, voice and fingerprint,
+    and the seed and chunk length it was drawn with (`s`, `c`, since 2026-10-07), so a
+    take that turns out perfect can be pinned from the pack itself. The seed replays
+    exactly only on the machine and libraries that drew it; files from before seeds
+    have none. Nothing that reads the index needs `s` or `c`."""
+    record: dict[str, Any] = {"d": duration, "v": target.voice, "t": target.fingerprint}
+    if take is not None:
+        record["s"] = take.seed
+        record["c"] = max_chars
+        if same_seed:
+            record["same"] = 1  # every chunk drawn from the take's first seed
+    return record
+
+
 def pin_report(items: list[Item], catalog: VoiceCatalog) -> list[str]:
     """What the run says about [lines]: a pin whose line is gone, one that no longer
     holds (the text or the voice's settings changed since it was heard), and one on a
@@ -1947,13 +1968,15 @@ def main(argv: list[str] | None = None) -> int:
                 same_seed=pin.same_seed if pin else False,
                 max_chars=pin.chunk_chars if pin else CHUNK_CHARS,
             )
-            sound_index[target.key] = {
-                "d": duration,
-                "v": target.voice,
-                "t": target.fingerprint,
-            }
-            dirty.add(target.key)
             take = synth.last_take
+            sound_index[target.key] = index_record(
+                duration,
+                target,
+                take,
+                pin.chunk_chars if pin else CHUNK_CHARS,
+                pin.same_seed if pin else False,
+            )
+            dirty.add(target.key)
             print(
                 f"[{n}/{len(todo)}] {target.label} {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{target.voice}] {item.entry.get('title') or item.entry.get('name')}"
                 + (f"  seed {take.seed}" if take else "")

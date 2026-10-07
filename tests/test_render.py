@@ -533,3 +533,22 @@ def test_the_chunk_preview_cuts_as_the_generator_does(pin_studio: Any) -> None:
     ).json()
     assert preview["chunks"] == chunk(preview["spoken"], 300)
     assert len(preview["chunks"]) == 2 and preview["pinned_chars"] is None
+
+
+def test_a_generated_files_entry_keeps_its_seed() -> None:
+    from tools.generate import index_record
+
+    catalog, plain = pinned_catalog()
+    own = target(LINE, catalog, base="2-accept")  # no pin on this one
+    take = RenderedTake("audio", 4.0, 123, [ChunkMark(0.0, 4.0, LINE, 9, 1)])
+    record = index_record(4.0, own, take, 300)
+    assert record == {
+        "d": 4.0,
+        "v": "human-male",
+        "t": plain.fingerprint("human-male", LINE),
+        "s": 123,
+        "c": 300,
+    }
+    assert index_record(4.0, own, take, 420, same_seed=True)["same"] == 1
+    # a probe or a run without a take records what it always did
+    assert set(index_record(4.0, own, None, 300)) == {"d", "v", "t"}

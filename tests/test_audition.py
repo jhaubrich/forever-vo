@@ -246,10 +246,17 @@ def test_write_voice_sources_adds_and_removes_and_keeps_the_reference_field(
 ) -> None:
     # a voice the real file has no picks for, so the round trip is about this write and
     # not about whatever has been chosen by ear since
+    from tools.config import RACE_DICT
+
+    picked = load_config(toml_copy).voices.sources
     voice = next(
         v
-        for v in ("tauren-male", "gnome-male", "orc-female")
-        if v not in load_config(toml_copy).voices.sources
+        for v in (
+            f"{race}-{sex}"
+            for race in sorted(set(RACE_DICT.values()) - {"narrator"})
+            for sex in ("male", "female")
+        )
+        if v not in picked
     )
     load_config.cache_clear()
     before = toml_copy.read_text(encoding="utf-8")

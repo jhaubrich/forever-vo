@@ -432,8 +432,12 @@ so a runaway always won. `ran_into_cap` in `wanted()` regenerates a pack file th
 fits one chunk and is 40.0 s long before tempo and speed (15 on 2026-10-06; a line
 of several chunks runs past 40 s honestly, so a runaway inside one cannot be told
 from its length). Every `generate()` call is seeded, `derive_seed(take, chunk,
-try)` from a take seed drawn at random, and the journal line prints it; it is not
-in `sound_index.json`. The chunk length (`textclean.CHUNK_CHARS`, 300) is not in
+try)` from a take seed drawn at random, and the journal line prints it. Since
+2026-10-07 each generated file's `sound_index.json` entry also keeps it, as `s`, with
+the chunk length `c` (and `same: 1` for a same-seed take), by `index_record`; nothing
+that reads the index needs them, and files from before then have none (they were
+drawn unseeded, so no seed exists for them). A recorded seed replays exactly only on
+the machine and libraries that drew it. The chunk length (`textclean.CHUNK_CHARS`, 300) is not in
 the text fingerprint, as clip audio is not: changing it restages nothing, and
 `--force --voice` redoes a voice. The slowest voices read about 10 characters a
 second before tempo (scourge-male-standard 9.8, orc-male 10.3), so much past 300
