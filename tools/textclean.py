@@ -124,7 +124,13 @@ def is_speakable(text: str) -> bool:
 _SENTENCE_END = re.compile(r"(?<=[.!?…])\s+(?=[\"'(A-Z0-9])")
 
 
-def chunk(text: str, max_chars: int = 300) -> list[str]:
+# Characters per generate() call. Chatterbox stops a call at 1000 speech tokens, 40 s,
+# and the slowest voices read about 10 characters a second before tempo, so a longer
+# chunk risks the cap; the audition page can try others (its Chunk length field).
+CHUNK_CHARS = 300
+
+
+def chunk(text: str, max_chars: int = CHUNK_CHARS) -> list[str]:
     """Splits text into sentence-aligned chunks no longer than max_chars where possible."""
     sentences = _SENTENCE_END.split(text)
     chunks: list[str] = []
@@ -151,6 +157,24 @@ def chunk(text: str, max_chars: int = 300) -> list[str]:
     if current:
         chunks.append(current)
     return chunks
+
+
+def halve(text: str) -> list[str]:
+    """Two halves of `text` as near its middle as a sentence end, else a comma or
+    semicolon, else a space allows; the text itself when it has none of them. For a
+    chunk that ran into the token cap on every try (Synth.render_take)."""
+    middle = len(text) / 2
+    for pattern in (_SENTENCE_END, re.compile(r"(?<=[,;:])\s+"), re.compile(r"\s+")):
+        # within the middle half, or the halves are no fairer than the chunk was
+        cuts = [
+            m
+            for m in pattern.finditer(text)
+            if abs(m.start() - middle) <= len(text) / 4
+        ]
+        if cuts:
+            cut = min(cuts, key=lambda m: abs(m.start() - middle))
+            return [text[: cut.start()].strip(), text[cut.end() :].strip()]
+    return [text]
 
 
 # Key normalisation used by the addon's lookup tables (DataModules.lua replaces

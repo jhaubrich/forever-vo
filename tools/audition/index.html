@@ -35,6 +35,30 @@
   /* Source clips: under the takes on a narrow screen, a column of its own on a wide one,
      where the table can run the height of the window */
   aside { grid-row: 1 / span 2; }
+  /* the sidebar holds the window's height while the page scrolls, and the
+     pronunciation list takes what is left of it, scrolling inside its own box */
+  aside { position: sticky; top: 0; align-self: start; height: 100vh; box-sizing: border-box;
+    display: flex; flex-direction: column; }
+  aside > * { flex: none; }
+  aside p.note { margin: 8px 0 0; }
+  aside h2 .note { text-transform: none; letter-spacing: 0; font-weight: 400; margin-left: 0.5em; }
+  /* the line results and the pronunciations share what the window leaves, two thirds
+     and a third: the results no taller than what they list and 120px at least, the
+     pronunciations 120px at least, and the sidebar scrolls only once both are at their
+     floor */
+  aside #results:not(:empty) { flex: 2 1 0; min-height: 120px; max-height: fit-content; }
+  #p-box { flex: 1 1 0; min-height: 120px; overflow-y: auto; margin-top: 8px;
+    border: 1px solid var(--line); border-radius: 4px; }
+  #p-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; }
+  #p-table { width: 100%; margin: 0; border-collapse: collapse; font-size: 13px; }
+  #p-table th { position: sticky; top: 0; background: var(--panel); color: var(--dim); font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: .06em; text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); }
+  #p-table td { padding: 4px 8px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+  #p-table td:first-child { width: 45%; }
+  #p-table td:last-child { color: var(--dim); }
+  #p-table tbody tr { cursor: pointer; }
+  #p-table tbody tr:hover { background: var(--panel); }
+  #p-table tbody tr:hover td:last-child { color: var(--ink); }
   #clips-col { grid-column: 2; padding-top: 0; }
   @media (min-width: 1600px) {
     main { grid-template-columns: 340px minmax(0, 1fr) minmax(0, 1fr); }
@@ -162,6 +186,34 @@
   th { color: var(--dim); font-weight: 500; font-size: 12px; }
   td.n { color: var(--dim); }
   audio { height: 32px; width: 260px; }
+  /* Clone from takes the room; the three numbers beside it are the width of a number */
+  .fields.run { grid-template-columns: minmax(0, 1fr) repeat(3, minmax(6.5em, 10em)); }
+  .fields.run label.check.hint { display: flex; margin-top: 4px; font-size: 11px; color: var(--dim); }
+  /* after the rule above, which it overrides: Clone from on a row of its own */
+  @container (max-width: 560px) {
+    .fields.run { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .fields.run > div:first-child { grid-column: 1 / -1; }
+  }
+  /* Generate under the settings it runs, with what the pack would use beside it */
+  .actions { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; margin: 14px 0 4px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .actions #resolved { margin: 0; flex: 1 1 22em; }
+  /* where each chunk of a take starts: a click plays from the gap before it */
+  .chunkmarks { display: flex; flex-wrap: wrap; gap: 4px; max-width: 260px; margin-top: 4px; }
+  .chunkmark { font-size: 11px; padding: 0 6px; line-height: 1.6; border-radius: 9px; color: var(--dim); background: transparent; }
+  .chunkmark:hover { color: var(--ink); border-color: var(--gold); }
+  .chunkmark.capped { color: var(--warn); border-color: var(--warn); }
+  .take-seed { display: block; color: var(--dim); font-size: 11px; margin-top: 2px; }
+  .take-seed a { color: var(--dim); }
+  #chunk-preview { margin: 4px 0 0; font-size: 12px; color: var(--dim); }
+  #chunk-preview:empty { display: none; }
+  #chunk-preview .bands { margin-top: 3px; line-height: 1.6; color: var(--ink); }
+  #chunk-preview .band { padding: 1px 3px; border-radius: 3px; }
+  #chunk-preview .band.b0 { background: color-mix(in srgb, var(--gold) 14%, transparent); }
+  #chunk-preview .band.b1 { background: color-mix(in srgb, var(--borrow, #6fa8dc) 16%, transparent); }
+  #chunk-preview .band b { color: var(--gold); font-size: 10px; margin-right: 3px; }
+  .line-pin { margin-top: 4px; }
+  .line-pin a { margin-left: 6px; }
+  @media (max-width: 600px) { .chunkmark .at { display: none; } }
   .recipe { font-family: ui-monospace, monospace; font-size: 12px; }
   .note { color: var(--dim); font-size: 12px; }
   .warn { color: var(--warn); }
@@ -340,13 +392,19 @@
     <ul id="results"></ul>
     <p class="note">Every word must match. Pick a line to load its spoken text and voice; free text below works too. The random button draws a quest line spoken in the selected voice.</p>
 
-    <h2>Pronunciation</h2>
-    <div class="row">
-      <input id="p-word" placeholder="Gnomeregan">
-      <input id="p-spoken" placeholder="Nomer-gahn">
+    <h2>Pronunciation <span id="p-count" class="note"></span></h2>
+    <div id="p-row">
+      <input id="p-word" placeholder="Gnomeregan" autocomplete="off">
+      <input id="p-spoken" placeholder="Nomer-gahn" autocomplete="off">
       <button id="p-keep">Keep</button>
     </div>
-    <p class="note">Whole words, any case. Saved under <code>[pronunciations]</code>; an empty spoken form removes the entry. Current: <span id="p-list"></span></p>
+    <p class="note">Whole words, any case. Saved under <code>[pronunciations]</code>; an empty spoken form removes the entry. Pick a row to change it.</p>
+    <div id="p-box">
+      <table id="p-table">
+        <thead><tr><th>Written</th><th>Spoken</th></tr></thead>
+        <tbody id="p-list"></tbody>
+      </table>
+    </div>
 
     <h2>Recent takes</h2>
     <select id="sessions"><option value="">pick a past run…</option></select>
@@ -355,6 +413,7 @@
     <h2>Pack</h2>
     <button id="rebuild">Rebuild pack tables</button>
     <p class="note">After writing files into the pack, so the durations in the tables match. The nightly run does this too.</p>
+
   </aside>
 
   <section>
@@ -386,11 +445,18 @@
     <div id="current"><span class="m">No line picked: free text.</span></div>
     <label for="text">Text (cleaned and respelled before it reaches the model)</label>
     <textarea id="text">Aye, a stack o' letters came through the pass today, and I dinnae have the time to send them along.</textarea>
+    <!-- where Chunk length cuts the text into model calls, as the model hears it -->
+    <div id="chunk-preview" aria-live="polite"></div>
 
     <div class="setup">
-      <div class="fields">
+      <!-- what a run draws: the reference, how many takes, and how each take is cut
+           into model calls and seeded (the marks under each take show the cuts) -->
+      <div class="fields run">
         <div><label for="reference">Clone from</label><select id="reference"></select></div>
-        <div><label for="takes">Takes each</label><input id="takes" autocomplete="off" type="number" min="1" max="5" value="2"></div>
+        <div><label for="takes">Takes each</label><input id="takes" autocomplete="off" type="number" min="1" max="5" value="2"><div class="hint">1&ndash;5 per setting</div></div>
+        <div><label for="chunk-chars" title="Characters per model call. Chatterbox stops a call at 40 s, and the slowest voices read about 10 characters a second, so much past 300 risks running into that cap. The pack uses 300.">Chunk length</label><input id="chunk-chars" type="number" min="120" max="500" step="10" value="300" autocomplete="off"><div class="hint">characters a call &middot; 300 in the pack</div></div>
+        <div><label for="seed-in" title="Draw the run from this seed instead of a new one per take: one take, since a second would be the first again; a sweep of Emotion and Adherence on one seed compares settings on the same draw. Each take's row says its seed (use this seed).">Seed</label><input id="seed-in" type="number" min="0" max="2147483647" step="1" placeholder="new each take" autocomplete="off">
+          <label class="check hint" title="Draw every chunk of a take from the same seed, rather than each from its own. An experiment: the accent comes from the reference, which every chunk already shares, so expect little; listen for each chunk starting with the same sound."><input id="same-seed" type="checkbox"> same for every chunk</label></div>
       </div>
       <div class="fields-head">Values to try, comma-separated <button id="knobs-help-toggle" class="help" title="What these five do">?</button></div>
       <div class="fields knobs">
@@ -401,9 +467,11 @@
         <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" autocomplete="off" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
       </div>
     </div>
-    <div class="row" style="margin-top:8px">
+    <!-- run what is set above; the saved resolution beside it says what the pack would use -->
+    <div class="actions">
       <button id="go" class="primary">Generate</button>
       <button id="stop" hidden title="Stop after the sentence in progress; the model cannot be interrupted mid-sentence">Stop</button>
+      <p class="note" id="resolved"></p>
     </div>
     <div id="knobs-help" hidden>
       <h4>What these five do</h4>
@@ -452,11 +520,32 @@
         Emotion with 0.3 Adherence &mdash; is deliberately the other way round: more
         expression, less pressure on it. In forever-vo.toml they keep Chatterbox's names,
         <code>exaggeration</code> and <code>cfg_weight</code>.</p>
+      <h4>Chunks, and the two kinds of accent switch</h4>
+      <p>A long line is read in <b>chunks</b>, one model call each, joined with 0.35&nbsp;s
+        of silence: up to <b>Chunk length</b> characters (300 in the pack), whole sentences
+        where it can. Each call starts afresh from the reference, so a voice that only just
+        holds its accent can land it in one chunk and lose it in the next. The numbered marks
+        under a take show where each chunk starts; a click plays from just before it. An
+        accent that changes <i>at</i> a mark is a chunk boundary; one that slides away
+        <i>between</i> marks is the model drifting within a call, which longer chunks make
+        worse, not better.</p>
+      <p>Chatterbox stops a call at 40&nbsp;s, and the slowest voices read about ten
+        characters a second, so much past 300 risks the cap. A try that runs into it is
+        thrown away and the chunk tried again, then split in two; a mark that did is
+        outlined in orange. <b>Same seed for every chunk</b> draws every chunk from one
+        seed instead of each from its own &mdash; an experiment, since the accent comes from
+        the reference every chunk already shares.</p>
+      <p>Every take has a <b>seed</b>; the same seed, text, settings and chunk length make
+        the same take again on this machine. <b>Pin this take</b> keeps a perfect take's
+        seed for its line in <code>[lines]</code>, and the pack's file is drawn from it
+        &mdash; only for a take of the line's own text under the voice's saved settings. The
+        pack is built on another GPU, where the seed draws a different take, though always
+        the same one; the pin stops applying when the line's text or the voice's settings
+        change.</p>
       <p class="warn">Not an accent control. Four settings pairs over eight takes of
         goblin-male moved its accent not at all, while changing the source clips took the
         same voice from &ldquo;sounds like a gnome&rdquo; to level with the shipped pack.</p>
     </div>
-    <p class="note" id="resolved"></p>
     <h2>Takes</h2>
     <table>
       <thead><tr><th>#</th><th>Recipe</th><th>Take</th><th>Length</th><th></th></tr></thead>
@@ -572,7 +661,7 @@ function applyState(s) {
   $("s-model").textContent = s.model; $("s-corpus").textContent = s.corpus;
   $("s-bulk").textContent = s.bulk_service; $("s-bulk").className = s.bulk_service === "active" ? "warn" : "";
   $("s-config").textContent = s.config_path;
-  $("p-list").textContent = Object.entries(s.pronunciations).map(([w, sp]) => `${w} → ${sp}`).join(", ") || "none";
+  showPronunciations(s.pronunciations);
   const voice = $("voice"), ref = $("reference");
   const keepVoice = voice.value, keepRef = ref.value;
   voice.innerHTML = voiceOptions(s);
@@ -1145,14 +1234,67 @@ function pick(row, li) {
       ? `<div class="in-pack"><span class="m">in the pack now${row.pack ? ` (${esc(row.pack)})` : ""}</span><audio controls preload="none" src="${row.pack_url}"></audio>` +
         // the working folder holds an older take than the index records: played only
         // when no installed pack has the line
-        (row.stale ? `<span class="warn" title="The working folder's file is not the length sound_index.json records: a take from before this voice was restaged. Write to pack, or delete it, to clear this.">${row.pack === "working folder" ? "older take than the index" : "working folder has an older take"}</span>` : "") +
+        (row.stale ? `<span class="warn" title="The working folder's file is not the length sound_index.json records: a take from before this voice was restaged. Delete it to clear this.">${row.pack === "working folder" ? "older take than the index" : "working folder has an older take"}</span>` : "") +
         `</div>`
       : `<div class="in-pack"><span class="warn">no file in the pack yet</span></div>`) + `</div>` +
     `<div class="m">${npc ? link(npc, esc(row.speaker || row.speaker_key)) : esc(row.speaker || "")} · voice ${row.voice}</div>` +
-    `<div class="m">Raw: ${esc(row.raw)}</div><div id="speaker-pin" class="row"></div>`;
+    `<div class="m">Raw: ${esc(row.raw)}</div><div id="speaker-pin" class="row"></div><div id="line-pin" class="m line-pin"></div>`;
   showSpeakerPin();
+  showLinePin();
   showResolved();
+  schedulePreview();
 }
+
+// [lines]: the line's pinned seed, if any, and whether it still applies
+function showLinePin() {
+  const box = $("line-pin");
+  if (!box || !current) return;
+  const p = current.pin;
+  if (current.parts) {
+    box.innerHTML = `<span title="The speaker's words and the narrator's stage directions play as separate files; a pin decides only the whole-line file, which players do not hear.">plays as parts: can't be pinned</span>`;
+    return;
+  }
+  if (!p) { box.innerHTML = ""; return; }
+  box.innerHTML = (p.live
+      ? `Pinned: seed <b>${p.seed}</b> · chunks of ${p.chunk_chars}${p.same_seed ? " · same seed" : ""}`
+      : `<span class="warn" title="The line's text or the voice's settings changed since the take was pinned, so the seed would draw another take: the pin is not used.">pinned under other settings (seed ${p.seed}); not used</span>`) +
+    `<a href="#" id="pin-load" title="Put the pin's seed, chunk length and Same seed in the run options">load into run</a>` +
+    `<a href="#" id="pin-drop" title="Remove the pin from [lines]. The file it drew stays until something else changes the line.">unpin</a>`;
+  $("pin-load").addEventListener("click", e => { e.preventDefault(); useSeed(p.seed, p.chunk_chars, p.same_seed); });
+  $("pin-drop").addEventListener("click", async e => {
+    e.preventDefault();
+    try {
+      await api(`/api/pin-seed/${encodeURIComponent(current.base)}`, { method: "DELETE" });
+      current.pin = null; showLinePin(); schedulePreview();
+      toast("Unpinned. The file it drew stays until something else changes the line.", "ok");
+    } catch (err) { toast(err.message, "warn"); }
+  });
+}
+
+// --- Chunk preview ------------------------------------------------------------
+// Asked of the server, which cuts with the generator's own chunk(); the newest
+// answer wins, since a slow reply can land after a later one
+let previewSeq = 0, previewTimer = null;
+function schedulePreview() { clearTimeout(previewTimer); previewTimer = setTimeout(previewChunks, 300); }
+async function previewChunks() {
+  const seq = ++previewSeq, text = $("text").value, chars = +$("chunk-chars").value || 300;
+  if (!text.trim()) { $("chunk-preview").innerHTML = ""; return; }
+  let r;
+  try {
+    r = await api("/api/chunks", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, chars: Math.min(500, Math.max(120, chars)), base: current ? current.base : null }) });
+  } catch (e) { return; }
+  if (seq !== previewSeq) return;
+  const n = r.chunks.length;
+  $("chunk-preview").innerHTML =
+    `<span title="Each chunk is one model call; a take's marks number them the same way. The text is shown respelled, as the model hears it.">` +
+    `${n} chunk${n === 1 ? "" : "s"} at ${r.chars} characters, as the model hears it</span>` +
+    (r.pinned_chars && r.pinned_chars !== r.chars ? ` · <span class="warn">this line is pinned at ${r.pinned_chars}</span>` : "") +
+    (n > 1 ? `<div class="bands">` + r.chunks.map((c, i) => `<span class="band b${i % 2}"><b>${i + 1}</b>${esc(c)}</span>`).join(" ") + `</div>` : "");
+}
+$("text").addEventListener("input", schedulePreview);
+schedulePreview();  // the text the page opens with
+$("chunk-chars").addEventListener("input", schedulePreview);
 
 // [voices.speakers]: one NPC always in one voice, whatever the capture says its
 // race is (#319). The voice-change check restages exactly that speaker's files.
@@ -1236,9 +1378,13 @@ $("go").addEventListener("click", async () => {
              exaggeration: numbers($("exag").value, "exag"), cfg_weight: numbers($("cfg").value, "cfg"),
              tempo: numbers($("tempo").value, "tempo"), pitch: numbers($("pitch").value, "pitch"),
              speed: numbers($("speed").value, "speed"),
-             takes: +$("takes").value };
+             takes: +$("takes").value, chunk_chars: +$("chunk-chars").value || 300,
+             same_seed: $("same-seed").checked,
+             seed: $("seed-in").value === "" ? null : +$("seed-in").value,
+             // the picked line, so a take of it can be pinned to it
+             base: current ? current.base : null };
   } catch (e) { toast(e.message, "warn"); return; }
-  busy($("go"), true); runSession = null; runVoice = body.voice; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = "starting (the first take loads the model, about half a minute)…";
+  busy($("go"), true); runSession = null; runVoice = body.voice; $("stop").hidden = false; busy($("stop"), false); $("takes-body").innerHTML = ""; $("progress").textContent = (body.seed != null ? `seeded ${body.seed} · ` : "") + "starting (the first take loads the model, about half a minute)…";
   try {
     const response = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
@@ -1281,14 +1427,22 @@ function onEvent(ev) {
   // a take: the count so far, keeping a Stop already asked for
   const stopping = $("progress").textContent.includes("stopping") ? " · stopping after the sentence in progress…" : "";
   $("progress").textContent = `${ev.n} take${ev.n === 1 ? "" : "s"} so far…${stopping}`;
+  if (!ev.session) ev.session = runSession;
   const tr = document.createElement("tr");
   // Keep these settings saves to the take's own voice (`voice`, above), not to whatever
   // is selected when the button is pressed
   const recipe = `${ev.clip || "built-in"}${ev.source !== voice ? ` (${ev.source})` : ""} · e ${ev.exaggeration} · cfg ${ev.cfg_weight}` +
     (ev.tempo && ev.tempo !== 1 ? ` · tempo ${ev.tempo}` : "") + (ev.pitch ? ` · pitch ${ev.pitch}` : "") +
     (ev.speed && ev.speed !== 1 ? ` · speed ${ev.speed}` : "");
-  tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}</td><td><audio controls preload="auto" src="${ev.url}"></audio></td>` +
+  tr.innerHTML = `<td class="n">${ev.n}</td><td class="recipe">${esc(recipe)}${seedNote(ev)}</td><td><audio controls preload="auto" src="${ev.url}"></audio>${chunkMarks(ev.chunks)}</td>` +
     `<td class="n">${ev.seconds === "" ? "" : `${ev.seconds}s in ${ev.elapsed}s`}</td><td></td>`;
+  tr.querySelectorAll(".chunkmark").forEach(b => b.addEventListener("click", () => playFrom(tr, +b.dataset.start)));
+  const use = tr.querySelector(".use-seed");
+  if (use) use.addEventListener("click", e => {
+    e.preventDefault();
+    useSeed(ev.seed, ev.chunk_chars || 300, !!ev.same_seed);
+    if (ev.spoken && ev.spoken !== $("text").value) toast("That take said other words than the box holds now; the seed draws the same take only from the same text.", "warn");
+  });
   tr.querySelector("audio").addEventListener("error", () => { tr.querySelector("audio").outerHTML = `<span class="warn">could not load; the server may have restarted (reload the page and pick the run under Recent takes)</span>`; });
   const cell = tr.lastElementChild;
   const keep = document.createElement("button"); keep.textContent = "Keep these settings";
@@ -1302,46 +1456,116 @@ function onEvent(ev) {
         body: JSON.stringify({ voice, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, speed: ev.speed || 1, reference: ev.reference }) }));
       toast(`Kept for ${voice}. The next generate run restages that voice's files.`, "ok");
       if (voice === $("voice").value) loadVoiceSettings();  // the knobs now read as saved
-      document.querySelectorAll("button.write").forEach(b => b.disabled = !isSaved(b.dataset.recipe));
     } catch (e) { toast(e.message, "warn"); }
     busy(keep, false);
   });
   cell.appendChild(keep);
-  if (current) {
-    const write = document.createElement("button"); write.textContent = "Write to pack"; write.className = "write";
-    write.dataset.recipe = JSON.stringify([ev.clip, ev.exaggeration, ev.cfg_weight, ev.tempo || 1, ev.pitch || 0, ev.speed || 1, voice]);
-    write.title =
-      "Generate this line once more under the SAVED settings and put that file in the pack, " +
-      "then record its fingerprint so the nightly run neither redoes it nor misses it.\n\n" +
-      "It is not this take. Generation is not seeded — the same text and settings give a " +
-      "different take every time — so what lands in the pack is a fresh roll, close to what " +
-      "you heard but not identical.\n\n" +
-      "The fingerprint is not a seed either: it is a hash of the spoken text and any " +
-      "non-default tuning, and it only answers whether the file needs making again.\n\n" +
-      "It writes the corpus text in the line's own voice, ignoring edits to the box above " +
-      "and the voice selector (#67). Correct the text by capturing it in game; a hand-typed " +
-      "edit would be reverted by the next run anyway.\n\n" +
-      "Disabled until this row's recipe is the saved one — keep the settings first.";
-    write.disabled = !isSaved(write.dataset.recipe);
-    write.addEventListener("click", async () => {
-      busy(write, true);
+  if (ev.base) {
+    // the server decides from the take's own sidecar whether it is a take of this
+    // line under its saved settings, and says why when it is not
+    const pin = document.createElement("button"); pin.textContent = "Pin this take";
+    pin.title =
+      `Draw ${ev.base}'s pack file from this take's seed (${ev.seed}): written to [lines] in ` +
+      "forever-vo.toml, and the next generate run makes the file from it.\n\n" +
+      "Only a take of the line's own text under the voice's saved settings can be pinned; " +
+      "keep the settings first. The pin is for the line's own file in its own voice: the " +
+      "other sex's recording and the alternate narrators are drawn as before, and a line " +
+      "that plays as parts cannot be pinned.\n\n" +
+      "On this machine the seed makes this exact take. On the CUDA machine that builds the " +
+      "pack it makes a different take, but always the same one. The pin stops applying " +
+      "when the line's text or the voice's settings change.";
+    pin.addEventListener("click", async () => {
+      busy(pin, true);
       try {
-        const r = await api("/api/write-pack", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ base: current.base }) });
-        toast(`Wrote ${r.base} (${r.seconds}s) into the pack and stamped its fingerprint.`, "ok");
-        current.pack_url = r.pack_url; current.pack = r.pack; pick(current, $("results").querySelector("li.active") || document.createElement("li"));
+        await api("/api/pin-seed", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session: ev.session || runSession, name: ev.name }) });
+        toast(`Pinned seed ${ev.seed} to ${ev.base}. The next generate run draws its file from it.`, "ok");
+        if (current && current.base === ev.base) {
+          current.pin = { seed: ev.seed, chunk_chars: ev.chunk_chars || 300, same_seed: !!ev.same_seed, live: true };
+          showLinePin();
+        }
       } catch (e) { toast(e.message, "warn"); }
-      busy(write, false);
+      busy(pin, false);
     });
-    cell.appendChild(write);
+    cell.appendChild(pin);
   }
   $("takes-body").appendChild(tr);
 }
 
-function isSaved(recipe) {
-  if (!state) return false;
-  const [clip, e, c, t, p = 0, sp = 1, voice] = JSON.parse(recipe); const r = state.resolved[voice || $("voice").value];
-  return !!r && r.clip === clip && r.exaggeration === e && r.cfg_weight === c && r.tempo === t && (r.pitch || 0) === p && (r.speed ?? 1) === sp;
+// The seed a take was drawn from, and how it was cut: takes from before seeds were
+// kept have none
+function seedNote(ev) {
+  if (ev.seed == null) return "";
+  const how = [ev.same_seed ? "same seed for every chunk" : "", ev.chunk_chars && ev.chunk_chars !== 300 ? `chunks of ${ev.chunk_chars}` : ""].filter(Boolean).join(" · ");
+  return `<span class="take-seed" title="${esc(SEED_NOTE)}">seed ${ev.seed}${how ? ` · ${how}` : ""} · <a href="#" class="use-seed">use this seed</a></span>`;
 }
+const SEED_NOTE = "The seed this take was drawn from, each model call seeded from it in turn. " +
+  "The same seed, text, settings and chunk length make the same take again on this machine " +
+  "(checked byte for byte on the ROCm card, 2026-10-06); another GPU or library build need " +
+  "not. 'use this seed' puts it, the chunk length and Same seed in the run options; " +
+  "Pin this take keeps it for the line's pack file.";
+
+// The run options a seed belongs with; a seed locks Takes each to one
+function useSeed(seed, chunkChars, sameSeed) {
+  $("seed-in").value = seed; $("chunk-chars").value = chunkChars; $("same-seed").checked = sameSeed;
+  seedChanged(); schedulePreview();
+}
+function seedChanged() {
+  const seeded = $("seed-in").value !== "";
+  if (seeded) $("takes").value = 1;
+  $("takes").disabled = seeded;
+  $("takes").title = seeded ? "One take: a seed makes every take the same" : "";
+}
+$("seed-in").addEventListener("input", seedChanged);
+
+// One mark per chunk of a take, where the model was called afresh: an accent that
+// switches at a mark is a chunk boundary, one that drifts between marks is the model
+// wandering within a chunk. Nothing for a take of one chunk.
+function chunkMarks(chunks) {
+  if (!chunks || chunks.length < 2) return "";
+  const at = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, "0")}`;
+  // a chunk split in two at the cap shows as 2a and 2b, so the numbers stay those of
+  // the chunk preview
+  const halves = {};
+  chunks.forEach((c, i) => { const k = c.source ?? i; halves[k] = (halves[k] || 0) + 1; });
+  const seen = {};
+  const label = (c, i) => { const k = c.source ?? i; seen[k] = (seen[k] || 0) + 1;
+    return `${k + 1}${halves[k] > 1 ? "abcd"[seen[k] - 1] || "" : ""}`; };
+  return `<div class="chunkmarks">` + chunks.map((c, i) => {
+    const flags = [c.capped ? "ran into the 40 s token cap on every try" : "", c.split ? "half of a chunk that ran into the cap, split" : "",
+      c.attempts > 1 ? `${c.attempts} tries` : ""].filter(Boolean).join("; ");
+    return `<button type="button" class="chunkmark${c.capped || c.split ? " capped" : ""}" data-start="${c.start}" ` +
+      `title="${esc(c.text)}${flags ? `\n\n${flags}` : ""}">${label(c, i)}<span class="at"> · ${at(c.start)}</span></button>`;
+  }).join("") + `</div>`;
+}
+
+// Play a take from just before a chunk: the middle of the 0.35 s gap ahead of it, which
+// also covers a browser's slop when seeking a VBR mp3. Every other take stops first.
+function playFrom(tr, start) {
+  const audio = tr.querySelector("audio");
+  if (!audio) return;  // the file could not be loaded
+  document.querySelectorAll("audio").forEach(a => { if (a !== audio) a.pause(); });
+  const go = () => { audio.currentTime = Math.max(0, start - 0.15); audio.play().catch(() => {}); };
+  if (audio.readyState >= 1) go(); else audio.addEventListener("loadedmetadata", go, { once: true });
+}
+
+
+// [pronunciations], one row per word in alphabetical order; a row fills the inputs above
+function showPronunciations(entries) {
+  const rows = Object.entries(entries || {}).sort(([a], [b]) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  $("p-count").textContent = rows.length ? `${rows.length}` : "";
+  $("p-list").innerHTML = rows.length
+    ? rows.map(([word, spoken]) => `<tr data-word="${esc(word)}" title="Change it above"><td>${esc(word)}</td><td>${esc(spoken)}</td></tr>`).join("")
+    : `<tr><td colspan="2" class="note">none yet</td></tr>`;
+}
+$("p-list").addEventListener("click", e => {
+  const tr = e.target.closest("tr[data-word]");
+  if (!tr) return;
+  $("p-word").value = tr.dataset.word;
+  $("p-spoken").value = (state && state.pronunciations[tr.dataset.word]) || "";
+  $("p-spoken").focus();
+  $("p-spoken").select();
+});
 
 $("p-keep").addEventListener("click", async () => {
   busy($("p-keep"), true);
@@ -1369,7 +1593,9 @@ $("sessions").addEventListener("change", () => {
   $("takes-body").innerHTML = ""; $("progress").textContent = `takes from ${s.session}`;
   if (s.takes[0].voice && state && state.voices.includes(s.takes[0].voice)) { $("voice").value = s.takes[0].voice; showResolved(); listVoiceLines(true); }
   s.takes.forEach((t, i) => onEvent({ event: "take", n: i + 1, take: t.take, name: t.name, url: t.url, seconds: "", elapsed: "",
-    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, speed: t.speed, voice: t.voice, reference: null }));
+    clip: "(as generated)", source: t.voice, exaggeration: t.exaggeration, cfg_weight: t.cfg_weight, tempo: t.tempo, pitch: t.pitch, speed: t.speed, voice: t.voice, reference: null,
+    seed: t.seed, same_seed: t.same_seed, chunk_chars: t.chunk_chars, chunks: t.chunks,
+    session: s.session, base: t.base, line_voice: t.line_voice, spoken: t.spoken }));
 });
 
 $("rebuild").addEventListener("click", async () => {

@@ -134,9 +134,9 @@ architecture is unsupported and uses hipblas instead, and the line still
 completes. If `amdgpu.ids` is not installed, the device name prints as
 "AMD Radeon Graphics"; that file is only the marketing name.
 
-"Write to pack" and `fvo-generate` stay on the CUDA wheel. The sound index
-records the text and the tuning, so a file made here would look current and
-the nightly run would ship it. Keeping a voice's settings in
+`fvo-generate` stays on the CUDA wheel. The sound index records the text and
+the tuning, so a file made here would look current and the nightly run would
+ship it. Keeping a voice's settings in
 `forever-vo.toml` is the AMD path: the CUDA generator restages that voice
 from those numbers. `.venv-rocm/` is gitignored.
 

@@ -1154,3 +1154,12 @@ dwarf-male-grim = "cfg_weight=0.3,clip=dwarf-male-grim,clips=b50759e2,exaggerati
 human-male-warrior = "cfg_weight=0.4,clip=human-male-warrior,clips=5348e0e1,exaggeration=0.55,speed=0.99"
 tauren-male-elder = "cfg_weight=0.3,clip=tauren-male-elder,clips=44972650,exaggeration=0.4"
 troll-male-shaman = "clip=troll-male-shaman,clips=126a04ef,exaggeration=0.6"
+
+[lines]
+# A seed pinned per line, written by the audition page's "Pin this take": the line's
+# own pack file (by its file name, 415-accept, m-170-accept, 5688-19cbe7de) is drawn
+# from that seed. `heard` is the line's fingerprint and `spoken` a hash of its exact
+# text when the take was pinned; the pin stops applying when either changes, since
+# the same seed under another text or tuning is another take. The pack is built on
+# another GPU than the audition ran on, so there the seed draws a different take,
+# though always the same one.

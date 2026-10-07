@@ -256,8 +256,8 @@ and the run is
 `UV_PROJECT_ENVIRONMENT=.venv-rocm ./tools/run.sh --no-group tts --group tts-rocm audition`.
 Checked on gfx1030, where hipBLASLt falls back to hipblas and the line still completes.
 `Synth` loads that build only when audition asks (`allow_hip`); `fvo-generate`
-refuses it, and audition's "Write to pack" returns 400, because the sound index
-records text and tuning, not which GPU rendered the file. The GitHub ingest
+refuses it, because the sound index records text and tuning, not which GPU
+rendered the file. The GitHub ingest
 workflow runs `exportfile.py` (stdlib only) with `uv run --no-project`. Bump a
 pin with `uv lock --upgrade-package <name>` or `nix flake update`, and commit
 the lock; the sound index only regenerates a file when its text or voice
@@ -273,8 +273,9 @@ once, and a function that needs a section takes that model by type hint:
 ingest repair takes `readers: Readers`, `release_pack` takes `Release`. The two
 leaf helpers called from everywhere, `textclean.clean()` and
 `wowdata.voice_for_npc()`, accept their model as a keyword and default to the
-repository's file, so one-liners keep working. There is deliberately no
-per-line table (`[lines."91741-accept"]`): the file would grow without bound.
+repository's file, so one-liners keep working. The one per-line table is
+`[lines]` (since 2026-10-06, on the owner's call though it grows with every pin):
+a pinned seed per line, written by the audition page and nothing else per line.
 `./tools/run.sh pytest` runs `tests/`, which loads the real TOML and checks
 the tuning resolution; `ruff check`, `ruff format --check` (ruff's defaults,
 no `[tool.ruff]`; the whole tree was formatted on 2026-09-27) and `ty check`
@@ -300,12 +301,30 @@ the defaults, picks digest), so a re-pick or retuning of it or of a voice it
 borrows from, made anywhere, turns its ★ into ☆ until someone listens again
 (the ★ meant "has a `[tts.voices]` row" until 2026-10-01). Below it, folded
 away, a voice's tasting notes (since 2026-10-03): free text in `[voices.notes]`,
-saved as you type, marked ✎ in the voice list, read by people only. "Write to pack" regenerates one line's
-pack file under the *saved* configuration only and records the fingerprint
-`generate.py` would compute, so the nightly run neither redoes nor misses it;
-it is disabled until the row's recipe is the saved one. On the ROCm build
-that button is refused; keeping a voice's settings in the TOML still works,
-and the CUDA generator restages the voice from them. Takes go to
+saved as you type, marked ✎ in the voice list, read by people only. "Pin this
+take" (since 2026-10-06, replacing "Write to pack", which regenerated one file
+into the working folder) writes the take's seed to `[lines."<base>"]` as one inline
+table: `seed`, `chunk_chars`, `same_seed`, `heard` (the line's fingerprint) and
+`spoken` (`generate.spoken_hash` of its exact text). The server proves the take from
+its sidecar, never from the page: a take of the picked line (`GenerateRequest.base`),
+in the line's voice, of its exact text (the box text is spoken uncleaned when it is
+the line's own, so it is not respelled twice) and under the saved settings, by
+comparing the fingerprint the take was made under; a line that plays as parts is
+refused, since its whole-line file is not heard. `VoiceCatalog.pin` holds a pin only
+while `heard` and `spoken` still match ("against this checkout": clips are built per
+machine), and `Target.fingerprint` then appends `seed=,chunk=,pin=PIN_VERSION` (and
+`same_seed=1`) for the line's own file only, never the other-sex file, the alternate
+narrators or the parts, and never in `recipe()`; an unpinned line's `t` is unchanged.
+`wanted()` compares a pinned file whole and an unpinned one without the pin terms
+(`text_current`, `strip_pin`), so pinning and re-pinning restage that one file and
+unpinning keeps the take it drew; a pinned take already drawn is never redone for the
+token cap. Every run prints pins that no longer hold, whose line is gone or that play
+as parts (`pin_report`). Bump `PIN_VERSION` when what a seed draws changes. The pack
+is built on CUDA, where a seed heard on the ROCm card draws a different take, though
+always the same one; the owner chose that knowingly. Below the Text box, a preview
+(`/api/chunks`, the generator's own `chunk()`) shows where Chunk length cuts the text,
+and a take's "use this seed" puts its seed in the run options (a seed locks Takes each
+to one; a settings sweep on one seed is fine). Takes go to
 `tools/data/audition/<session>/` (gitignored). A row's "in the pack now"
 plays the working folder's file, else the first installed `ForeverVO_Data*`
 pack under `WOW_DIR`'s `Interface/AddOns` that has it, in the addon's priority
@@ -331,7 +350,18 @@ the first take; `--config` points it at another TOML for experiments, `--cpu`
 allows a GPU-less machine. It was chosen over gradio on purpose: the widgets
 we need are plain HTML, and the addon's own rule of no libraries and a native
 look carries over. Parts (`-p1-`) and alternate narrator files are not
-reachable from it yet.
+reachable from it yet. Each take shows where its chunks start (since 2026-10-06,
+for telling an accent that switches *at* a chunk boundary from one that drifts
+*within* a call): numbered marks under the player, a click playing from the middle
+of the 0.35 s gap before the chunk, the marks moved into the encoded file's time by
+the ratio of its length to the render's (tempo and speed are linear stretches).
+"Chunk length" (120-500, default 300) and "Same seed for every chunk" are per run
+and go no further than the page; the API also takes a `seed` to replay a take,
+which is not on the page. A replay is exact on one machine: the same seed, text,
+settings and chunk length gave a byte-identical mp3 on the owner's ROCm card
+(2026-10-06); another GPU or library build need not, and the pack is made on CUDA. A take's seed, chunk marks and those two settings are kept
+in a `<take>.json` sidecar beside its mp3 (written whole and renamed, read with any
+failure meaning "no marks", so a broken one never empties Recent takes).
 
 Data flow (all JSON is the source of truth; `ForeverVO_Data/Data/*.lua` is a
 build artifact, never hand-edited):
@@ -391,7 +421,23 @@ build artifact, never hand-edited):
 
 Voice quality notes: Chatterbox on an RTX 3080 does ~6 s of audio in ~5 s
 with the game closed, roughly 3x slower with it open. Perth (the watermarker)
-needs `setuptools<81`. Text cleaning rules mirror the original VoiceOver
+needs `setuptools<81`. **A chunk that runs into the token cap is thrown away**
+(since 2026-10-06): Chatterbox stops a `generate()` call at 1000 speech tokens,
+40.0 s, and the English model has no alignment analyzer (chatterbox `t3.py` builds
+one for the multilingual model only), so nothing forces the end of speech and a call
+that misses its stop token babbles to the cap. `Synth.render_take` keeps a try only
+when it stopped short of `TOKEN_CAP_SECONDS` (39.9), retries, and halves the chunk
+(`textclean.halve`) after three capped tries; it used to keep the longest of three,
+so a runaway always won. `ran_into_cap` in `wanted()` regenerates a pack file that
+fits one chunk and is 40.0 s long before tempo and speed (15 on 2026-10-06; a line
+of several chunks runs past 40 s honestly, so a runaway inside one cannot be told
+from its length). Every `generate()` call is seeded, `derive_seed(take, chunk,
+try)` from a take seed drawn at random, and the journal line prints it; it is not
+in `sound_index.json`. The chunk length (`textclean.CHUNK_CHARS`, 300) is not in
+the text fingerprint, as clip audio is not: changing it restages nothing, and
+`--force --voice` redoes a voice. The slowest voices read about 10 characters a
+second before tempo (scourge-male-standard 9.8, orc-male 10.3), so much past 300
+risks the cap. Text cleaning rules mirror the original VoiceOver
 tool (`$B` newlines, `$N`/`$C`/`$R` substitutions, `$G` gender branches as
 m-/f- file variants). Angle-bracket stage directions are the narrator's: a
 speaker's whole-line file leaves them out, and the line also gets *parts*
@@ -912,9 +958,8 @@ of the 10 s window, then the knobs.
 - Per-line configurability: let end users nudge text, voice, exaggeration or
   pacing for a line and re-run Chatterbox for it themselves. `uv run audition`
   (2026-09-24) covers the owner's side of this: hear variants, keep a voice's
-  settings or a respelling in the TOML, write one file into the pack. Not yet:
-  end users without the repo, pacing, parts and narrator alternates, and there
-  is deliberately no per-line table in the TOML.
+  settings or a respelling in the TOML, pin a take's seed for one line. Not yet:
+  end users without the repo, pacing, parts and narrator alternates.
 - A Discord bot as an alternative inbox for `FVO1:` strings (same decoder).
 - A complete base pack release once the Classic bulk run finishes (the first,
   partial one went up 2026-09-22 with ~12,900 of ~18,000 files; the alternate

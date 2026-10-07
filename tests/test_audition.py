@@ -406,13 +406,15 @@ def test_stop_ends_a_run_after_the_take_in_progress(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str, stopped=None) -> str:
+        def render_take(self, text: str, voice: str, **kwargs: object) -> object:
+            from tools.generate import RenderedTake
+
             # the page presses Stop while the first take is being made
             (session,) = studio.stops
             assert client.post(f"/api/generate/{session}/stop").json() == {
                 "stopping": True
             }
-            return "audio"
+            return RenderedTake("audio", 1.0, 7, [])
 
         def encode(
             self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
@@ -460,9 +462,11 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
     class FakeSynth:
         catalog = None
 
-        def render(self, text: str, voice: str, stopped=None) -> str:
+        def render_take(self, text: str, voice: str, **kwargs: object) -> object:
+            from tools.generate import RenderedTake
+
             renders.append(text)
-            return f"audio{len(renders)}"
+            return RenderedTake(f"audio{len(renders)}", 1.0, 7, [])
 
         def encode(
             self, audio: str, out: Path, tempo: float, pitch: float, speed: float = 1.0
@@ -813,19 +817,22 @@ def test_a_take_stops_between_the_sentences_of_a_long_line() -> None:
         def generate(self, text: str, **kwargs: object) -> object:
             Model.calls += 1
             pressed.append(True)  # Stop is pressed while the first sentence renders
-            return SimpleNamespace(shape=(1, 48_000), cpu=lambda: self.wav)
+            return SimpleNamespace(shape=(1, 240_000), cpu=lambda: self.wav)
 
-        wav = SimpleNamespace(shape=(1, 48_000))
+        wav = SimpleNamespace(shape=(1, 240_000))  # 10 s: speech, not a blip
 
     synth: Any = object.__new__(Synth)  # a Synth with a stand-in model, no GPU
     synth.sr = 24_000
-    synth.torch = SimpleNamespace(zeros=lambda *shape: None)
+    synth.torch = SimpleNamespace(
+        zeros=lambda *shape: None, manual_seed=lambda seed: None
+    )
     synth.model = Model()
     settings = SimpleNamespace(exaggeration=0.5, cfg_weight=0.5)
     synth.catalog = SimpleNamespace(
         resolve=lambda voice: SimpleNamespace(clip=None, settings=settings)
     )
-    text = "The first sentence is long enough. " * 3 + "And so is the second one here."
+    # two chunks at the pack's 300 characters
+    text = "The first sentence is long enough to stand on its own. " * 6
     with pytest.raises(TakeStopped):
         synth.render(text, "human-male", stopped=lambda: bool(pressed))
     assert Model.calls == 1  # the second sentence was never started
@@ -847,6 +854,8 @@ def test_a_voice_lists_every_line_when_asked_for_all(
 
     rows = [row(i) for i in range(1, 76)]
     studio = object.__new__(audition.Studio)
+    studio.config_path = CONFIG_TOML
+    studio._rows = None  # no corpus behind the rows: no pins to look up
     monkeypatch.setattr(studio, "rows", lambda: rows)
     monkeypatch.setattr(studio, "moving_to", lambda voice: frozenset())
     client = TestClient(audition.create_app(studio, addons=None))
