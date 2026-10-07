@@ -173,6 +173,9 @@
   #voice-results li:last-child { border-bottom: 0; }
   #voice-results li.active, #voice-results li[data-v]:hover { background: var(--panel); }
   #voice-results li.current { color: var(--gold); }
+  /* while searching, the match Enter takes: the best one until the arrows move it */
+  #voice-results.searching li.active { background: color-mix(in srgb, var(--borrow) 18%, var(--bg)); color: var(--borrow);
+    box-shadow: inset 3px 0 0 var(--borrow); }
   #voice-results .m { color: var(--dim); font-size: 12px; }
   #voice-results li.none { color: var(--dim); cursor: default; }
   #voice-results li.group { position: sticky; top: 0; background: var(--bg); color: var(--dim); cursor: default; font-size: 11px;
@@ -189,6 +192,8 @@
   /* Clone from takes the room; the three numbers beside it are the width of a number */
   .fields.run { grid-template-columns: minmax(0, 1fr) repeat(3, minmax(6.5em, 10em)); }
   .fields.run label.check.hint { display: flex; margin-top: 4px; font-size: 11px; color: var(--dim); }
+  /* the picked line's pinned seed, filled in for it */
+  #seed-in.pinned { border-color: var(--borrow); box-shadow: 0 0 0 1px var(--borrow); color: var(--borrow); }
   /* after the rule above, which it overrides: Clone from on a row of its own */
   @container (max-width: 560px) {
     .fields.run { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -935,6 +940,7 @@ function renderVoiceResults(scroll = true) {
   const box = $("voice-results"), input = $("voice-search");
   if (!state || document.activeElement !== input) { closeVoiceList(); return []; }
   box.hidden = false;
+  box.classList.toggle("searching", !!voiceQuery);
   input.setAttribute("aria-expanded", "true");
   const current = $("voice").value, top = box.scrollTop;
   let n = 0, html = "";
@@ -1241,6 +1247,7 @@ function pick(row, li) {
     `<div class="m">Raw: ${esc(row.raw)}</div><div id="speaker-pin" class="row"></div><div id="line-pin" class="m line-pin"></div>`;
   showSpeakerPin();
   showLinePin();
+  fillFromPin();
   showResolved();
   schedulePreview();
 }
@@ -1260,12 +1267,12 @@ function showLinePin() {
       : `<span class="warn" title="The line's text or the voice's settings changed since the take was pinned, so the seed would draw another take: the pin is not used.">pinned under other settings (seed ${p.seed}); not used</span>`) +
     `<a href="#" id="pin-load" title="Put the pin's seed, chunk length and Same seed in the run options">load into run</a>` +
     `<a href="#" id="pin-drop" title="Remove the pin from [lines]. The file it drew stays until something else changes the line.">unpin</a>`;
-  $("pin-load").addEventListener("click", e => { e.preventDefault(); useSeed(p.seed, p.chunk_chars, p.same_seed); });
+  $("pin-load").addEventListener("click", e => { e.preventDefault(); useSeed(p.seed, p.chunk_chars, p.same_seed); seedFromPin = true; markPinnedSeed(); });
   $("pin-drop").addEventListener("click", async e => {
     e.preventDefault();
     try {
       await api(`/api/pin-seed/${encodeURIComponent(current.base)}`, { method: "DELETE" });
-      current.pin = null; showLinePin(); schedulePreview();
+      current.pin = null; showLinePin(); fillFromPin(); schedulePreview();
       toast("Unpinned. The file it drew stays until something else changes the line.", "ok");
     } catch (err) { toast(err.message, "warn"); }
   });
@@ -1482,7 +1489,7 @@ function onEvent(ev) {
         toast(`Pinned seed ${ev.seed} to ${ev.base}. The next generate run draws its file from it.`, "ok");
         if (current && current.base === ev.base) {
           current.pin = { seed: ev.seed, chunk_chars: ev.chunk_chars || 300, same_seed: !!ev.same_seed, live: true };
-          showLinePin();
+          showLinePin(); fillFromPin();
         }
       } catch (e) { toast(e.message, "warn"); }
       busy(pin, false);
@@ -1508,15 +1515,41 @@ const SEED_NOTE = "The seed this take was drawn from, each model call seeded fro
 // The run options a seed belongs with; a seed locks Takes each to one
 function useSeed(seed, chunkChars, sameSeed) {
   $("seed-in").value = seed; $("chunk-chars").value = chunkChars; $("same-seed").checked = sameSeed;
-  seedChanged(); schedulePreview();
+  seedFromPin = false;  // a take's seed; fillFromPin marks the pin's own
+  seedChanged(); markPinnedSeed(); schedulePreview();
 }
+// A picked line with a pin that holds runs from it by default: its seed, chunk length
+// and Same seed fill the run options, the Seed box outlined in blue while it is the
+// pin's. Typing over it, unpinning or picking a line without one clears that, and a
+// seed the pin put there goes with it, so it does not ride along to the next line.
+let seedFromPin = false;
+function fillFromPin() {
+  const p = current && current.pin;
+  if (p && p.live) {
+    useSeed(p.seed, p.chunk_chars, p.same_seed);
+    seedFromPin = true;
+  } else if (seedFromPin) {
+    $("seed-in").value = ""; $("chunk-chars").value = 300; $("same-seed").checked = false;
+    seedFromPin = false;
+    seedChanged();
+  }
+  markPinnedSeed();
+}
+function markPinnedSeed() {
+  const pinned = seedFromPin && current && current.pin && +$("seed-in").value === current.pin.seed;
+  $("seed-in").classList.toggle("pinned", !!pinned);
+  $("seed-in").title = pinned ? `${current.base}'s pinned seed: generating with it draws the pinned take again` : "";
+}
+
+let takesBeforeSeed = null;  // Takes each as it was before a seed locked it to one
 function seedChanged() {
   const seeded = $("seed-in").value !== "";
-  if (seeded) $("takes").value = 1;
+  if (seeded && !$("takes").disabled) { takesBeforeSeed = $("takes").value; $("takes").value = 1; }
+  if (!seeded && $("takes").disabled && takesBeforeSeed != null) { $("takes").value = takesBeforeSeed; takesBeforeSeed = null; }
   $("takes").disabled = seeded;
   $("takes").title = seeded ? "One take: a seed makes every take the same" : "";
 }
-$("seed-in").addEventListener("input", seedChanged);
+$("seed-in").addEventListener("input", () => { seedFromPin = false; seedChanged(); markPinnedSeed(); });
 
 // One mark per chunk of a take, where the model was called afresh: an accent that
 // switches at a mark is a chunk boundary, one that drifts between marks is the model
