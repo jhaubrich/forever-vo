@@ -1,0 +1,148 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "12616|c5ceacbe": {
+   "build": "70245",
+   "class": "Rogue",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Vhulgra",
+   "npc": "12616",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Where would you like to fly to?",
+   "time": 1791385736,
+   "title": null,
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "3310|cc0cf280": {
+   "build": "70245",
+   "class": "Rogue",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Doras",
+   "npc": "3310",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "You haven't lived until you've looked down on the world from the back of a wind rider.",
+   "time": 1791387878,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "11820": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Locke Okarr",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "12616": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Vhulgra",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "12718": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Gurda Ragescar",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3310": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Doras",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4198": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1100258,
+   "name": "Braelyn Firehand",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1229",
+ "quests": {
+  "1088-progress": {
+   "build": "70245",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1442,
+   "name": "Braelyn Firehand",
+   "npc": "4198",
+   "questID": 1088,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "When my master bade me to the peak of Stonetalon, I expected that all I would need was to lay waste to the night elves that crawled the sacred ruins of our ancient temple of Azshara, their touch despoiling its sanctity... but Ordanus had slipped my grasp.",
+   "time": 1791388338,
+   "title": "Ordanus",
+   "wanted": null,
+   "zone": "Stonetalon Mountains"
+  },
+  "6504-progress": {
+   "build": "70245",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Gurda Ragescar",
+   "npc": "12718",
+   "questID": 6504,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "I hope you find the pages soon, $N! I really need to get back to work!",
+   "time": 1791385651,
+   "title": "The Lost Pages",
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "6571-progress": {
+   "build": "70245",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Locke Okarr",
+   "npc": "11820",
+   "questID": 6571,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "I hope you can come through with the supplies! I'm in big trouble if I don't deliver them soon!",
+   "time": 1791385684,
+   "title": "Warsong Supplies",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
