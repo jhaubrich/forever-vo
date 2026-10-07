@@ -28,6 +28,14 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       --    other sex, for a creature ID met as both (Peacekeepers, guards).
       --    File Sounds\Quests\Sex\<m|f>\<base>.mp3; played when the unit
       --    in the dialog is that sex. Parts are not doubled.
+      -- xa/xp/xc: { [speakerKey] = { d = 2.1, v = "human-female" } | true | false },
+      --    the event's other speakers, for a quest that more than one creature
+      --    takes (Dokimi and Marcy Baker share the crates: #948). A record is
+      --    that speaker's own file, Sounds\Quests\Speaker\<key>\<base>.mp3,
+      --    played when they are in front of the player; true says the line's
+      --    own file is in their voice, false that theirs is not made yet.
+      --    Every speaker the pipeline knows is listed, so a capture from one
+      --    that is not goes out with the next export (QuestSpeakerKnown).
       -- ha/hp/hc: Util.TextKey of the text that event was voiced from, or
       --    "<male>,<female>" when it has a $G branch. A live text that keys
       --    differently is exported although it is voiced (QuestTextMatches).
@@ -60,6 +68,9 @@ ForeverVO.RegisterPack(pack) with a table of this shape:
       -- every sex the pipeline knows a speaker as ("m", "f", "mf", ""); "mf"
       -- means its lines have the other sex's file too (sa/sp/sc, gossip s).
       -- A player who meets a sex not listed exports the NPC record (Capture.lua)
+    maps = { [speakerKey] = 1413 },
+      -- the map each speaker of a quest with several (xa/xp/xc) was met on,
+      -- which picks one when the client keeps the unit's identity secret
     books = {
       ["1a2b3c4d"] = { d = 12.3, t = "original page text", s = "original page text",
                        b = "A Letter to Morgan", p = 1, x = "5e6f7a8b", g = true,
@@ -158,6 +169,7 @@ function ns.RegisterPack(pack)
     pack.npcs = pack.npcs or {}
     pack.models = pack.models or {}
     pack.sexes = pack.sexes or {}
+    pack.maps = pack.maps or {}
     pack.narrator = pack.narrator or {}
     pack.narratorVoices = pack.narratorVoices or {}
     pack.books = pack.books or {}
@@ -368,16 +380,29 @@ local function OtherSex(pack, subfolder, base, other, sex, recorded)
     return SoundPath(pack, subfolder .. "\\Sex\\" .. sex, base), seconds, voice
 end
 
+--- The record of a quest event's other speaker (`others`: xa/xp/xc) when that
+--- speaker has a file of its own: path, duration and voice.
+local function OtherSpeaker(pack, base, others, speakerKey)
+    local other = speakerKey and type(others) == "table" and others[speakerKey]
+    if type(other) ~= "table" or not other.d then
+        return nil
+    end
+    return SoundPath(pack, "Quests\\Speaker\\" .. speakerKey, base), other.d, other.v
+end
+
 --- Finds the audio for a quest event. Returns path, duration, pack, parts,
 --- voice or nil. `voice` is the archetype that rendered the file (va/vp/vc),
 --- or the narrator voice when that recording is the one playing. `parts` is
 --- set for a line the queue plays as a sequence (see ResolveParts); `path`
 --- then names the whole-line file where one exists, or the first part.
 --- `sex` ("m"/"f", optional) is the speaker's, from the unit in the dialog: a
---- creature met as both sexes has the line in each (sa/sp/sc).
+--- creature met as both sexes has the line in each (sa/sp/sc). `speakerKey`
+--- (optional) is whoever says it: a quest handed in to more than one NPC has
+--- the line in each one's voice (xa/xp/xc), a whole line even where the
+--- line's own file has parts.
 ---@param questID number
 ---@param event "accept"|"progress"|"complete"
-function Packs:FindQuest(questID, event, sex)
+function Packs:FindQuest(questID, event, sex, speakerKey)
     local field = QUEST_FIELD[event]
     if not questID or not field then
         return nil
@@ -397,6 +422,10 @@ function Packs:FindQuest(questID, event, sex)
             local voice = self:NarratorVoice()
             local recorded = entry["v" .. field]
             local alternate = voice ~= DEFAULT_NARRATOR and NarratorRecord(pack, questID, voice) or nil
+            local speakerPath, speakerSeconds, speakerVoice = OtherSpeaker(pack, base, entry["x" .. field], speakerKey)
+            if speakerPath then
+                return speakerPath, speakerSeconds, pack, nil, speakerVoice
+            end
             if parts then
                 local resolved, total = ResolveParts(pack, "Quests", base, parts, alternate and alternate[field .. "P"], voice)
                 local path = entry[field] and SoundPath(pack, "Quests", base) or resolved[1].path
@@ -454,17 +483,68 @@ function Packs:QuestTextMatches(pack, questID, event, text)
     return false
 end
 
+--- The speaker a pack records for a quest event: the giver, or for a
+--- progress or complete text the turn-in speaker where the pack records one.
+local function RecordedSpeaker(entry, event)
+    local turnIn = event == "progress" or event == "complete"
+    return entry and ((turnIn and entry.ender) or entry.npc)
+end
+
+--- The map a speaker was met on, from any pack (pack.maps).
+function Packs:SpeakerMap(key)
+    for _, pack in ipairs(self.list) do
+        local mapID = pack.maps[key]
+        if mapID then
+            return mapID
+        end
+    end
+end
+
 --- Speaker key recorded by any pack for the quest: the giver, or for a
 --- progress or complete text the turn-in speaker where the pack records one.
+--- Where the event has other speakers (xa/xp/xc), the one met on the map the
+--- player stands on, if only one was: the client may keep the unit in front
+--- of the player secret, and Marcy Baker took Dokimi's face and voice (#948).
 function Packs:QuestGiver(questID, event)
-    local turnIn = event == "progress" or event == "complete"
+    local field = QUEST_FIELD[event]
     for _, pack in ipairs(self.list) do
         local entry = pack.quests[questID]
-        local key = entry and ((turnIn and entry.ender) or entry.npc)
+        local key = RecordedSpeaker(entry, event)
         if key then
+            local others = field and entry["x" .. field]
+            local mapID = type(others) == "table" and C_Map.GetBestMapForUnit("player")
+            if mapID then
+                local found = self:SpeakerMap(key) == mapID and key or nil
+                for candidate in pairs(others) do
+                    if self:SpeakerMap(candidate) == mapID then
+                        if found then
+                            return key -- two met here: nothing to tell them apart
+                        end
+                        found = candidate
+                    end
+                end
+                return found or key
+            end
             return key
         end
     end
+end
+
+--- False when the pack that voices a quest event records its speakers and
+--- `speakerKey` (a creature) is not among them: the line goes out with the
+--- next export although it is voiced, so the pipeline learns of the speaker
+--- and reads the line in their voice too (#948).
+---@param pack table the pack FindQuest found the event in
+function Packs:QuestSpeakerKnown(pack, questID, event, speakerKey)
+    local field = QUEST_FIELD[event]
+    local entry = pack and field and pack.quests[questID]
+    local recorded = RecordedSpeaker(entry, event)
+    speakerKey = tonumber(speakerKey)
+    if not recorded or not speakerKey or speakerKey < 0 or recorded < 0 or speakerKey == recorded then
+        return true
+    end
+    local others = entry["x" .. field]
+    return type(others) == "table" and others[speakerKey] ~= nil
 end
 
 function Packs:SpeakerName(key)

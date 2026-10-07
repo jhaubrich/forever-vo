@@ -214,6 +214,16 @@ Generation details:
 
 - Text cleaning: `$B` newlines, `$N`/`$C`/`$R` substitutions, `$G` branches as
   m-/f- file variants, `[pronunciations]` respellings (whole words, any case).
+- A quest taken in by more than one NPC (Dokimi and Marcy Baker share the
+  crates of "A Sealed Crate", #948): ingest keeps every trusted speaker
+  (0.1.3 on, creatures only) in the line's `speakers` (key -> mapID) and the
+  line's own `npc` stays put (`merge_speakers`; a reading with no speaker
+  takes the other's). `Item.speaker_alternates` voices the line again for a
+  speaker whose voice differs, under `Sounds/Quests/Speaker/<key>/` (index
+  key `Speaker/<key>/<base>`, tables `xa`/`xp`/`xc`, `pack.maps`). The addon
+  plays the one in front of the player, picks by map when the unit is
+  secret (`Packs:QuestGiver`), and exports a voiced line from a speaker the
+  pack does not list (`newSpeaker`, `Packs:QuestSpeakerKnown`).
 - Angle-bracket stage directions are the narrator's: the line also gets *parts*,
   `<questID>-p<i>-<event>` / `<speaker>-p<i>-<hash>`, played back to back
   (`aP`/`pP`/`cP`, gossip `P`/`nP`). The part number sits before the last name
@@ -440,8 +450,8 @@ voice after rebuilding its clip by hand: `generate.py --force --voice <voice>`.
   had drifted once silently never applied.
 - An index entry with `v: null` and no `t` is a probed placeholder, blind to the
   voice and text checks; `generate.py --reindex` restamps `t`.
-- Anything that walks sounds by `glob("*/*.mp3")` misses the `Narrator/` and
-  `Sex/` folders by design; they have their own scans.
+- Anything that walks sounds by `glob("*/*.mp3")` misses the `Narrator/`,
+  `Sex/` and `Speaker/` folders by design; they have their own scans.
 - The wago.tools export is complete, but the beta's `BroadcastText` really is
   12 rows; gossip is server-pushed.
 - 38 of Classic's book pages are SimpleHTML (`<HTML><BODY><H1>...`):

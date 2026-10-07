@@ -38,7 +38,9 @@ local function GetDB()
     --    do not know it as (Packs:SpeakerSexes)
     -- 7: pages of readable text (books, letters, plaques) in `books`, keyed by
     --    Util.TextKey of the page, with the title and page number
-    db.version = 7
+    -- 8: a voiced quest line from a speaker its pack does not list
+    --    (Packs:QuestSpeakerKnown) is captured with `newSpeaker` set
+    db.version = 8
     db.quests = db.quests or {}
     db.gossip = db.gossip or {}
     db.books = db.books or {}
@@ -188,6 +190,11 @@ function Capture:Record(line)
     -- short, and Forever rewords): export it so the pipeline replaces it.
     local differs = line.found and line.kind == "quest"
         and not ns.Packs:QuestTextMatches(line.pack, line.questID, line.event, line.text) or nil
+    -- One quest can be handed in to more than one NPC, and the pack voices it
+    -- for those it knows (#948): a voiced line from another is sent, so the
+    -- next pack reads it in their voice too.
+    local newSpeaker = line.found and line.kind == "quest"
+        and not ns.Packs:QuestSpeakerKnown(line.pack, line.questID, line.event, npcKey) or nil
     -- A page found only by the fuzzy fallback is Classic's page that Forever
     -- reworded (or a Forever book sharing a title): it plays, and is sent too
     if line.found and line.kind == "book" and not line.exact then
@@ -206,6 +213,7 @@ function Capture:Record(line)
         found = line.found or nil,
         wanted = wanted,
         differs = differs,
+        newSpeaker = newSpeaker,
         pack = line.pack and line.pack.name or nil,
         player = UnitName("player"),
         class = UnitClass("player"),
@@ -243,15 +251,17 @@ function Capture:Record(line)
 end
 
 --- True when an export should carry the entry: no pack voiced it, the pack
---- that did asked for this reader's version of it, or voiced other text.
+--- that did asked for this reader's version of it, voiced other text, or
+--- does not know its speaker.
 function Capture.Contributes(entry)
     return not entry.found or entry.wanted == true or entry.differs == true
+        or entry.newSpeaker == true
 end
 
 --- Checks every line still waiting to be sent against the packs installed
---- now. `found`, `wanted` and `differs` were decided by the pack the player
---- had when the line was heard, so a line a later pack voiced, or stopped
---- asking for, stayed counted until an export. It never adds a line to send.
+--- now. `found`, `wanted`, `differs` and `newSpeaker` were decided by the
+--- pack the player had when the line was heard, so a line a later pack voiced,
+--- or stopped asking for, stayed counted until an export. It never adds a line to send.
 --- Quest text is checked as stored, already tokenised for its reader, and a
 --- quest line recorded before the reader's sex was (0.1.4) is left alone.
 function Capture:Refresh()
@@ -264,11 +274,14 @@ function Capture:Refresh()
                 local wanted = ns.Packs:QuestWanted(pack, entry.questID, entry.event, entry.sex) or nil
                 local differs = entry.text
                     and not ns.Packs:QuestTextMatches(pack, entry.questID, entry.event, entry.text) or nil
+                local newSpeaker = not ns.Packs:QuestSpeakerKnown(pack, entry.questID, entry.event, entry.npc) or nil
                 if not entry.found then
                     entry.found, entry.wanted, entry.differs = true, wanted, differs
+                    entry.newSpeaker = newSpeaker
                 else
                     entry.wanted = entry.wanted and wanted
                     entry.differs = entry.differs and differs
+                    entry.newSpeaker = entry.newSpeaker and newSpeaker
                 end
             end
         end
