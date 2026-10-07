@@ -1,0 +1,74 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "252377": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Seena Skybreaker",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "254100": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Zephras Citizen",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "273017": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1100087,
+   "name": "Fendaal Windstone",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1264",
+ "quests": {
+  "94003-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Seena Skybreaker",
+   "npc": "252377",
+   "questID": 94003,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "<Seena nods curtly at you.>",
+   "time": 1791399220,
+   "title": "The Skybreaker Bulwark",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "98512-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Fendaal Windstone",
+   "npc": "273017",
+   "questID": 98512,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I wonder what they are after?",
+   "time": 1791398195,
+   "title": "Al'Aketh Assassins",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
