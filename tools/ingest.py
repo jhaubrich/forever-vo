@@ -14,6 +14,7 @@ import difflib
 import json
 import re
 import sys
+import unicodedata
 from collections.abc import Callable
 from pathlib import Path
 
@@ -949,6 +950,197 @@ def merge_npc(old: dict, npc: dict, source: str, addon: str | None) -> dict:
     return merged
 
 
+# Only English clients contribute (the owner's call, 2026-10-07). A Spanish
+# (issue-1072), a German (issue-1129, issue-610) and a Russian (issue-1189)
+# client exported their own translations, which won over English lines as
+# `differs` and were voiced by English voices into the 2026.10.07 packs. From
+# addon 0.1.10 an export records its client's `locale` and the addon captures
+# nothing outside English; an older export is judged by its text.
+ENGLISH_WORDS = frozenset(
+    [
+        "the",
+        "you",
+        "and",
+        "to",
+        "of",
+        "is",
+        "that",
+        "for",
+        "it",
+        "with",
+        "your",
+        "have",
+        "this",
+        "be",
+        "are",
+        "we",
+        "my",
+        "not",
+        "will",
+        "me",
+        "what",
+        "but",
+        "they",
+        "was",
+        "our",
+        "from",
+        "here",
+        "can",
+        "if",
+        "all",
+        "must",
+    ]
+)
+# Common words of the other Latin-script client languages, none an English word
+FOREIGN_WORDS = frozenset(
+    [
+        "el",
+        "la",
+        "es",
+        "se",
+        "lo",
+        "en",
+        "al",
+        "su",
+        "hay",
+        "aquí",
+        "los",
+        "las",
+        "que",
+        "por",
+        "para",
+        "una",
+        "con",
+        "del",
+        "está",
+        "muy",
+        "pero",
+        "como",
+        "más",
+        "sus",
+        "este",
+        "esta",
+        "nuestro",
+        "nuestra",
+        "también",
+        "usted",
+        "der",
+        "das",
+        "und",
+        "ist",
+        "nicht",
+        "ein",
+        "eine",
+        "einen",
+        "mit",
+        "auf",
+        "für",
+        "dem",
+        "den",
+        "ich",
+        "sie",
+        "wir",
+        "ihr",
+        "euch",
+        "uns",
+        "noch",
+        "sind",
+        "wurde",
+        "haben",
+        "le",
+        "les",
+        "des",
+        "une",
+        "vous",
+        "nous",
+        "est",
+        "pour",
+        "avec",
+        "dans",
+        "pas",
+        "sur",
+        "qui",
+        "mais",
+        "sont",
+        "votre",
+        "cette",
+        "não",
+        "você",
+        "com",
+        "são",
+        "isso",
+        "muito",
+        "il",
+        "della",
+        "che",
+        "non",
+        "sono",
+        "gli",
+        "questo",
+    ]
+)
+FOREIGN_LETTERS = re.compile(r"[¡¿ñßäöüãõç]")
+
+
+def foreign_line(text: str) -> bool:
+    """Whether a line reads as another language than English: mostly letters of
+    another script, or more of another language's common words than English's.
+    A line of neither (Forever's own Thalassian-like tongue, "Woof?") is English
+    enough: it came from an English client."""
+    letters = [ch for ch in text if ch.isalpha()]
+    if letters and sum(
+        "LATIN" not in unicodedata.name(ch, "") for ch in letters
+    ) > 0.3 * len(letters):
+        return True
+    words = re.findall(r"[^\W\d_]+", text.lower())
+    foreign = sum(word in FOREIGN_WORDS for word in words) + len(
+        FOREIGN_LETTERS.findall(text.lower())
+    )
+    english = sum(word in ENGLISH_WORDS for word in words)
+    return foreign >= 2 and foreign > 2 * english
+
+
+def foreign_export(db: dict) -> bool:
+    """Whether a capture file came from a client in another language: its
+    `locale` when it records one, else whether a quarter of its lines read as
+    another language (78 to 91 % in the four such exports; no line of any
+    English export did, 2026-10-07). Judged per file, so an English book page a
+    Russian client showed still goes with the rest of its export."""
+    locale = db.get("locale")
+    if locale:
+        return not str(locale).startswith("en")
+    texts = [
+        entry.get("text") or ""
+        for kind in ("quests", "gossip", "books")
+        for entry in (db.get(kind) or {}).values()
+        if isinstance(entry, dict)
+    ]
+    foreign = sum(foreign_line(text) for text in texts)
+    return foreign > 0 and 4 * foreign >= len(texts)
+
+
+def purge_foreign(capture: dict, db: dict, purged: dict[str, set[str]]) -> int:
+    """Drops from capture.json every line a foreign export's reading won, and
+    the NPC names it gave, so the line falls back to Classic's text or to an
+    English reading (main merges those again). Adds the keys to `purged` and
+    returns how many lines went."""
+    origin = db.get("origin")
+    count = 0
+    if origin:
+        for kind in ("quests", "gossip", "books"):
+            for key in [
+                k for k, e in capture[kind].items() if e.get("origin") == origin
+            ]:
+                del capture[kind][key]
+                purged[kind].add(key)
+                count += 1
+    for key, npc in (db.get("npcs") or {}).items():
+        record = capture["npcs"].get(str(key))
+        if record and npc.get("name") and record.get("name") == npc["name"]:
+            del record["name"]
+    return count
+
+
 def gather_sexes(capture: dict, db: dict) -> None:
     """Folds every sex an export saw each NPC as into capture.json's `sexes`.
 
@@ -965,13 +1157,8 @@ def gather_sexes(capture: dict, db: dict) -> None:
             record["sexes"] = sexes
 
 
-def ingest_file(
-    capture: dict,
-    path: Path,
-    sources: SourceTexts | None,
-    stats: Repairs,
-    readers: Readers,
-) -> tuple[int, int, int, int]:
+def load_db(path: Path) -> dict | None:
+    """A capture file's table: a community export, or the saved variables'."""
     if path.suffix == ".json":
         db = json.loads(path.read_text(encoding="utf-8"))
     else:
@@ -979,7 +1166,21 @@ def ingest_file(
             path.read_text(encoding="utf-8", errors="replace")
         )
         db = variables.get(CAPTURE_VAR)
-    if not isinstance(db, dict):
+    return db if isinstance(db, dict) else None
+
+
+def ingest_file(
+    capture: dict,
+    path: Path,
+    sources: SourceTexts | None,
+    stats: Repairs,
+    readers: Readers,
+    only: dict[str, set[str]] | None = None,
+) -> tuple[int, int, int, int]:
+    """Merges one capture file. `only` merges just those lines (kind -> keys)
+    and no NPC record: what main merges again after a purge."""
+    db = load_db(path)
+    if db is None:
         return (0, 0, 0, 0)
     # Community exports: the issue comment they came from, and the addon that
     # wrote them (absent before 0.1.2), both stamped on each entry
@@ -994,7 +1195,7 @@ def ingest_file(
             stats,
             readers,
         )
-        if entry is not None:
+        if entry is not None and (only is None or str(key) in only["quests"]):
             quests += merge_entry(capture["quests"], str(key), entry, readers)
     for key, entry in (db.get("gossip") or {}).items():
         entry = repair_entry(
@@ -1005,10 +1206,11 @@ def ingest_file(
             stats,
             readers,
         )
-        if entry is not None:
-            gossip += merge_entry(
-                capture["gossip"], gossip_key(key, entry, readers), entry, readers
-            )
+        if entry is None:
+            continue
+        target = gossip_key(key, entry, readers)
+        if only is None or target in only["gossip"]:
+            gossip += merge_entry(capture["gossip"], target, entry, readers)
     for key, entry in (db.get("books") or {}).items():
         entry = repair_entry(
             {**entry, **stamp} if stamp else entry,
@@ -1018,18 +1220,24 @@ def ingest_file(
             stats,
             readers,
         )
-        if entry is not None:
-            books += merge_entry(
-                capture["books"], book_key(entry, readers), entry, readers
-            )
-    for key, npc in (db.get("npcs") or {}).items():
+        if entry is None:
+            continue
+        target = book_key(entry, readers)
+        if only is None or target in only["books"]:
+            books += merge_entry(capture["books"], target, entry, readers)
+    for key, npc in ({} if only is not None else db.get("npcs") or {}).items():
         old = capture["npcs"].get(str(key), {})
         merged = merge_npc(old, npc, db.get("origin") or "local", db.get("addon"))
         if merged != old:
             npcs += 1
         capture["npcs"][str(key)] = merged
     stat = path.stat()
-    capture["sources"][str(path)] = {"mtime": stat.st_mtime, "size": stat.st_size}
+    # Only an English file is ever merged (main skips the rest)
+    capture["sources"][str(path)] = {
+        "mtime": stat.st_mtime,
+        "size": stat.st_size,
+        "foreign": False,
+    }
     return quests, gossip, books, npcs
 
 
@@ -1140,10 +1348,35 @@ def main(argv: list[str] | None = None) -> int:
     capture = load_capture()
     sources = SourceTexts()
     stats = Repairs()
+    purged: dict[str, set[str]] = {"quests": set(), "gossip": set(), "books": set()}
     for path in files:
         seen = capture["sources"].get(str(path))
         stat = path.stat()
-        if seen and seen["mtime"] == stat.st_mtime and seen["size"] == stat.st_size:
+        unchanged = (
+            seen and seen["mtime"] == stat.st_mtime and seen["size"] == stat.st_size
+        )
+        # Judged once per file and kept with its stamp; a file ingested before
+        # the check is judged at the next run, and its lines purged
+        if unchanged and "foreign" in seen:
+            foreign = seen["foreign"]
+        else:
+            db = load_db(path)
+            foreign = db is not None and foreign_export(db)
+            if foreign and db is not None:
+                lines = purge_foreign(capture, db, purged)
+                print(f"foreign    {path}: another language's client, skipped")
+                if lines:
+                    print(f"purged     {lines} lines it had won")
+            if unchanged:
+                seen["foreign"] = foreign
+        if foreign:
+            capture["sources"][str(path)] = {
+                "mtime": stat.st_mtime,
+                "size": stat.st_size,
+                "foreign": True,
+            }
+            continue
+        if unchanged:
             print(f"unchanged  {path}")
             if path.suffix == ".json":
                 gather_sexes(capture, json.loads(path.read_text(encoding="utf-8")))
@@ -1155,6 +1388,16 @@ def main(argv: list[str] | None = None) -> int:
             f"ingested   {path}: {quests} quest, {gossip} gossip, {books} book page, "
             f"{npcs} npc changes"
         )
+    if any(purged.values()):
+        # A purged line may have beaten an English reading, which merge_entry
+        # kept no copy of: merge those lines again from every English file
+        for path in files:
+            if not capture["sources"].get(str(path), {}).get("foreign"):
+                ingest_file(capture, path, sources, stats, readers, only=purged)
+        restored = sum(
+            key in capture[kind] for kind, keys in purged.items() for key in keys
+        )
+        print(f"restored   {restored} of them from English readings")
 
     repaired = backfill(capture, sources, stats, readers)
     if any(repaired):

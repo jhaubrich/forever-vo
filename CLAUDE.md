@@ -55,6 +55,15 @@ own recordings).
   `PlaySoundFile` finds them.
 - The addon compartment does not show on the Camelot minimap skin, hence our
   own minimap button.
+- **English clients only** (the owner's call, 2026-10-07). Another client
+  shows its own translation of every line, which ingest took for Forever's
+  rewording (`differs`) and voiced over the English: a Spanish, a German and a
+  Russian export reached the 2026.10.07 packs. The addon captures nothing and
+  exports nothing outside `enUS`/`enGB` (`Util.EnglishClient`), and an export
+  records `locale` from 0.1.10. Ingest skips a foreign export (`foreign_export`:
+  its `locale`, else a quarter of its lines reading as another language) and
+  purges the lines one already won, merging those keys again from every
+  English file so a displaced English reading comes back.
 - Quest and gossip **text is not in the client files**; the server sends it
   (wago.tools' `QuestV2`/`BroadcastText` carry none). Text comes only from
   in-game capture and the VMaNGOS Classic snapshot. The client's

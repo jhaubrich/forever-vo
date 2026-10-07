@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Only an English game client captures and sends lines. The voice packs are
+  English, and a line read on a client in another language was sent as a
+  change to the English one and replaced it.
+
 ## 0.1.9
 
 - Voice lines play at an even volume. They used to range from quite quiet to

@@ -243,6 +243,14 @@ function Util.SexLetter(sex)
     return nil
 end
 
+--- Whether the client is in English, the only language the project voices.
+--- Another client shows its own translation of every line, which would win
+--- over the English text it differs from and be read by an English voice.
+function Util.EnglishClient()
+    local locale = GetLocale()
+    return locale == "enUS" or locale == "enGB"
+end
+
 function Util.PlayerSexLetter()
     return Util.SexLetter(UnitSex("player"))
 end

@@ -168,6 +168,11 @@ function Capture:Record(line)
     if not ns.db.capture or not line.text or line.text == "" then
         return
     end
+    -- Only English text is voiced: another client's translation would be
+    -- sent as a line that differs from the pack, and replace it
+    if not Util.EnglishClient() then
+        return
+    end
     local db = GetDB()
     local speaker = line.speaker or {}
     local npcKey = DescribeSpeaker(db, speaker)
