@@ -1,0 +1,73 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "277024|589a8d2d": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Jelinek Sharpshear",
+   "npc": "277024",
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Welcome, friend, to the barbershop! Come for a cut? A coloring? Something else, perhaps?\r\n\r\nWe can groom facial hair, perform piercings, ink night elf tattoos, anything you might need!\r\n\r\nHave a seat and we'll get right to work. You're only moments away from a new, more attractive you...",
+   "time": 1791051447,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "68|331b73f2": {
+   "build": "70205",
+   "class": "Warlock",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Stormwind City Guard",
+   "npc": "68",
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "The sharpest shears and most delicate hands are found at Curls and Furls here in the trade district. Take a gander if you have some spare time and are interested in taking a little off the top.",
+   "time": 1791051412,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "270581": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Fyrenz Vishonar",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "277024": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Jelinek Sharpshear",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "68": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Stormwind City Guard",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-865",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}

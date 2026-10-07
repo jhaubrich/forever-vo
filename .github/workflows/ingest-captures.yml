@@ -8,7 +8,10 @@ on:
   issue_comment:
     types: [created, edited]
   issues:
-    types: [opened, edited]
+    # labeled, not opened: an issue the form opens with the capture label also
+    # sends labeled, so listening to both acknowledged every issue twice. An
+    # issue opened without the label runs once it is put on, and only for that label
+    types: [edited, labeled]
 
 permissions:
   contents: write
@@ -18,11 +21,13 @@ jobs:
   ingest:
     if: >-
       (github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'capture-inbox')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'capture'))
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'capture') &&
+        (github.event.action != 'labeled' || github.event.label.name == 'capture'))
     runs-on: ubuntu-latest
-    concurrency:
-      group: ingest-captures
-      cancel-in-progress: false
+    # No concurrency group: GitHub keeps one run waiting per group and cancels
+    # the rest, and a multi-part export opens its issues seconds apart (six
+    # cancelled on 2026-10-04). Each run writes its own captures/<name>.json, so
+    # parallel runs only race at the push, which retries.
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.2.0   # exact tag: there is no moving v10; Python only through uv, .python-version picks the interpreter
@@ -46,8 +51,11 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add captures/
           git commit -m "captures: ${{ steps.decode.outputs.name }}" || exit 0
-          git pull --rebase
-          git push
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase && git push && exit 0
+            sleep $((attempt * 3))
+          done
+          exit 1
       - name: Acknowledge
         uses: actions/github-script@v7
         env:

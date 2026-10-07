@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "2934": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Keeper Bel'dugur",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1031",
+ "quests": {
+  "1013-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Keeper Bel'dugur",
+   "npc": "2934",
+   "questID": 1013,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Did you find the book, $N?",
+   "time": 1791232543,
+   "title": "The Book of Ur",
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

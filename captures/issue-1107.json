@@ -1,0 +1,93 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "11857": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Makaba Flathoof",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3446": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Mebok Mizzyrix",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3449": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Darsok Swiftdagger",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1107",
+ "quests": {
+  "1069-progress": {
+   "build": "70235",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Mebok Mizzyrix",
+   "npc": "3446",
+   "questID": 1069,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Did you get the eggs, $N?  I already made a shipping deal with Wharfmaster Dizzywig!",
+   "time": 1791286731,
+   "title": "Deepmoss Spider Eggs",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "6548-progress": {
+   "build": "70235",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Makaba Flathoof",
+   "npc": "11857",
+   "questID": 6548,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Have you killed them yet?",
+   "time": 1791283233,
+   "title": "Avenge My Village",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "867-progress": {
+   "build": "70235",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Darsok Swiftdagger",
+   "npc": "3449",
+   "questID": 867,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Cut up enough of them yet? Keep slicing and taking trophies. I want 8 Witchwing talons.",
+   "time": 1791286621,
+   "title": "Harpy Raiders",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

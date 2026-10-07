@@ -2,6 +2,49 @@
 
 ## Unreleased
 
+- A quest that more than one NPC takes in speaks in the voice of the one in
+  front of you. The crates of "A Sealed Crate" go to Dokimi in the Barrens
+  and to Marcy Baker in Redridge, and both were read in whichever voice the
+  last pack happened to pick; Owen Thadd and Garion Wendell share their
+  turn-ins the same way. Turning such a quest in to an NPC the voice packs
+  don't know for it yet saves the line for your next export.
+- Only an English game client captures and sends lines. The voice packs are
+  English, and a line read on a client in another language was sent as a
+  change to the English one and replaced it.
+- `/fvo export` counts lines as sent when you copy the text with Ctrl+C,
+  not only through **Copy Link**, and closing the window without copying
+  says in chat how many lines it kept for your next export. Opening the
+  window alone has not cleared them since 0.1.8, so a window closed by
+  mistake loses nothing, but nothing said so.
+
+## 0.1.9
+
+- Voice lines play at an even volume. They used to range from quite quiet to
+  fairly loud, line to line; every voice pack file is now levelled to the
+  same loudness, a little louder than most were. The packs are re-released
+  once for this.
+- NPCs that come as men and women under one name (Ravenholdt Assassins,
+  city guards, grunts, Commendation Officers, holiday revelers) speak in the
+  voice of the one in front of you. The women among them were read in a
+  man's voice. Meeting one the voice packs don't have in your sex yet saves
+  that NPC for your next export, so the next pack adds the other voice.
+- The voice packs are reorganised into six: **Classic Quests** (to level
+  40), **Classic Endgame** (from 41), **Classic Gossip**, **Forever
+  Quests**, **Forever Gossip** and **Books**. Install the ones you want
+  from CurseForge. The old Base, Base Endgame and Data: Forever packs still
+  work, but only for lines the new packs don't have, and the addon tells you
+  at login that you can delete them.
+- Books, letters and plaques can be read aloud by the narrator, whether the
+  book is in your bags or out in the world: press **Play** under the book
+  and it reads on through the rest of the book, as far as the voice pack has
+  it, without you turning a page. It keeps reading when you turn the page or
+  close the book, and a page you turn to beyond what was queued is read after
+  it; **Stop** ends the reading. A page no voice pack
+  has yet is saved for your next export, like unvoiced quests and gossip.
+- The default narrator is now a skyborne male voice instead of the human
+  male one, and the narrator menu says so. Skyborne female is still the
+  other choice. Lines switch over as the voice packs are regenerated, so
+  you will hear both for a while.
 - The count of quests to send (login window, Options, minimap button) leaves
   out lines a voice pack you installed since has voiced or stopped asking
   for. It used to keep counting them until your next export.
@@ -11,6 +54,14 @@
   and never played for that NPC again.
 - "Once" in **Repeat greetings and gossip** lasts until you log out,
   not for good. An NPC you heard yesterday speaks again today.
+- Gossip that says "his" or "her" depending on your character plays the
+  version for your character. When only a player of the other sex had sent
+  the line in, you could hear theirs: Brock Stoneseeker told men about "her
+  pick".
+- The **Narrator voice** you pick, and the developer overlay, stay as you set
+  them after logging out. Both went back to the default at every login.
+- The login window asking you to send quests shows once each time you start
+  the game, not on every `/reload` and every character you log in.
 
 ## 0.1.8
 

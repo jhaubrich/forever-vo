@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1139": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Magistrate Bluntnose",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1356": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Prospector Stormpike",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2094": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "James Halloran",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-899",
+ "quests": {
+  "256-progress": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Magistrate Bluntnose",
+   "npc": "1139",
+   "questID": 256,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Yes? Is there something I can do for you?",
+   "time": 1791139000,
+   "title": "WANTED: Chok'sul",
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "301-progress": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Prospector Stormpike",
+   "npc": "1356",
+   "questID": 301,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "We Stormpikes don't like being bothered with trivial matters, $c.  I hope you brought news worthy of my valuable attention.",
+   "time": 1791135256,
+   "title": "Report to Ironforge",
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "469-progress": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1437,
+   "name": "James Halloran",
+   "npc": "2094",
+   "questID": 469,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Hello there, $c. Could I interest you in a pair of boots?  Perhaps some newly cured skins?",
+   "time": 1791141270,
+   "title": "Daily Delivery",
+   "wanted": null,
+   "zone": "Wetlands"
+  },
+  "484-accept": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1437,
+   "name": "James Halloran",
+   "npc": "2094",
+   "questID": 484,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "I'm James Halloran, the tanner. My cured crocolisk skins are sought after all over, shipments leaving by boat to ports around the world.\n\nMet Einar? He's one of the hunters that brings crocolisk skins in for me.\n\nI'm a bit short on the softer skins that come off crocolisk young.\n\nBeing that I'm running low, I'll pay you top coin for a stack of the skins. You can find the young crocs in the waters right outside of town.",
+   "time": 1791141271,
+   "title": "Young Crocolisk Skins",
+   "wanted": true,
+   "zone": "Wetlands"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -81,6 +81,7 @@ from tools.config import (
     load_config,
 )
 from tools.generate import (
+    SUBFOLDERS,
     Item,
     Synth,
     TakeStopped,
@@ -869,8 +870,8 @@ def _released() -> dict[str, int]:
 def released_files(row: dict[str, Any]) -> int:
     """How many pack files were generated from this pick, by its digest in main's
     sound_index.json: the index the nightly run commits as it voices and ships them.
-    The release records themselves (release_state, release_baseline) are gitignored
-    and live only on the machine that uploads, so this is what every checkout has."""
+    The release record itself (release_state.json) is gitignored
+    and lives only on the machine that uploads, so this is what every checkout has."""
     digest = generate.picks_digest(
         row.get("clips", []), row.get("build"), row.get("gaps", [])
     )
@@ -1013,7 +1014,7 @@ def _known_voices(config: Config, voices_dir: Path = VOICES_DIR) -> list[str]:
 @dataclass(frozen=True)
 class LineRow:
     base: str  # file base name, e.g. 415-accept, m-170-accept, 5688-19cbe7de
-    subfolder: str  # Quests | Gossip
+    subfolder: str  # Quests | Gossip | Books
     title: str  # quest title or gossip speaker
     speaker: str
     voice: str
@@ -2220,7 +2221,7 @@ def create_app(
     def pack_audio(pack: str, subfolder: str, name: str) -> FileResponse:
         if pack not in packs_by_key:
             raise HTTPException(404, pack)
-        if subfolder not in ("Quests", "Gossip"):
+        if subfolder not in SUBFOLDERS.values():
             raise HTTPException(404, subfolder)
         return FileResponse(
             _under(packs_by_key[pack].sounds, f"{subfolder}/{_safe(name)}"),
@@ -2703,7 +2704,7 @@ def create_app(
                 )
             paths.append(path)
         try:
-            out = build_picked_reference(voice, paths, gaps)
+            out = build_picked_reference(voice, paths, gaps, clips=clips, build=build)
         except (RuntimeError, ValueError, subprocess.CalledProcessError) as e:
             raise HTTPException(400, str(e)) from e
         write_voice_sources(studio.config_path, voice, clips, build, gaps)
@@ -2921,7 +2922,9 @@ def create_app(
             paths.append(_under(CLIP_RAW, f"{voice}/{path.name}"))
         existed = (VOICES_DIR / f"{voice}.wav").exists()
         try:
-            out = build_picked_reference(voice, paths, gaps)
+            out = build_picked_reference(
+                voice, paths, gaps, clips=request.clips, build=request.build
+            )
         except (RuntimeError, ValueError, subprocess.CalledProcessError) as e:
             raise HTTPException(400, str(e)) from e
         if request.keep:

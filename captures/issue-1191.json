@@ -1,0 +1,77 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "8418": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 986648,
+   "name": "Falla Sagewind",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1191",
+ "quests": {
+  "3369-accept": {
+   "build": "70245",
+   "class": "Warlock",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Falla Sagewind",
+   "npc": "8418",
+   "questID": 3369,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "This shard holds great secrets; it is the pure essence of the Emerald Dream. However, what I see in this shard is not a dream; one would call this sort of a vision a nightmare.\n\nI do not wish to alarm you, $N, but I think it is best if you deliver this shard into the hands of a wise druid as soon as you can.\n\nHamuul Runetotem on Elder Rise is who you need to find. Head to Thunder Bluff. I cannot say more. ",
+   "time": 1791369243,
+   "title": "In Nightmares",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "6981-complete": {
+   "build": "70245",
+   "class": "Warlock",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Falla Sagewind",
+   "npc": "8418",
+   "questID": 6981,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh... I have never seen anything like this...",
+   "time": 1791369241,
+   "title": "The Glowing Shard",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "6981-progress": {
+   "build": "70245",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Falla Sagewind",
+   "npc": "8418",
+   "questID": 6981,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Hello, $r. What can I do for you?",
+   "time": 1791369240,
+   "title": "The Glowing Shard",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

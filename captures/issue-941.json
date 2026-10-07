@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1256": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Quarrymaster Thesten",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-941",
+ "quests": {
+  "95213-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1426,
+   "name": "Quarrymaster Thesten",
+   "npc": "1256",
+   "questID": 95213,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "What's that you've got?",
+   "time": 1791156991,
+   "title": "Stolen Blasting Powder",
+   "wanted": null,
+   "zone": "Dun Morogh"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

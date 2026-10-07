@@ -1,0 +1,131 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "277055|98eee030": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Axle Smoothslice",
+   "npc": "277055",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Welcome, friend, to the barbershop! Come for a cut? A coloring? Something else, perhaps?\r\n\r\nWe can groom facial hair, perform piercings, reshape tusks and horns, and even modify undead features!\r\n\r\nHave a seat and we'll get right to work. You're only moments away from a new, more attractive you...",
+   "time": 1791143843,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "npcs": {
+  "259118": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Muln Earthfury",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "277055": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Axle Smoothslice",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3368": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Borstan",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-912",
+ "quests": {
+  "95697-complete": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Borstan",
+   "npc": "3368",
+   "questID": 95697,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Look at the marbling on these! What are they eating up there? Thank you for going all the way and back for us. If you don't mind waiting, we'll cook some for you now, on the house, of course!",
+   "time": 1791144425,
+   "title": "Changing Tastes",
+   "wanted": true,
+   "zone": "Orgrimmar"
+  },
+  "95697-progress": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Borstan",
+   "npc": "3368",
+   "questID": 95697,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Farm-raised boar, farm-raised crawler... what's next, farm-raised raptor?",
+   "time": 1791144423,
+   "title": "Changing Tastes",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  },
+  "96261-complete": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Muln Earthfury",
+   "npc": "259118",
+   "questID": 96261,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Reanimated dead? The broodmother possessing a night elven form? These are troubling revelations. One has to wonder what it all means... I fear that must be a concern for a later time.\r\n\r\nThank you, $N. You've done the Earthen Ring and the people of Mulgore a great service.",
+   "time": 1791143527,
+   "title": "The Broodmother",
+   "wanted": true,
+   "zone": "Mulgore"
+  },
+  "96294-accept": {
+   "build": "70205",
+   "class": "Hunter",
+   "differs": null,
+   "event": "accept",
+   "isObject": true,
+   "mapID": 1454,
+   "name": "Unknown",
+   "npc": null,
+   "questID": 96294,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "<The Broodmother you just killed is no spider at all, but rather a night elf druid who assumed a twisted animal form. A variety of questions flood your mind about the nature--and purpose--of the spiders at Gloomrise.\r\n\r\nYou notice a note peeking out of the folds of the dead elf's robe. Perhaps this document may answer some of the questions filling your head.>",
+   "time": 1791144504,
+   "title": "A Darker Truth",
+   "wanted": true,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -448,14 +448,11 @@ class Release(Strict):
 
     curseforge_projects: dict[str, int] = {}
     base_split_level: int = (
-        40  # Base is quests to this level with all gossip; Base Endgame the rest
+        40  # Classic Quests is Classic's quests to this level; Classic Endgame the rest
     )
     bitrate: str = "32k"  # release mp3 bitrate (mono, 22.05 kHz); the working files keep full quality
     transcode_workers: int = (
         4  # ffmpeg is CPU work; leave cores for the GPU workers' own decoding
-    )
-    delta_cap_mb: int = (
-        400  # past this the nightly stops uploading the delta: a Base release is due
     )
 
 

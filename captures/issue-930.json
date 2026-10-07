@@ -1,0 +1,90 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "251904|7a98291a": {
+   "build": "70205",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Sania Silverstream",
+   "npc": "251904",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Hello, friend. I am Sania Silverstream and I am a missionary in service of our almighty master, Al'Akir the Windlord. \r\n\r\nThe Al'Aketh are derisively referred to as a violent \"cult\" but in reality, we are seekers of peace and enlightenment. Our lord Al'Akir is the supreme force here in the realm of Skywall, and only through his grace are we to survive the trials our people currently face.\r\n\r\nIf you wish to hear more of the good news, please call upon me anytime and we will speak further. Blessings of the Windlord upon you, friend.",
+   "time": 1791143142,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251904": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Sania Silverstream",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "254100": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Zephras Citizen",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "260093": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Garen Largo",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "270438": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Deathstalker Masoj",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4598": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Brom Killian",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-930",
+ "quests": {
+  "98094-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Deathstalker Masoj",
+   "npc": "270438",
+   "questID": 98094,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Timing is everything...",
+   "time": 1791149250,
+   "title": "Scout Support",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

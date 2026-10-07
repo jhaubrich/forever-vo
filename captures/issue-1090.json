@@ -1,0 +1,86 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "3399|3b48d638": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Zamja",
+   "npc": "3399",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Dirge Quikcleave of Gadgetzan is a master of the culinary arts.  To better yourself you will need to seek him out.",
+   "time": 1791284677,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "npcs": {
+  "3399": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Zamja",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3430": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 125497,
+   "name": "Mangletooth",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1090",
+ "quests": {
+  "5043-progress": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Mangletooth",
+   "npc": "3430",
+   "questID": 5043,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "My tribes greatest scouts are said to be unrivaled in their accuracy, and no rogue <snort> could measure up to their quickness in battle.\n\nBring me 4 blood shards and I will make you even more agile than any quilboar born.",
+   "time": 1791277276,
+   "title": "Agamaggan's Agility",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "889-progress": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Mangletooth",
+   "npc": "3430",
+   "questID": 889,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Bring Mangletooth 10 blood shards and I will bless you with great speed. You will run with zhevra and the wind will be jealous of you.\n\nIt will not last long, but it should be enough to help you travel throughout the Barrens.",
+   "time": 1791277297,
+   "title": "Spirit of the Wind",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

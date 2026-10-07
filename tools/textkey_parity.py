@@ -9,7 +9,9 @@ requires re-running this after touching either side.
 The corpus is the real captured text, Classic's raw text where
 tools/data/bulk/classic.json has been exported (it is not in git, so CI runs
 without it), and a set of edge cases (multi-byte characters, $G branches,
-capitalisation, empty text).
+capitalisation, empty text). Each row is also keyed with its $G branches resolved
+for each sex, Util.ResolveGender against textclean.split_gender: the addon matches
+a branching gossip line by that key (#365).
 Needs lua 5.1 on PATH; the dev shell from flake.nix (what run.sh uses) has it.
 """
 
@@ -22,6 +24,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+from tools.textclean import split_gender
 from tools.textkey import hash_text, text_key, tokenize
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -38,6 +41,9 @@ EDGE_CASES = [
     "Mixed $B$B newlines\r\nhere",
     "Rogue at the start",
     "trailing $c",
+    "The best miner has a firm grip on $ghis:her; pick, and dust in $ghis:her; hair.",
+    "Well met, $G lad : lass ;, and $gbrother:sister; too.",
+    "$GSir:Madam;, your $c training awaits.",
 ]
 
 # Regression guard: a short character name is a substring of ordinary English.
@@ -150,7 +156,10 @@ assert(loadfile(arg[1]))("ForeverVO", ns)
 for _, row in ipairs(assert(loadfile(arg[2]))()) do
     stubName, stubClass, stubRace = row.player, row.class, row.race
     local tokenized = ns.Util.Tokenize(row.text, row.player, row.class, row.race) or ""
-    print(ns.Util.TextKey(row.text, row.player, row.class, row.race) .. ":" .. ns.Util.HashText(tokenized))
+    local male = ns.Util.TextKey(ns.Util.ResolveGender(row.text, "m"), row.player, row.class, row.race)
+    local female = ns.Util.TextKey(ns.Util.ResolveGender(row.text, "f"), row.player, row.class, row.race)
+    print(ns.Util.TextKey(row.text, row.player, row.class, row.race) .. ":" .. ns.Util.HashText(tokenized)
+        .. ":" .. male .. ":" .. female)
 end
 """
 
@@ -168,7 +177,7 @@ def rows() -> list[dict]:
     out = []
     if CAPTURE.exists():
         data = json.loads(CAPTURE.read_text(encoding="utf-8"))
-        for section in ("quests", "gossip"):
+        for section in ("quests", "gossip", "books"):
             for entry in data.get(section, {}).values():
                 if entry.get("text"):
                     out.append(
@@ -176,11 +185,17 @@ def rows() -> list[dict]:
                     )
     if CLASSIC.exists():
         data = json.loads(CLASSIC.read_text(encoding="utf-8"))
-        for entry in data.get("quests", {}).values():
-            if entry.get("text"):
-                out.append(
-                    {"text": entry["text"], "player": None, "class": None, "race": None}
-                )
+        for section in ("quests", "gossip", "books"):
+            for entry in data.get(section, {}).values():
+                if entry.get("text"):
+                    out.append(
+                        {
+                            "text": entry["text"],
+                            "player": None,
+                            "class": None,
+                            "race": None,
+                        }
+                    )
     for text in EDGE_CASES:
         out.append(
             {"text": text, "player": "Myrlin", "class": "Rogue", "race": "Human"}
@@ -245,9 +260,16 @@ def main() -> int:
         return 2
     actual = result.stdout.splitlines()
     expected = [
-        text_key(r["text"], r["player"], r["class"], r["race"])
-        + ":"
-        + tokenized_hash(r["text"], r["player"], r["class"], r["race"])
+        ":".join(
+            [
+                text_key(r["text"], r["player"], r["class"], r["race"]),
+                tokenized_hash(r["text"], r["player"], r["class"], r["race"]),
+                *(
+                    text_key(branch, r["player"], r["class"], r["race"])
+                    for branch in split_gender(r["text"])
+                ),
+            ]
+        )
         for r in corpus
     ]
     if len(actual) != len(expected):
@@ -269,7 +291,9 @@ def main() -> int:
     if bad:
         print(f"{len(bad)} of {len(expected)} rows differ", file=sys.stderr)
         return 1
-    print(f"parity OK: {len(expected)} keys and tokenize outputs identical")
+    print(
+        f"parity OK: {len(expected)} keys, tokenize outputs and $G branch keys identical"
+    )
     return 0
 
 

@@ -3,10 +3,14 @@ count as both, which voice the other sex gets, and what the tables carry."""
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
+import pytest
+
+from tools import classicdb, generate
 from tools.config import load_config
-from tools.generate import Item, VoiceCatalog, rebuild_tables, sex_key
+from tools.generate import Item, VoiceCatalog, known_sexes, rebuild_tables, sex_key
 from tools.ingest import gather_sexes, merge_npc, sexes_of
 
 PEACEKEEPER = "253474"
@@ -105,3 +109,78 @@ def test_the_tables_carry_the_other_sex_only_when_its_file_exists(
     )
     assert stats["sexFiles"] == {f"Gossip/Sex/m/{base}"}
     assert 's={ ["m"]=2.400 }' in (data / "Gossip.lua").read_text(encoding="utf-8")
+
+
+RAVENHOLDT_ASSASSIN = "6771"
+
+
+def test_classic_displays_of_both_sexes_mark_both(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # The Ravenholdt Assassin's four displays: two men, two women (#1127)
+    sexes = {5907: 0, 5908: 0, 5909: 1, 5910: 1, 100: None}
+    monkeypatch.setattr(classicdb, "display_race_sex", lambda d: (1, sexes[d]))
+    assert classicdb.display_sexes([5907, 5908, 5909, 5910]) == "mf"
+    assert classicdb.display_sexes([5907, 0, 5908, None]) is None
+    assert classicdb.display_sexes([5909, 100]) is None  # no sex is not the other
+
+
+def test_a_capture_does_not_take_back_classic_sexes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    bulk = tmp_path / "bulk"
+    bulk.mkdir()
+    classic = {"name": "Ravenholdt Assassin", "displayID": 5907, "sexID": 0}
+    (bulk / "classic.json").write_text(
+        json.dumps({"npcs": {RAVENHOLDT_ASSASSIN: {**classic, "sexes": "mf"}}}),
+        encoding="utf-8",
+    )
+    capture = tmp_path / "capture.json"
+    capture.write_text(
+        json.dumps({"npcs": {RAVENHOLDT_ASSASSIN: {"sex": 3, "sexes": "f"}}}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(generate, "DATA_DIR", tmp_path)
+    monkeypatch.setattr(generate, "CAPTURE_JSON", capture)
+    npc = generate.load_sources()["npcs"][RAVENHOLDT_ASSASSIN]
+    assert npc["sexes"] == "mf"
+    assert npc["sex"] == 3 and npc["sexID"] == 0
+
+
+def test_known_sexes_count_the_display_and_the_last_reading() -> None:
+    assert known_sexes(None) == ""
+    assert known_sexes({"sexID": 0}) == "m"
+    assert known_sexes({"sexID": 1, "sex": 2}) == "mf"  # display and unit disagree
+    assert known_sexes({"sexes": "f", "sex": 3}) == "f"
+    assert known_sexes({"sex": 1}) == ""  # UnitSex 1: none
+
+
+def test_a_display_and_a_reading_of_the_other_sex_voice_both(tmp_path: Path) -> None:
+    voices = clips(tmp_path, "human-male", "human-female")
+    line = item({"sexID": 0, "sex": 3}, voices_dir=voices)
+    line.voice = "human-male"
+    assert line.sex_alternate == ("f", "human-female")
+
+
+def test_the_pack_lists_every_sex_it_knows_a_speaker_as(tmp_path: Path) -> None:
+    voices = clips(tmp_path / "voices", "human-male", "human-female")
+    line = item(
+        {"name": "Ravenholdt Assassin", "sexID": 0}, RAVENHOLDT_ASSASSIN, voices
+    )
+    line.voice = "human-male"
+    base = line.variants()[0].base
+    sounds = tmp_path / "Sounds"
+    (sounds / "Gossip").mkdir(parents=True)
+    (sounds / "Gossip" / f"{base}.mp3").write_bytes(b"")
+    data = tmp_path / "Data"
+    rebuild_tables(
+        [line],
+        {base: {"d": 2.0, "v": "human-male"}},
+        load_config(),
+        data,
+        sounds_dir=sounds,
+        write_index=False,
+    )
+    npcs = (data / "NPCs.lua").read_text(encoding="utf-8")
+    # The addon exports the record when it meets a female assassin (Capture.lua)
+    assert f'pack.sexes = {{\n\t[{RAVENHOLDT_ASSASSIN}] = "m",\n}}' in npcs

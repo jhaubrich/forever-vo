@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1938": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Dalar Dawnweaver",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1034",
+ "quests": {
+  "98298-complete": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Dalar Dawnweaver",
+   "npc": "1938",
+   "questID": 98298,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "It appears I get the last laugh after all, haha! Arugal truly was a fool. And I, Dalar Dawnweaver, have exposed him as the fraud he is.\r\n\r\nThese pieces are all the proof I need that the curse has nothing to do with that blithering dolt.\r\n\r\nRegrettably, that means his remedy is also worth nothing. It seems the search for a solution to the worgen curse continues.",
+   "time": 1791225010,
+   "title": "Arugal's Folly",
+   "wanted": true,
+   "zone": "Silverpine Forest"
+  },
+  "98298-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Dalar Dawnweaver",
+   "npc": "1938",
+   "questID": 98298,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Fangs, claws, gizzards. It makes no difference to me. The easiest way to study something is to see the guts yourself.",
+   "time": 1791225007,
+   "title": "Arugal's Folly",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "3341|bdd68929": {
+   "build": "70235",
+   "class": "Warlock",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gann Stonespire",
+   "npc": "3341",
+   "questID": null,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "I walk this road alone, seeking ways to defend my honor and rid this land of our enemies.\n\nWhat can I do for you, $N?",
+   "time": 1791323042,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "npcs": {
+  "3341": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Gann Stonespire",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1156",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}

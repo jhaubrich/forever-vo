@@ -1,0 +1,92 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3024": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Tah Winterhoof",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3391": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Gazlowe",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3419": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Apothecary Zamah",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-913",
+ "quests": {
+  "853-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Apothecary Zamah",
+   "npc": "3419",
+   "questID": 853,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "You have something from Apothecary Helbrim?",
+   "time": 1791137355,
+   "title": "Apothecary Zamah",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "888-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gazlowe",
+   "npc": "3391",
+   "questID": 888,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Did you find my things, $N?",
+   "time": 1791148054,
+   "title": "Stolen Booty",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "92706-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gazlowe",
+   "npc": "3391",
+   "questID": 92706,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "What can I do for ya, $r?",
+   "time": 1791147940,
+   "title": "WANTED: Bruuz",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

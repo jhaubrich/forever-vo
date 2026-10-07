@@ -1,0 +1,156 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "251904|d6667d7e": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Sania Silverstream",
+   "npc": "251904",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "<Sania says nothing but glares at you with barely contained hatred. It seems safe to assume that word of your exploits at Falaath Village has reached her by now.>",
+   "time": 1791292817,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "12696": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121961,
+   "name": "Senani Thunderheart",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "12719": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Marukai",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "251904": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Sania Silverstream",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "251991": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Taleen Shimmerthread",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "252068": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Al'Aketh Stormcaller",
+   "sex": 2,
+   "sexes": "mf"
+  },
+  "257020": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Nasalanna Windsinger",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1109",
+ "quests": {
+  "2-progress": {
+   "build": "70235",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Senani Thunderheart",
+   "npc": "12696",
+   "questID": 2,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Yes, mighty $c, I sensed your arrival.  I trust you have more news to report to me about your hunt?",
+   "time": 1791288634,
+   "title": "Sharptalon's Claw",
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "6442-progress": {
+   "build": "70235",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Marukai",
+   "npc": "12719",
+   "questID": 6442,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "The naga increase in numbers, $N. Please complete this task for me.",
+   "time": 1791290257,
+   "title": "Naga at the Zoram Strand",
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "97973-complete": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Taleen Shimmerthread",
+   "npc": "251991",
+   "questID": 97973,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "There you have it, you can now craft your very own Rallying Banner. Most folk don't care much for camps being set up in the center of town, so you'll need to head into the wilderness if you want to test it out.\r\n\r\nOh, and just remember, no camp is complete without a campfire. You'll need one of those before you start up your camp. Most cooks can teach you to make a fire. If you haven't already, you might want to check in with someone who can train you in the culinary arts to learn the basics.",
+   "time": 1791294199,
+   "title": "Camping 101: Tailoring",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "98286-complete": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Nasalanna Windsinger",
+   "npc": "257020",
+   "questID": 98286,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "There you have it, you can now craft your very own Enchanted Lute. Most folk don't care much for camps being set up in the center of town, so you'll need to head into the wilderness if you want to test it out.\r\n\r\nOh, and just remember, no camp is complete without a campfire. You'll need one of those before you start up your camp. Most cooks can teach you to make a fire. If you haven't already, you might want to check in with someone who can train you in the culinary arts to learn the basics.",
+   "time": 1791294486,
+   "title": "Camping 101: Enchanting",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

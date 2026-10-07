@@ -3,8 +3,9 @@
 Optional. With nothing set, the page still reads the game client's AddOns
 folder from WOW_DIR, and this script is never run. A checkout with no client
 can point AUDITION_ADDONS at a directory of ForeverVO_Data* folders. The
-default download lands in ./addons, which is gitignored, and holds the three
-released packs: Base, Base Endgame, and Forever. The client is not touched
+default download lands in ./addons, which is gitignored, and holds the
+released packs (every one with a project ID in forever-vo.toml; the folders
+are release_pack's). The client is not touched
 unless AUDITION_ADDONS or --addons names that folder.
 
     ./tools/run.sh fvo-fetch-packs
@@ -37,10 +38,19 @@ LIST_URL = "https://www.curseforge.com/api/v1/mods/{project}/files"
 CDN = "https://edge.forgecdn.net/files/{hi}/{lo}/{name}"
 # pack key in forever-vo.toml -> the folder the zip installs as
 FOLDERS = {
-    "base": "ForeverVO_Data_Base",
-    "base_endgame": "ForeverVO_Data_Base_Endgame",
-    "delta": "ForeverVO_Data_Forever",
+    "classic_quests": "ForeverVO_Data_Classic_Quests",
+    "classic_endgame": "ForeverVO_Data_Classic_Endgame",
+    "classic_gossip": "ForeverVO_Data_Classic_Gossip",
+    "forever_quests": "ForeverVO_Data_Forever_Quests",
+    "forever_gossip": "ForeverVO_Data_Forever_Gossip",
+    "books": "ForeverVO_Data_Books",
 }
+# The layout before 2026-10-06, whose folders a download made then still holds
+RETIRED = (
+    "ForeverVO_Data_Base",
+    "ForeverVO_Data_Base_Endgame",
+    "ForeverVO_Data_Forever",
+)
 
 
 def choose_file(files: list[dict]) -> dict:
@@ -197,7 +207,7 @@ def main(argv: list[str] | None = None) -> int:
         "--pack",
         action="append",
         choices=tuple(FOLDERS),
-        help="only this pack, repeatable (default: all three)",
+        help="only this pack, repeatable (default: every one with a project ID)",
     )
     parser.add_argument(
         "--force",
@@ -206,9 +216,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     projects = load_config().release.curseforge_projects
-    wanted = args.pack or list(FOLDERS)
+    wanted = args.pack or [pack for pack in FOLDERS if projects.get(pack)]
     addons = args.addons
     stamp = read_stamp(addons)
+    for folder in RETIRED:
+        if (addons / folder).is_dir():
+            print(
+                f"{addons / folder}: a retired pack, replaced by the packs above; delete it"
+            )
     for pack in wanted:
         project = projects.get(pack)
         if not project:

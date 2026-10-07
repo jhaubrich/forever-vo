@@ -6,14 +6,18 @@ Slash commands and the addon compartment entry (the addon list button next to
 the minimap in modern clients).
 ]]
 
+ns.PACKS_TO_INSTALL = "Install the Forever Voiceover packs from CurseForge next to ForeverVO: Classic Quests, "
+    .. "Classic Endgame, Classic Gossip, Forever Quests, Forever Gossip and Books."
+
 local function Status()
     local packs = ns.Packs:Count()
-    local quests, questsMissing, gossip, gossipMissing, sessionSeen = ns.Capture:Summary()
-    ns.Print(format("%d voice %s loaded. Captured: %d quest %s (%d to export), %d gossip %s (%d to export); %d %s this session.",
+    local quests, questsMissing, gossip, gossipMissing, sessionSeen, _, books, booksMissing = ns.Capture:Summary()
+    ns.Print(format("%d voice %s loaded. Captured: %d quest %s (%d to export), %d gossip %s (%d to export), %d book %s (%d to export); %d %s this session.",
         packs, ns.Util.Plural(packs, "pack"), quests, ns.Util.Plural(quests, "text"), questsMissing,
-        gossip, ns.Util.Plural(gossip, "text"), gossipMissing, sessionSeen, ns.Util.Plural(sessionSeen, "line")))
+        gossip, ns.Util.Plural(gossip, "text"), gossipMissing, books, ns.Util.Plural(books, "page"), booksMissing,
+        sessionSeen, ns.Util.Plural(sessionSeen, "line")))
     if packs == 0 then
-        ns.Print("No voice pack found. Install Forever Voiceover Data: Base, Base Endgame and Data: Forever from CurseForge next to ForeverVO.")
+        ns.Print("No voice pack found. " .. ns.PACKS_TO_INSTALL)
     end
 end
 
@@ -145,7 +149,12 @@ function ForeverVO_OnCompartmentLeave()
 end
 
 ns.OnLogin(function()
+    local retired = ns.Packs:Retired()
+    if #retired > 0 then
+        ns.Print(format("%s %s from an older layout and can be deleted from AddOns once you have the new packs. %s",
+            table.concat(retired, ", "), #retired == 1 and "is" or "are", ns.PACKS_TO_INSTALL))
+    end
     if ns.Packs:Count() == 0 then
-        ns.Print("no voice pack found. Install Forever Voiceover Data: Base, Base Endgame and Data: Forever from CurseForge next to ForeverVO, or generate one with the tools in the repository.")
+        ns.Print("no voice pack found. " .. ns.PACKS_TO_INSTALL .. " Or generate one with the tools in the repository.")
     end
 end)

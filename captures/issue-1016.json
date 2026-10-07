@@ -1,0 +1,160 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "4596|256d7671": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "James Van Brunt",
+   "npc": "4596",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Very fine equipment you make, very fine indeed. Go to the Orc's home of Orgrimmar and seek out a smith named Saru Steelfury. One thing you must give the Orcs, they make beautiful instruments of death.",
+   "time": 1791225047,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "2055": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Master Apothecary Faranell",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2215": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "High Executor Darthalia",
+   "sex": 3,
+   "sexes": "fm"
+  },
+  "2216": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Apothecary Lydon",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "260093": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Garen Largo",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "270038": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Calder Gray",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "270438": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Deathstalker Masoj",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3537": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125066,
+   "name": "Zixil",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4596": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "James Van Brunt",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4598": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Brom Killian",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1016",
+ "quests": {
+  "509-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Apothecary Lydon",
+   "npc": "2216",
+   "questID": 509,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Any luck at Nethander Stead?",
+   "time": 1791224461,
+   "title": "Elixir of Agony",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "513-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Master Apothecary Faranell",
+   "npc": "2055",
+   "questID": 513,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Can you not see I am busy, $c?  The Dark Lady insists on a new plague before the Scourge advance from Northrend overwhelms us.  And with the human threat pressing from the south, time becomes my most precious commodity.  This better be important!",
+   "time": 1791225747,
+   "title": "Elixir of Agony",
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "529-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "High Executor Darthalia",
+   "npc": "2215",
+   "questID": 529,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Were you able to carry out your orders, $c?  Did you dispose of Verringtan and his assistants?  And where is that iron shipment?",
+   "time": 1791222645,
+   "title": "Battle of Hillsbrad",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

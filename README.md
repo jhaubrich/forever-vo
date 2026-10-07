@@ -14,24 +14,33 @@ Four addons on CurseForge: the player, and three voice packs that stack.
   you can pause, skip and reorder, and a replay button on each quest you open in
   the quest log. It also records every line it sees so new audio can be
   generated for what is still missing.
-- **[Forever Voiceover Data: Base](https://www.curseforge.com/wow/addons/forever-voiceover-data-base)**
-  (`ForeverVO_Data_Base`, priority 100) — the Classic lines for quests up to
-  level 40, and all Classic gossip. Big, and updated almost never: this is text
-  that has not changed since Classic, so once a line is voiced it stays voiced.
-  Install it once and forget it.
-- **[Forever Voiceover Data: Base Endgame](https://www.curseforge.com/wow/addons/forever-voiceover-data-base-endgame)**
-  (`ForeverVO_Data_Base_Endgame`, priority 100) — the rest of the Classic
-  lines, quests from level 41 up. The same pack as Base in two halves, because
-  CurseForge caps a file at 1 GB. Both halves carry the alternate narrator
-  voices for their quests.
-- **[Forever Voiceover Data: Forever](https://www.curseforge.com/wow/addons/forever-voiceover-data-forever)**
-  (`ForeverVO_Data_Forever`, priority 200) — everything Forever adds or
-  rewrites. Small, and updated often, especially when new content drops: these
-  are the lines being crowd sourced, so it grows as players run `/fvo export`.
-  Its higher priority means it overrides the base pack wherever both have a
-  line.
+Voice packs, each its own CurseForge project, no line in two of them:
 
-Install either pack, both, or neither — the player works on its own, it just has
+- **[Forever Voiceover: Classic Quests](https://www.curseforge.com/wow/addons/forever-voiceover-classic-quests)**
+  (`ForeverVO_Data_Classic_Quests`) — Classic's quests up to level 40.
+- **[Forever Voiceover: Classic Endgame](https://www.curseforge.com/wow/addons/forever-voiceover-classic-endgame)**
+  (`ForeverVO_Data_Classic_Endgame`) — Classic's quests from level 41 up.
+- **[Forever Voiceover: Classic Gossip](https://www.curseforge.com/wow/addons/forever-voiceover-classic-gossip)**
+  (`ForeverVO_Data_Classic_Gossip`) — what Classic's NPCs say when you talk to
+  them.
+- **[Forever Voiceover: Forever Quests](https://www.curseforge.com/wow/addons/forever-voiceover-forever-quests)**
+  (`ForeverVO_Data_Forever_Quests`) — the quests Forever adds. These are the
+  lines being crowd sourced, so it grows as players run `/fvo export`.
+- **[Forever Voiceover: Forever Gossip](https://www.curseforge.com/wow/addons/forever-voiceover-forever-gossip)**
+  (`ForeverVO_Data_Forever_Gossip`) — what Forever's NPCs say, crowd sourced
+  the same way.
+- **[Forever Voiceover: Books](https://www.curseforge.com/wow/addons/forever-voiceover-books)**
+  (`ForeverVO_Data_Books`) — books, letters and plaques, Classic's and
+  Forever's, read by the narrator when you press Play under the book.
+
+The Classic packs change only when a voice is redone; a reworded Classic quest
+stays in its Classic pack and is updated there. Every pack carries the
+alternate narrator voices for its own lines. Until 2026-10-06 the packs were
+Base, Base Endgame and Data: Forever (`ForeverVO_Data_Base`,
+`ForeverVO_Data_Base_Endgame`, `ForeverVO_Data_Forever`); a copy of one still in
+AddOns is only consulted for what the new packs lack, and can be deleted.
+
+Install any of the packs, all of them, or none — the player works on its own, it just has
 nothing to say until a pack is there.
 
 Built for the Forever client only (Camelot, interface 16001). It uses the

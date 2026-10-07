@@ -1,0 +1,67 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "10881|6c0228ac": {
+   "build": "70235",
+   "class": "Rogue",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Bluff Runner Windstrider",
+   "npc": "10881",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Your legacy precedes you, $c. If you wish, I can allow you to rewrite that legacy into something new.",
+   "time": 1791270004,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "npcs": {
+  "10881": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Bluff Runner Windstrider",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5811": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Kamari",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1082",
+ "quests": {
+  "96875-progress": {
+   "build": "70235",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Kamari",
+   "npc": "5811",
+   "questID": 96875,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Yes?",
+   "time": 1791273166,
+   "title": "Beasts of Thunder Ridge",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

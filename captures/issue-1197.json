@@ -1,0 +1,136 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {
+  "268048|53fff4bc": {
+   "build": "70245",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Darkspear Emissary",
+   "npc": "268048",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "I am sorry, $c, but you are not experienced enough yet to enter Darkspear Islands.",
+   "time": 1791305237,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "260093": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Garen Largo",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "268048": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Darkspear Emissary",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3439": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 124225,
+   "name": "Wizzlecrank's Shredder",
+   "sex": 1
+  },
+  "3449": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Darsok Swiftdagger",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3682": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Vrang Wildgore",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "9316": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 8125068,
+   "name": "Wenikee Boltbucket",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1197",
+ "quests": {
+  "3922-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Wenikee Boltbucket",
+   "npc": "9316",
+   "questID": 3922,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have the nugget slugs, $N?  I've been eyeing this Samophlange and I can't wait to tinker with it.",
+   "time": 1791369284,
+   "title": "Nugget Slugs",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "858-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Wizzlecrank's Shredder",
+   "npc": "3439",
+   "questID": 858,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Quick, we need to get out of here before someone gets suspicious!",
+   "time": 1791368599,
+   "title": "Ignition",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "875-progress": {
+   "build": "70245",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Darsok Swiftdagger",
+   "npc": "3449",
+   "questID": 875,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have 6 Harpy Lieutenant Rings yet? Justice must be dealt to them for their vicious attacks on the Horde.",
+   "time": 1791369010,
+   "title": "Harpy Lieutenants",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

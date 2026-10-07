@@ -11,7 +11,8 @@ string in it, the same way /fvo report does. A GitHub link holds about 25
 lines, so a longer export comes in parts, one issue each, every part a whole
 export of its own (Export:Parts). All at Once is the other way: the link opens
 the form without the string, and the player copies the string into it from a
-box of its own, one issue for up to ~250 lines (the form's 65,536 characters). Copy Link stamps
+box of its own, one issue for up to ~250 lines (the form's 65,536 characters). Copy Link
+(or Ctrl+C in the text) stamps
 ForeverVOCaptureDB.exportedAt past the parts copied so far (Export:MarkSent),
 and Capture.Exported skips what an earlier export packed: before that, every export carried the
 whole DB, and a player who exported after each quest, as the per-line
@@ -29,12 +30,14 @@ character's sex (one letter) goes along too: the client resolves a "$g lad:lass;
 branch before the addon sees a quest text, and the pipeline can only put the
 branch back by comparing a male and a female reading, so a voiced line whose
 pack still wants this sex's reading (Capture.Contributes) is packed too, as is
-("v") a voiced quest line whose live text is not the one its pack voiced. Each
+("v") a voiced quest line whose live text is not the one its pack voiced, and
+a voiced quest line from a speaker its pack does not list (`newSpeaker`). Each
 line carries when it was heard ("d", a timestamp) and the file carries the addon
 version that heard it, so the pipeline can rank readings of the same line: a
 newer addon's capture wins over an older one's, and among equals the more recent.
 An NPC record goes along with its lines, and on its own when its model is not
-the one the pack cast its voice from (`recast`, see Capture.lua).
+the one the pack cast its voice from (`recast`) or it was met as a sex the
+packs do not know it as (`newSex`, see Capture.lua).
 tools/exportfile.py decodes it.
 ]]
 
@@ -86,7 +89,8 @@ end
 --- Builds the export table from ForeverVOCaptureDB: lines without audio, and
 --- voiced lines the pack asked to hear again from a reader like this one,
 --- heard since the last export unless `all`. `npcs` holds the record of every
---- speaker a line names; `recast` the records that go along on their own.
+--- speaker a line names; `recast` the records that go along on their own
+--- (a model or a sex the packs did not cast from).
 function Export:Collect(all)
     local db = ForeverVOCaptureDB or {}
     local known = db.npcs or {}
@@ -100,6 +104,7 @@ function Export:Collect(all)
             e = entry.event,
             q = entry.questID,
             t = entry.title,
+            p = entry.page,
             x = Util.Tokenize(entry.text, entry.player, entry.class, entry.race),
             n = entry.npc,
             s = entry.name,
@@ -123,15 +128,20 @@ function Export:Collect(all)
     for _, entry in pairs(db.gossip or {}) do
         add("gossip", entry)
     end
+    for _, entry in pairs(db.books or {}) do
+        add("book", entry)
+    end
     local at = db.exportedAt
     for key, npc in pairs(known) do
-        if npc.recast and (all or at == nil or npc.recast >= at) then
+        local flagged = math.max(npc.recast or 0, npc.newSex or 0)
+        if flagged > 0 and (all or at == nil or flagged >= at) then
             recast[key] = NpcRecord(npc)
         end
     end
     return {
         addon = ns.version,
         build = select(2, GetBuildInfo()),
+        locale = GetLocale(),
         lines = lines,
         npcs = npcs,
         recast = recast,
@@ -143,6 +153,7 @@ local function EncodeData(part)
         v = 1,
         addon = part.addon,
         build = part.build,
+        locale = part.locale,
         lines = part.lines,
         npcs = part.npcs,
     })
@@ -168,7 +179,8 @@ function Export:Parts(all, paste)
     end)
     local parts = {}
     local function Slice(from, to)
-        local part = { addon = data.addon, build = data.build, lines = {}, npcs = {} }
+        local part = { addon = data.addon, build = data.build, locale = data.locale,
+            lines = {}, npcs = {} }
         if #parts == 0 then
             for key, record in pairs(data.recast) do
                 part.npcs[key] = record
@@ -325,16 +337,37 @@ function Export:GetFrame()
     frame.Hint:SetSpacing(3)
     frame.Hint:SetPoint("TOPLEFT", 20, -38)
     frame.Hint:SetPoint("RIGHT", -20, 0)
-    frame.Hint:SetText("Add a note if you like, then click Copy Link and paste it into your browser. It opens a GitHub form with all of this filled in.\n\nOne export covers everything you have seen since the last one, so there is no need to do this after every quest.")
+    frame.Hint:SetText("Add a note if you like, then click Copy Link and paste it into your browser. It opens a GitHub form with all of this filled in.\n\nOne export covers everything you have seen since the last one, so there is no need to do this after every quest. Closed without copying, the lines wait for the next one.")
 
     local function Hide()
         frame:Hide()
     end
+    -- Only a copy counts a part as sent (MarkSent), and before 0.1.8 merely
+    -- opening the window did, so say what closing it kept (#1199).
+    frame:SetScript("OnHide", function()
+        local waiting = 0
+        for i, part in ipairs(frame.parts or {}) do
+            if not frame.copied[i] then
+                waiting = waiting + #part.lines
+            end
+        end
+        if waiting > 0 then
+            ns.Print(format("%d %s not copied, kept for your next |cffffd100/fvo export|r.",
+                waiting, Util.Plural(waiting, "line")))
+        end
+    end)
 
     local scroll = CreateFrame("ScrollFrame", nil, frame, "InputScrollFrameTemplate")
     scroll.EditBox:SetMaxLetters(0)
     scroll.EditBox:SetFontObject("GameFontHighlightSmall")
     scroll.EditBox:SetScript("OnEscapePressed", Hide)
+    -- Copying the issue text by hand, to paste into the form or the inbox
+    -- issue, sends the part as surely as Copy Link does (#1199).
+    scroll.EditBox:SetScript("OnKeyDown", function(_, key)
+        if key == "C" and (IsControlKeyDown() or IsMetaKeyDown()) and frame.index then
+            Export:MarkSent(frame.index)
+        end
+    end)
     scroll.EditBox:SetScript("OnTextChanged", function(_, userInput)
         if userInput then
             Export:ClearStatus()
@@ -608,10 +641,14 @@ function Export:CopyPaste()
 end
 
 --- How many lines an export would carry now, counted as the login window
---- counts them: distinct quests (an offer and its turn-in are one) and gossip.
+--- counts them: distinct quests (an offer and its turn-in are one), gossip and
+--- pages of books.
 function Export:PendingCount()
-    local quests, gossip = ns.Capture:Pending()
-    return quests + gossip
+    if not Util.EnglishClient() then
+        return 0  -- nothing a client in another language holds is sent
+    end
+    local quests, gossip, books = ns.Capture:Pending()
+    return quests + gossip + books
 end
 
 --- "Send 12 Quests to Project", or the plain label when there is nothing to
@@ -633,6 +670,10 @@ end
 ---@param all boolean pack every line, exported before or not
 function Export:Show(all)
     local db = ForeverVOCaptureDB or {}
+    if not Util.EnglishClient() then
+        ns.UI.Alert:Show("Only English game clients can send lines for now: the voice packs are English, and lines from another language would replace them.")
+        return
+    end
     local parts = self:Parts(all)
     if #parts == 0 then
         if not all and db.exportedAt then
@@ -684,8 +725,8 @@ ns.OnInit(function()
     frame:RegisterEvent("PLAYER_CAMPING")
     frame:RegisterEvent("PLAYER_QUITING")
     frame:SetScript("OnEvent", function()
-        local _, questsMissing, _, gossipMissing, _, sessionMissing = ns.Capture:Summary()
-        local missing = questsMissing + gossipMissing
+        local _, questsMissing, _, gossipMissing, _, sessionMissing, _, booksMissing = ns.Capture:Summary()
+        local missing = questsMissing + gossipMissing + booksMissing
         if missing == 0 then
             return
         end

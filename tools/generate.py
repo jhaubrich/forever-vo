@@ -52,6 +52,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from tools.build_voice_references import build_pick, picked_reference_current
 from tools.config import (
     CAPTURE_JSON,
     DATA_DIR,
@@ -64,9 +65,12 @@ from tools.config import (
     TtsSettings,
     load_config,
 )
+from tools.ingest import _aligned
 from tools.luatable import lua_string
 from tools.textclean import (
     CHUNK_CHARS,
+    book_display,
+    book_text,
     chunk,
     clean,
     halve,
@@ -79,6 +83,11 @@ from tools.textkey import text_key
 from tools.wowdata import base_voice, display_model_file, is_archetype, voice_for_npc
 
 QUEST_EVENTS = {"accept": "a", "progress": "p", "complete": "c"}
+# A page of a book, letter or plaque (ItemTextFrame) is <hash>-page under Books/:
+# keyed by its text alone, since the client names the book but gives no ID, and
+# one page can be read from several items and objects.
+BOOK_EVENT = "page"
+SUBFOLDERS = {"quests": "Quests", "gossip": "Gossip", "books": "Books"}
 
 
 # ----------------------------------------------------------------------------
@@ -259,24 +268,42 @@ class VoiceCatalog:
 
 class Item:
     def __init__(
-        self, kind: str, key: str, entry: dict, npc: dict | None, catalog: VoiceCatalog
+        self,
+        kind: str,
+        key: str,
+        entry: dict,
+        npc: dict | None,
+        catalog: VoiceCatalog,
+        others: dict[str, dict | None] | None = None,
     ):
-        self.kind = kind  # "quests" | "gossip"
+        self.kind = kind  # "quests" | "gossip" | "books"
         self.key = key
         self.entry = entry
         self.npc = npc
+        # The NPC records of the quest line's other speakers (#948), by key
+        self.others = others or {}
         self.catalog = catalog
         self.config = catalog.config
-        self.voice = voice_for_npc(
-            npc, entry.get("zone"), voices=self.config.voices, speaker=entry.get("npc")
+        # A book has no speaker: the narrator reads every page
+        self.voice = (
+            self.config.voices.narrator
+            if kind == "books"
+            else voice_for_npc(
+                npc,
+                entry.get("zone"),
+                voices=self.config.voices,
+                speaker=entry.get("npc"),
+            )
         )
         self.raw_text = entry.get("text") or ""
-        self.event = entry.get("event") or "gossip"
-        self.speaker_key = entry.get("npc")  # "288" or "-123" (game object)
+        self.event = entry.get("event") or (BOOK_EVENT if kind == "books" else "gossip")
+        self.speaker_key = (
+            None if kind == "books" else entry.get("npc")
+        )  # "288" or "-123" (game object)
 
     @property
     def subfolder(self) -> str:
-        return "Quests" if self.kind == "quests" else "Gossip"
+        return SUBFOLDERS[self.kind]
 
     @property
     def hash(self) -> str:
@@ -291,6 +318,8 @@ class Item:
     def base_name(self) -> str:
         if self.kind == "quests":
             return f"{int(self.entry['questID'])}-{self.event}"
+        if self.kind == "books":
+            return f"{self.hash}-{BOOK_EVENT}"
         speaker = self.speaker_key or "unknown"
         speaker = speaker.replace("-", "obj")
         return f"{speaker}-{self.hash}"
@@ -306,6 +335,8 @@ class Item:
         return has_gender_branch(self.clean(self.raw_text))
 
     def clean(self, text: str) -> str:
+        if self.kind == "books":
+            text = book_text(text)
         return clean(
             text,
             keep_stage_directions=self.is_narrator,
@@ -317,13 +348,13 @@ class Item:
         """(letter, voice) for the line in the speaker's other sex, or None.
 
         One creature ID can be either sex (Peacekeepers, city guards: #304), and
-        the NPC record keeps every sex it was seen as (`sexes`). The line's own
+        the NPC record keeps every sex it is known as (known_sexes). The line's own
         file is in the voice its record resolves to; this is the other one, which
         the addon plays when the unit in front of the player is that sex. None
         for a speaker seen as one sex, a narrator, a pinned voice, a named clip,
         and a voice whose other sex has no clip of its own (a fallback to
         another sex, or the narrator, would be worse than the one it has)."""
-        sexes = set((self.npc or {}).get("sexes") or "")
+        sexes = set(known_sexes(self.npc))
         if (
             not {"m", "f"} <= sexes
             or self.is_narrator
@@ -344,6 +375,34 @@ class Item:
         if source_gender != other or source_race not in races:
             return None
         return other[0], voice
+
+    @functools.cached_property
+    def speaker_alternates(self) -> dict[str, str | None]:
+        """The quest line's other speakers: speaker key -> the voice it is read
+        in for them, or None when that is the line's own voice.
+
+        One quest can be handed in to several NPCs, who say the same words: the
+        crates of "A Sealed Crate" go to Dokimi, an orc, and to Marcy Baker, a
+        human (#948). The line's own file is in its `npc`'s voice, and ingest
+        keeps every speaker it was captured from (`speakers`); this is the rest,
+        which the addon plays when one of them is in front of the player. None
+        for a narrator's line: its file keeps the stage directions a speaker's
+        leaves out."""
+        if self.kind != "quests" or self.is_narrator:
+            return {}
+        out: dict[str, str | None] = {}
+        for key in sorted(self.entry.get("speakers") or {}, key=int):
+            if key == str(self.speaker_key):
+                continue
+            voice = voice_for_npc(
+                self.others.get(key), None, voices=self.config.voices, speaker=key
+            )
+            out[key] = (
+                None
+                if voice == self.voice or voice == self.config.voices.narrator
+                else voice
+            )
+        return out
 
     def variants(self) -> list[Variant]:
         """One Variant per file base name; two when the text branches on player gender."""
@@ -433,6 +492,21 @@ def sex_key(base: str, letter: str) -> str:
     return f"Sex/{letter}/{base}"
 
 
+# A quest line also spoken by another NPC in another voice (#948) is under
+# Sounds/Quests/Speaker/<speaker key>/<base>.mp3, index key
+# Speaker/<speaker key>/<base>.
+
+
+def speaker_path(
+    subfolder: str, base: str, speaker: str, sounds_dir: Path = SOUNDS_DIR
+) -> Path:
+    return sounds_dir / subfolder / "Speaker" / speaker / f"{base}.mp3"
+
+
+def speaker_key_of(base: str, speaker: str) -> str:
+    return f"Speaker/{speaker}/{base}"
+
+
 class Target(NamedTuple):
     """One file to synthesise: a line's gender variant in one voice."""
 
@@ -442,6 +516,7 @@ class Target(NamedTuple):
     voice: str
     alternate: bool = False  # an alternate narrator voice rather than the line's own
     sex: str | None = None  # "m"/"f": the line in the speaker's other sex (#304)
+    speaker: str | None = None  # another speaker of the quest line (#948)
 
     @property
     def location(self) -> str | None:
@@ -449,6 +524,8 @@ class Target(NamedTuple):
 
     @property
     def key(self) -> str:
+        if self.speaker:
+            return speaker_key_of(self.base, self.speaker)
         if self.sex:
             return sex_key(self.base, self.sex)
         return index_key(self.base, self.location)
@@ -469,6 +546,8 @@ class Target(NamedTuple):
 
     @property
     def path(self) -> Path:
+        if self.speaker:
+            return speaker_path(self.item.subfolder, self.base, self.speaker)
         if self.sex:
             return sex_path(self.item.subfolder, self.base, self.sex)
         return sound_path(self.item.subfolder, self.base, self.location)
@@ -499,7 +578,7 @@ SOURCE_ORDER = ["classic", "capture"]  # later sources override earlier ones
 
 def load_sources() -> dict:
     """Merges tools/data/bulk/*.json and capture.json field by field, capture winning."""
-    merged = {"quests": {}, "gossip": {}, "npcs": {}}
+    merged = {"quests": {}, "gossip": {}, "books": {}, "npcs": {}}
     displays: dict[str, int] = {}
     files = {p.stem: p for p in (DATA_DIR / "bulk").glob("*.json")}
     if CAPTURE_JSON.exists():
@@ -509,7 +588,7 @@ def load_sources() -> dict:
         if not path:
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
-        for kind in ("quests", "gossip", "npcs"):
+        for kind in ("quests", "gossip", "books", "npcs"):
             for key, entry in data.get(kind, {}).items():
                 target = merged[kind].setdefault(str(key), {})
                 for field, value in entry.items():
@@ -519,15 +598,43 @@ def load_sources() -> dict:
                         or (field in ("displayID", "modelFileID") and not value)
                     ):
                         continue
+                    if field == "sexes":
+                        # Every source's sexes count: Classic's displays say a
+                        # Ravenholdt Assassin is both, a capture that met only
+                        # one must not take that back (#1127)
+                        value = "".join(
+                            letter
+                            for letter in "mf"
+                            if letter in value or letter in target.get("sexes", "")
+                        )
                     target[field] = value
         displays.update(data.get("displays", {}))
         print(
-            f"source {name}: {len(data.get('quests', {}))} quest, {len(data.get('gossip', {}))} gossip, {len(data.get('npcs', {}))} npc entries"
+            f"source {name}: {len(data.get('quests', {}))} quest, {len(data.get('gossip', {}))} gossip, "
+            f"{len(data.get('books', {}))} book page, {len(data.get('npcs', {}))} npc entries"
         )
     filled = fill_displays(merged["npcs"], displays, display_model_file)
     if filled:
         print(f"display IDs from Classic, model checked: {len(filled)} captured npcs")
     return merged
+
+
+SEX_LETTERS = {"sex": {2: "m", 3: "f"}, "sexID": {0: "m", 1: "f"}}  # UnitSex, display
+
+
+def known_sexes(npc: dict | None) -> str:
+    """Every sex the pipeline knows the speaker as, "m", "f", "mf" or "": its
+    `sexes` (every one a player met, and Classic's displays), its captured `sex`
+    and its display's `sexID`. Both, and the line gets the other sex's file too
+    (Item.sex_alternate); the pack records the set (`pack.sexes`), and a player
+    who meets a sex not in it exports the NPC record (Capture.lua), so the next
+    nightly voices it."""
+    npc = npc or {}
+    seen = set(npc.get("sexes") or "")
+    for field, letters in SEX_LETTERS.items():
+        if npc.get(field) in letters:
+            seen.add(letters[npc[field]])
+    return "".join(letter for letter in "mf" if letter in seen)
 
 
 def fill_displays(
@@ -563,7 +670,7 @@ def load_items(
     capture: dict, include_progress: bool, catalog: VoiceCatalog
 ) -> list[Item]:
     items = []
-    for kind in ("quests", "gossip"):
+    for kind in ("quests", "gossip", "books"):
         for key, entry in capture.get(kind, {}).items():
             if (
                 kind == "quests"
@@ -571,10 +678,18 @@ def load_items(
                 and not include_progress
             ):
                 continue
-            npc = capture.get("npcs", {}).get(str(entry.get("npc") or ""))
+            if kind == "books":
+                items.append(Item(kind, key, entry, None, catalog))
+                continue
+            npcs = capture.get("npcs", {})
+            npc = npcs.get(str(entry.get("npc") or ""))
             if npc is None and entry.get("isObject"):
                 npc = {"isObject": True, "name": entry.get("name")}
-            items.append(Item(kind, key, entry, npc, catalog))
+            others = {
+                str(speaker): npcs.get(str(speaker))
+                for speaker in entry.get("speakers") or {}
+            }
+            items.append(Item(kind, key, entry, npc, catalog, others))
     return items
 
 
@@ -1063,8 +1178,12 @@ def write_table(
 
 
 def sound_folder(base: str) -> str:
-    """Quests are <questID>-<event>, gossip is <speaker>-<hash>."""
-    return "Quests" if base.rsplit("-", 1)[-1] in QUEST_EVENTS else "Gossip"
+    """Quests are <questID>-<event>, gossip is <speaker>-<hash>, a book's page
+    <hash>-page."""
+    last = base.rsplit("-", 1)[-1]
+    if last in QUEST_EVENTS:
+        return "Quests"
+    return "Books" if last == BOOK_EVENT else "Gossip"
 
 
 def encode_filters(
@@ -1128,6 +1247,55 @@ def require_filters(filters: list[str]) -> None:
             "(pitch is rubberband). flake.nix installs ffmpeg-full for it; off nix, "
             "install an ffmpeg built with librubberband."
         )
+
+
+def ensure_picked_references(config: Config, dry_run: bool = False) -> set[str]:
+    """Rebuilds every picked reference whose wav was not built from its saved pick,
+    before anything is generated; returns the voices that could not be rebuilt.
+
+    Picks reach this machine through git, the wavs do not, and a file's fingerprint
+    names the picks: a merged re-pick restaged its voice from the old wav and stamped
+    the files current, so nothing ever redid them (2,042 files, 2026-10-03). Under a
+    lock, so the shards of one bulk run build each voice once. A voice that cannot be
+    rebuilt (a clip gone from wago) has its lines left out of this run, not voiced
+    from the wrong clip.
+    """
+    picked = {
+        voice: pick for voice, pick in config.voices.sources.items() if pick.clips
+    }
+    stale = sorted(
+        v for v, pick in picked.items() if not picked_reference_current(v, pick)
+    )
+    if not stale:
+        return set()
+    if dry_run:
+        print(f"would rebuild {len(stale)} picked reference(s) first: {stale}")
+        return set()
+    failed: set[str] = set()
+    VOICES_DIR.mkdir(parents=True, exist_ok=True)
+    with open(VOICES_DIR / ".build.lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        for voice in stale:
+            if picked_reference_current(voice, picked[voice]):
+                continue  # another shard built it while this one waited
+            print(f"{voice}: reference not built from its saved pick, rebuilding")
+            try:
+                built = build_pick(voice, picked[voice])
+            except (
+                RuntimeError,
+                ValueError,
+                OSError,
+                subprocess.CalledProcessError,
+            ) as e:
+                print(f"{voice}: {e}")
+                built = None
+            if built is None:
+                failed.add(voice)
+    if failed:
+        print(
+            f"warning: could not rebuild {sorted(failed)}; their lines are left out of this run"
+        )
+    return failed
 
 
 def tuning_filters(config: Config) -> list[str]:
@@ -1255,6 +1423,53 @@ def model_cast(item: Item) -> int | None:
     return int(model)
 
 
+def _book_page_text(key: str, books: dict[str, dict], sources: dict[str, dict]) -> str:
+    """The page's raw text, from its source entry or the table's `t`."""
+    source = sources.get(key) or {}
+    return source.get("text") or (books.get(key) or {}).get("t") or ""
+
+
+def link_pages(books: dict[str, dict], sources: dict[str, dict]) -> None:
+    """Sets `x` on each voiced page to the key of the voiced page after it.
+
+    The page after has the same title and the next page number. A captured page
+    replaces Classic's own `next` only when it is that page reworded (the same
+    0.9 alignment ingest uses), or when it is the only page in that place.
+    Several books share titles (Crystallized Note, Decoded Twilight Text); one
+    captured page of another book must not take this book's link."""
+    places: dict[tuple[str, int], list[str]] = {}
+    for key, record in books.items():
+        if record.get("b") and record.get("p"):
+            places.setdefault((record["b"], int(record["p"])), []).append(key)
+    for key, record in books.items():
+        if not record.get("b") or not record.get("p"):
+            continue
+        candidates = places.get((record["b"], int(record["p"]) + 1), [])
+        captured = [
+            c
+            for c in candidates
+            if sources.get(c, {}).get("player") or sources.get(c, {}).get("origin")
+        ]
+        stated = sources.get(key, {}).get("next")
+        # A captured page may take this slot when it is the only one there, or
+        # when its text is this page's own next, reworded. Any other single
+        # capture is a different book of the same name.
+        reword = (
+            len(captured) == 1
+            and stated
+            and _aligned(
+                _book_page_text(captured[0], books, sources),
+                _book_page_text(stated, books, sources),
+            )
+        )
+        if len(captured) == 1 and (len(candidates) == 1 or reword):
+            record["x"] = captured[0]
+        elif stated in books:
+            record["x"] = stated
+        elif len(candidates) == 1:
+            record["x"] = candidates[0]
+
+
 def rebuild_tables(
     items: list[Item],
     sound_index: dict[str, Any],
@@ -1268,7 +1483,8 @@ def rebuild_tables(
     """Writes the pack tables for `items` whose audio exists under sounds_dir.
     Returns {"quests": n, "gossip": n, "npcs": n, "files": set(base names),
     "narratorFiles": set(paths relative to Sounds/), "sexFiles": the same for the
-    lines in a speaker's other sex}.
+    lines in a speaker's other sex, "speakerFiles": the same for a quest line's
+    other speakers}.
 
     `config.voices` says which alternate narrator voices to look for. `dirty` is
     the set of index keys this process has written since its last save; the
@@ -1297,7 +1513,7 @@ def rebuild_tables(
     for voice in alternate_voices:
         names = {
             p.stem
-            for subfolder in ("Quests", "Gossip")
+            for subfolder in SUBFOLDERS.values()
             for p in narrator_dir(sounds_dir, voice, subfolder).glob("*.mp3")
         }
         if not names:
@@ -1319,7 +1535,7 @@ def rebuild_tables(
     for letter in ("m", "f"):
         names = {
             p.stem
-            for subfolder in ("Quests", "Gossip")
+            for subfolder in SUBFOLDERS.values()
             for p in (sounds_dir / subfolder / "Sex" / letter).glob("*.mp3")
         }
         sex_present[letter] = names
@@ -1329,6 +1545,22 @@ def rebuild_tables(
                 sound_index[key] = {
                     "d": probe_duration(
                         sex_path(sound_folder(name), name, letter, sounds_dir)
+                    ),
+                    "v": None,
+                }
+                dirty.add(key)
+
+    # A quest line in another speaker's voice (#948), one folder per speaker
+    speaker_present: dict[str, set[str]] = {}
+    for folder in (sounds_dir / "Quests" / "Speaker").glob("*"):
+        names = {p.stem for p in folder.glob("*.mp3")}
+        speaker_present[folder.name] = names
+        for name in names:
+            key = speaker_key_of(name, folder.name)
+            if key not in sound_index:
+                sound_index[key] = {
+                    "d": probe_duration(
+                        speaker_path("Quests", name, folder.name, sounds_dir)
                     ),
                     "v": None,
                 }
@@ -1356,10 +1588,15 @@ def rebuild_tables(
     gossip: dict[int, list[dict]] = {}
     npcs: dict[int, str] = {}
     models: dict[int, int] = {}  # speaker -> the model file its voice was cast from
+    sexes: dict[int, str] = {}  # speaker -> every sex the pipeline knows it as
+    maps: dict[int, int] = {}  # speaker of a quest line with several -> its map
     narrator: dict[int, dict[str, dict]] = {}
+    books: dict[str, dict] = {}
+    book_sources: dict[str, dict] = {}  # page key -> its merged source entry
     used: set[str] = set()
     narrator_used: set[str] = set()
     sex_used: set[str] = set()
+    speaker_used: set[str] = set()
 
     for item in items:
         variants = item.variants()
@@ -1389,6 +1626,8 @@ def rebuild_tables(
         cast_model = model_cast(item)
         if speaker is not None and cast_model:
             models[speaker] = cast_model
+        if speaker is not None and not (item.npc or {}).get("isObject"):
+            sexes[speaker] = known_sexes(item.npc)
 
         # The same line in the alternate narrator voices, each with its own
         # duration: voices differ in pace, and the text is paged against it.
@@ -1424,6 +1663,34 @@ def rebuild_tables(
                         3,
                     )
                 }
+
+        # The quest line's other speakers: {d, v} for one with a file of its
+        # own, true for one whose voice is the line's own, false for one whose
+        # file is not made yet (the line's own file plays). Whole lines only,
+        # like the other sex.
+        other_speakers: dict[int, dict | bool] = {}
+        for key, voice in item.speaker_alternates.items():
+            spoken = available and all(
+                base in speaker_present.get(key, ()) for base in available
+            )
+            if voice and spoken:
+                speaker_used.update(
+                    f"{item.subfolder}/Speaker/{key}/{base}" for base in available
+                )
+                names = [speaker_key_of(base, key) for base in available]
+                other_speakers[int(key)] = {
+                    "d": round(max(duration_of(name) for name in names), 3),
+                    "v": recorded_voice(*names) or voice,
+                }
+            else:
+                other_speakers[int(key)] = voice is None
+            other = item.others.get(key) or {}
+            if other.get("name"):
+                npcs[int(key)] = other["name"]
+        if other_speakers:
+            for key, map_id in (item.entry.get("speakers") or {}).items():
+                if map_id:
+                    maps[int(key)] = int(map_id)
 
         # Parts: {d, n} per part in reading order (n marks the narrator's), and
         # for the narrator's parts the alternate voices' own durations by index.
@@ -1470,6 +1737,11 @@ def rebuild_tables(
             # under Sounds/Quests/Sex/<m|f>/, played when the unit is that sex
             if other_sex:
                 record["s" + letter] = other_sex
+            # xa/xp/xc: the event's other speakers (#948), {speaker = {d, v} for
+            # its file under Sounds/Quests/Speaker/<speaker>/, or true/false:
+            # the line's own file}. Every one, so the addon can tell a new one.
+            if other_speakers:
+                record["x" + letter] = other_speakers
             if parts_record:
                 record[letter + "P"] = parts_record
             for voice, durations in part_alternates.items():
@@ -1510,6 +1782,23 @@ def rebuild_tables(
                 narrator.setdefault(quest_id, {}).setdefault(voice, {})[
                     QUEST_EVENTS[item.event]
                 ] = seconds
+        elif item.kind == "books":
+            if duration is None:
+                continue
+            # A page is a whole line in the narrator's voice: no parts, no other
+            # sex. Keyed by the text key the addon computes from the live page.
+            books[item.hash] = {
+                "d": duration,
+                # `t` is the raw page FindBook matches. `s` is the prose the
+                # talking head shows, so a later page is not $B or <HTML>.
+                "t": item.raw_text.replace("\r", " ").replace("\n", " "),
+                "s": book_display(item.raw_text) or None,
+                "b": item.entry.get("title") or None,
+                "p": item.entry.get("page") or None,
+                "g": gendered or None,
+                "n": alternates or None,  # voice -> duration, indices below
+            }
+            book_sources[item.hash] = item.entry
         else:
             if speaker is None:
                 continue
@@ -1539,6 +1828,9 @@ def rebuild_tables(
         for entry in entries
         for voice in list(entry["n"] or {}) + list(entry["nP"] or {})
     )
+    spoken_voices.update(
+        voice for entry in books.values() for voice in entry["n"] or {}
+    )
     voices = [voice for voice in alternate_voices if voice in spoken_voices]
 
     for rec in quests.values():
@@ -1563,6 +1855,15 @@ def rebuild_tables(
                 }
             gossip_lines.append(f"\t\t{lua_record(entry)},")
         gossip_lines.append("\t},")
+    link_pages(books, book_sources)
+    book_lines = []
+    for key, entry in sorted(books.items()):
+        if entry["n"]:
+            entry["n"] = {
+                voices.index(voice) + 1: seconds
+                for voice, seconds in entry["n"].items()
+            }
+        book_lines.append(f"\t[{lua_string(key)}] = {lua_record(entry)},")
     npc_lines = [
         f"\t[{key}] = {lua_string(name)}," for key, name in sorted(npcs.items())
     ]
@@ -1580,8 +1881,16 @@ def rebuild_tables(
 
     write_table("Quests.lua", "quests", quest_lines, data_dir, pack_global)
     write_table("Gossip.lua", "gossip", gossip_lines, data_dir, pack_global)
+    write_table("Books.lua", "books", book_lines, data_dir, pack_global)
     model_list = "".join(
         f"\t[{key}] = {model},\n" for key, model in sorted(models.items())
+    )
+    sex_list = "".join(
+        f"\t[{key}] = {lua_string(letters)},\n"
+        for key, letters in sorted(sexes.items())
+    )
+    map_list = "".join(
+        f"\t[{key}] = {map_id},\n" for key, map_id in sorted(maps.items())
     )
     write_table(
         "NPCs.lua",
@@ -1589,7 +1898,10 @@ def rebuild_tables(
         npc_lines,
         data_dir,
         pack_global,
-        prelude=f"pack.models = {{\n{model_list}}}\n",
+        prelude=(
+            f"pack.models = {{\n{model_list}}}\npack.sexes = {{\n{sex_list}}}\n"
+            f"pack.maps = {{\n{map_list}}}\n"
+        ),
     )
     write_table(
         "Narrator.lua",
@@ -1605,9 +1917,11 @@ def rebuild_tables(
     narrated_gossip = sum(
         1 for entries in gossip.values() for entry in entries if entry["n"]
     )
+    narrated_books = sum(1 for entry in books.values() if entry["n"])
     narrator_note = (
         (
-            f", {len(narrator)} quests and {narrated_gossip} gossip lines in {len(voices)} alternate "
+            f", {len(narrator)} quests, {narrated_gossip} gossip lines and {narrated_books} book "
+            f"pages in {len(voices)} alternate "
             f"narrator {'voice' if len(voices) == 1 else 'voices'} ({len(narrator_used)} files)"
         )
         if voices
@@ -1615,15 +1929,18 @@ def rebuild_tables(
     )
     print(
         f"pack tables ({data_dir.parent.name}): {len(quests)} quests, {gossip_count} gossip lines, "
+        f"{len(books)} book pages, "
         f"{len(npcs)} speakers, {len(used)} sound files{narrator_note}"
     )
     return {
         "quests": len(quests),
         "gossip": gossip_count,
+        "books": len(books),
         "npcs": len(npcs),
         "files": used,
         "narratorFiles": narrator_used,
         "sexFiles": sex_used,
+        "speakerFiles": speaker_used,
     }
 
 
@@ -1650,9 +1967,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--progress", action="store_true", help="include quest progress texts"
     )
-    parser.add_argument(
-        "--only", choices=["quests", "gossip"], help="restrict to one kind"
-    )
+    parser.add_argument("--only", choices=list(SUBFOLDERS), help="restrict to one kind")
     parser.add_argument(
         "--quest", type=int, action="append", help="restrict to quest ID(s)"
     )
@@ -1724,6 +2039,12 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(
             "--narrator-only with --narrator-voices none has nothing to do"
         )
+
+    unbuilt = (
+        set()
+        if args.tables_only or args.reindex
+        else ensure_picked_references(config, dry_run=args.dry_run)
+    )
 
     capture = load_sources()
     if not capture["quests"] and not capture["gossip"]:
@@ -1846,6 +2167,11 @@ def main(argv: list[str] | None = None) -> int:
                     if item.sex_alternate:
                         letter, voice = item.sex_alternate
                         candidates.append(Target(item, base, text, voice, sex=letter))
+                    candidates += [
+                        Target(item, base, text, voice, speaker=speaker)
+                        for speaker, voice in item.speaker_alternates.items()
+                        if voice
+                    ]
                 if item.is_narrator:
                     candidates += [
                         Target(item, base, text, voice, True)
@@ -1886,6 +2212,19 @@ def main(argv: list[str] | None = None) -> int:
                     Target(item, part, words, voice, True) for voice in alternate_voices
                 ]
             candidates = [target for target in candidates if in_voice(target)]
+            if unbuilt:
+                kept = [
+                    target
+                    for target in candidates
+                    if catalog.resolve(target.voice).source not in unbuilt
+                ]
+                if len(kept) != len(candidates):
+                    skipped["reference could not be rebuilt"] = (
+                        skipped.get("reference could not be rebuilt", 0)
+                        + len(candidates)
+                        - len(kept)
+                    )
+                candidates = kept
             if args.reindex:
                 for target in candidates:
                     recorded = sound_index.get(target.key)
@@ -1929,7 +2268,7 @@ def main(argv: list[str] | None = None) -> int:
         key=lambda t: (
             t.alternate,
             t.sex is not None,
-            t.item.kind != "quests",
+            list(SUBFOLDERS).index(t.item.kind),
             t.item.entry.get("level") or 0,
             t.base,
             t.voice,

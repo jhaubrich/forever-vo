@@ -1,0 +1,108 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1748": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119940,
+   "name": "Highlord Bolvar Fordragon",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "235": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119563,
+   "name": "Salma Saldean",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "253092": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 120590,
+   "name": "Alba Fairmoon",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "253474": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Peacekeeper",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "276170": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Belanaa Windveil",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-943",
+ "quests": {
+  "36-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Salma Saldean",
+   "npc": "235",
+   "questID": 36,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I'm going to miss that Verna Furlbrow so much.  I don't suppose you happened to see her on your way here?",
+   "time": 1791161200,
+   "title": "Westfall Stew",
+   "wanted": null,
+   "zone": "Westfall"
+  },
+  "94947-complete": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": true,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Highlord Bolvar Fordragon",
+   "npc": "1748",
+   "questID": 94947,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Well met, $c. I am Bolvar Fordragon, regent to the throne of Stormwind.\r\n\r\nA Kirin Tor messenger told me to expect to receive members of the High Order, and here you stand. It's been some time since a high elf has stood in this throne room, but I am glad to accept you now as a guest.\r\n\r\nOn behalf of the King, I welcome you to Stormwind and give you leave to travel freely through alliance lands. Welcome to Azeroth, $R.",
+   "time": 1791155063,
+   "title": "Welcome to Azeroth",
+   "wanted": true,
+   "zone": "Stormwind City"
+  },
+  "99191-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1416,
+   "name": "Belanaa Windveil",
+   "npc": "276170",
+   "questID": 99191,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "The High Order are currently accepting donations for wool cloth.\r\n\r\nA donation of sixty pieces of wool cloth will net you full recognition by the High Order for your generous actions. Sixty pieces of wool should prove to be a sufficient amount for the High Order's needs for now. \n\nIf you have the sixty pieces of wool cloth on you and are ready to donate them, I'm able to take them from you now.",
+   "time": 1791154687,
+   "title": "A Donation of Wool",
+   "wanted": null,
+   "zone": "City of Dalaran"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

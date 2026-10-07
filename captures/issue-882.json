@@ -1,0 +1,65 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3515": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Corithras Moonrage",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6736": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Innkeeper Keldamyr",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-882",
+ "quests": {
+  "2159-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Innkeeper Keldamyr",
+   "npc": "6736",
+   "questID": 2159,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "How might I be of service to you, young one?  Are you here to rest in the inn?  Do you require a hearthstone?",
+   "time": 1791079429,
+   "title": "Dolanaar Delivery",
+   "wanted": null,
+   "zone": "Teldrassil"
+  },
+  "928-progress": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Corithras Moonrage",
+   "npc": "3515",
+   "questID": 928,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Greetings, $c. For what purpose do I owe the pleasure of our meeting?",
+   "time": 1791079449,
+   "title": "Crown of the Earth",
+   "wanted": null,
+   "zone": "Teldrassil"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

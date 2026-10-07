@@ -51,12 +51,15 @@ def to_capture(data: dict, origin: str) -> dict:
         "origin": origin,
         "quests": {},
         "gossip": {},
+        "books": {},
         "npcs": {},
     }
     if data.get("addon"):
         out["addon"] = data[
             "addon"
         ]  # ingest.py gates repairs on the addon that tokenised the text
+    if data.get("locale"):
+        out["locale"] = data["locale"]  # ingest.py skips a client not in English
     for line in data.get("lines", []):
         entry = {
             "event": line.get("e"),
@@ -81,7 +84,13 @@ def to_capture(data: dict, origin: str) -> dict:
         }
         if not entry["text"]:
             continue
-        if line.get("k") == "quest":
+        if line.get("k") == "book":
+            # A page of a book, letter or plaque: no speaker, keyed by its text
+            entry.update(
+                event="page", page=line.get("p"), npc=None, name=None, isObject=None
+            )
+            out["books"][text_key(entry["text"])] = entry
+        elif line.get("k") == "quest":
             if not entry["questID"]:
                 continue
             out["quests"][f"{entry['questID']}-{entry['event']}"] = entry

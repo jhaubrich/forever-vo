@@ -1,0 +1,118 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1661": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Novice Elreth",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "2123": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Dark Cleric Duesten",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "244808": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Aramis Hammerhand",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "255853": {
+   "addon": "0.1.8",
+   "creatureType": "Beast",
+   "modelFileID": 4687804,
+   "name": "Urs'endris",
+   "sex": 1
+  }
+ },
+ "origin": "issue-992",
+ "quests": {
+  "3097-progress": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Dark Cleric Duesten",
+   "npc": "2123",
+   "questID": 3097,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, so between fire, plague, rioting, and much worse, one more of the \"faithful\" comes to my door. Well, let me bid you welcome, $c. And allow me a moment to explain a thing or two before you decide it's time for you to seek whatever drives you forward: the Holy Light no longer concerns you, the spirits of your forefathers are fairy tales, and creatures from the Nether don't want you.\n\nDo you understand me so far?",
+   "time": 1791135001,
+   "title": "Hallowed Scroll",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "376-progress": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Novice Elreth",
+   "npc": "1661",
+   "questID": 376,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Do try your best to keep yourself unharmed until I get you some armor.",
+   "time": 1791135715,
+   "title": "The Damned",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "94638-complete": {
+   "build": "70205",
+   "class": "Druid",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Urs'endris",
+   "npc": "255853",
+   "questID": 94638,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "The agony I feel over her loss is immeasurable, but it is what is necessary for the balance. You have demonstrated a resolve to persevere, even when a terrible price is asked.\r\n\r\nYou have done well, $c. I shall grant you the blessing to take on the shape of my kin. Be a beacon for those that lack the strength to persevere and a defender of those in need.\r\n\r\nGo now, and embrace the way of the claw, child.",
+   "time": 1791208742,
+   "title": "Strength and Mercy",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "98389-accept": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": 98389,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, $c. Yes, I am a paladin. Not even death can stop the Light.\r\n\r\nThis is something my kind have in common with all Forsaken--we have overcome what the living view as their end. However, some even among our own fear us; they suspect we will smite them as some monstrosity.\r\n\r\nIn truth, our relationship with undeath is complex, but I am not here to hurt our own. Help me show the others this. Venture to Night's Web Hollow to the northwest and free the freshly raised fools trapped by the spiders there.",
+   "time": 1791135869,
+   "title": "A Light in the Darkness",
+   "wanted": true,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "12719": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Marukai",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1079",
+ "quests": {
+  "6442-progress": {
+   "build": "70235",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Marukai",
+   "npc": "12719",
+   "questID": 6442,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "The naga increase in numbers, $N. Please complete this task for me.",
+   "time": 1791226498,
+   "title": "Naga at the Zoram Strand",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

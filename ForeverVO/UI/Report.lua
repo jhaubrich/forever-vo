@@ -121,6 +121,13 @@ local function Identity(item)
         end
         return OneLine(format("%s, %s, %s", who, quest, event))
     end
+    if item.kind == "book" then
+        -- the book's own name is the speaker; title is "Page N" or absent
+        if item.title and item.title ~= "" then
+            return OneLine(format("%s, %s", who, item.title))
+        end
+        return OneLine(format("%s, book", who))
+    end
     local event = item.event == "greeting" and "greeting" or (item.event or "gossip")
     if item.title and item.title ~= "" then
         return OneLine(format("%s, %s %s", who, event, item.title))

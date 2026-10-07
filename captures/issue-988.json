@@ -1,0 +1,93 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "185403|7e1300bc": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Cyriden Farseeker",
+   "npc": "185403",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Elune-adore, traveler. I am Cyriden. My partner Relathor and I are working to unearth the lost artifacts of our people.\r\n\r\nMuch is remembered by the older kaldorei, but there is no telling what tales have been forgotten. Without our intervention, they will vanish from this world forever.",
+   "time": 1791204987,
+   "title": null,
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "185404|1c902d7c": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Relathor Moonsong",
+   "npc": "185404",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "My partner and I are archaeologists, hoping to uncover the forgotten history of the kaldorei. It's hard work, but I feel an obligation to preserve the stories of those who came before me.",
+   "time": 1791204999,
+   "title": null,
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "npcs": {
+  "10219": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Gwennyth Bly'Leggonde",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "185403": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Cyriden Farseeker",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "185404": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Relathor Moonsong",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-988",
+ "quests": {
+  "4681-progress": {
+   "build": "70205",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Gwennyth Bly'Leggonde",
+   "npc": "10219",
+   "questID": 4681,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Once you have investigated the creature's remains in the water to the west of here, I should be able to file a proper report with the Temple of the Moon in Darnassus.  Perhaps then we will be closer to discovering the reason why these unfortunate creatures choose to end their lives beached on the coast of Darkshore.",
+   "time": 1791204023,
+   "title": "Washed Ashore",
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

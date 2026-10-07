@@ -9,11 +9,12 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$ROOT/tools/data/daily.log"
 LOCK="$ROOT/tools/data/daily.lock"
-# The run starts at 02:30 (install-timer.sh) and must be done by END_AT. The
-# tail after generation (table rebuild, dry run, delta upload, push) took 6 to
-# 27 minutes in September 2026 and grows with the delta, hence TAIL_MINUTES.
+# The run starts at 02:30 (install-timer.sh) and the GPU is free from END_AT,
+# for the owner's WoW client. Generation stops there; what follows (table
+# rebuild, dry run, re-encoding and uploading the packs, push) is CPU and
+# network only, at Nice=10, and may run past it: a new encoding or a re-voiced
+# set re-encodes every pack, about an hour of ffmpeg.
 END_AT="${FOREVER_VO_END_AT:-07:00}"
-TAIL_MINUTES="${FOREVER_VO_TAIL_MINUTES:-45}"
 BULK_HOURS="${FOREVER_VO_BULK_HOURS:-}"   # optional cap on the bulk pass; unset, it fills the window
 
 mkdir -p "$ROOT/tools/data"
@@ -27,10 +28,9 @@ if ! flock -n 9; then
     exit 0
 fi
 cd "$ROOT"
-# Generation stops TAIL_MINUTES before END_AT. A run that starts too late for
-# that (the timer's catch-up after the machine was off at 02:30) gets two hours,
+# Generation stops at END_AT. A run that starts too late for that (the timer's catch-up after the machine was off at 02:30) gets two hours,
 # the old fixed bound, so a daytime catch-up does not hold the GPU all day.
-GEN_UNTIL="$(date -d "today $END_AT $TAIL_MINUTES minutes ago" +%s)"
+GEN_UNTIL="$(date -d "today $END_AT" +%s)"
 if [ "$GEN_UNTIL" -le "$(date +%s)" ]; then
     GEN_UNTIL="$(date -d "now 2 hours" +%s)"
     echo "started after the window; generating until $(date -d "@$GEN_UNTIL" +%H:%M)"
@@ -53,7 +53,7 @@ remaining() {
 # The bulk service now starts at boot, so it is normally running when this job
 # fires. Stop it for the duration: this run needs the GPU and sole ownership of
 # sound_index.json, and bailing out instead would skip the captured-line pass,
-# the table rebuild and the delta pack upload for as long as bulk stays up.
+# the table rebuild and the pack uploads for as long as bulk stays up.
 BULK_WAS_ACTIVE=0
 if systemctl --user is-active --quiet forever-vo-bulk.service; then
     BULK_WAS_ACTIVE=1
@@ -79,12 +79,20 @@ if pgrep -f 'tools/generate.py' >/dev/null; then
     echo "a manual generate.py is running; leaving generation to it"
     exit 0
 fi
+# As many shards as the bulk service runs (its workers.conf drop-in), so one
+# knob sets both and a night with the game closed gets two workers throughout
+if [ -z "${FOREVER_VO_WORKERS:-}" ]; then
+    FOREVER_VO_WORKERS="$(systemctl --user show forever-vo-bulk.service -p Environment --value |
+        tr ' ' '\n' | sed -n 's/^FOREVER_VO_WORKERS=//p' | tail -1)"
+fi
+export FOREVER_VO_WORKERS="${FOREVER_VO_WORKERS:-1}"
 # Captured lines first, then the bulk backlog until GEN_UNTIL (timeout returns
-# 124 when it cuts a pass short; files already written are kept)
-echo "generating until $(date -d "@$GEN_UNTIL" +%H:%M)"
-timeout "$(remaining)" ./tools/run.sh tools/generate.py --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+# 124 when it cuts a pass short, and bulk.sh passes the stop on to its shards;
+# files already written are kept)
+echo "generating until $(date -d "@$GEN_UNTIL" +%H:%M) with $FOREVER_VO_WORKERS worker(s)"
+timeout "$(remaining)" ./tools/bulk.sh --captured --progress 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 if [ "$(remaining)" -gt 60 ]; then
-    timeout "$(remaining)" ./tools/run.sh tools/generate.py 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
+    timeout "$(remaining)" ./tools/bulk.sh 2>&1 | grep -v -i -E 'warn|deprecat|pkg_resources|^\s*$|Sampling|self.gen|sdpa' || true
 fi
 ./tools/run.sh tools/generate.py --tables-only 2>&1 | tail -1 || true
 # What the timed run left behind, from the same todo list it walked (a dry run
@@ -93,8 +101,40 @@ BULK_PENDING="$(./tools/run.sh tools/generate.py --dry-run 2>/dev/null | sed -n 
 BULK_PENDING="${BULK_PENDING:-0}"
 echo "backlog after this run: $BULK_PENDING files"
 
-# Publish the Forever delta pack to CurseForge when it is worth an update: 20+ new files, or a week with any change
-./tools/run.sh tools/release_pack.py delta --upload --if-changed --min-new 20 --max-age-days 7 2>&1 | grep -v -i -E 'warn|Installed' | tail -2 || true
+# Publish to CurseForge when each pack is worth an update: every pack goes
+# whole through the API once enough of its files are new, gone or changed (a
+# re-voiced line counts), or after a week with any change, so the last few
+# files of a re-voicing do not wait for unrelated ones. A build re-encodes
+# only what changed. A pack the
+# API refuses is recorded all the same and must be uploaded by hand soon, so
+# say so on the desktop; the tail keeps release_pack's instructions in this log.
+# One whose upload failed on the way (the Wi-Fi card) is uploaded again the
+# next night; say that too, so a failure there is not a surprise.
+for args in "classic_quests --min-new 20" "classic_endgame --min-new 20" "classic_gossip --min-new 20" \
+    "forever_quests --min-new 20" "forever_gossip --min-new 20" "books --min-new 10"; do
+    args="$args --max-age-days 7"
+    # shellcheck disable=SC2086
+    OUT="$(./tools/run.sh tools/release_pack.py $args --upload --if-changed 2>&1 | grep -v -i -E 'warn|Installed' | tail -12 || true)"
+    echo "$OUT"
+    REFUSED="$(printf '%s\n' "$OUT" | sed -n 's/^upload by hand: \(.*\) (details above)$/\1/p')"
+    RETRY="$(printf '%s\n' "$OUT" | sed -n 's/^upload failed, retried next run: \(.*\) (details above)$/\1/p')"
+    if [ -n "$RETRY" ]; then
+        /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
+            --object-path /org/freedesktop/Notifications \
+            --method org.freedesktop.Notifications.Notify \
+            "Forever VO" 0 "dialog-information" "Upload failed: $RETRY" \
+            "The connection failed after retries; tomorrow night's run uploads it again. Details in tools/data/daily.log." \
+            "[]" "{}" 0 >/dev/null 2>&1 || true
+    fi
+    if [ -n "$REFUSED" ]; then
+        /run/current-system/sw/bin/gdbus call --session --dest org.freedesktop.Notifications \
+            --object-path /org/freedesktop/Notifications \
+            --method org.freedesktop.Notifications.Notify \
+            "Forever VO" 0 "dialog-warning" "Upload by hand: $REFUSED" \
+            "CurseForge's API refused it. The zip and the form fields are in tools/data/daily.log." \
+            "[]" "{'urgency':<byte 1>}" 0 >/dev/null 2>&1 || true
+    fi
+done
 
 # Publish the text side of the build so the repository matches this machine
 git add tools/data/capture.json tools/data/sound_index.json ForeverVO_Data/Data captures 2>/dev/null || true

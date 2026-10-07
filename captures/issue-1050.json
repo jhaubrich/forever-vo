@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "1515": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Executor Zygand",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1050",
+ "quests": {
+  "371-progress": {
+   "build": "70235",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Executor Zygand",
+   "npc": "1515",
+   "questID": 371,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "I see you have returned but your task is not complete.  Perhaps you are at ease with the mere humans interfering with The Dark Lady's plan?  Or perhaps you can heed the call of duty and slay Captain Vachon and his band of Scarlet Friars!",
+   "time": 1791243078,
+   "title": "At War With The Scarlet Crusade",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -1,0 +1,57 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "4077": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 900914,
+   "name": "Gaxim Rustfizzle",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-881",
+ "quests": {
+  "1071-accept": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1442,
+   "name": "Gaxim Rustfizzle",
+   "npc": "4077",
+   "questID": 1071,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "You see, $N, I'm a member of the Enlightened Assembly of Arcanology, Alchemy and Engineering Sciences, and it's my goal... nay, my DUTY! to show the night elves that a blend of magic, mixtures, and mechanisms can help save their forests.\n\nBut it's a hard fought war, and the goblins reproduce like rabbits it seems. I haven't even had time to build my newest inventions!\n\nI need some time to plan and organize. But to do that, I need your help keeping the goblins at bay in Windshear Crag to the east...",
+   "time": 1791135824,
+   "title": "A Gnome's Respite",
+   "wanted": null,
+   "zone": "Stonetalon Mountains"
+  },
+  "1085-complete": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1442,
+   "name": "Gaxim Rustfizzle",
+   "npc": "4077",
+   "questID": 1085,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Treacherous... treacherous and dangerous, that's what this land is.\n\nBut I'm here to show the night elves that it's a little safer with the help of good ole engineering and a dash of magic.\n\nSee, swearing off magic completely won't help the night elves--they need it. The world needs it. And with engineering and alchemy to boot, you can't go wrong. The possibilities are endless.",
+   "time": 1791135819,
+   "title": "On Guard in Stonetalon",
+   "wanted": null,
+   "zone": "Stonetalon Mountains"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

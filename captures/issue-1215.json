@@ -1,0 +1,128 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "265810": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 986648,
+   "name": "Kaga Wildhoof",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "267331": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 986648,
+   "name": "Vartha Rockmane",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "2980": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Grull Hawkwind",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2993": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Baine Bloodhoof",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6747": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Innkeeper Kauth",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1215",
+ "quests": {
+  "1656-progress": {
+   "build": "70245",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Innkeeper Kauth",
+   "npc": "6747",
+   "questID": 1656,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Yes, young one? What can Kauth do for you?\n\nThe journey here from the Mesa can be a tremendous burden for some, but a welcome sight for others. Which is it for you, I wonder?",
+   "time": 1791321365,
+   "title": "A Task Unfinished",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "763-progress": {
+   "build": "70245",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Baine Bloodhoof",
+   "npc": "2993",
+   "questID": 763,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "What brings you to my village, $c?",
+   "time": 1791321211,
+   "title": "Rites of the Earthmother",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "780-progress": {
+   "build": "70245",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Grull Hawkwind",
+   "npc": "2980",
+   "questID": 780,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "The aggression of the Battleboars is increasing. Have you sent them a clear message and brought back some snouts and flanks yet?",
+   "time": 1791320223,
+   "title": "The Battleboars",
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "96659-progress": {
+   "build": "70245",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Kaga Wildhoof",
+   "npc": "265810",
+   "questID": 96659,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Are you here to learn about camping in the wilderness?",
+   "time": 1791320956,
+   "title": "The Adventurer",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

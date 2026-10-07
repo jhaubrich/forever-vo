@@ -7,14 +7,13 @@ showing the quest file base, the voice that plays, and the speaker's
 display and model ids, and a second one attached to the talking head while
 a line plays: the quest window is usually closed by the time a line is heard
 and found wanting, and the talking head is what is up then. Off by default.
-Saved variables do not come back on this beta, so the checkbox keeps the
-choice in ForeverVO_devOverlay.
+The choice is the devOverlay setting. It was also the ForeverVO_devOverlay
+CVar until 0.1.9, which the client does not keep across a logout, so reading it
+back turned the overlay off at every login (#887).
 ]]
 
 local Debug = {}
 ns.UI.Debug = Debug
-
-local CVAR = "ForeverVO_devOverlay"
 
 local probe
 local panel     -- beside the quest or gossip frame
@@ -381,14 +380,6 @@ function Debug:Apply()
 end
 
 ns.OnInit(function()
-    pcall(C_CVar.RegisterCVar, CVAR, "0")
-    local stored = C_CVar.GetCVar(CVAR)
-    if stored == "1" then
-        ns.db.devOverlay = true
-    elseif stored == "0" then
-        ns.db.devOverlay = false
-    end
-
     local frame = CreateFrame("Frame")
     local handlers = {
         QUEST_DETAIL = function()

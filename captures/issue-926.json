@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "252475": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Elaadrin Evengale",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-926",
+ "quests": {
+  "92834-progress": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Elaadrin Evengale",
+   "npc": "252475",
+   "questID": 92834,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I don't agree with the Windshapers often, but they were right to dismiss the idea of trying to engage peacefully with the Al'Aketh. My attempt to take the high road cost a dear friend his life and is a mistake I will have to live with for the rest of my days.",
+   "time": 1791153354,
+   "title": "Avenged Tenfold",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

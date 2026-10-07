@@ -1,0 +1,76 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "2784": {
+   "addon": "0.1.7",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "King Magni Bronzebeard",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1042",
+ "quests": {
+  "96393-complete": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "King Magni Bronzebeard",
+   "npc": "2784",
+   "questID": 96393,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "A Dark Iron incursion--right beneath our feet? Well, I'm relieved to hear that the Dark Iron commander has been dispatched.\r\n\r\nThe guards will head in and clean up the rest of the rabble. We'll see to it that the breaches are sealed and the lower levels reinforced to ensure that no further incursions are possible.\r\n\r\nThank ye for yer service to Ironforge,$c. Take this as a small token of my gratitude. Oh, and if ye see that old Wildhammer rockhugger Farsen again, tell 'em to pay me a proper visit.",
+   "time": 1790858701,
+   "title": "Old Ironforge Incursion",
+   "wanted": true,
+   "zone": "Ironforge"
+  },
+  "96393-progress": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "King Magni Bronzebeard",
+   "npc": "2784",
+   "questID": 96393,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "What do ye need, citizen?",
+   "time": 1790858699,
+   "title": "Old Ironforge Incursion",
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "98423-complete": {
+   "build": "70205",
+   "class": "Priest",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "King Magni Bronzebeard",
+   "npc": "2784",
+   "questID": 98423,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Ah yes, my ancestor Madoran was the first Bronzebeard king of Ironforge following the great civil war between the Wildhammer, Bronzebeard, and Dark Iron clans. This treaty was drafted to codify the cessation of hostilities and terms of peace after the Bronzebeards won the mountain.\r\n\r\nAs you can see, the Wildhammers and Bronzebeards signed it... and the Dark Irons did not.\r\n\r\nThank you for recovering this and bringing it to me, $c.",
+   "time": 1790856206,
+   "title": "The Treaty of Understanding",
+   "wanted": true,
+   "zone": "Ironforge"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

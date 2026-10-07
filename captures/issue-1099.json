@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "3391": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Gazlowe",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3453": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Wharfmaster Dizzywig",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1099",
+ "quests": {
+  "890-progress": {
+   "build": "70235",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Wharfmaster Dizzywig",
+   "npc": "3453",
+   "questID": 890,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Wares to send on the next ship, $N?",
+   "time": 1791289913,
+   "title": "The Missing Shipment",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "895-progress": {
+   "build": "70235",
+   "class": "Warlock",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Gazlowe",
+   "npc": "3391",
+   "questID": 895,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "What's happening? Something I can help you with? Goods to ship, perhaps an engineering job?",
+   "time": 1791289844,
+   "title": "WANTED: Baron Longshore",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}

@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {
+  "263647|53fff4bc": {
+   "build": "70205",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Borook Gallfist",
+   "npc": "263647",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "I am sorry, $c, but you are not experienced enough yet to enter Darkspear Islands.",
+   "time": 1791132057,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "npcs": {
+  "263647": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1022938,
+   "name": "Borook Gallfist",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-873",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}

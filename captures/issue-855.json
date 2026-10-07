@@ -1,0 +1,38 @@
+{
+ "addon": "0.1.8",
+ "gossip": {},
+ "npcs": {
+  "3846": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Talen",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-855",
+ "quests": {
+  "1009-progress": {
+   "build": "70205",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Talen",
+   "npc": "3846",
+   "questID": 1009,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "It is said that the Ring of Zoram is the key to any lock within the city.  Do you have it, $N?",
+   "time": 1791126288,
+   "title": "Ruuzel",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
