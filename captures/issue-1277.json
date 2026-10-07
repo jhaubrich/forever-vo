@@ -1,0 +1,120 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "1092|fc807fb6": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Captain Rugelfuss",
+   "npc": "1092",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "At ease, $R.  This is no time for formalities.  With the Alliance forces under attack, the protection of the Dwarven territories becomes even more critical.  The recent Trogg uprising poses a dreadful threat to the King's land.",
+   "time": 1791402804,
+   "title": null,
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "167|58405dcd": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Morhan Coppertongue",
+   "npc": "167",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings.",
+   "time": 1791402178,
+   "title": null,
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "269153|dab85bcc": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Mountaineer Ylva",
+   "npc": "269153",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "<The mountaineer clearly fought bravely before meeting her end at the weapons of the troggs.>",
+   "time": 1791401108,
+   "title": null,
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "6491|22357dc5": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Spirit Healer",
+   "npc": "6491",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "It is not yet your time. I shall aid your journey back to the realm of the living... for a price.",
+   "time": 1791402012,
+   "title": null,
+   "wanted": null,
+   "zone": "Loch Modan"
+  }
+ },
+ "npcs": {
+  "1092": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Captain Rugelfuss",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "167": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Morhan Coppertongue",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "269153": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 950080,
+   "name": "Mountaineer Ylva",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "6491": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 126042,
+   "name": "Spirit Healer",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1277",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
