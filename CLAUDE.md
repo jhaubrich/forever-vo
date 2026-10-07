@@ -328,7 +328,8 @@ a day; the storefront logo must be original art (`docs/logo.png`).
 (`C_EncodingUtil`; name replaced by `$n`, class and race per line). Long exports
 split into parts of about 25 lines, one GitHub issue each via Copy Link, or one
 pasted string via All at Once; lines count as sent only once their part's link
-is copied (`exportedAt`). Players file the "Contribute captured lines" issue
+is copied, or its text copied with Ctrl+C (`exportedAt`); closing the window
+says how many lines it kept (#1199). Players file the "Contribute captured lines" issue
 form (label `capture`); the older inbox, comments on pinned issue #1 (label
 `capture-inbox`), still works. `.github/workflows/ingest-captures.yml` decodes
 with `tools/exportfile.py` (stdlib only) into `captures/`, commits, reacts and

@@ -5,6 +5,11 @@
 - Only an English game client captures and sends lines. The voice packs are
   English, and a line read on a client in another language was sent as a
   change to the English one and replaced it.
+- `/fvo export` counts lines as sent when you copy the text with Ctrl+C,
+  not only through **Copy Link**, and closing the window without copying
+  says in chat how many lines it kept for your next export. Opening the
+  window alone has not cleared them since 0.1.8, so a window closed by
+  mistake loses nothing, but nothing said so.
 
 ## 0.1.9
 
