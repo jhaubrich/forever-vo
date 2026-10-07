@@ -50,7 +50,7 @@ stamp changed since that release and keeps the rest from the staging folder.
 The API key comes from the repo's .env (gitignored): CF_API_KEY=... (the name
 the BigWigs packager uses too; CURSEFORGE_API_KEY is still accepted).
 Project IDs, the level the base set splits at, the bitrate and the transcode
-parallelism are [release] in forever-vo.toml.
+parallelism are [release] in configs/release.toml.
 """
 
 from __future__ import annotations
@@ -546,7 +546,7 @@ def upload(
     if not key or not project:
         raise SystemExit(
             f"upload needs CF_API_KEY in .env and a project id for {pack} under "
-            f"[release.curseforge_projects] in forever-vo.toml"
+            f"[release.curseforge_projects] in configs/release.toml"
         )
     metadata = {
         "changelog": changelog_for(version, stats),
@@ -655,7 +655,7 @@ def release_one(pack: str, args: argparse.Namespace, config: Config) -> str | No
         if not key or not project:
             print(
                 f"CurseForge upload not configured for {pack}: need CF_API_KEY in .env and a project id under "
-                f"[release.curseforge_projects] in forever-vo.toml; skipping"
+                f"[release.curseforge_projects] in configs/release.toml; skipping"
             )
             return None
 

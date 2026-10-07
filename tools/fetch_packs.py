@@ -4,7 +4,7 @@ Optional. With nothing set, the page still reads the game client's AddOns
 folder from WOW_DIR, and this script is never run. A checkout with no client
 can point AUDITION_ADDONS at a directory of ForeverVO_Data* folders. The
 default download lands in ./addons, which is gitignored, and holds the
-released packs (every one with a project ID in forever-vo.toml; the folders
+released packs (every one with a project ID in configs/release.toml; the folders
 are release_pack's). The client is not touched
 unless AUDITION_ADDONS or --addons names that folder.
 
@@ -36,7 +36,7 @@ STAMP = ".fetched.json"
 RELEASE = 1
 LIST_URL = "https://www.curseforge.com/api/v1/mods/{project}/files"
 CDN = "https://edge.forgecdn.net/files/{hi}/{lo}/{name}"
-# pack key in forever-vo.toml -> the folder the zip installs as
+# pack key in configs/release.toml -> the folder the zip installs as
 FOLDERS = {
     "classic_quests": "ForeverVO_Data_Classic_Quests",
     "classic_endgame": "ForeverVO_Data_Classic_Endgame",
@@ -228,7 +228,7 @@ def main(argv: list[str] | None = None) -> int:
         project = projects.get(pack)
         if not project:
             raise SystemExit(
-                f"no [release.curseforge_projects].{pack} in forever-vo.toml"
+                f"no [release.curseforge_projects].{pack} in configs/release.toml"
             )
         fetch_pack(pack, project, addons, args.force, stamp)
     return 0

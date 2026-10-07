@@ -1,0 +1,323 @@
+[tts]
+# Chatterbox conditioning for every voice that has no entry below. tempo is not
+# a model knob (Chatterbox has none): it is a pitch-preserving time stretch at
+# encode time, 1.0 as generated, 1.1 ten percent faster. Chatterbox's own advice
+# for pace is a lower cfg_weight, so try that before stretching.
+exaggeration = 0.45
+cfg_weight = 0.5
+tempo = 1.0
+
+# Dwarves came out of Chatterbox sounding American (#18). The reference clips
+# are short NPC greetings, so the model keeps the timbre but drifts to its own
+# neutral accent unless pushed, and pushing only works on a reference of a few
+# long connected clips rather than the usual montage of barks. Tuning a voice
+# restages exactly that voice's files (the settings join the text fingerprint),
+# including the voices that borrow its clip.
+#
+# dwarf-male used to carry that fix here as `reference = "npc-3597"` (a named
+# dwarf's four connected lines) at 0.75 / 0.3. It has no entry now: its clips
+# are chosen by ear in [voices.sources.dwarf-male], which only takes effect
+# with no `reference` pointing elsewhere, and it runs at the defaults. If the
+# American accent comes back, the clips are the first thing to look at and the
+# knobs the second: settings alone have never recovered an accent here, while
+# a reference of connected speech rather than barks repeatedly has.
+[tts.voices.dwarf-female]
+exaggeration = 0.75
+cfg_weight = 0.3
+
+[tts.voices.goblin-male]
+exaggeration = 0.9
+cfg_weight = 0.8
+
+[tts.voices.goblin-female]
+exaggeration = 0.7
+cfg_weight = 0.5
+
+[tts.voices.human-female]
+exaggeration = 0.7
+cfg_weight = 0.3
+tempo = 1.1
+
+[tts.voices.human-male]
+exaggeration = 0.5
+cfg_weight = 0.3
+tempo = 1.1
+
+[tts.voices.nightelf-female]
+exaggeration = 0.6
+cfg_weight = 0.3
+
+[tts.voices.orc-female]
+exaggeration = 0.7
+cfg_weight = 0.5
+
+[tts.voices.orc-male]
+exaggeration = 0.6
+cfg_weight = 0.2
+tempo = 1.1
+
+[tts.voices.scourge-female]
+exaggeration = 0.3
+cfg_weight = 0.6
+
+[tts.voices.scourge-male]
+exaggeration = 0.4
+cfg_weight = 0.4
+
+[tts.voices.troll-female]
+exaggeration = 0.6
+cfg_weight = 0.5
+
+[tts.voices.dwarf-female-guard]
+exaggeration = 0.2
+cfg_weight = 0.5
+tempo = 1.2
+
+[tts.voices.dwarf-female-maternal]
+exaggeration = 0.6
+cfg_weight = 0.9
+tempo = 1.1
+
+[tts.voices.dwarf-female-young]
+exaggeration = 0.75
+cfg_weight = 0.6
+
+[tts.voices.dwarf-male-guard]
+exaggeration = 0.1
+cfg_weight = 0.5
+
+[tts.voices.dwarf-male-standard]
+exaggeration = 0.3
+cfg_weight = 0.7
+
+[tts.voices.gnome-female-happy]
+exaggeration = 0.7
+cfg_weight = 0.6
+tempo = 1.2
+
+[tts.voices.gnome-female-nerdy]
+exaggeration = 0.7
+cfg_weight = 0.7
+tempo = 1.3
+
+[tts.voices.gnome-female-standard]
+exaggeration = 0.6
+cfg_weight = 0.7
+tempo = 1.2
+
+[tts.voices.gnome-male-standard]
+exaggeration = 0.6
+cfg_weight = 0.7
+tempo = 1.3
+
+[tts.voices.gnome-male-young]
+exaggeration = 0.6
+cfg_weight = 0.5
+tempo = 1.2
+
+[tts.voices.gnome-male-zany]
+exaggeration = 1.0
+cfg_weight = 0.5
+tempo = 1.2
+
+[tts.voices.human-male-official]
+exaggeration = 0.6
+cfg_weight = 0.3
+tempo = 1.05
+pitch = 1.0
+
+[tts.voices.scourge-male-warrior]
+exaggeration = 0.6
+cfg_weight = 0.3
+
+[tts.voices.tauren-male-warrior]
+exaggeration = 0.3
+cfg_weight = 0.7
+tempo = 1.15
+
+[tts.voices.tauren-female-official]
+exaggeration = 0.6
+cfg_weight = 0.2
+tempo = 1.1
+pitch = 1.0
+
+[tts.voices.orc-male-guard]
+exaggeration = 0.45
+cfg_weight = 0.3
+
+[tts.voices.npc-11657]
+exaggeration = 0.7
+cfg_weight = 0.4
+tempo = 0.9
+
+[tts.voices.npc-11658]
+exaggeration = 0.8
+cfg_weight = 0.5
+pitch = -3.0
+
+[tts.voices.npc-10006]
+exaggeration = 0.5
+cfg_weight = 0.5
+tempo = 0.9
+pitch = -2.5
+
+[tts.voices.npc-4527]
+exaggeration = 0.35
+cfg_weight = 0.4
+speed = 0.99
+
+[tts.voices.npc-10699]
+exaggeration = 0.8
+cfg_weight = 0.5
+tempo = 0.9
+
+[tts.voices.goblin-male-gruff]
+exaggeration = 1.2
+cfg_weight = 0.1
+tempo = 0.9
+
+[tts.voices.goblin-male-guard]
+exaggeration = 1.1
+cfg_weight = 0.1
+
+[tts.voices.scourge-female-magic]
+exaggeration = 0.6
+cfg_weight = 0.02
+
+[tts.voices.scourge-male-dark]
+exaggeration = 0.5
+cfg_weight = 0.3
+
+[tts.voices.scourge-male-standard]
+exaggeration = 0.4
+cfg_weight = 0.3
+pitch = 0.5
+
+[tts.voices.human-female-official]
+exaggeration = 0.8
+cfg_weight = 0.3
+
+[tts.voices.human-female-standard]
+exaggeration = 0.5
+cfg_weight = 0.3
+
+[tts.voices.human-female-warrior]
+exaggeration = 0.6
+cfg_weight = 0.3
+pitch = -1.0
+
+[tts.voices.human-male-standard]
+exaggeration = 0.5
+cfg_weight = 0.1
+tempo = 1.1
+
+[tts.voices.goblin-male-zany]
+exaggeration = 1.1
+cfg_weight = 0.2
+tempo = 1.2
+pitch = 1.0
+
+[tts.voices.dwarf-male]
+exaggeration = 0.7
+cfg_weight = 0.3
+
+[tts.voices.orc-male-shady]
+exaggeration = 0.6
+cfg_weight = 0.2
+pitch = -1.0
+
+[tts.voices.spirithealer-female]
+exaggeration = 0.5
+cfg_weight = 0.2
+tempo = 0.7
+pitch = -4.0
+
+[tts.voices.nightelf-male]
+exaggeration = 0.3
+cfg_weight = 0.3
+pitch = -1.0
+
+[tts.voices.tauren-male]
+exaggeration = 0.4
+cfg_weight = 0.3
+
+# Respellings for names Chatterbox gets wrong. The model takes plain text only
+# (no IPA or SSML), so the fix is spelling the word the way it should sound.
+# Try candidates by ear first: of five for Gnomeregan (/noʊmɹəˈgɑːn/),
+# "Nomer-gahn" was natural, "Gnome-ruh-gahn" was bad, and "Nome-ruh-GAHN" came
+# out partly as numbers (so do not mark stress with capitals). Ahn'Qiraj is
+# fine as written; "Ahn Kih-rahj" adds a rolled r. Quel'Thalas came out wrong;
+# "Quell Thalas" and "Kwel-thalas" were both fine. Kharanos as written varies
+# take to take, and so do "Karanos" and "Karra-noss" (each had bad takes out of
+# four); "Karranos" was fine all four times, sometimes with a Scottish rolled r.
+# Dun Morogh is fine as written. Tirisfal as written sometimes came out
+# "Tirefal"; "Tirrisfal" and "Teerisfall" were right four times of four.
+# Hyphens can leave a pause mid-word ("Teer-iss-fall"), so prefer respellings
+# without them. Varimathras as written was only ever ok or good; "Vairimathrus"
+# was good four times of four. Sharptalon reads best as two words: "Sharp
+# Talon" beat the plain spelling and "Sharptallon" in the tauren-female voice,
+# and a space does not leave the pause a hyphen can (#38).
+
+[tts.voices.nightelf-male-warrior]
+exaggeration = 0.25
+cfg_weight = 0.4
+speed = 0.99
+
+[tts.voices.troll-female-standard]
+exaggeration = 0.7
+cfg_weight = 0.3
+
+[tts.voices.troll-female-laidback]
+exaggeration = 0.45
+cfg_weight = 0.4
+speed = 0.99
+
+[tts.voices.tauren-male-shaman]
+exaggeration = 0.3
+cfg_weight = 0.5
+
+[tts.voices.human-male-warrior]
+exaggeration = 0.55
+cfg_weight = 0.4
+speed = 0.99
+
+[tts.voices.tauren-male-elder]
+exaggeration = 0.4
+cfg_weight = 0.3
+
+[tts.voices.troll-male-shaman]
+exaggeration = 0.6
+cfg_weight = 0.5
+
+[tts.voices.nightelf-female-standard]
+exaggeration = 0.55
+cfg_weight = 0.3
+speed = 0.99
+
+[tts.voices.troll-female-old]
+exaggeration = 0.45
+cfg_weight = 0.4
+speed = 0.98
+
+[tts.voices.troll-male-standard]
+exaggeration = 0.55
+cfg_weight = 0.4
+
+[tts.voices.orc-female-warrior]
+exaggeration = 0.45
+cfg_weight = 0.5
+tempo = 1.1
+
+[tts.voices.nightelf-female-priestess]
+exaggeration = 0.6
+cfg_weight = 0.35
+
+[tts.voices.nightelf-female-sentinel]
+exaggeration = 0.4
+cfg_weight = 0.5
+tempo = 1.1
+
+[tts.voices.banshee-female]
+exaggeration = 0.8
+cfg_weight = 0.3
+speed = 0.98

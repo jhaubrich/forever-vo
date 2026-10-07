@@ -1,0 +1,227 @@
+[voices]
+# Quests handed out by objects and items have no speaker to clone, so they are
+# read by the narrator. That voice is a matter of taste, so every narrator line
+# is also generated in the alternates and the player picks one in the addon's
+# options. The narrator keeps the plain sound path (Sounds\Quests\<base>.mp3);
+# the alternates live in Sounds\Quests\Narrator\<voice>\. Adding a voice here
+# costs one more pass over every narrator line (~1,040 quest and ~336 gossip
+# lines in the full Classic set, plus parts) and about 6.5% of every pack's
+# size. The menu is one male and one female voice: the default (skyborne-male's
+# clip since 2026-10-06, human-male's before) and skyborne-female since
+# 2026-10-01. Five alternates were a third of
+# each pack until 2026-09-25, and the two base packs had to be split by quest
+# level to stay under CurseForge's 1 GB cap; orc-male, the one kept then, was
+# dropped for not sounding good enough. The dropped voices' files stay under
+# Sounds/*/Narrator/ until deleted by hand; the tables and releases only list
+# voices named here.
+narrator = "narrator"
+narrator_alternates = ["skyborne-female"]
+
+# Sound folders (under sound/creature/ or sound/character/) that any voice may
+# borrow clips from in the audition page's "Also offer clips from": characters this
+# client ships recordings of but casts no NPC with. Gul'dan has 156 real Warlords and
+# Legion lines here, connected speech that no orc set has; the night elf ones are
+# for nightelf-male, whose 1.x emotes are thin (Legion's demon hunter player set, a
+# Legion ghost, Jarod Shadowsong for the warrior archetype, and the nightborne
+# player and citizen sets, who read from nightelf-male.wav; and Legion's weeping
+# banshee, the one banshee speech this client ships: the WC3 banshee clip comes from
+# the Reforged install, and banshee_sylvanas_no_loc is all empty files; and
+# Moira Bronzebeard's dialogue, Battle for Azeroth to The War Within, for
+# dwarf-female, whose speakers bark nothing and include Moira herself; and
+# Malfurion Stormrage's, for nightelf-male, whose speakers are mostly elders and
+# druids, Malfurion among them). `fvo-soundpaths
+# --folders --only <folder>` lists a new one's real lines in
+# tools/data/named_folders.json.
+clip_folders = [
+    "guldan",
+    "pcdhnightelfmale",
+    "night_elf_male_ghost",
+    "commander_jarod_shadowsong",
+    "pc_-_nightborne_elf_male",
+    "nightborne_male_citizen",
+    "weeping_banshee",
+    "moira_thaurissan",
+    "malfurion_stormrage",
+]
+
+# Races without a reference clip borrow a related one; the narrator without a
+# tools/voices/narrator.wav borrows skyborne-male (human-male until 2026-10-06).
+# A borrowed clip brings its
+# owner's [tts.voices] tuning with it.
+[voices.fallbacks]
+narrator = "skyborne-male"
+felorc = "orc"
+magharorc = "orc"
+foresttroll = "troll"
+icetroll = "troll"
+zandalari = "troll"
+skeleton = "scourge"
+northrendskeleton = "scourge"
+taunka = "tauren"
+highmountaintauren = "tauren"
+draenei = "human"
+broken = "human"
+vrykul = "human"
+kultiran = "human"
+thinhuman = "human"
+worgen = "human"
+naga = "nightelf"
+nightborne = "nightelf"
+voidelf = "bloodelf"
+tuskarr = "dwarf"
+darkirondwarf = "dwarf"
+mechagnome = "gnome"
+vulpera = "goblin"
+pandaren = "human"
+dracthyr = "bloodelf"
+
+# When the client tables give no race for a speaker, the zone is a strong hint.
+[voices.zone_hints]
+"Zephras Isle" = "skyborne"
+
+# A few model folders name a kind of creature the pack has no clip for, while a
+# clip it does have is far closer than the adult human they would fall back to.
+[voices.species_aliases]
+orcmalekid = "humanmalekid-male"
+orcfemalekid = "humanfemalekid-female"
+
+# A named NPC (npc-<displayID>) is offered its greeting kit and every line in its
+# sound set's folder under sound/creature/ as source clips. Some characters were
+# filed under more than one folder over the expansions; list the others here, keyed
+# by the set's own folder (tools/data/sound_sets.json), and run
+# `./tools/run.sh fvo-soundpaths --folders` so tools/data/named_folders.json has them.
+# Folders are never matched by name: anduin, anduin_lothar and anduinwrynn are two
+# different people. lady_sylvanas_windrunner is Legion to Dragonflight.
+[voices.named_folders]
+# sylvanaswindrunner = ["sylvanas", "lady_sylvanas_windrunner"]
+jainaproudmoore = ["lady_jaina_proudmoore"]  # Legion on
+tyrandewhisperwind = ["tyrande_whisperwind"]  # Legion on
+voljin = ["warchief_voljin"]  # Legion and Battle for Azeroth, long speeches
+
+# One speaker always in one voice, ahead of everything the capture says
+# (#319). Keyed like the pack's gossip (creature ID, negative for game
+# objects); any voice name the generator resolves (race, archetype, species,
+# npc-<displayID>). Changing an entry restages exactly that speaker's files.
+# Per speaker, never per line, and for the cases the data cannot fix: pin from
+# the audition page ("Always read ... in"), and generate.py warns about a
+# voice with no clip of its own. Fizzlefuse (#352) is a goblin whose only
+# model readings came out tauren and orc, read before 0.1.7 fixed the capture.
+[voices.speakers]
+"248200" = "goblin-male"
+# The druid spirits have no race to cast them from and fell to the narrator: the
+# bear speaks as a tauren elder, the cat as a night elf warrior.
+"11956" = "tauren-male-elder"
+"11957" = "nightelf-male-warrior"
+# Stand-ins for speakers that fell to the narrator, until they get voices of
+# their own: the dragons Anachronos (bronze) and Emberstrife (black) in a blood
+# elf's, Sayge (a hyena) in an old troll woman's.
+"15192" = "bloodelf-male"
+"10321" = "bloodelf-male"
+"14822" = "troll-female-old"
+
+# NPCSounds set -> voice, for a creature whose display the client tables give no
+# race and no species clip covers: the set Blizzard cast it with still says who it
+# is. Only reached after the species step, so it never overrides a species clip.
+# Set 66 is goblinMaleZany: Gryfe, Bragok, Kwee Q. Peddlefeet and Wizzlecrank's
+# Shredder are goblins on models the tables give no race.
+[voices.sound_sets]
+"66" = "goblin-male-zany"
+
+[voices.notes]
+# Tasting notes, one per voice, written in the audition page's voice card: what
+# a voice sounds like by ear, which lines break it, what was tried and what to
+# try next. For people; nothing generates from them.
+dwarf-female = "Southern accent mostly eliminated by using barks for T3, but Scottish accent also gone. No combination of jokes or flirts can seem to land it. We can get close, but she drifts in and out of accents and it sounds worse than no accent at all."
+nightelf-male = "sounds like malfurion."
+scourge-male-warrior = "set 84 has very high quality barks"
+troll-female-standard = "cannot get the accent right and out of ideas. It's actually better to not even try."
+dwarf-male-grim = "can't get a scottish accent. gave up and used barks for best voice texture. Joke lines make the accent muddled and just terrible."
+human-female-official = "can't get the right texture on this one. It's close enough."
+troll-male-standard = "sadly, trolls made of barks alone minimized the accent drift"
+orc-male-standard = "orcs are hard"
+
+# Voices someone has auditioned by ear and approved, set with the audition
+# page's "Approved by ear" box. Each holds the recipe heard (the clip read from,
+# the settings that differ from [tts], a digest of the picked clips), so a later
+# re-pick or retuning, of this voice or one it borrows from, shows it as
+# approved before a change (a hollow star) until someone listens again. A note
+# for people: nothing is generated or restaged by it.
+[voices.approved]
+bloodelf-female = "clip=bloodelf-female,clips=66f6a592"
+bloodelf-male = "clip=bloodelf-male,clips=80efdb01"
+gnome-female = "clip=gnome-female,clips=f2415ebc"
+gnome-male = "clip=gnome-male,clips=a41a46f0"
+goblin-female = "clip=goblin-female,clips=f760aa03,exaggeration=0.7"
+goblin-male = "cfg_weight=0.8,clip=goblin-male,clips=0a3bacfb,exaggeration=0.9"
+human-female = "cfg_weight=0.3,clip=human-female,clips=2a9f3a90,exaggeration=0.7,tempo=1.1"
+human-male = "cfg_weight=0.3,clip=human-male,clips=8d721fa3,exaggeration=0.5,tempo=1.1"
+npc-11657 = "cfg_weight=0.4,clip=npc-11657,clips=a7539b2a,exaggeration=0.7,tempo=0.9"
+npc-11658 = "clip=npc-11658,clips=f55260b3,exaggeration=0.8,pitch=-3.0"
+skyborne-female = "clip=skyborne-female,clips=05cffee1"
+skyborne-male = "clip=skyborne-male,clips=ebf00ac1"
+tauren-female = "clip=tauren-female"
+npc-10699 = "clip=npc-10699,clips=0b74a67f,exaggeration=0.8,tempo=0.9"
+npc-7274 = "clip=npc-7274,clips=5cb37518"
+dwarf-female-guard = "clip=dwarf-female-guard,clips=e2140495,exaggeration=0.2,tempo=1.2"
+dwarf-female-maternal = "cfg_weight=0.9,clip=dwarf-female-maternal,clips=748160ae,exaggeration=0.6,tempo=1.1"
+dwarf-female-young = "cfg_weight=0.6,clip=dwarf-female-young,clips=c2616b62,exaggeration=0.75"
+dwarf-male-guard = "clip=dwarf-male-guard,exaggeration=0.1"
+dwarf-male-standard = "cfg_weight=0.7,clip=dwarf-male-standard,clips=712b1142,exaggeration=0.3"
+gnome-female-happy = "cfg_weight=0.6,clip=gnome-female-happy,clips=565d8da5,exaggeration=0.7,tempo=1.2"
+gnome-female-nerdy = "cfg_weight=0.7,clip=gnome-female-nerdy,clips=1ae3fb6e,exaggeration=0.7,tempo=1.3"
+gnome-female-standard = "cfg_weight=0.7,clip=gnome-female-standard,exaggeration=0.6,tempo=1.2"
+gnome-male-standard = "cfg_weight=0.7,clip=gnome-male-standard,clips=e2d69420,exaggeration=0.6,tempo=1.3"
+gnome-male-young = "clip=gnome-male-young,clips=7df52147,exaggeration=0.6,tempo=1.2"
+gnome-male-zany = "clip=gnome-male-zany,exaggeration=1.0,tempo=1.2"
+goblin-female-s107 = "clip=goblin-female-s107,exaggeration=0.7"
+goblin-male-gruff = "cfg_weight=0.1,clip=goblin-male-gruff,clips=6e50ea1a,exaggeration=1.2,tempo=0.9"
+goblin-male-guard = "cfg_weight=0.1,clip=goblin-male-guard,clips=928ba4d0,exaggeration=1.1"
+scourge-female-magic = "cfg_weight=0.02,clip=scourge-female-magic,clips=dc0788af,exaggeration=0.6"
+scourge-female-warrior = "cfg_weight=0.6,clip=scourge-female-warrior,clips=b5db9089,exaggeration=0.3"
+scourge-male-dark = "cfg_weight=0.3,clip=scourge-male-dark,clips=f45f2382,exaggeration=0.5"
+scourge-male-standard = "cfg_weight=0.3,clip=scourge-male-standard,clips=d8c8e8cb,exaggeration=0.4,pitch=0.5"
+scourge-male-warrior = "cfg_weight=0.3,clip=scourge-male-warrior,clips=4e2dd600,exaggeration=0.6"
+human-female-official = "cfg_weight=0.3,clip=human-female-official,clips=344c8479,exaggeration=0.8"
+human-female-standard = "cfg_weight=0.3,clip=human-female-standard,exaggeration=0.5"
+human-female-warrior = "cfg_weight=0.3,clip=human-female-warrior,clips=4c81c03c,exaggeration=0.6,pitch=-1.0"
+human-male-official = "cfg_weight=0.3,clip=human-male-official,clips=a89c7784,exaggeration=0.6,pitch=1.0,tempo=1.05"
+human-male-standard = "cfg_weight=0.1,clip=human-male-standard,exaggeration=0.5,tempo=1.1"
+goblin-male-zany = "cfg_weight=0.2,clip=goblin-male-zany,clips=3238493e,exaggeration=1.1,pitch=1.0,tempo=1.2"
+tauren-female-official = "cfg_weight=0.2,clip=tauren-female-official,exaggeration=0.6,pitch=1.0,tempo=1.1"
+dwarf-female = "cfg_weight=0.3,clip=dwarf-female,clips=910d3eb7,exaggeration=0.75"
+dwarf-male = "cfg_weight=0.3,clip=dwarf-male,clips=264d8895,exaggeration=0.7"
+orc-male = "cfg_weight=0.2,clip=orc-male,clips=e8326d21,exaggeration=0.6,tempo=1.1"
+orc-male-guard = "cfg_weight=0.3,clip=orc-male-guard,clips=3da06ca8"
+orc-male-shady = "cfg_weight=0.2,clip=orc-male-shady,clips=4c1a666d,exaggeration=0.6,pitch=-1.0"
+nightelf-female = "cfg_weight=0.3,clip=nightelf-female,clips=0ed3481b,exaggeration=0.6"
+nightelf-male = "cfg_weight=0.3,clip=nightelf-male,clips=65a0ac92,exaggeration=0.3,pitch=-1.0"
+spirithealer-female = "cfg_weight=0.2,clip=spirithealer-female,clips=a1ba39fd,exaggeration=0.5,pitch=-4.0,tempo=0.7"
+tauren-male = "cfg_weight=0.3,clip=tauren-male,clips=3c6712d9,exaggeration=0.4"
+nightelf-male-standard = "cfg_weight=0.3,clip=nightelf-male-standard,clips=780ac3d7,exaggeration=0.3,pitch=-1.0"
+npc-4527 = "cfg_weight=0.4,clip=npc-4527,clips=2ef25958,exaggeration=0.35,speed=0.99"
+nightelf-male-warrior = "cfg_weight=0.4,clip=nightelf-male-warrior,clips=f4429bcb,exaggeration=0.25,speed=0.99"
+nightelf-male-official = "cfg_weight=0.3,clip=nightelf-male-official,exaggeration=0.3,pitch=-1.0"
+troll-female-standard = "cfg_weight=0.3,clip=troll-female-standard,clips=49b8db2f,exaggeration=0.7"
+troll-female-laidback = "cfg_weight=0.4,clip=troll-female-laidback,clips=201da6a8,speed=0.99"
+dwarf-male-grim = "cfg_weight=0.3,clip=dwarf-male-grim,clips=b50759e2,exaggeration=0.7"
+human-male-warrior = "cfg_weight=0.4,clip=human-male-warrior,clips=5348e0e1,exaggeration=0.55,speed=0.99"
+tauren-male-elder = "cfg_weight=0.3,clip=tauren-male-elder,clips=44972650,exaggeration=0.4"
+troll-male-shaman = "clip=troll-male-shaman,clips=126a04ef,exaggeration=0.6"
+nightelf-female-standard = "cfg_weight=0.3,clip=nightelf-female-standard,clips=d25cef22,exaggeration=0.55,speed=0.99"
+tauren-female-standard = "clip=tauren-female-standard,clips=6765acd5"
+troll-female = "clip=troll-female,clips=0675346a,exaggeration=0.6"
+orc-female = "clip=orc-female,clips=13caec09,exaggeration=0.7"
+troll-female-old = "cfg_weight=0.4,clip=troll-female-old,clips=c63fd24c,speed=0.98"
+tauren-male-shaman = "clip=tauren-male-shaman,clips=0496151c,exaggeration=0.3"
+tauren-male-warrior = "cfg_weight=0.7,clip=tauren-male-warrior,exaggeration=0.3,tempo=1.15"
+tauren-female-shaman = "clip=tauren-female-shaman,clips=2afc55cd"
+troll-male-standard = "cfg_weight=0.4,clip=troll-male-standard,clips=d76114c8,exaggeration=0.55"
+troll-male-dark = "clip=troll-male-dark,clips=e08e20a9"
+orc-male-standard = "cfg_weight=0.2,clip=orc-male-standard,exaggeration=0.6,tempo=1.1"
+orc-female-standard = "clip=orc-female-standard,clips=d5b076e5,exaggeration=0.7"
+orc-female-shaman = "clip=orc-female-shaman,exaggeration=0.7"
+orc-female-warrior = "clip=orc-female-warrior,tempo=1.1"
+scourge-female-standard = "cfg_weight=0.6,clip=scourge-female-standard,exaggeration=0.3"
+nightelf-female-priestess = "cfg_weight=0.35,clip=nightelf-female-priestess,clips=f342d661,exaggeration=0.6"
+nightelf-female-sentinel = "clip=nightelf-female-sentinel,exaggeration=0.4,tempo=1.1"
+banshee-female = "cfg_weight=0.3,clip=banshee-female,clips=a1ba39fd,exaggeration=0.8,speed=0.98"

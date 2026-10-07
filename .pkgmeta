@@ -24,7 +24,7 @@ ignore:
   - flake.nix
   - flake.lock
   - .python-version
-  - forever-vo.toml
+  - configs
   - tests
 
 enable-nolib-creation: no

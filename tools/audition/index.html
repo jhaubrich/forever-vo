@@ -425,7 +425,7 @@
     <div class="start">
       <div class="start-top">
         <label for="voice-search" class="start-head">Voice <span class="note">start here: choose a voice, then try its lines and settings below</span></label>
-        <span class="approval"><label class="check" title="Saved under [voices.approved] in forever-vo.toml with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></span>
+        <span class="approval"><label class="check" title="Saved under [voices.approved] in configs/ with the recipe heard: ★ in the list while the voice is still configured that way, ☆ once its clips or settings (or a voice it borrows from) change. A note for people: nothing is generated or restaged by it."><input type="checkbox" id="approved"> <span id="approved-label">Approved by ear</span></label></span>
       </div>
       <div class="start-row">
         <div class="voice-find">
@@ -523,7 +523,7 @@
       <p>The two interact: guidance amplifies whatever the conditioning says, so raising
         Emotion <i>and</i> Adherence compounds. The pairing in this pack &mdash; 0.75
         Emotion with 0.3 Adherence &mdash; is deliberately the other way round: more
-        expression, less pressure on it. In forever-vo.toml they keep Chatterbox's names,
+        expression, less pressure on it. In configs/ they keep Chatterbox's names,
         <code>exaggeration</code> and <code>cfg_weight</code>.</p>
       <h4>Chunks, and the two kinds of accent switch</h4>
       <p>A long line is read in <b>chunks</b>, one model call each, joined with 0.35&nbsp;s
@@ -610,7 +610,7 @@
           <button id="clips-copy" class="linkish" title="Copy the picks in the Reference box (clips and gaps), to import into another voice">export pick</button>
           <button id="clips-paste" class="linkish" title="Load a pick exported from this voice or another: its clips, gaps and build go into the Reference box, with the sources they need. Nothing is built until Build and keep.">import pick</button>
           <button id="clips-reset" title="Drop every pick">Clear</button>
-          <button id="clips-build" class="primary" title="Build the reference from these picks, in this order, and keep them under [voices.sources] in forever-vo.toml">Build and keep</button>
+          <button id="clips-build" class="primary" title="Build the reference from these picks, in this order, and keep them under [voices.sources] in configs/">Build and keep</button>
         </div>
         <div id="clips-timeline" hidden></div>
         <ol id="clips-picks"></ol>
@@ -1329,7 +1329,7 @@ function showSpeakerPin() {
   };
   if (pinned !== voice) {
     const pin = document.createElement("button"); pin.textContent = `Always read ${who} in ${voice}`;
-    pin.title = `Write [voices.speakers] "${current.speaker_key}" = "${voice}" into forever-vo.toml.\n\n` +
+    pin.title = `Write [voices.speakers] "${current.speaker_key}" = "${voice}" into configs/.\n\n` +
       `It wins over everything the capture says (display, model, zone), so use it for a speaker whose ` +
       `captured race is wrong. Every line this speaker has is restaged by the next generate run.`;
     pin.addEventListener("click", () => save(voice, pin));
@@ -1454,7 +1454,7 @@ function onEvent(ev) {
   const cell = tr.lastElementChild;
   const keep = document.createElement("button"); keep.textContent = "Keep these settings";
   keep.title = `Write [tts.voices.${voice}] with these settings${ev.reference ? " and this clip" : ""} ` +
-    `into forever-vo.toml.\n\nThe settings join that voice's fingerprint, so its lines go stale and the ` +
+    `into configs/.\n\nThe settings join that voice's fingerprint, so its lines go stale and the ` +
     `next generate run redoes them — exactly that voice's files, and the voices that borrow its clip.`;
   keep.addEventListener("click", async () => {
     busy(keep, true);
@@ -1473,7 +1473,7 @@ function onEvent(ev) {
     const pin = document.createElement("button"); pin.textContent = "Pin this take";
     pin.title =
       `Draw ${ev.base}'s pack file from this take's seed (${ev.seed}): written to [lines] in ` +
-      "forever-vo.toml, and the next generate run makes the file from it.\n\n" +
+      "configs/, and the next generate run makes the file from it.\n\n" +
       "Only a take of the line's own text under the voice's saved settings can be pinned; " +
       "keep the settings first. The pin is for the line's own file in its own voice: the " +
       "other sex's recording and the alternate narrators are drawn as before. A line with a " +
@@ -1903,7 +1903,7 @@ function renderHistory(history, picked) {
   // the same clips with the same gaps, a missing gap counting as 0
   const padded = (gaps, n) => Array.from({ length: n }, (_, i) => (gaps || [])[i] || 0);
   const current = h => same(h.clips, picks) && same(padded(h.gaps, picks.length - 1), gapsList());
-  // The pick saved in forever-vo.toml is marked ★, and a pick with audio in the pack
+  // The pick saved in configs/ is marked ★, and a pick with audio in the pack
   // ("released": the nightly voices from it and ships what it made) is marked too and
   // never leaves the list. Every other pick is an experiment, with an × to drop it. The
   // one being shown now is gold.
@@ -1911,10 +1911,10 @@ function renderHistory(history, picked) {
     const kept = h.saved || h.released;
     return `<span class="pick${current(h) ? " current" : ""}${h.saved ? " saved" : ""}${h.released ? " released" : ""}">` +
       `<button data-i="${i}" ` +
-      `title="${h.saved ? "The pick saved in forever-vo.toml. " : ""}${h.released ? `Released: ${h.released} pack file${h.released === 1 ? " was" : "s were"} voiced from it, so it stays. ` : ""}` +
+      `title="${h.saved ? "The pick saved in configs/. " : ""}${h.released ? `Released: ${h.released} pack file${h.released === 1 ? " was" : "s were"} voiced from it, so it stays. ` : ""}` +
       `${h.clips.join(", ")}${spaced(h) ? `; gaps ${h.gaps.join(", ")}s` : ""}${(h.uses || []).length ? `; uses ${h.uses.join(", ")}` : ""}">` +
       `${h.saved ? "★ saved · " : ""}${h.released ? `<span class="rel">released</span> ` : ""}` +
-      `${h.recipe ? "automatic build" : h.at === "saved" ? "in forever-vo.toml" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
+      `${h.recipe ? "automatic build" : h.at === "saved" ? "in configs/" : h.at} · ${h.clips.length} clip${h.clips.length === 1 ? "" : "s"}` +
       `${spaced(h) ? ` · ${spaced(h)} gap${spaced(h) === 1 ? "" : "s"}` : ""}${h.seconds !== undefined ? ` · ${h.seconds}s` : ""}</button>` +
       (kept ? "" : `<button class="forget" data-forget="${i}" title="Drop this experiment from Earlier picks">×</button>`) + `</span>`;
   }).join("");
@@ -2020,7 +2020,7 @@ async function loadClips(refresh) {
         const missing = h.clips.length - picks.length;
         toast(missing ? `Loaded ${picks.length} of ${h.clips.length}; ${missing} could not be found.`
           : h.label ? `Loaded the pick ${h.label}. Build and keep to make it this voice's reference.`
-          : `Loaded the pick from ${h.at === "saved" ? "forever-vo.toml" : h.at}. Build to make it the reference again.`, missing ? "warn" : "ok");
+          : `Loaded the pick from ${h.at === "saved" ? "configs/" : h.at}. Build to make it the reference again.`, missing ? "warn" : "ok");
       }
       const missing = d.picked.length - picks.length;
       if (missing > 0) $("clips-status").textContent += ` (${missing} saved pick(s) not among the candidates)`;

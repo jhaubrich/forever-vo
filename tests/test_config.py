@@ -1,4 +1,4 @@
-"""forever-vo.toml loads, and the models resolve the way the pipeline relies on."""
+"""configs/ loads, and the models resolve the way the pipeline relies on."""
 
 from __future__ import annotations
 
@@ -15,7 +15,9 @@ from tools.config import (
     Voices,
     VoiceSources,
     VoiceTuning,
+    config_file,
     load_config,
+    read_config,
 )
 from tools.generate import VoiceCatalog
 from tools.textkey import text_key
@@ -31,10 +33,37 @@ def test_repo_config_loads() -> None:
 
 
 def test_unknown_key_is_an_error(tmp_path: Path) -> None:
-    bad = tmp_path / "forever-vo.toml"
-    bad.write_text("[tts]\nexageration = 0.5\n", encoding="utf-8")
-    with pytest.raises(ConfigError):
-        load_config(bad)
+    (tmp_path / "tts.toml").write_text("[tts]\nexageration = 0.5\n", encoding="utf-8")
+    with pytest.raises(ConfigError, match="exageration"):
+        load_config(tmp_path)
+
+
+def test_a_file_holds_only_the_table_it_is_named_after(tmp_path: Path) -> None:
+    (tmp_path / "tts.toml").write_text("[readers]\ntrusted_since = '0.1.4'\n")
+    with pytest.raises(ConfigError, match="tts.toml may hold only"):
+        read_config(tmp_path)
+    (tmp_path / "tts.toml").unlink()
+    (tmp_path / "voices.sources.toml").write_text(
+        "[voices.sources.x-male]\nclips = [1]\n"
+    )
+    (tmp_path / "voices.toml").write_text("[voices.sources.x-male]\nclips = [2]\n")
+    with pytest.raises(ConfigError, match="voices.sources.x-male.clips is set in two"):
+        read_config(tmp_path)
+
+
+def test_files_merge_and_edits_go_to_the_most_specific_file(tmp_path: Path) -> None:
+    (tmp_path / "voices.toml").write_text('[voices.speakers]\n"1" = "orc-male"\n')
+    (tmp_path / "voices.sources.toml").write_text(
+        "[voices.sources.x-male]\nclips = [1]\n"
+    )
+    config = read_config(tmp_path)
+    assert config.voices.speakers == {"1": "orc-male"}
+    assert config.voices.sources["x-male"].clips == [1]
+    assert (
+        config_file(tmp_path, "voices", "sources") == tmp_path / "voices.sources.toml"
+    )
+    assert config_file(tmp_path, "voices", "speakers") == tmp_path / "voices.toml"
+    assert config_file(tmp_path, "lines") == tmp_path / "lines.toml"
 
 
 def test_pronunciations_respell_whole_words_and_keep_shouting() -> None:

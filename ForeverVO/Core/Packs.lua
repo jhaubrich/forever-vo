@@ -298,7 +298,7 @@ end
 
 --- "dwarf-male" -> "Dwarf male". Unknown races keep their own name, capitalised.
 --- The default narrator is cloned from the skyborne male clip (narrator has no
---- clip of its own; [voices.fallbacks] in forever-vo.toml sends it there; it
+--- clip of its own; [voices.fallbacks] in configs/voices.toml sends it there; it
 --- was human male until 2026-10-06), so the menu names the voice a player will
 --- hear rather than the role.
 function Packs.NarratorVoiceLabel(voice)

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import shutil
-from collections.abc import Iterator
 from pathlib import Path
 from typing import ClassVar
 
@@ -11,7 +9,7 @@ import pytest
 
 from tools import refclips, soundpaths
 from tools.audition import write_voice_sources
-from tools.config import CONFIG_TOML, Voices, load_config
+from tools.config import Voices, load_config
 from tools.wowdata import DUD_SIZE, is_dud
 
 
@@ -120,25 +118,18 @@ def test_named_folders_keys_are_set_folders() -> None:
         assert key in known, f"[voices.named_folders] {key} is no set's folder"
 
 
-@pytest.fixture
-def toml_copy(tmp_path: Path) -> Iterator[Path]:
-    copy = tmp_path / "forever-vo.toml"
-    shutil.copy(CONFIG_TOML, copy)
-    yield copy
-    load_config.cache_clear()
-
-
-def test_a_pick_keeps_the_named_folders(toml_copy: Path) -> None:
-    text = toml_copy.read_text(encoding="utf-8")
+def test_a_pick_keeps_the_named_folders(config_copy: Path) -> None:
+    voices = config_copy / "voices.toml"
+    text = voices.read_text(encoding="utf-8")
     text = text.replace(
         "[voices.named_folders]\n",
         '[voices.named_folders]\nsylvanaswindrunner = ["sylvanas"]\n',
         1,
     )
-    toml_copy.write_text(text, encoding="utf-8")
-    before = load_config(toml_copy).voices.named_folders
+    voices.write_text(text, encoding="utf-8")
+    before = load_config(config_copy).voices.named_folders
     load_config.cache_clear()
-    config = write_voice_sources(toml_copy, "npc-11657", [561286, 561297])
+    config = write_voice_sources(config_copy, "npc-11657", [561286, 561297])
     assert config.voices.named_folders["sylvanaswindrunner"] == ["sylvanas"]
     assert config.voices.named_folders == before
     assert config.voices.sources["npc-11657"].clips == [561286, 561297]

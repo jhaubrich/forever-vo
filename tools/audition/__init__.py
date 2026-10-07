@@ -14,8 +14,9 @@ the pipeline's bookkeeping:
 
 - "keep" writes [tts.voices.<voice>], a [pronunciations] entry or a
   [voices.speakers] entry (one NPC always in one voice) into
-  forever-vo.toml through tomlkit, so the comments survive, and the file is
-  validated by the same models before the old one is replaced;
+  the configs/ file that holds the table, through tomlkit, so the comments
+  survive, and the result is validated by the same models before the old file
+  is replaced;
 - "pin this take" writes the take's seed to [lines], for one line's pack file,
   only for a take of that line's exact text under its saved settings, which the
   server reads from the take's own sidecar rather than from the page.
@@ -64,7 +65,7 @@ from tools.config import (
     BETA_BUILD,
     BETA_DIR,
     CASC_DIR,
-    CONFIG_TOML,
+    CONFIG_DIR,
     DATA_DIR,
     GENDER_DICT,
     LINE_BASE,
@@ -78,7 +79,9 @@ from tools.config import (
     ConfigError,
     VoiceSources,
     VoiceTuning,
+    config_file,
     load_config,
+    read_config,
 )
 from tools.generate import (
     SUBFOLDERS,
@@ -121,7 +124,7 @@ def addons_from_env() -> Path:
 
 
 # ----------------------------------------------------------------------------
-# forever-vo.toml edits (comments survive: tomlkit round-trips the document)
+# configs/ edits (comments survive: tomlkit round-trips the document)
 # ----------------------------------------------------------------------------
 
 
@@ -133,9 +136,10 @@ def _config_lock(path: Path) -> Iterator[None]:
     genuinely overlap: both parsed the same document, and the second to finish wrote a
     file missing the first one's change while reporting success. The lock file is
     separate from the TOML because the write is a rename, which would drop the lock
-    with the inode it was taken on.
+    with the inode it was taken on. configs/ has one lock for the whole directory,
+    since an edit is validated against every file.
     """
-    lock = path.with_suffix(".toml.lock")
+    lock = path / ".lock" if path.is_dir() else path.with_suffix(".toml.lock")
     with lock.open("w") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
         try:
@@ -144,30 +148,37 @@ def _config_lock(path: Path) -> Iterator[None]:
             fcntl.flock(handle, fcntl.LOCK_UN)
 
 
-def _validated_write(path: Path, doc: tomlkit.TOMLDocument) -> Config:
-    """Writes the document only if the models accept it; returns the fresh Config.
+def _parse(file: Path) -> tomlkit.TOMLDocument:
+    """One file of configs/ as a tomlkit document, empty when it does not exist yet."""
+    if not file.exists():
+        return tomlkit.document()
+    return tomlkit.parse(file.read_text(encoding="utf-8"))
 
-    The trial file carries this process and thread, so two overlapping saves cannot
-    validate or promote each other's document.
+
+def _validated_write(config_dir: Path, file: Path, doc: tomlkit.TOMLDocument) -> Config:
+    """Writes the document to `file` only if the models accept configs/ with it in
+    place; returns the fresh Config.
+
+    The temporary file carries this process and thread, so two overlapping saves
+    cannot promote each other's document.
     """
     text = tomlkit.dumps(doc)
-    trial = path.with_suffix(f".toml.{os.getpid()}.{threading.get_ident()}.audition")
-    trial.write_text(text, encoding="utf-8")
     try:
-        load_config.cache_clear()
-        load_config(trial)
+        read_config(config_dir, {file.name: text})
     except ConfigError as e:
         raise HTTPException(400, f"refused, the result would not validate: {e}") from e
-    else:
-        trial.replace(path)
+    trial = file.with_name(f".{file.name}.{os.getpid()}.{threading.get_ident()}")
+    try:
+        trial.write_text(text, encoding="utf-8")
+        trial.replace(file)
     finally:
         trial.unlink(missing_ok=True)
         load_config.cache_clear()
-    return load_config(path)
+    return load_config(config_dir)
 
 
 def write_tuning(
-    path: Path,
+    config_dir: Path,
     voice: str,
     exaggeration: float,
     cfg_weight: float,
@@ -178,14 +189,14 @@ def write_tuning(
 ) -> Config:
     """Sets [tts.voices.<voice>]; a tuning equal to the defaults with no reference
     removes the entry instead, so the file only lists what differs."""
-    with _config_lock(path):
+    with _config_lock(config_dir):
         return _write_tuning(
-            path, voice, exaggeration, cfg_weight, reference, tempo, pitch, speed
+            config_dir, voice, exaggeration, cfg_weight, reference, tempo, pitch, speed
         )
 
 
 def _write_tuning(
-    path: Path,
+    config_dir: Path,
     voice: str,
     exaggeration: float,
     cfg_weight: float,
@@ -194,7 +205,8 @@ def _write_tuning(
     pitch: float = 0.0,
     speed: float = 1.0,
 ) -> Config:
-    doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+    file = config_file(config_dir, "tts")
+    doc = _parse(file)
     tts = doc.get("tts")
     if tts is None:
         tts = tomlkit.table()
@@ -217,7 +229,7 @@ def _write_tuning(
         # it: dwarf-male lost `reference = "npc-3597"` and its 0.75/0.3 that way, which
         # would have restaged 3,114 files in a voice #18 had already corrected. An
         # existing reference is carried over; clearing one is a TOML edit.
-        current = load_config(path).tts.voices.get(voice)
+        current = load_config(config_dir).tts.voices.get(voice)
         reference = current.reference if current else None
     if (exaggeration, cfg_weight, tempo, pitch, speed) == defaults and not reference:
         if voice in voices:
@@ -235,7 +247,7 @@ def _write_tuning(
                 "speed": speed if speed != defaults[4] else None,
             },
         )
-    return _validated_write(path, doc)
+    return _validated_write(config_dir, file, doc)
 
 
 def _set_keys(
@@ -265,14 +277,15 @@ def _set_keys(
             entry[key] = value
 
 
-def write_pronunciation(path: Path, word: str, spoken: str) -> Config:
+def write_pronunciation(config_dir: Path, word: str, spoken: str) -> Config:
     """Adds or replaces one [pronunciations] entry; an empty spoken form removes it."""
-    with _config_lock(path):
-        return _write_pronunciation(path, word, spoken)
+    with _config_lock(config_dir):
+        return _write_pronunciation(config_dir, word, spoken)
 
 
-def _write_pronunciation(path: Path, word: str, spoken: str) -> Config:
-    doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+def _write_pronunciation(config_dir: Path, word: str, spoken: str) -> Config:
+    file = config_file(config_dir, "pronunciations")
+    doc = _parse(file)
     table = doc.get("pronunciations")
     if table is None:
         table = tomlkit.table()
@@ -281,14 +294,15 @@ def _write_pronunciation(path: Path, word: str, spoken: str) -> Config:
         table[word] = spoken
     elif word in table:
         del table[word]
-    return _validated_write(path, doc)
+    return _validated_write(config_dir, file, doc)
 
 
-def write_speaker_voice(path: Path, speaker: str, voice: str) -> Config:
+def write_speaker_voice(config_dir: Path, speaker: str, voice: str) -> Config:
     """Sets [voices.speakers].<speaker>; an empty voice removes the entry, and the
     table with its last one, so the speaker goes back to what the capture says."""
-    with _config_lock(path):
-        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+    with _config_lock(config_dir):
+        file = config_file(config_dir, "voices", "speakers")
+        doc = _parse(file)
         voices = doc.get("voices")
         if voices is None:
             voices = tomlkit.table()
@@ -303,14 +317,15 @@ def write_speaker_voice(path: Path, speaker: str, voice: str) -> Config:
             del speakers[speaker]
         if not speakers:
             del voices["speakers"]
-        return _validated_write(path, doc)
+        return _validated_write(config_dir, file, doc)
 
 
-def write_line_pin(path: Path, base: str, pin: dict[str, Any] | None) -> Config:
+def write_line_pin(config_dir: Path, base: str, pin: dict[str, Any] | None) -> Config:
     """Sets [lines].<base> to one inline table, or removes it when `pin` is None. The
     table itself stays, with its comment, when the last pin goes."""
-    with _config_lock(path):
-        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+    with _config_lock(config_dir):
+        file = config_file(config_dir, "lines")
+        doc = _parse(file)
         lines = doc.get("lines")
         if lines is None:
             lines = tomlkit.table()
@@ -322,14 +337,15 @@ def write_line_pin(path: Path, base: str, pin: dict[str, Any] | None) -> Config:
             entry = tomlkit.inline_table()
             entry.update(pin)
             lines[base] = entry
-        return _validated_write(path, doc)
+        return _validated_write(config_dir, file, doc)
 
 
-def write_approval(path: Path, voice: str, recipe: str | None) -> Config:
+def write_approval(config_dir: Path, voice: str, recipe: str | None) -> Config:
     """Sets [voices.approved].<voice> to the recipe heard; None takes the approval off.
     The table stays when it empties, so its comment keeps its place in the file."""
-    with _config_lock(path):
-        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+    with _config_lock(config_dir):
+        file = config_file(config_dir, "voices", "approved")
+        doc = _parse(file)
         voices = doc.get("voices")
         if voices is None:
             voices = tomlkit.table()
@@ -342,7 +358,7 @@ def write_approval(path: Path, voice: str, recipe: str | None) -> Config:
             approved[voice] = recipe
         elif voice in approved:
             del approved[voice]
-        return _validated_write(path, doc)
+        return _validated_write(config_dir, file, doc)
 
 
 NOTES_COMMENT = [
@@ -352,13 +368,14 @@ NOTES_COMMENT = [
 ]
 
 
-def write_notes(path: Path, voice: str, text: str) -> Config:
+def write_notes(config_dir: Path, voice: str, text: str) -> Config:
     """Sets [voices.notes].<voice>; empty text removes it. Several lines are kept as a
     multi-line string. The table, made with its comment the first time, stays when
     it empties, so the comment keeps its place."""
     text = text.strip()
-    with _config_lock(path):
-        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+    with _config_lock(config_dir):
+        file = config_file(config_dir, "voices", "notes")
+        doc = _parse(file)
         voices = doc.get("voices")
         if voices is None:
             voices = tomlkit.table()
@@ -373,7 +390,7 @@ def write_notes(path: Path, voice: str, text: str) -> Config:
             notes[voice] = tomlkit.string(text, multiline="\n" in text)
         elif voice in notes:
             del notes[voice]
-        return _validated_write(path, doc)
+        return _validated_write(config_dir, file, doc)
 
 
 def tidy_gaps(gaps: list[float], clips: int) -> list[float]:
@@ -386,7 +403,7 @@ def tidy_gaps(gaps: list[float], clips: int) -> list[float]:
 
 
 def write_voice_sources(
-    path: Path,
+    config_dir: Path,
     voice: str,
     clips: list[int],
     build: str | None = None,
@@ -395,8 +412,9 @@ def write_voice_sources(
     """Sets [voices.sources.<voice>].clips, head first, and its gaps when it has any;
     an empty list removes the entry, so the file lists only the voices that were
     picked by ear."""
-    with _config_lock(path):
-        doc = tomlkit.parse(path.read_text(encoding="utf-8"))
+    with _config_lock(config_dir):
+        file = config_file(config_dir, "voices", "sources")
+        doc = _parse(file)
         voices = doc.get("voices")
         if voices is None:
             voices = tomlkit.table()
@@ -427,7 +445,7 @@ def write_voice_sources(
             # in place, so a comment inside the entry stays (_set_keys); a new one
             # gets a blank line before whatever follows
             _set_keys(sources, voice, values, blank_after=True)
-        return _validated_write(path, doc)
+        return _validated_write(config_dir, file, doc)
 
 
 def sources_warnings(
@@ -570,7 +588,7 @@ PICK_HISTORY = 20  # per voice; picking is iterative and the last few are what m
 def pick_history(voice: str | None = None) -> dict[str, list[dict[str, Any]]]:
     """Every set of clips a voice has been built from, newest first.
 
-    forever-vo.toml records one pick per voice, the one in force, so each build used to
+    configs/ records one pick per voice, the one in force, so each build used to
     erase the one before it - and picking is experimental by nature: the way to find out
     whether a clip belongs at the head is to try it and try the other one. This is the
     undo, and the record of what has already been heard.
@@ -641,7 +659,7 @@ def pick_history_for(
     voice: str, picked: VoiceSources | None, own: set[int] | None, config: Config
 ) -> list[dict[str, Any]]:
     """The voice's earlier picks for the page, each with the sources it needs (`uses`),
-    and the pick saved in forever-vo.toml marked `saved`. The saved pick leads the list
+    and the pick saved in configs/ marked `saved`. The saved pick leads the list
     when no build in the history matches it, as when it predates the history: it is the
     one to go back to, and it used to be missing (dwarf-female's approved pick)."""
     rows = [dict(row) for row in pick_history(voice).get(voice, [])]
@@ -901,7 +919,7 @@ def _write_history(history: dict[str, list[dict[str, Any]]]) -> None:
 
 def forget_pick(voice: str, clips: list[int], gaps: list[float]) -> bool:
     """Drops one experiment from the voice's history. False, and nothing dropped, for a
-    pick with audio in the pack or the one saved in forever-vo.toml, which are kept."""
+    pick with audio in the pack or the one saved in configs/, which are kept."""
     spaced = tidy_gaps(gaps, len(clips))
     saved = load_config().voices.sources.get(voice)
     if saved and (saved.clips, tidy_gaps(saved.gaps, len(saved.clips))) == (
@@ -1232,7 +1250,7 @@ class WorkingCopies:
 
 
 class Studio:
-    def __init__(self, config_path: Path = CONFIG_TOML, allow_cpu: bool = False):
+    def __init__(self, config_path: Path = CONFIG_DIR, allow_cpu: bool = False):
         self.config_path = config_path
         self.allow_cpu = allow_cpu
         self.model_lock = threading.Lock()
@@ -1262,7 +1280,9 @@ class Studio:
         """The config as last read, read again only when the file has changed: for the
         chunk preview, which asks on every pause in typing, where config() would clear
         the process-wide cache each time."""
-        stamp = self.config_path.stat().st_mtime_ns
+        stamp = sorted(
+            (f.name, f.stat().st_mtime_ns) for f in self.config_path.glob("*.toml")
+        )
         cached = getattr(self, "_config_cached", None)
         if cached is None or cached[0] != stamp:
             # load_config is cached by path, so it would hand back the old file
@@ -1735,7 +1755,9 @@ class BuildSources(BaseModel):
     voice: str
     clips: list[int] = Field(min_length=1, max_length=40)
     build: str | None = None
-    keep: bool = True  # also write [voices.sources.<voice>] into forever-vo.toml
+    keep: bool = (
+        True  # also write [voices.sources.<voice>] into configs/voices.sources.toml
+    )
     # seconds of silence after each clip, aligned with `clips` (VoiceSources.gaps)
     gaps: list[float] = Field(default_factory=list, max_length=40)
 
@@ -2654,7 +2676,7 @@ def create_app(
     @app.post("/api/clips/history/forget")
     def forget_history(request: ForgetPick) -> dict[str, Any]:
         """Drops an experiment from a voice's Earlier picks. A pick with audio in the
-        pack and the one saved in forever-vo.toml are never dropped."""
+        pack and the one saved in configs/ are never dropped."""
         voice = _safe(request.voice)
         if not forget_pick(voice, request.clips, request.gaps):
             raise HTTPException(
@@ -2962,7 +2984,7 @@ def app_from_env() -> FastAPI:
     import os
 
     studio = Studio(
-        config_path=Path(os.environ.get("AUDITION_CONFIG", str(CONFIG_TOML))),
+        config_path=Path(os.environ.get("AUDITION_CONFIG", str(CONFIG_DIR))),
         allow_cpu=os.environ.get("AUDITION_CPU") == "1",
     )
     addons = os.environ.get("AUDITION_ADDONS")
@@ -2983,8 +3005,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--config",
         type=Path,
-        default=CONFIG_TOML,
-        help="the TOML to read and write (default: the repo's)",
+        default=CONFIG_DIR,
+        help="the configs/ directory to read and write (default: the repo's)",
     )
     parser.add_argument(
         "--cpu",

@@ -1,10 +1,8 @@
-"""The audition page's edits to forever-vo.toml keep the comments and validate."""
+"""The audition page's edits to configs/ keep the comments and validate."""
 
 from __future__ import annotations
 
 import random
-import shutil
-from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -24,7 +22,7 @@ from tools.audition import (
     write_tuning,
     write_voice_sources,
 )
-from tools.config import CONFIG_TOML, load_config
+from tools.config import CONFIG_DIR, load_config
 
 
 @pytest.fixture(autouse=True)
@@ -37,88 +35,87 @@ def no_desktop_notifications(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(audition, "run_finished", lambda voice, outcome: None)
 
 
-@pytest.fixture
-def toml_copy(tmp_path: Path) -> Iterator[Path]:
-    copy = tmp_path / "forever-vo.toml"
-    shutil.copy(CONFIG_TOML, copy)
-    yield copy
-    load_config.cache_clear()
+def config_text(config_dir: Path) -> str:
+    """Every file of a configs/ directory, one after another."""
+    return "".join(
+        path.read_text(encoding="utf-8") for path in sorted(config_dir.glob("*.toml"))
+    )
 
 
 def test_write_tuning_adds_and_removes_a_voice_and_keeps_comments(
-    toml_copy: Path,
+    config_copy: Path,
 ) -> None:
-    before = toml_copy.read_text(encoding="utf-8")
-    config = write_tuning(toml_copy, "gnome-male", 0.6, 0.4, None)
+    before = config_text(config_copy)
+    config = write_tuning(config_copy, "gnome-male", 0.6, 0.4, None)
     assert config.tts.voices["gnome-male"].exaggeration == 0.6
-    after = toml_copy.read_text(encoding="utf-8")
+    after = config_text(config_copy)
     assert "# Dwarves came out of Chatterbox sounding American (#18)." in after
     assert "[tts.voices.gnome-male]" in after
     assert config.tts.voices["dwarf-female"].exaggeration == 0.75  # untouched
 
     # back to the defaults with no clip: the entry goes and the document reads as before
     config = write_tuning(
-        toml_copy, "gnome-male", config.tts.exaggeration, config.tts.cfg_weight, None
+        config_copy, "gnome-male", config.tts.exaggeration, config.tts.cfg_weight, None
     )
     assert "gnome-male" not in config.tts.voices
-    restored = toml_copy.read_text(encoding="utf-8")
+    restored = config_text(config_copy)
     assert tomlkit.parse(restored).unwrap() == tomlkit.parse(before).unwrap()
     assert "# Dwarves came out of Chatterbox sounding American (#18)." in restored
 
 
-def test_write_tuning_with_a_reference_and_a_tempo(toml_copy: Path) -> None:
-    config = write_tuning(toml_copy, "troll-female", 0.7, 0.35, "npc-1234", tempo=1.1)
+def test_write_tuning_with_a_reference_and_a_tempo(config_copy: Path) -> None:
+    config = write_tuning(config_copy, "troll-female", 0.7, 0.35, "npc-1234", tempo=1.1)
     assert config.tts.voices["troll-female"].reference == "npc-1234"
     assert config.tts.voices["troll-female"].tempo == 1.1
-    text = toml_copy.read_text(encoding="utf-8")
+    text = config_text(config_copy)
     assert "[tts.voices.troll-female]" in text and "tempo = 1.1" in text
     # a tempo at the default is left out of the entry
-    config = write_tuning(toml_copy, "troll-female", 0.7, 0.35, "npc-1234", tempo=1.0)
+    config = write_tuning(config_copy, "troll-female", 0.7, 0.35, "npc-1234", tempo=1.0)
     assert config.tts.voices["troll-female"].tempo is None
 
 
-def test_write_pronunciation_round_trips_and_removes(toml_copy: Path) -> None:
-    config = write_pronunciation(toml_copy, "Ironforge", "Iron Forge")
+def test_write_pronunciation_round_trips_and_removes(config_copy: Path) -> None:
+    config = write_pronunciation(config_copy, "Ironforge", "Iron Forge")
     assert config.pronunciations.respell("To Ironforge!") == "To Iron Forge!"
     assert config.pronunciations.root["Gnomeregan"] == "Nomer-gahn"
-    config = write_pronunciation(toml_copy, "Ironforge", "")
+    config = write_pronunciation(config_copy, "Ironforge", "")
     assert "Ironforge" not in config.pronunciations.root
 
 
 def test_write_speaker_voice_pins_and_unpins_and_keeps_comments(
-    toml_copy: Path,
+    config_copy: Path,
 ) -> None:
-    config = write_speaker_voice(toml_copy, "2991", "tauren-female")
+    config = write_speaker_voice(config_copy, "2991", "tauren-female")
     assert config.voices.speakers["2991"] == "tauren-female"
     assert config.voices.speakers["248200"] == "goblin-male"  # untouched
-    text = toml_copy.read_text(encoding="utf-8")
+    text = config_text(config_copy)
     assert "# One speaker always in one voice" in text
-    config = write_speaker_voice(toml_copy, "2991", "")
+    config = write_speaker_voice(config_copy, "2991", "")
     assert "2991" not in config.voices.speakers
     # the last entry takes the table with it, whichever pins the real file holds
     for speaker in list(config.voices.speakers):
-        config = write_speaker_voice(toml_copy, speaker, "")
+        config = write_speaker_voice(config_copy, speaker, "")
     assert config.voices.speakers == {}
-    assert "[voices.speakers]" not in toml_copy.read_text(encoding="utf-8")
+    assert "[voices.speakers]" not in config_text(config_copy)
 
 
 def test_write_approval_sets_and_removes_a_recipe_and_keeps_comments(
-    toml_copy: Path,
+    config_copy: Path,
 ) -> None:
-    before = toml_copy.read_text(encoding="utf-8")
+    before = config_text(config_copy)
     # names no real approval can have, since the repository's file holds real ones
-    config = write_approval(toml_copy, "test-male-dark", "clip=test-male-dark")
-    config = write_approval(toml_copy, "test-female", "clip=test-female")
+    config = write_approval(config_copy, "test-male-dark", "clip=test-male-dark")
+    config = write_approval(config_copy, "test-female", "clip=test-female")
     assert config.voices.approved["test-male-dark"] == "clip=test-male-dark"
-    assert config.voices.speakers == load_config(CONFIG_TOML).voices.speakers
+    assert config.voices.speakers == load_config(CONFIG_DIR).voices.speakers
     # approving again records the recipe heard this time
-    config = write_approval(toml_copy, "test-female", "clip=test-female,tempo=1.1")
+    config = write_approval(config_copy, "test-female", "clip=test-female,tempo=1.1")
     assert config.voices.approved["test-female"] == "clip=test-female,tempo=1.1"
-    write_approval(toml_copy, "test-female", None)
-    config = write_approval(toml_copy, "test-male-dark", None)
+    write_approval(config_copy, "test-female", None)
+    config = write_approval(config_copy, "test-male-dark", None)
     assert "test-female" not in config.voices.approved
     assert "test-male-dark" not in config.voices.approved
-    restored = toml_copy.read_text(encoding="utf-8")
+    restored = config_text(config_copy)
     assert tomlkit.parse(restored).unwrap() == tomlkit.parse(before).unwrap()
     # the comments ahead of [voices.approved] and of the table before it stay put
     assert "# Voices someone has auditioned by ear and approved" in restored
@@ -127,18 +124,18 @@ def test_write_approval_sets_and_removes_a_recipe_and_keeps_comments(
     )
 
 
-def test_write_approval_refuses_what_is_not_a_voice_name(toml_copy: Path) -> None:
+def test_write_approval_refuses_what_is_not_a_voice_name(config_copy: Path) -> None:
     with pytest.raises(HTTPException):
-        write_approval(toml_copy, "Scourge Male", "clip=scourge-male")
+        write_approval(config_copy, "Scourge Male", "clip=scourge-male")
 
 
 def test_write_speaker_voice_refuses_what_is_not_a_voice_name(
-    toml_copy: Path,
+    config_copy: Path,
 ) -> None:
-    before = toml_copy.read_text(encoding="utf-8")
+    before = config_text(config_copy)
     with pytest.raises(HTTPException):
-        write_speaker_voice(toml_copy, "2991", "Tauren Female")
-    assert toml_copy.read_text(encoding="utf-8") == before
+        write_speaker_voice(config_copy, "2991", "Tauren Female")
+    assert config_text(config_copy) == before
 
 
 def test_search_needs_every_word_and_ranks_exact_hits_first() -> None:
@@ -242,13 +239,13 @@ def test_random_line_stays_in_the_voice_and_prefers_quests() -> None:
 
 
 def test_write_voice_sources_adds_and_removes_and_keeps_the_reference_field(
-    toml_copy: Path,
+    config_copy: Path,
 ) -> None:
     # a voice the real file has no picks for, so the round trip is about this write and
     # not about whatever has been chosen by ear since
     from tools.config import RACE_DICT
 
-    picked = load_config(toml_copy).voices.sources
+    picked = load_config(config_copy).voices.sources
     voice = next(
         v
         for v in (
@@ -259,40 +256,40 @@ def test_write_voice_sources_adds_and_removes_and_keeps_the_reference_field(
         if v not in picked
     )
     load_config.cache_clear()
-    before = toml_copy.read_text(encoding="utf-8")
-    config = write_voice_sources(toml_copy, voice, [539282, 539211, 556543])
+    before = config_text(config_copy)
+    config = write_voice_sources(config_copy, voice, [539282, 539211, 556543])
     assert config.voices.sources[voice].clips == [539282, 539211, 556543]
-    text = toml_copy.read_text(encoding="utf-8")
+    text = config_text(config_copy)
     assert f"[voices.sources.{voice}]" in text
     assert "# Dwarves came out of Chatterbox sounding American (#18)." in text
     # [voices.sources.<v>] is what a clip is made of; [tts.voices.<v>].reference is a
     # different clip to clone from, and writing one must not disturb the other
-    assert config.tts.voices == load_config(CONFIG_TOML).tts.voices
+    assert config.tts.voices == load_config(CONFIG_DIR).tts.voices
 
-    config = write_voice_sources(toml_copy, voice, [])
+    config = write_voice_sources(config_copy, voice, [])
     assert voice not in config.voices.sources
     assert (
-        tomlkit.parse(toml_copy.read_text(encoding="utf-8")).unwrap()
+        tomlkit.parse(config_text(config_copy)).unwrap()
         == tomlkit.parse(before).unwrap()
     )
 
 
-def test_write_voice_sources_keeps_the_build(toml_copy: Path) -> None:
+def test_write_voice_sources_keeps_the_build(config_copy: Path) -> None:
     config = write_voice_sources(
-        toml_copy, "tauren-male", [541910], build="12.1.0.69933"
+        config_copy, "tauren-male", [541910], build="12.1.0.69933"
     )
     assert config.voices.sources["tauren-male"].build == "12.1.0.69933"
-    config = write_voice_sources(toml_copy, "tauren-male", [541910])
+    config = write_voice_sources(config_copy, "tauren-male", [541910])
     assert config.voices.sources["tauren-male"].build is None
 
 
 def test_sources_warnings_names_a_clip_the_voice_does_not_actually_read(
-    toml_copy: Path, tmp_path: Path
+    config_copy: Path, tmp_path: Path
 ) -> None:
     voices = tmp_path / "voices"
     voices.mkdir()
     (voices / "human-male.wav").touch()
-    config = write_tuning(toml_copy, "tauren-male", 0.45, 0.5, "npc-3597")
+    config = write_tuning(config_copy, "tauren-male", 0.45, 0.5, "npc-3597")
     # a voice whose tuning clones from elsewhere: picking clips for its own wav is moot
     assert any("npc-3597" in w for w in sources_warnings(config, "tauren-male", voices))
     # human-male is the narrator's clip as well as its own
@@ -405,7 +402,7 @@ def test_stop_ends_a_run_after_the_take_in_progress(
     )
     # a Studio without its corpus thread or a model: only what /api/generate touches
     studio = object.__new__(audition.Studio)
-    studio.config_path = CONFIG_TOML
+    studio.config_path = CONFIG_DIR
     studio.model_lock = threading.Lock()
     studio.stops = {}
     client = TestClient(audition.create_app(studio, addons=None))
@@ -460,7 +457,7 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
 
     monkeypatch.setattr(audition, "AUDITION_DIR", tmp_path)
     studio = object.__new__(audition.Studio)
-    studio.config_path = CONFIG_TOML
+    studio.config_path = CONFIG_DIR
     studio.model_lock = threading.Lock()
     studio.stops = {}
     renders: list[str] = []
@@ -522,10 +519,10 @@ def test_one_take_is_encoded_at_every_tempo_and_pitch(
     ]
 
 
-def test_write_tuning_keeps_pitch_only_when_it_differs(toml_copy: Path) -> None:
-    config = write_tuning(toml_copy, "gnome-male", 0.6, 0.4, None, 1.0, -3.0)
+def test_write_tuning_keeps_pitch_only_when_it_differs(config_copy: Path) -> None:
+    config = write_tuning(config_copy, "gnome-male", 0.6, 0.4, None, 1.0, -3.0)
     assert config.tts.voices["gnome-male"].pitch == -3.0
-    config = write_tuning(toml_copy, "gnome-male", 0.6, 0.4, None, 1.0, 0.0)
+    config = write_tuning(config_copy, "gnome-male", 0.6, 0.4, None, 1.0, 0.0)
     assert config.tts.voices["gnome-male"].pitch is None
 
 
@@ -583,7 +580,7 @@ def test_clips_put_the_voices_added_from_also_first_last_added_on_top(
     }
     # a Studio with candidates already loaded: only what /api/clips touches
     studio = object.__new__(audition.Studio)
-    studio.config_path = CONFIG_TOML
+    studio.config_path = CONFIG_DIR
     monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: loaded[voice])
     monkeypatch.setattr(studio, "config", load_config)
     studio.clips_status = {}
@@ -740,7 +737,7 @@ def test_clips_say_loading_until_the_rows_are_in_even_if_the_load_finished(
     # refresh=1 restarts the load, which for a voice with nothing to fetch finishes
     # on its thread before the answer is built: no rows yet, status already done
     studio = object.__new__(audition.Studio)
-    studio.config_path = CONFIG_TOML
+    studio.config_path = CONFIG_DIR
     studio._rows = None
     studio.clips_status = {"spirithealer-female": "0 clips"}
     monkeypatch.setattr(studio, "clips", lambda voice, refresh=False: None)
@@ -772,7 +769,7 @@ def test_borrowed_clips_are_listed_while_the_voice_still_loads(
                "group": "weeping_banshee", "seconds": 3.6, "url": "/x.ogg"}  # fmt: skip
     loaded = {"nightborne-female": None, "folder-weeping_banshee": [banshee]}
     studio = object.__new__(audition.Studio)
-    studio.config_path = CONFIG_TOML
+    studio.config_path = CONFIG_DIR
     studio._rows = None
     studio.clips_status = {"nightborne-female": "loading"}
     studio.clips_progress = {
@@ -861,7 +858,7 @@ def test_a_voice_lists_every_line_when_asked_for_all(
 
     rows = [row(i) for i in range(1, 76)]
     studio = object.__new__(audition.Studio)
-    studio.config_path = CONFIG_TOML
+    studio.config_path = CONFIG_DIR
     studio._rows = None  # no corpus behind the rows: no pins to look up
     monkeypatch.setattr(studio, "rows", lambda: rows)
     monkeypatch.setattr(studio, "moving_to", lambda voice: frozenset())
@@ -875,19 +872,21 @@ def test_a_voice_lists_every_line_when_asked_for_all(
 
 
 def test_write_voice_sources_keeps_gaps_and_writes_none_for_no_gap(
-    toml_copy: Path,
+    config_copy: Path,
 ) -> None:
     from tools.audition import tidy_gaps
 
     assert tidy_gaps([0.25, 0.0, 0.0], 4) == [0.25]  # trailing zeros dropped
     assert tidy_gaps([0.0, 0.0], 3) == []  # no gap is 0, and writes nothing
     assert tidy_gaps([0.3, 0.3, 0.3], 2) == [0.3]  # none after the last clip
-    config = write_voice_sources(toml_copy, "tauren-male", [1, 2, 3], gaps=[0.25, 0.0])
+    config = write_voice_sources(
+        config_copy, "tauren-male", [1, 2, 3], gaps=[0.25, 0.0]
+    )
     assert config.voices.sources["tauren-male"].gaps == [0.25]
-    assert "gaps = [0.25]" in toml_copy.read_text(encoding="utf-8")
-    config = write_voice_sources(toml_copy, "tauren-male", [1, 2, 3], gaps=[0, 0])
+    assert "gaps = [0.25]" in config_text(config_copy)
+    config = write_voice_sources(config_copy, "tauren-male", [1, 2, 3], gaps=[0, 0])
     assert config.voices.sources["tauren-male"].gaps == []
-    entry = toml_copy.read_text(encoding="utf-8").split("[voices.sources.tauren-male]")
+    entry = config_text(config_copy).split("[voices.sources.tauren-male]")
     assert "gaps" not in entry[1].split("[", 1)[0]
 
 
@@ -1024,7 +1023,7 @@ def test_released_reads_the_main_repositorys_main_and_falls_back(
 
 
 def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
-    toml_copy: Path, monkeypatch: pytest.MonkeyPatch
+    config_copy: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     from fastapi.testclient import TestClient
 
@@ -1034,10 +1033,10 @@ def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
     approved_clips, approved_gaps = [11, 12, 13], [0.1]
     digest = generate.picks_digest(approved_clips, None, approved_gaps)
     heard = f"clip=x-male,clips={digest},exaggeration=0.7,pitch=-1.0"
-    write_approval(toml_copy, "x-male", heard)
+    write_approval(config_copy, "x-male", heard)
     # since then: other picks and other knobs
-    write_voice_sources(toml_copy, "x-male", [21, 22])
-    write_tuning(toml_copy, "x-male", 1.2, 0.2, None, 1.3, 0.0)
+    write_voice_sources(config_copy, "x-male", [21, 22])
+    write_tuning(config_copy, "x-male", 1.2, 0.2, None, 1.3, 0.0)
     history = {"x-male": [{"clips": [21, 22], "at": "now"},
                           {"clips": approved_clips, "gaps": approved_gaps, "at": "then"}]}  # fmt: skip
     monkeypatch.setattr(audition, "pick_history", lambda voice=None: history)
@@ -1052,8 +1051,8 @@ def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
     monkeypatch.setattr(audition, "reference_seconds", lambda path: 9.0)
 
     studio = object.__new__(audition.Studio)
-    studio.config_path = toml_copy
-    monkeypatch.setattr(studio, "config", lambda: audition.load_config(toml_copy))
+    studio.config_path = config_copy
+    monkeypatch.setattr(studio, "config", lambda: audition.load_config(config_copy))
     monkeypatch.setattr(studio, "forget_corpus", lambda: None)
     monkeypatch.setattr(studio, "state", dict)
     target = audition.approved_target(studio.config(), "x-male")
@@ -1063,7 +1062,7 @@ def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
     r = client.post("/api/voice/revert", json={"voice": "x-male"})
     assert r.status_code == 200, r.text
     assert built == [("x-male", approved_gaps)]  # the reference rebuilt from the pick
-    config = audition.load_config(toml_copy)
+    config = audition.load_config(config_copy)
     picked = config.voices.sources["x-male"]
     assert (picked.clips, picked.gaps) == (approved_clips, approved_gaps)
     tuning = config.tts.voices["x-male"]
@@ -1072,7 +1071,7 @@ def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
 
     # nothing to go back to: refused, and nothing written
     write_approval(
-        toml_copy, "x-male", "clip=x-male,exaggeration=0.7"
+        config_copy, "x-male", "clip=x-male,exaggeration=0.7"
     )  # no picks heard
     r = client.post("/api/voice/revert", json={"voice": "x-male"})
     assert r.status_code == 409
@@ -1081,25 +1080,26 @@ def test_revert_puts_a_voice_back_to_the_pick_and_knobs_approved(
 def test_keeping_settings_or_picks_keeps_comments_inside_the_table(
     tmp_path: Path,
 ) -> None:
-    path = tmp_path / "forever-vo.toml"
-    path.write_text(
+    path = tmp_path / "configs"
+    path.mkdir()
+    (path / "tts.toml").write_text(
         "[tts.voices.x-male]\n"
         "exaggeration = 0.75\n"
         "cfg_weight = 0.3\n"
         "\n"
-        "# Respellings: a paragraph that drifted in under this table\n"
-        "\n"
-        "[voices.sources.x-male]\n"
-        "clips = [1, 2]\n"
-        "# why these clips\n"
-        "\n"
-        "[pronunciations]\n"
-        'Gnomeregan = "Nomer-gahn"\n',
+        "# Respellings: a paragraph that drifted in under this table\n",
         encoding="utf-8",
+    )
+    (path / "voices.sources.toml").write_text(
+        "[voices.sources.x-male]\nclips = [1, 2]\n# why these clips\n",
+        encoding="utf-8",
+    )
+    (path / "pronunciations.toml").write_text(
+        '[pronunciations]\nGnomeregan = "Nomer-gahn"\n', encoding="utf-8"
     )
     write_tuning(path, "x-male", 0.75, 0.3, None, 1.0, 1.0)
     write_voice_sources(path, "x-male", [3, 4, 5], gaps=[0.1])
-    text = path.read_text(encoding="utf-8")
+    text = config_text(path)
     assert "# Respellings: a paragraph that drifted in under this table" in text
     assert "# why these clips" in text
     config = load_config(path)
@@ -1108,19 +1108,19 @@ def test_keeping_settings_or_picks_keeps_comments_inside_the_table(
     assert config.voices.sources["x-male"].gaps == [0.1]
     # and taking a key back out leaves the comment too
     write_tuning(path, "x-male", 0.75, 0.3, None, 1.0, 0.0)
-    assert "# Respellings" in path.read_text(encoding="utf-8")
+    assert "# Respellings" in config_text(path)
     assert load_config(path).tts.voices["x-male"].pitch is None
 
 
 def test_tasting_notes_are_kept_per_voice_and_removed_when_emptied(
-    toml_copy: Path,
+    config_copy: Path,
 ) -> None:
     from fastapi import HTTPException
 
     from tools.audition import NOTES_COMMENT, write_notes
 
     config = write_notes(
-        toml_copy,
+        config_copy,
         "dwarf-female",
         "  Too bright on long lines.\nTry set 33 at the head.  ",
     )
@@ -1128,13 +1128,13 @@ def test_tasting_notes_are_kept_per_voice_and_removed_when_emptied(
         config.voices.notes["dwarf-female"]
         == "Too bright on long lines.\nTry set 33 at the head."
     )
-    text = toml_copy.read_text(encoding="utf-8")
+    text = config_text(config_copy)
     assert NOTES_COMMENT[0] in text  # the table is made with what it is for
-    config = write_notes(toml_copy, "dwarf-female", "")
+    config = write_notes(config_copy, "dwarf-female", "")
     assert "dwarf-female" not in config.voices.notes
-    assert NOTES_COMMENT[0] in toml_copy.read_text(encoding="utf-8")  # the table stays
+    assert NOTES_COMMENT[0] in config_text(config_copy)  # the table stays
     with pytest.raises(HTTPException):  # refused: not a voice name
-        write_notes(toml_copy, "Not A Voice", "x")
+        write_notes(config_copy, "Not A Voice", "x")
 
 
 def test_clip_sources_names_what_a_pasted_pick_needs(

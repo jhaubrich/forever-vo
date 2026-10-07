@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import threading
 from pathlib import Path
 from types import SimpleNamespace
@@ -10,7 +11,7 @@ from typing import Any
 
 import pytest
 
-from tools.config import CONFIG_TOML
+from tools.config import CONFIG_DIR
 from tools.generate import (
     TOKEN_CAP_SECONDS,
     ChunkMark,
@@ -193,7 +194,7 @@ def test_marks_move_into_the_encoded_files_time(
 
     monkeypatch.setattr(audition, "AUDITION_DIR", tmp_path)
     studio = object.__new__(audition.Studio)
-    studio.config_path = CONFIG_TOML
+    studio.config_path = CONFIG_DIR
     studio.model_lock = threading.Lock()
     studio.stops = {}
     asked: list[dict] = []
@@ -396,15 +397,14 @@ def test_the_run_reports_pins_that_no_longer_apply() -> None:
 def pin_studio(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Any:
     """An audition server on a copy of the real TOML, with one line in its corpus and
     a stand-in model that answers every take in 2 s."""
-    import shutil
 
     from fastapi.testclient import TestClient
 
     from tools import audition
     from tools.config import load_config
 
-    toml = tmp_path / "forever-vo.toml"
-    shutil.copy(CONFIG_TOML, toml)
+    toml = tmp_path / "configs"
+    shutil.copytree(CONFIG_DIR, toml)
     monkeypatch.setattr(audition, "AUDITION_DIR", tmp_path / "takes")
     studio = object.__new__(audition.Studio)
     studio.config_path = toml
@@ -465,7 +465,7 @@ def test_a_take_of_the_line_pins_and_unpins(pin_studio: Any) -> None:
     take = take_of(client, seed=777)
     assert take["base"] == "1-accept" and take["line_voice"] == "human-male"
     assert take["spoken"] == LINE  # the line's own text, not cleaned a second time
-    text = pin_studio.toml.read_text(encoding="utf-8")
+    text = (pin_studio.toml / "lines.toml").read_text(encoding="utf-8")
     response = client.post(
         "/api/pin-seed", json={"session": take["session"], "name": take["name"]}
     )
@@ -473,7 +473,7 @@ def test_a_take_of_the_line_pins_and_unpins(pin_studio: Any) -> None:
     load_config.cache_clear()
     pin = load_config(pin_studio.toml).lines.root["1-accept"]
     assert (pin.seed, pin.chunk_chars, pin.same_seed) == (777, 300, False)
-    written = pin_studio.toml.read_text(encoding="utf-8")
+    written = (pin_studio.toml / "lines.toml").read_text(encoding="utf-8")
     # one inline table under [lines], and every comment of the file kept
     assert '"1-accept" = {seed = 777' in written or "1-accept = {seed = 777" in written
     assert [c for c in text.splitlines() if c.lstrip().startswith("#")] == [
@@ -589,15 +589,12 @@ def test_the_cached_config_follows_an_edit_made_outside_the_page(
 
     studio = pin_studio.studio
     assert "1-accept" not in studio.config_cached().lines.root
-    text = pin_studio.toml.read_text(encoding="utf-8")
+    lines = pin_studio.toml / "lines.toml"
     pin = '"1-accept" = {seed = 5, chunk_chars = 300, same_seed = false, heard = "x", spoken = "y"}\n'
-    if "\n[lines]\n" in text:
-        text = text.replace("\n[lines]\n", "\n[lines]\n" + pin, 1)
-    else:
-        text += "\n[lines]\n" + pin
-    pin_studio.toml.write_text(text, encoding="utf-8")
-    stamp = pin_studio.toml.stat().st_mtime_ns + 1_000_000_000
-    os.utime(pin_studio.toml, ns=(stamp, stamp))
+    text = lines.read_text(encoding="utf-8").replace("[lines]\n", "[lines]\n" + pin, 1)
+    lines.write_text(text, encoding="utf-8")
+    stamp = lines.stat().st_mtime_ns + 1_000_000_000
+    os.utime(lines, ns=(stamp, stamp))
     assert studio.config_cached().lines.root["1-accept"].seed == 5
 
 
