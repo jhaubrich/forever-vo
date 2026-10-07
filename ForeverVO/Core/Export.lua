@@ -139,6 +139,7 @@ function Export:Collect(all)
     return {
         addon = ns.version,
         build = select(2, GetBuildInfo()),
+        locale = GetLocale(),
         lines = lines,
         npcs = npcs,
         recast = recast,
@@ -150,6 +151,7 @@ local function EncodeData(part)
         v = 1,
         addon = part.addon,
         build = part.build,
+        locale = part.locale,
         lines = part.lines,
         npcs = part.npcs,
     })
@@ -175,7 +177,8 @@ function Export:Parts(all, paste)
     end)
     local parts = {}
     local function Slice(from, to)
-        local part = { addon = data.addon, build = data.build, lines = {}, npcs = {} }
+        local part = { addon = data.addon, build = data.build, locale = data.locale,
+            lines = {}, npcs = {} }
         if #parts == 0 then
             for key, record in pairs(data.recast) do
                 part.npcs[key] = record
@@ -618,6 +621,9 @@ end
 --- counts them: distinct quests (an offer and its turn-in are one), gossip and
 --- pages of books.
 function Export:PendingCount()
+    if not Util.EnglishClient() then
+        return 0  -- nothing a client in another language holds is sent
+    end
     local quests, gossip, books = ns.Capture:Pending()
     return quests + gossip + books
 end
@@ -641,6 +647,10 @@ end
 ---@param all boolean pack every line, exported before or not
 function Export:Show(all)
     local db = ForeverVOCaptureDB or {}
+    if not Util.EnglishClient() then
+        ns.UI.Alert:Show("Only English game clients can send lines for now: the voice packs are English, and lines from another language would replace them.")
+        return
+    end
     local parts = self:Parts(all)
     if #parts == 0 then
         if not all and db.exportedAt then

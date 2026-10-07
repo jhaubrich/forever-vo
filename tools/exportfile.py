@@ -58,6 +58,8 @@ def to_capture(data: dict, origin: str) -> dict:
         out["addon"] = data[
             "addon"
         ]  # ingest.py gates repairs on the addon that tokenised the text
+    if data.get("locale"):
+        out["locale"] = data["locale"]  # ingest.py skips a client not in English
     for line in data.get("lines", []):
         entry = {
             "event": line.get("e"),
