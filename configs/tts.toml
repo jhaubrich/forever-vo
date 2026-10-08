@@ -325,4 +325,4 @@ speed = 0.98
 [tts.voices.quillboar-male]
 exaggeration = 0.95
 cfg_weight = 0.3
-speed = 0.98
+speed = 0.99
