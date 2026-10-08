@@ -962,7 +962,12 @@ def restore_speaker(entry: dict, npcs: dict) -> dict:
     speaker: 95647-complete kept issue-1066's "Unknown" and lost issue-893's Caitlin
     Grassman, so it was voiced by the narrator though `speakers` still held her.
     Those exports are never merged again; this puts the speaker back on every
-    ingest. A line with several speakers and none of its own is left alone."""
+    ingest. A line with several speakers and none of its own is left alone.
+
+    Every speaker field goes with the old reading, as in merge_speakers: its name
+    is the reader's own ("Colin") or "Unknown" and its map is where the reader
+    stood, not the speaker. The line takes the speaker's map from `speakers` and
+    its name from the NPC record, and has none when that record has none."""
     if speaker_of(entry) is not None or entry.get("isObject"):
         return entry
     speakers = entry.get("speakers") or {}
@@ -971,11 +976,12 @@ def restore_speaker(entry: dict, npcs: dict) -> dict:
     ((npc, map_id),) = speakers.items()
     if str(npc).startswith("-"):
         return entry
+    restored = {k: v for k, v in entry.items() if k not in SPEAKER_FIELDS}
+    restored["npc"] = str(npc)
     name = (npcs.get(str(npc)) or {}).get("name")
-    restored = {**entry, "npc": str(npc)}
     if name:
         restored["name"] = name
-    if map_id is not None and restored.get("mapID") is None:
+    if map_id is not None:
         restored["mapID"] = map_id
     return restored
 

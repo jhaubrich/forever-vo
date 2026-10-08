@@ -294,6 +294,17 @@ def test_a_line_that_lost_its_speaker_gets_it_back_from_its_speakers() -> None:
     restored = restore_speaker(lost, npcs)
     assert (restored["npc"], restored["name"]) == ("1480", "Caitlin Grassman")
     assert restore_speaker(restored, npcs) == restored  # idempotent
+    # the reader's name and where the reader stood go; the speaker's map comes in
+    heard = {
+        **lost,
+        "name": "Colin",
+        "zone": "Stormwind City",
+        "mapID": 1453,
+        "speakers": {"270": 1431},
+    }
+    moved = restore_speaker(heard, {})
+    assert (moved["npc"], moved["mapID"]) == ("270", 1431)
+    assert "name" not in moved and "zone" not in moved
     # several speakers and none of its own, an object, or one already named: untouched
     two = {**lost, "speakers": {"1480": None, "956": None}}
     assert restore_speaker(two, npcs) == two
