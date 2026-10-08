@@ -1,0 +1,140 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "11406|5d01ce11": {
+   "build": "70291",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "High Priest Rohan",
+   "npc": "11406",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "I hope the Light is with you, $N. Is there anything I can do for you today?",
+   "time": 1791459920,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "2784|a5c53ddf": {
+   "build": "70291",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "King Magni Bronzebeard",
+   "npc": "2784",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Welcome to Ironforge, $c.",
+   "time": 1791459680,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "9099|738476a6": {
+   "build": "70291",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Sraaz",
+   "npc": "9099",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Having a bad day? Try some cherry pie.",
+   "time": 1791414965,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  }
+ },
+ "npcs": {
+  "11406": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "High Priest Rohan",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "265003": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 900914,
+   "name": "Thom Filch",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2784": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "King Magni Bronzebeard",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "9099": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 900914,
+   "name": "Sraaz",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1365",
+ "quests": {
+  "96395-complete": {
+   "build": "70291",
+   "class": "Priest",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": null,
+   "name": "Unknown",
+   "npc": null,
+   "questID": 96395,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "My... Thane... he... rests... yes... rest.\r\n\r\nThank... you...\r\n\r\nI... rest...",
+   "time": 1791458167,
+   "title": "An Ancient Grudge",
+   "wanted": null,
+   "zone": "The Hall of Thanes"
+  },
+  "96403-progress": {
+   "build": "70291",
+   "class": "Priest",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Thom Filch",
+   "npc": "265003",
+   "questID": 96403,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "<Thom appears to absentmindedly rub his hands together as he looks at you.>",
+   "time": 1791459545,
+   "title": "Important Heirlooms",
+   "wanted": null,
+   "zone": "Ironforge"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
