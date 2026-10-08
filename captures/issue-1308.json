@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "341": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Foreman Oslow",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1308",
+ "quests": {
+  "125-progress": {
+   "build": "70245",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Foreman Oslow",
+   "npc": "341",
+   "questID": 125,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Were you able to find my tools?",
+   "time": 1791438211,
+   "title": "The Lost Tools",
+   "wanted": null,
+   "zone": "Redridge Mountains"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
