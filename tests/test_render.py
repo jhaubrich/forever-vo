@@ -634,18 +634,28 @@ def test_a_take_of_a_line_with_a_narrated_sob_pins(pin_studio: Any) -> None:
 
 def test_a_bare_sound_is_left_unsaid_and_the_speech_joins_up() -> None:
     from tools.config import Pronunciations
-    from tools.textclean import is_bare_sound, segments
+    from tools.textclean import clean, is_bare_sound, segments
 
     assert (
         is_bare_sound("snort") and is_bare_sound("Cough cough") and is_bare_sound("hic")
     )
-    assert not is_bare_sound("Galgar wipes his brow.")
+    assert is_bare_sound("snort snort") and is_bare_sound("cough, cough, cough...")
+    assert not is_bare_sound("Galgar wipes his brow.") and not is_bare_sound("...")
     # Mangletooth's turn-in for Tribes at War, quest 878 (#1301): one piece of speech
     none = Pronunciations({})
     text = "Yes, yes... filled with joy because finally <snort> the Bristleback know."
     assert segments(text, pronunciations=none) == [
         ("npc", "Yes, yes... filled with joy because finally the Bristleback know.")
     ]
+    # and so in the narrator's own reading of the whole line, which keeps the rest
+    assert clean(text, keep_stage_directions=True, pronunciations=none) == (
+        "Yes, yes... filled with joy because finally the Bristleback know."
+    )
+    assert clean(
+        "Thank you. <Galgar wipes his brow.> Now go.",
+        keep_stage_directions=True,
+        pronunciations=none,
+    ) == ("Thank you. Galgar wipes his brow. Now go.")
     # a direction written as prose is still the narrator's
     assert segments(
         "Thank you. <Galgar wipes his brow.> Now go.", pronunciations=none

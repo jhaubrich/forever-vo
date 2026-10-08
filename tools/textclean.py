@@ -118,13 +118,17 @@ def clean(
 ) -> str:
     """The whole line as one reader says it. Stage directions (<the guard spits>)
     are the narrator's, not the speaker's, so they are dropped -- unless the
-    narrator reads the whole line anyway, when their text is kept as prose.
+    narrator reads the whole line anyway, when their text is kept as prose (save a
+    bare sound, is_bare_sound).
     `pronunciations` defaults to the repository's configs/pronunciations.toml."""
     if pronunciations is None:
         pronunciations = load_config().pronunciations
     text = _substitute(text)
     if keep_stage_directions:
-        text = _STAGE_DIRECTION_TEXT.sub(r"\1", text)
+        # a bare sound is unsaid here too, as in segments()
+        text = _STAGE_DIRECTION_TEXT.sub(
+            lambda m: "" if is_bare_sound(m.group(1)) else m.group(1), text
+        )
     else:
         text = _STAGE_DIRECTION.sub("", text)
     return _finish(text, pronunciations)
@@ -135,7 +139,7 @@ def clean(
 # Chatterbox as noise, "like a monster is speaking" (#1301), and narrating it as a
 # sentence would break the speech mid-sentence. The speaker's words around it join up.
 SOUNDS = frozenset({
-    "snort", "cough", "cough cough", "hic", "hiccup", "sigh", "sob", "drool", "mutter",
+    "snort", "cough", "hic", "hiccup", "sigh", "sob", "drool", "mutter",
     "laugh", "chuckle", "giggle", "cackle", "grunt", "groan", "growl", "sniff",
     "sneeze", "yawn", "gasp", "burp", "belch", "whimper", "weep", "cry", "sniffle",
     "shrug", "nod", "grin", "smile", "wink", "squeal", "wheeze", "weeze",
@@ -147,8 +151,10 @@ SOUNDS = frozenset({
 
 
 def is_bare_sound(words: str) -> bool:
-    """Whether a stage direction is only a sound word, as "snort" or "Cough cough"."""
-    return re.sub(r"[^\w ]+", "", words).strip().lower() in SOUNDS
+    """Whether a stage direction is only sound words, as "snort", "snort snort" or
+    "Cough, cough, cough"."""
+    found = re.findall(r"[\w']+", words.lower())
+    return bool(found) and all(word in SOUNDS for word in found)
 
 
 def segments(
