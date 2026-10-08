@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "5884": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 1018060,
+   "name": "Mai'ah",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1345",
+ "quests": {
+  "98576-progress": {
+   "build": "70245",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Mai'ah",
+   "npc": "5884",
+   "questID": 98576,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Ya come to Mai'ah ready to learn. Dat be good. Ya got da power to touch da strands of da cosmos, but ya also got da wisdom to know dat you need guidance. I can teach ya da first steps to wield dat power.",
+   "time": 1791259590,
+   "title": "Glyphic Parchment",
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
