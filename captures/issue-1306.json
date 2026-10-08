@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "376": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 119563,
+   "name": "High Priestess Laurena",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1306",
+ "quests": {
+  "94774-complete": {
+   "build": "70245",
+   "class": "Priest",
+   "differs": null,
+   "event": "complete",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "High Priestess Laurena",
+   "npc": "376",
+   "questID": 94774,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "I'm glad you've arrived, $N. There are many things we will have to discuss, but more importantly is your training in the ways of the Light.\n\nThere are lessons all servants of the Light must learn. If you are ready, we'll begin discussing some of those now.",
+   "time": 1791436045,
+   "title": "Divine Grace",
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
