@@ -130,42 +130,13 @@ def clean(
     return _finish(text, pronunciations)
 
 
-# A stage direction that is only a sound, as <snort> (61 quilboar lines), <cough> or
-# <hic>, read by the narrator as a sentence of its own: alone, the one word comes
-# out of Chatterbox as noise (#1301). The third-person verb for each.
-SOUNDS = {
-    "snort": "snorts", "cough": "coughs", "cough cough": "coughs", "hic": "hiccups",
-    "hiccup": "hiccups", "sigh": "sighs", "sob": "sobs", "drool": "drools",
-    "mutter": "mutters", "laugh": "laughs", "chuckle": "chuckles", "giggle": "giggles",
-    "cackle": "cackles", "grunt": "grunts", "groan": "groans", "growl": "growls",
-    "sniff": "sniffs", "sneeze": "sneezes", "yawn": "yawns", "gasp": "gasps",
-    "burp": "burps", "belch": "belches", "whimper": "whimpers", "weep": "weeps",
-    "cry": "cries", "sniffle": "sniffles", "shrug": "shrugs", "nod": "nods",
-    "grin": "grins", "smile": "smiles", "wink": "winks", "squeal": "squeals",
-    "wheeze": "wheezes", "weeze": "wheezes",
-}  # fmt: skip
-SOUNDS.update({verb: verb for verb in set(SOUNDS.values())})  # "mutters" as written
-
-
-def narrate_sound(words: str, speaker: str | None) -> str:
-    """A stage direction that is only a sound, as a sentence with the speaker's name:
-    "snort" -> "Mangletooth snorts." Anything else, or no name to use, unchanged."""
-    verb = SOUNDS.get(re.sub(r"[^\w ]+", "", words).strip().lower())
-    if verb is None or not speaker or speaker == "Unknown":
-        return words
-    return f"{speaker} {verb}."
-
-
 def segments(
-    text: str,
-    pronunciations: Pronunciations | None = None,
-    speaker: str | None = None,
+    text: str, pronunciations: Pronunciations | None = None
 ) -> list[tuple[str, str]]:
     """The line in reading order as ("npc", words) and ("narrator", words) pieces,
     each cleaned like clean(): the speaker's own words and, between them, every
     <stage direction> for the narrator. Adjacent pieces of one role are merged.
-    A line with no stage direction is a single npc piece. A direction that is only
-    a sound becomes a sentence with the `speaker`'s name (narrate_sound)."""
+    A line with no stage direction is a single npc piece."""
     if pronunciations is None:
         pronunciations = load_config().pronunciations
     out: list[tuple[str, str]] = []
@@ -177,8 +148,6 @@ def segments(
         piece = _finish(piece, pronunciations)
         if not piece:
             continue
-        if role == "narrator":
-            piece = narrate_sound(piece, speaker)
         if out and out[-1][0] == role:
             out[-1] = (role, f"{out[-1][1]} {piece}")
         else:

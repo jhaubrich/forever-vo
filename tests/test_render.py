@@ -630,27 +630,3 @@ def test_a_take_of_a_line_with_a_narrated_sob_pins(pin_studio: Any) -> None:
     assert response.status_code == 200, response.text
     load_config.cache_clear()
     assert "1-accept" in load_config(pin_studio.toml).lines.root
-
-
-def test_a_bare_sound_is_narrated_as_a_sentence() -> None:
-    from tools.config import Pronunciations
-    from tools.textclean import narrate_sound, segments
-
-    assert narrate_sound("snort", "Mangletooth") == "Mangletooth snorts."
-    assert narrate_sound("Cough cough", "Rimblat") == "Rimblat coughs."
-    assert narrate_sound("mutters", "Thrall") == "Thrall mutters."
-    # a direction that is already prose, or no name to give it, is left as written
-    assert narrate_sound("Galgar wipes his brow.", "Galgar") == "Galgar wipes his brow."
-    assert narrate_sound("snort", None) == "snort"
-    assert narrate_sound("snort", "Unknown") == "snort"
-    # Mangletooth's turn-in for Tribes at War, quest 878 (#1301)
-    parts = segments(
-        "Yes, yes... filled with joy because finally <snort> the Bristleback know.",
-        pronunciations=Pronunciations({}),
-        speaker="Mangletooth",
-    )
-    assert parts == [
-        ("npc", "Yes, yes... filled with joy because finally"),
-        ("narrator", "Mangletooth snorts."),
-        ("npc", "the Bristleback know."),
-    ]
