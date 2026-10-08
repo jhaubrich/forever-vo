@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "2455|2237a3b1": {
+   "build": "70245",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Olivia Burnside",
+   "npc": "2455",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Welcome to the Bank of Stormwind. We offer financial accounts and safety deposit boxes for valuable items. Do you already have an account with us sir?",
+   "time": 1791449856,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "523|d6469a91": {
+   "build": "70245",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1436,
+   "name": "Thor",
+   "npc": "523",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Where are you going?  Well if you're looking to get there quickly, then look no further!",
+   "time": 1791449238,
+   "title": null,
+   "wanted": null,
+   "zone": "Westfall"
+  }
+ },
+ "npcs": {
+  "2455": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Olivia Burnside",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "523": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Thor",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1323",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
