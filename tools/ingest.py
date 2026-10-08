@@ -955,6 +955,31 @@ def merge_speakers(base: dict, old: dict, entry: dict) -> dict:
     return base
 
 
+def restore_speaker(entry: dict, npcs: dict) -> dict:
+    """A quest line that names no speaker but whose `speakers` know exactly one,
+    with that one as its speaker. Lines merged before merge_speakers existed (#948)
+    could keep a later reading that names nobody over an earlier one that heard the
+    speaker: 95647-complete kept issue-1066's "Unknown" and lost issue-893's Caitlin
+    Grassman, so it was voiced by the narrator though `speakers` still held her.
+    Those exports are never merged again; this puts the speaker back on every
+    ingest. A line with several speakers and none of its own is left alone."""
+    if speaker_of(entry) is not None or entry.get("isObject"):
+        return entry
+    speakers = entry.get("speakers") or {}
+    if len(speakers) != 1:
+        return entry
+    ((npc, map_id),) = speakers.items()
+    if str(npc).startswith("-"):
+        return entry
+    name = (npcs.get(str(npc)) or {}).get("name")
+    restored = {**entry, "npc": str(npc)}
+    if name:
+        restored["name"] = name
+    if map_id is not None and restored.get("mapID") is None:
+        restored["mapID"] = map_id
+    return restored
+
+
 def gather_speakers(capture: dict, db: dict) -> None:
     """Adds the speaker of every quest line in an export to capture.json's line.
 
@@ -1338,11 +1363,13 @@ def backfill(
     it is what repairs everything captured before the addon recorded class and
     race, and everything captured by a client that glued placeholders."""
     quests, rebuilt_quests = 0, {}
+    npcs = capture.get("npcs", {})
     for key, entry in capture["quests"].items():
         fixed = repair_entry(entry, "quests", key, sources, stats, readers)
         if fixed is None:
             quests += 1
             continue
+        fixed = restore_speaker(fixed, npcs)
         if fixed != entry:
             quests += 1
         rebuilt_quests[key] = fixed

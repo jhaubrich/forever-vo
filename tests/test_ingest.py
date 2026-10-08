@@ -278,3 +278,26 @@ def test_raw_text_settles_placeholders_without_a_second_reader(tmp_path: Path) -
     fixed = repair_entry(entry, "quests", "1-accept", sources, Repairs(), READERS)
     assert fixed is not None and fixed["text"] == raw
     assert fixed.get("needs") is None
+
+
+def test_a_line_that_lost_its_speaker_gets_it_back_from_its_speakers() -> None:
+    from tools.ingest import restore_speaker
+
+    npcs = {"1480": {"name": "Caitlin Grassman"}}
+    lost = {
+        "name": "Unknown",
+        "npc": None,
+        "addon": "0.1.8",
+        "speakers": {"1480": None},
+        "text": "I thought we were done for!",
+    }
+    restored = restore_speaker(lost, npcs)
+    assert (restored["npc"], restored["name"]) == ("1480", "Caitlin Grassman")
+    assert restore_speaker(restored, npcs) == restored  # idempotent
+    # several speakers and none of its own, an object, or one already named: untouched
+    two = {**lost, "speakers": {"1480": None, "956": None}}
+    assert restore_speaker(two, npcs) == two
+    thing = {**lost, "isObject": True}
+    assert restore_speaker(thing, npcs) == thing
+    named = {**lost, "npc": "956", "name": "Dorin Songblade"}
+    assert restore_speaker(named, npcs) == named

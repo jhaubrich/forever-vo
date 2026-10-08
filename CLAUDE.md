@@ -254,7 +254,10 @@ Generation details:
   crates of "A Sealed Crate", #948): ingest keeps every trusted speaker
   (0.1.3 on, creatures only) in the line's `speakers` (key -> mapID) and the
   line's own `npc` stays put (`merge_speakers`; a reading with no speaker
-  takes the other's). `Item.speaker_alternates` voices the line again for a
+  takes the other's). `restore_speaker` in `backfill` gives a line with no
+  speaker but exactly one in `speakers` that one back: exports merged before
+  #948 kept an "Unknown" turn-in over the reading that heard the speaker
+  (95647-complete, Caitlin Grassman, read by the narrator). `Item.speaker_alternates` voices the line again for a
   speaker whose voice differs, under `Sounds/Quests/Speaker/<key>/` (index
   key `Speaker/<key>/<base>`, tables `xa`/`xp`/`xc`, `pack.maps`). The addon
   plays the one in front of the player, picks by map when the unit is
