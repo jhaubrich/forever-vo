@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "11857|00001505": {
+   "build": "70245",
+   "class": "Paladin",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Makaba Flathoof",
+   "npc": "11857",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": " ",
+   "time": 1791450748,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "4049|65e1afb2": {
+   "build": "70245",
+   "class": "Paladin",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Seereth Stonebreak",
+   "npc": "4049",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "The spirit of Stonetalon weeps.  It weeps from its mountain peaks, to its rivers, to its severed, dying trees.",
+   "time": 1791450840,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "npcs": {
+  "11857": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Makaba Flathoof",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4049": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Seereth Stonebreak",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1329",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
