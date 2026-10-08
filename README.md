@@ -82,7 +82,7 @@ priorities, so a pack of new or revised lines can sit on top of a base pack.
 
 `uv run audition` opens a local page (port 8765) for hearing a line in a voice
 under different reference clips and Chatterbox settings side by side, keeping
-the winner in `forever-vo.toml`, and writing a single regenerated file into the
+the winner in `configs/`, and writing a single regenerated file into the
 pack.
 
 It plays each line's current file from the repo's `ForeverVO_Data`, falling
@@ -146,7 +146,7 @@ completes. If `amdgpu.ids` is not installed, the device name prints as
 `fvo-generate` stays on the CUDA wheel. The sound index records the text and
 the tuning, so a file made here would look current and the nightly run would
 ship it. Keeping a voice's settings in
-`forever-vo.toml` is the AMD path: the CUDA generator restages that voice
+`configs/tts.toml` is the AMD path: the CUDA generator restages that voice
 from those numbers. `.venv-rocm/` is gitignored.
 
 The tools are a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml`,
@@ -170,7 +170,7 @@ ln -s "$PWD/ForeverVO_Data" "$B/ForeverVO_Data"
 
 Provide `tools/voices/narrator.wav` (10 to 20 s of clean speech) for quests and
 gossip from items and objects. Those lines are generated again in each voice
-listed as `narrator_alternates` in `forever-vo.toml`, under
+listed as `narrator_alternates` in `configs/voices.toml`, under
 `Sounds/<Quests|Gossip>/Narrator/<voice>/`, so
 players can pick the narrator they prefer in the options. The extra passes sort after
 every line that has no audio at all; `--narrator-voices none` leaves them out

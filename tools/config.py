@@ -3,10 +3,12 @@
 Two kinds of things live here. Constants nobody edits: the repository paths,
 the two environment overrides (WOW_DIR, WOW_BETA_BUILD) and the client's own
 race and sex IDs. And the pydantic models for everything the owner does edit,
-which lives in forever-vo.toml at the repository root: voices and what they
-borrow from, Chatterbox conditioning per voice, respellings, what is known
-about the readers of old captures, and the release parameters. load_config()
-reads and validates the file once; a function that needs a section takes that
+which lives in configs/ at the repository root: voices and what they borrow
+from, Chatterbox conditioning per voice, respellings, what is known about the
+readers of old captures, and the release parameters. Each file there holds one
+table and is named after it (configs/tts.toml is [tts], configs/voices.sources.toml
+is [voices.sources]), written with its full headers. load_config() reads,
+merges and validates the files once; a function that needs a section takes that
 model by type hint (`voices: Voices`, `readers: Readers`, ...).
 """
 
@@ -37,7 +39,7 @@ CASC_DIR = DATA_DIR / "casc"  # files by build and FileDataID, see wowdata.fetch
 VOICES_DIR = TOOLS_DIR / "voices"
 CAPTURE_JSON = DATA_DIR / "capture.json"
 SOUND_INDEX = DATA_DIR / "sound_index.json"
-CONFIG_TOML = ROOT / "forever-vo.toml"
+CONFIG_DIR = ROOT / "configs"
 
 ADDON_NAME = "ForeverVO"
 PACK_NAME = "ForeverVO_Data"
@@ -110,7 +112,7 @@ GENDER_DICT = {0: "male", 1: "female"}
 
 
 # ----------------------------------------------------------------------------
-# forever-vo.toml
+# configs/*.toml
 # ----------------------------------------------------------------------------
 
 
@@ -508,12 +510,54 @@ class ConfigError(ValueError):
     pass
 
 
-@functools.cache
-def load_config(path: Path = CONFIG_TOML) -> Config:
-    """The validated forever-vo.toml, read once per process."""
+def config_file(config_dir: Path, *table: str) -> Path:
+    """The file that holds `table` (a path of keys, ("voices", "speakers")): the
+    most specific existing file named after a table that contains it, else the one
+    named after its top-level table."""
+    for n in range(len(table), 0, -1):
+        path = config_dir / f"{'.'.join(table[:n])}.toml"
+        if n == 1 or path.exists():
+            return path
+    raise ValueError("no table named")
+
+
+def _merge(into: dict, data: dict, where: tuple[str, ...]) -> None:
+    for key, value in data.items():
+        if key not in into:
+            into[key] = value
+        elif isinstance(into[key], dict) and isinstance(value, dict):
+            _merge(into[key], value, (*where, key))
+        else:
+            raise ValueError(f"{'.'.join((*where, key))} is set in two files")
+
+
+def read_config(config_dir: Path, texts: dict[str, str] | None = None) -> Config:
+    """configs/*.toml merged and validated, uncached; `texts` stands in for files
+    by name (the audition page validates an edit before it writes it)."""
+    texts = dict(texts or {})
     try:
-        with path.open("rb") as f:
-            data = tomllib.load(f)
-        return Config.model_validate(data)
-    except (OSError, tomllib.TOMLDecodeError, ValidationError) as e:
-        raise ConfigError(f"{path}: {e}") from e
+        for path in sorted(config_dir.glob("*.toml")):
+            texts.setdefault(path.name, path.read_text(encoding="utf-8"))
+        merged: dict = {}
+        for name, text in sorted(texts.items()):
+            data = tomllib.loads(text)
+            table = name.removesuffix(".toml").split(".")
+            inner = data
+            for depth, key in enumerate(table):
+                if not isinstance(inner, dict) or set(inner) - {key}:
+                    where = ".".join(table[:depth]) or "the top level"
+                    raise ValueError(
+                        f"{name} may hold only [{'.'.join(table)}], "
+                        f"found {sorted(inner)} under {where}"
+                    )
+                inner = inner.get(key, {})
+            _merge(merged, data, ())
+        return Config.model_validate(merged)
+    except (OSError, ValueError, tomllib.TOMLDecodeError, ValidationError) as e:
+        raise ConfigError(f"{config_dir}: {e}") from e
+
+
+@functools.cache
+def load_config(config_dir: Path = CONFIG_DIR) -> Config:
+    """The validated configs/, read once per process."""
+    return read_config(config_dir)

@@ -39,7 +39,7 @@ SOURCES_JSON = CAPTURE_JSON.with_name(
 SV_NAME = f"{ADDON_NAME}.lua"
 CAPTURE_VAR = "ForeverVOCaptureDB"
 
-# Every repair below takes `readers`, the [readers] section of forever-vo.toml:
+# Every repair below takes `readers`, the [readers] section of configs/readers.toml:
 # how far a capture is believed (trusted_since) and what is known about the
 # readers of captures that predate the addon recording it.
 

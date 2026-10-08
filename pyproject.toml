@@ -18,7 +18,7 @@ dependencies = [
     "pydantic>=2.13.5",
     "requests",
     "requests-toolbelt",   # streams the pack upload to CurseForge from disk
-    "tomlkit>=0.13",       # the audition page edits forever-vo.toml without losing its comments
+    "tomlkit>=0.13",       # the audition page edits configs/ without losing its comments
     "typer>=0.27.2",
 ]
 

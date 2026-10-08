@@ -1,0 +1,46 @@
+[readers]
+# The first addon release whose captures are taken at face value. Everything
+# recorded by an earlier one (glued placeholders, no class or race, a lingering
+# NPC unit, resolved $g branches) or by an unknown one loses the merge to a
+# capture from this release on, whatever their order in time, and ingest.py
+# keeps asking any reader for the line until such a capture arrives (needs_of).
+# Raise it when a later release fixes what its predecessor recorded.
+trusted_since = "0.1.4"
+
+# The client resolves $n, $c and $r against whoever is reading before any addon
+# can see the text, so a line first seen on a rogue is captured saying "rogue".
+# Capture version 3 records the reader's class and race so ingest.py can put the
+# placeholders back; these are the owner's characters whose captures predate it.
+# Derived by aligning the captured text against the raw $c held in the beta
+# quest cache (removed in #317) and confirmed by the owner for Agravain.
+[readers.legacy."Myrlin Fixpoint"]
+class = "Mage"
+race = "Orc"    # added 2026-09-25: Mebok Mizzyrix's gossip was voiced "the orc I'm looking for"
+
+[readers.legacy."Pellinore Fixpoint"]
+class = "Hunter"
+
+# No race on purpose: it is "Windshaper Skyborne", whose $r renders "skyborne",
+# a word Forever's own text uses literally all over Zephras Isle. Those lines
+# are repaired from the raw text where it exists and re-asked where it does not.
+[readers.legacy."Agravain Fixpoint"]
+class = "Rogue"
+
+[readers.legacy."Fixpoint Fix"]
+class = "Paladin"
+race = "Undead"
+
+[readers.legacy."Spron Limbertorque"]
+race = "Gnome"    # a throwaway character: two lines from Sten Stoutarm, class unknown
+
+# Community exports ("/fvo export") replace the reader's name with $n and carry
+# no class or race, so a glued placeholder from a pre-whole-word client (issue
+# #5) cannot be undone without help. Keyed by the capture file's origin (the
+# issue comment id), holding what the poster told us. restore_name says the
+# name is an ordinary English word ("It"), so the old client turned every such
+# word into $n and ingest puts the word back wherever $n appears; otherwise
+# only glued placeholders are undone.
+[readers.community.comment-5768141361]
+player = "It"
+class = "Paladin"
+restore_name = true

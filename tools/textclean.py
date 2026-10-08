@@ -3,7 +3,7 @@
 Mirrors the rules of the upstream tts_cli (dollar-code substitution, stage
 directions in angle brackets, $G gender branches) and adds sentence chunking for
 models that prefer short inputs. Respellings for names the model gets wrong are
-[pronunciations] in forever-vo.toml (config.Pronunciations).
+[pronunciations] in configs/pronunciations.toml (config.Pronunciations).
 """
 
 from __future__ import annotations
@@ -119,7 +119,7 @@ def clean(
     """The whole line as one reader says it. Stage directions (<the guard spits>)
     are the narrator's, not the speaker's, so they are dropped -- unless the
     narrator reads the whole line anyway, when their text is kept as prose.
-    `pronunciations` defaults to the repository's forever-vo.toml."""
+    `pronunciations` defaults to the repository's configs/pronunciations.toml."""
     if pronunciations is None:
         pronunciations = load_config().pronunciations
     text = _substitute(text)

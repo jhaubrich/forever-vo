@@ -506,7 +506,7 @@ def voice_for_npc(
     ID; the Classic export supplies display IDs for unchanged NPCs), a species clip,
     `[voices.sound_sets]` for the display's NPCSounds set, the zone hint, then human. Sex falls back to the in-game UnitSex (2 male, 3 female); game
     objects, items and genderless units go to the narrator.
-    `voices` ([voices] in forever-vo.toml) defaults to the repository's.
+    `voices` ([voices] in configs/voices.toml) defaults to the repository's.
     """
     if voices is None:
         voices = load_config().voices

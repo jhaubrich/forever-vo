@@ -11,7 +11,7 @@ candidates instead, so the clips are chosen rather than sorted into place.
     ./tools/run.sh fvo-refclips reel bloodelf-female          # numbered audio to listen to
     ./tools/run.sh fvo-refclips build bloodelf-female 4,11,2  # that order becomes the clip
 
-`build` prints the FileDataIDs to paste into forever-vo.toml, which is what makes the
+`build` prints the FileDataIDs to paste into configs/, which is what makes the
 choice survive the next rebuild:
 
     [voices.sources.bloodelf-female]

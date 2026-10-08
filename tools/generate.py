@@ -16,7 +16,7 @@ Voices: tools/voices/<race>-<gender>.wav are reference clips for cloning
 voices fall back to narrator.wav, then to the model's built-in voice.
 
 Quests read by the narrator (objects and items have no speaker to clone) are
-also generated in the alternate voices listed under [voices] in forever-vo.toml,
+also generated in the alternate voices listed under [voices] in configs/voices.toml,
 into Sounds/Quests/Narrator/<voice>/, so players can pick the narrator they like
 in the addon's options. Those files sort after everything else, so a time-boxed
 run still spends its time on lines that have no audio at all:
@@ -117,7 +117,7 @@ def picks_digest(clips: list[int], build: str | None, gaps: list[float]) -> str:
 
 class VoiceCatalog:
     """Resolves a voice name to its reference clip and Chatterbox settings from
-    [voices] and [tts] in forever-vo.toml.
+    [voices] and [tts] in configs/.
 
     A voice with no clip of its own borrows a related race's ([voices.fallbacks]),
     then the narrator's, then human-male. The tuning goes with the clip: the

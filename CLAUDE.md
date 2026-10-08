@@ -18,7 +18,7 @@ Classic-plus client, codename Camelot). Two addons plus a Python pipeline:
 
 Owner: Quinn Dougherty (quinn@for-all.dev). Addon slug `forever-vo`, display
 name "Forever Voiceover". CurseForge project IDs are under
-`[release.curseforge_projects]` in `forever-vo.toml`. License MIT; voice packs
+`[release.curseforge_projects]` in `configs/release.toml`. License MIT; voice packs
 are non-commercial fan content (Blizzard's text, voices cloned from the game's
 own recordings).
 
@@ -175,13 +175,19 @@ default; `--no-group tts` skips torch. `tts-rocm` is the same Chatterbox on
 ROCm for audition only (README; `fvo-generate` refuses it). Bump a pin with `uv
 lock --upgrade-package <name>` or `nix flake update` and commit the lock.
 
-**Configuration is `forever-vo.toml`**, validated by the pydantic models in
-`tools/config.py` (an unknown key is an error). If someone edits it, it is TOML;
+**Configuration is `configs/`**, one TOML file per table, named after it and
+written with its full headers (`configs/tts.toml` is `[tts]`,
+`configs/voices.sources.toml` is `[voices.sources]`; #1134, until 2026-10-07 one
+`forever-vo.toml`). `load_config` merges them (a file holding another table, or
+a key set in two files, is an error) and validates the result with the pydantic
+models in `tools/config.py` (an unknown key is an error). To split a growing
+table out, move its tables into `configs/<table>.toml`; the audition page writes
+to the most specific file that exists (`config_file`). If someone edits it, it is TOML;
 if nobody does (paths, race IDs), it stays a Python constant. The one
 per-line table is `[lines]`, a pinned seed per line written by the audition
 page (since 2026-10-06, on the owner's call though it grows with every pin). Functions
 take the section they need by type hint; `textclean.clean()` and
-`wowdata.voice_for_npc()` default to the repository's file.
+`wowdata.voice_for_npc()` default to the repository's `configs/`.
 
 **Checks**: `./tools/run.sh pytest`, `ruff check`, `ruff format --check` (ruff's
 defaults, no `[tool.ruff]`), `ty check`, all clean. `check.yml` runs them plus
@@ -281,8 +287,9 @@ Generation details:
 port 8765) is the ear-test page: pick a voice and a line, source clips, knobs
 and takes. It writes picks (`[voices.sources]`), tuning (`[tts.voices]`),
 pronunciations, speaker pins, approvals (`[voices.approved]`, ★ while the
-recipe heard is current) and tasting notes (`[voices.notes]`) into the TOML
-through tomlkit, validated before the file is replaced. "Pin this take" (it
+recipe heard is current) and tasting notes (`[voices.notes]`) into the file of
+`configs/` that holds the table, through tomlkit, validated with the rest
+before the file is replaced. "Pin this take" (it
 replaced "Write to pack" on 2026-10-06) writes a take's seed to `[lines]`; the
 server proves the take from its sidecar (the picked line, in its voice, its exact
 text, the fingerprint it was made under) and refuses a line whose speech narration

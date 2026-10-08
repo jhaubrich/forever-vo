@@ -35,8 +35,8 @@ tools/data/audition/
 tools/data/voicecheck/
 
 # the audition page's lock and its validation trial files
-forever-vo.toml.lock
-forever-vo.toml.*.audition
+configs/.lock
+configs/.*.toml.*
 
 # Optional local CurseForge packs from fvo-fetch-packs. Unused unless
 # AUDITION_ADDONS points here, and never part of a commit.
