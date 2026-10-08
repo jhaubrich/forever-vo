@@ -956,8 +956,9 @@ def merge_speakers(base: dict, old: dict, entry: dict) -> dict:
 
 
 def restore_speaker(entry: dict, npcs: dict) -> dict:
-    """A quest line that names no speaker but whose `speakers` know exactly one,
-    with that one as its speaker. Lines merged before merge_speakers existed (#948)
+    """A quest line that names no trusted speaker but whose `speakers` know exactly
+    one, with that one as its speaker. A reading from before SPEAKER_TRUSTED_SINCE
+    may name a lingering NPC; it gives way, as it does in merge_speakers. Lines merged before merge_speakers existed (#948)
     could keep a later reading that names nobody over an earlier one that heard the
     speaker: 95647-complete kept issue-1066's "Unknown" and lost issue-893's Caitlin
     Grassman, so it was voiced by the narrator though `speakers` still held her.
@@ -974,8 +975,6 @@ def restore_speaker(entry: dict, npcs: dict) -> dict:
     if len(speakers) != 1:
         return entry
     ((npc, map_id),) = speakers.items()
-    if str(npc).startswith("-"):
-        return entry
     restored = {k: v for k, v in entry.items() if k not in SPEAKER_FIELDS}
     restored["npc"] = str(npc)
     name = (npcs.get(str(npc)) or {}).get("name")

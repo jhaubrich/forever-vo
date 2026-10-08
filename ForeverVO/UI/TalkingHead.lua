@@ -353,7 +353,9 @@ function TalkingHead:CreatePortrait()
         end
         -- A dead speaker's unit loaded nothing new and left the previous
         -- speaker's face up (Zeroth in Blackfathom Villainy, #1286); the
-        -- creature cache draws them standing, or the book shows
+        -- creature cache draws them standing, or the book shows. Settle's retry
+        -- would get there too, but only after the book for MODEL_SETTLE and
+        -- UNIT_SETTLE, so a speaker known to be dead goes to the cache at once
         if unit and Util.Plain(UnitIsDead(unit)) then
             unit = nil
         end
@@ -823,6 +825,7 @@ function TalkingHead:SetPortrait(item)
         model:CancelSettle()
         model:ClearModel()
         model.loaded = nil
+        model.retryCreature = nil
         model:Hide()
         frame.Book:SetShown(shown)
     end

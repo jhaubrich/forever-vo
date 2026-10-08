@@ -139,22 +139,30 @@ def clean(
 # Chatterbox as noise, "like a monster is speaking" (#1301), and narrating it as a
 # sentence would break the speech mid-sentence. The speaker's words around it join up.
 SOUNDS = frozenset({
-    "snort", "cough", "hic", "hiccup", "sigh", "sob", "drool", "mutter",
-    "laugh", "chuckle", "giggle", "cackle", "grunt", "groan", "growl", "sniff",
-    "sneeze", "yawn", "gasp", "burp", "belch", "whimper", "weep", "cry", "sniffle",
-    "shrug", "nod", "grin", "smile", "wink", "squeal", "wheeze", "weeze",
-    "snorts", "coughs", "hiccups", "sighs", "sobs", "drools", "mutters", "laughs",
-    "chuckles", "giggles", "cackles", "grunts", "groans", "growls", "sniffs",
-    "sneezes", "yawns", "gasps", "burps", "belches", "whimpers", "weeps", "cries",
-    "sniffles", "shrugs", "nods", "grins", "smiles", "winks", "squeals", "wheezes",
+    "snort", "cough", "hic", "hiccup", "sigh", "sob", "drool", "mutter", "laugh",
+    "chuckle", "giggle", "cackle", "grunt", "groan", "growl", "sniff", "sneeze",
+    "yawn", "gasp", "burp", "belch", "whimper", "weep", "cry", "sniffle", "shrug",
+    "nod", "grin", "smile", "wink", "squeal", "wheeze", "weeze",
 })  # fmt: skip
+
+
+def _is_sound(word: str) -> bool:
+    """A word of SOUNDS, or its form with an s: "snorts", "belches", "cries"."""
+    stems = {word}
+    if word.endswith("s"):
+        stems.add(word[:-1])
+    if word.endswith("es"):
+        stems.add(word[:-2])
+    if word.endswith("ies"):
+        stems.add(word[:-3] + "y")
+    return not stems.isdisjoint(SOUNDS)
 
 
 def is_bare_sound(words: str) -> bool:
     """Whether a stage direction is only sound words, as "snort", "snort snort" or
     "Cough, cough, cough"."""
     found = re.findall(r"[\w']+", words.lower())
-    return bool(found) and all(word in SOUNDS for word in found)
+    return bool(found) and all(_is_sound(word) for word in found)
 
 
 def segments(

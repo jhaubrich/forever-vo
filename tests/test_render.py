@@ -640,6 +640,7 @@ def test_a_bare_sound_is_left_unsaid_and_the_speech_joins_up() -> None:
         is_bare_sound("snort") and is_bare_sound("Cough cough") and is_bare_sound("hic")
     )
     assert is_bare_sound("snort snort") and is_bare_sound("cough, cough, cough...")
+    assert is_bare_sound("belches") and is_bare_sound("cries") and is_bare_sound("sobs")
     assert not is_bare_sound("Galgar wipes his brow.") and not is_bare_sound("...")
     # Mangletooth's turn-in for Tribes at War, quest 878 (#1301): one piece of speech
     none = Pronunciations({})
