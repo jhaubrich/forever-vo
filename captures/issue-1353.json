@@ -1,0 +1,93 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "295|c80041d2": {
+   "build": "70245",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Innkeeper Farley",
+   "npc": "295",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Welcome to my Inn, weary traveler. What can I do for you?",
+   "time": 1791397863,
+   "title": null,
+   "wanted": null,
+   "zone": "Lion's Pride Inn"
+  },
+  "328|9c6df40b": {
+   "build": "70245",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Zaldimar Wefhellt",
+   "npc": "328",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings $c.  Shall I provide you with further insight into the world of magic?",
+   "time": 1791397840,
+   "title": null,
+   "wanted": null,
+   "zone": "Lion's Pride Inn"
+  },
+  "344|d18fd3a5": {
+   "build": "70245",
+   "class": "Mage",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1433,
+   "name": "Magistrate Solomon",
+   "npc": "344",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Who is this $c who goes before the Court of Lakshire in the Kingdom of Stormwind?  State your business within this township, $R.  The orc threat to the Kingdom is far too great to squander time in idle conversation.",
+   "time": 1791398824,
+   "title": null,
+   "wanted": null,
+   "zone": "Lakeshire Town Hall"
+  }
+ },
+ "npcs": {
+  "295": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Innkeeper Farley",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "328": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Zaldimar Wefhellt",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "344": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Magistrate Solomon",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1353",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
