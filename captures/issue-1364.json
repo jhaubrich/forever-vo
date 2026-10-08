@@ -1,0 +1,183 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "2215|dc484bb4": {
+   "build": "70291",
+   "class": "Paladin",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "High Executor Darthalia",
+   "npc": "2215",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "In order to serve the Dark Lady and Varimathras we need to advance the front on the Human Infestation.",
+   "time": 1791470211,
+   "title": null,
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "2388|fde1fb79": {
+   "build": "70291",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Innkeeper Shay",
+   "npc": "2388",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Rest your weary bones for a spell.",
+   "time": 1791470233,
+   "title": null,
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "2389|c5ceacbe": {
+   "build": "70291",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Zarise",
+   "npc": "2389",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Where would you like to fly to?",
+   "time": 1791470275,
+   "title": null,
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "4551|d37b59d0": {
+   "build": "70291",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Michael Garrett",
+   "npc": "4551",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "How may I be of service?",
+   "time": 1791470845,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "6741|fde1fb79": {
+   "build": "70291",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Innkeeper Norman",
+   "npc": "6741",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Rest your weary bones for a spell.",
+   "time": 1791469069,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "211022": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Owen Thadd",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2215": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "High Executor Darthalia",
+   "sex": 3,
+   "sexes": "fm"
+  },
+  "2388": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Innkeeper Shay",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2389": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121608,
+   "name": "Zarise",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "2418": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Deathguard Samsa",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4551": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Michael Garrett",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6741": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121768,
+   "name": "Innkeeper Norman",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1364",
+ "quests": {
+  "546-progress": {
+   "build": "70291",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Deathguard Samsa",
+   "npc": "2418",
+   "questID": 546,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "So the lucky $N returns?  How many humans have you slaughtered today?  Hundreds I do hope!\n\nHave you any skulls for me?",
+   "time": 1791471267,
+   "title": "Souvenirs of Death",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
