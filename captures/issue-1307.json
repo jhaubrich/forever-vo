@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "4455": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 124533,
+   "name": "Red Jack Flint",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1307",
+ "quests": {
+  "1132-accept": {
+   "build": "70245",
+   "class": "Druid",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1437,
+   "name": "Red Jack Flint",
+   "npc": "4455",
+   "questID": 1132,
+   "race": "Night Elf",
+   "sex": "m",
+   "source": "community",
+   "text": "Oh, to be at sea once again!  To feel the kiss of the wind, and to have the waves rock me like my blessed mother, long ago!\n\nOh, I wish I had your fortune, good $c, for I see the sea in your future!\n\nIt's my job to tell eager souls of the land of Kalimdor, the land of opportunity!  If you're willing to try your luck across the sea, then take a ship from here to the lovely port of Theramore.  Speak there with my partner, the $r, Fiora Longears.\n\nShe'll start you on your Kalimdor adventure!",
+   "time": 1791426463,
+   "title": "Fiora Longears",
+   "wanted": null,
+   "zone": "Wetlands"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
