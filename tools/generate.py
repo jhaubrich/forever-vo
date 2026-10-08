@@ -419,7 +419,11 @@ class Item:
             parts = (
                 []
                 if self.is_narrator
-                else segments(text, pronunciations=self.config.pronunciations)
+                else segments(
+                    text,
+                    pronunciations=self.config.pronunciations,
+                    speaker=(self.npc or {}).get("name") or self.entry.get("name"),
+                )
             )
             if len(parts) == 1 and parts[0][0] == "npc":
                 parts = []
