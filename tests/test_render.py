@@ -630,3 +630,27 @@ def test_a_take_of_a_line_with_a_narrated_sob_pins(pin_studio: Any) -> None:
     assert response.status_code == 200, response.text
     load_config.cache_clear()
     assert "1-accept" in load_config(pin_studio.toml).lines.root
+
+
+def test_a_bare_sound_is_left_unsaid_and_the_speech_joins_up() -> None:
+    from tools.config import Pronunciations
+    from tools.textclean import is_bare_sound, segments
+
+    assert (
+        is_bare_sound("snort") and is_bare_sound("Cough cough") and is_bare_sound("hic")
+    )
+    assert not is_bare_sound("Galgar wipes his brow.")
+    # Mangletooth's turn-in for Tribes at War, quest 878 (#1301): one piece of speech
+    none = Pronunciations({})
+    text = "Yes, yes... filled with joy because finally <snort> the Bristleback know."
+    assert segments(text, pronunciations=none) == [
+        ("npc", "Yes, yes... filled with joy because finally the Bristleback know.")
+    ]
+    # a direction written as prose is still the narrator's
+    assert segments(
+        "Thank you. <Galgar wipes his brow.> Now go.", pronunciations=none
+    ) == [
+        ("npc", "Thank you."),
+        ("narrator", "Galgar wipes his brow."),
+        ("npc", "Now go."),
+    ]

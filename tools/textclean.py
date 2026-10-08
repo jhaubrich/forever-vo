@@ -130,13 +130,35 @@ def clean(
     return _finish(text, pronunciations)
 
 
+# A stage direction that is only a sound, as <snort> (61 quilboar lines), <cough> or
+# <hic>, which the narrator leaves unsaid: alone, the one word came out of
+# Chatterbox as noise, "like a monster is speaking" (#1301), and narrating it as a
+# sentence would break the speech mid-sentence. The speaker's words around it join up.
+SOUNDS = frozenset({
+    "snort", "cough", "cough cough", "hic", "hiccup", "sigh", "sob", "drool", "mutter",
+    "laugh", "chuckle", "giggle", "cackle", "grunt", "groan", "growl", "sniff",
+    "sneeze", "yawn", "gasp", "burp", "belch", "whimper", "weep", "cry", "sniffle",
+    "shrug", "nod", "grin", "smile", "wink", "squeal", "wheeze", "weeze",
+    "snorts", "coughs", "hiccups", "sighs", "sobs", "drools", "mutters", "laughs",
+    "chuckles", "giggles", "cackles", "grunts", "groans", "growls", "sniffs",
+    "sneezes", "yawns", "gasps", "burps", "belches", "whimpers", "weeps", "cries",
+    "sniffles", "shrugs", "nods", "grins", "smiles", "winks", "squeals", "wheezes",
+})  # fmt: skip
+
+
+def is_bare_sound(words: str) -> bool:
+    """Whether a stage direction is only a sound word, as "snort" or "Cough cough"."""
+    return re.sub(r"[^\w ]+", "", words).strip().lower() in SOUNDS
+
+
 def segments(
     text: str, pronunciations: Pronunciations | None = None
 ) -> list[tuple[str, str]]:
     """The line in reading order as ("npc", words) and ("narrator", words) pieces,
     each cleaned like clean(): the speaker's own words and, between them, every
     <stage direction> for the narrator. Adjacent pieces of one role are merged.
-    A line with no stage direction is a single npc piece."""
+    A line with no stage direction is a single npc piece. A direction that is only
+    a sound is left out (is_bare_sound), so the speech around it is one piece."""
     if pronunciations is None:
         pronunciations = load_config().pronunciations
     out: list[tuple[str, str]] = []
@@ -146,7 +168,7 @@ def segments(
         else:
             role = "npc"
         piece = _finish(piece, pronunciations)
-        if not piece:
+        if not piece or (role == "narrator" and is_bare_sound(piece)):
             continue
         if out and out[-1][0] == role:
             out[-1] = (role, f"{out[-1][1]} {piece}")

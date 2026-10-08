@@ -266,7 +266,10 @@ Generation details:
 - Angle-bracket stage directions are the narrator's: the line also gets *parts*,
   `<questID>-p<i>-<event>` / `<speaker>-p<i>-<hash>`, played back to back
   (`aP`/`pP`/`cP`, gossip `P`/`nP`). The part number sits before the last name
-  segment on purpose.
+  segment on purpose. A direction that is only a sound (`<snort>`, `<cough>`, `<hic>`; 61
+  quilboar snorts) is left unsaid and the speech around it joins up
+  (`textclean.is_bare_sound`, `SOUNDS`): alone, the one word came out of
+  Chatterbox as noise, and narrating it broke the speech mid-sentence (#1301).
 - Sound names: quests `<questID>-<event>`, gossip `<speaker>-<hash>`. Tell them
   apart by the last segment (`generate.sound_folder`), not by whether the first
   is numeric.
