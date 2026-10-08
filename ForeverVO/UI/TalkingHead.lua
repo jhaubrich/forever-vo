@@ -279,6 +279,15 @@ function TalkingHead:CreatePortrait()
     local function Settle(self)
         self.settle = nil
         local hasModel = HasModel(self)
+        -- A unit the client drew no model from (Zeroth, who is dead, #1286) gets
+        -- one more try from the creature cache before the book
+        if not hasModel and self.retryCreature then
+            local creatureID = self.retryCreature
+            self.retryCreature = nil
+            self:SetCreature(creatureID)
+            self:Reveal()
+            return
+        end
         -- A hidden PlayerModel drops its model, so it is only hidden once the
         -- load has had its chance, and shown again before the next load.
         -- Showing it fires OnModelLoaded again, even when it was already
@@ -330,6 +339,12 @@ function TalkingHead:CreatePortrait()
         if unit and Util.Plain(UnitGUID(unit)) ~= guid then
             unit = nil
         end
+        -- A dead speaker's unit loaded nothing new and left the previous
+        -- speaker's face up (Zeroth in Blackfathom Villainy, #1286); the
+        -- creature cache draws them standing, or the book shows
+        if unit and Util.Plain(UnitIsDead(unit)) then
+            unit = nil
+        end
         local loaded = unit and guid or creatureID
         if self.loaded == loaded then
             self:SetAnimation(TALK_ANIMATION)
@@ -339,10 +354,14 @@ function TalkingHead:CreatePortrait()
         self:CancelSettle()
         self:Show()
         frame.Book:Hide()
+        -- cleared first on either path, so a load that fails shows the book and
+        -- never the face before it
+        self:ClearModel()
         if unit then
+            self.retryCreature = creatureID
             self:SetUnit(unit)
         else
-            self:ClearModel()
+            self.retryCreature = nil
             self:SetCreature(creatureID)
         end
         self:Reveal()
