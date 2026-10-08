@@ -42,6 +42,11 @@ clip_folders = [
     "weeping_banshee",
     "moira_thaurissan",
     "malfurion_stormrage",
+    # quilboar dialogue, Battle for Azeroth (14 male and 17 female lines) and
+    # Shadowlands (13 male), for quillboar-male and quillboar-female: Mangletooth
+    # and the rest were read by human-male, quilboar having no clip (#1301)
+    "quilboar",
+    "generic_quilboar",
 ]
 
 # Races without a reference clip borrow a related one; the narrator without a
