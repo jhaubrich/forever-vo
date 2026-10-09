@@ -955,6 +955,36 @@ def merge_speakers(base: dict, old: dict, entry: dict) -> dict:
     return base
 
 
+def restore_speaker(entry: dict, npcs: dict) -> dict:
+    """A quest line that names no trusted speaker but whose `speakers` know exactly
+    one, with that one as its speaker. A reading from before SPEAKER_TRUSTED_SINCE
+    may name a lingering NPC; it gives way, as it does in merge_speakers. Lines merged before merge_speakers existed (#948)
+    could keep a later reading that names nobody over an earlier one that heard the
+    speaker: 95647-complete kept issue-1066's "Unknown" and lost issue-893's Caitlin
+    Grassman, so it was voiced by the narrator though `speakers` still held her.
+    Those exports are never merged again; this puts the speaker back on every
+    ingest. A line with several speakers and none of its own is left alone.
+
+    Every speaker field goes with the old reading, as in merge_speakers: its name
+    is the reader's own ("Colin") or "Unknown" and its map is where the reader
+    stood, not the speaker. The line takes the speaker's map from `speakers` and
+    its name from the NPC record, and has none when that record has none."""
+    if speaker_of(entry) is not None or entry.get("isObject"):
+        return entry
+    speakers = entry.get("speakers") or {}
+    if len(speakers) != 1:
+        return entry
+    ((npc, map_id),) = speakers.items()
+    restored = {k: v for k, v in entry.items() if k not in SPEAKER_FIELDS}
+    restored["npc"] = str(npc)
+    name = (npcs.get(str(npc)) or {}).get("name")
+    if name:
+        restored["name"] = name
+    if map_id is not None:
+        restored["mapID"] = map_id
+    return restored
+
+
 def gather_speakers(capture: dict, db: dict) -> None:
     """Adds the speaker of every quest line in an export to capture.json's line.
 
@@ -1338,11 +1368,13 @@ def backfill(
     it is what repairs everything captured before the addon recorded class and
     race, and everything captured by a client that glued placeholders."""
     quests, rebuilt_quests = 0, {}
+    npcs = capture.get("npcs", {})
     for key, entry in capture["quests"].items():
         fixed = repair_entry(entry, "quests", key, sources, stats, readers)
         if fixed is None:
             quests += 1
             continue
+        fixed = restore_speaker(fixed, npcs)
         if fixed != entry:
             quests += 1
         rebuilt_quests[key] = fixed

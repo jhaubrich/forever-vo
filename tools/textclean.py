@@ -118,16 +118,51 @@ def clean(
 ) -> str:
     """The whole line as one reader says it. Stage directions (<the guard spits>)
     are the narrator's, not the speaker's, so they are dropped -- unless the
-    narrator reads the whole line anyway, when their text is kept as prose.
+    narrator reads the whole line anyway, when their text is kept as prose (save a
+    bare sound, is_bare_sound).
     `pronunciations` defaults to the repository's configs/pronunciations.toml."""
     if pronunciations is None:
         pronunciations = load_config().pronunciations
     text = _substitute(text)
     if keep_stage_directions:
-        text = _STAGE_DIRECTION_TEXT.sub(r"\1", text)
+        # a bare sound is unsaid here too, as in segments()
+        text = _STAGE_DIRECTION_TEXT.sub(
+            lambda m: "" if is_bare_sound(m.group(1)) else m.group(1), text
+        )
     else:
         text = _STAGE_DIRECTION.sub("", text)
     return _finish(text, pronunciations)
+
+
+# A stage direction that is only a sound, as <snort> (61 quilboar lines), <cough> or
+# <hic>, which the narrator leaves unsaid: alone, the one word came out of
+# Chatterbox as noise, "like a monster is speaking" (#1301), and narrating it as a
+# sentence would break the speech mid-sentence. The speaker's words around it join up.
+SOUNDS = frozenset({
+    "snort", "cough", "hic", "hiccup", "sigh", "sob", "drool", "mutter", "laugh",
+    "chuckle", "giggle", "cackle", "grunt", "groan", "growl", "sniff", "sneeze",
+    "yawn", "gasp", "burp", "belch", "whimper", "weep", "cry", "sniffle", "shrug",
+    "nod", "grin", "smile", "wink", "squeal", "wheeze", "weeze",
+})  # fmt: skip
+
+
+def _is_sound(word: str) -> bool:
+    """A word of SOUNDS, or its form with an s: "snorts", "belches", "cries"."""
+    stems = {word}
+    if word.endswith("s"):
+        stems.add(word[:-1])
+    if word.endswith("es"):
+        stems.add(word[:-2])
+    if word.endswith("ies"):
+        stems.add(word[:-3] + "y")
+    return not stems.isdisjoint(SOUNDS)
+
+
+def is_bare_sound(words: str) -> bool:
+    """Whether a stage direction is only sound words, as "snort", "snort snort" or
+    "Cough, cough, cough"."""
+    found = re.findall(r"[\w']+", words.lower())
+    return bool(found) and all(_is_sound(word) for word in found)
 
 
 def segments(
@@ -136,7 +171,8 @@ def segments(
     """The line in reading order as ("npc", words) and ("narrator", words) pieces,
     each cleaned like clean(): the speaker's own words and, between them, every
     <stage direction> for the narrator. Adjacent pieces of one role are merged.
-    A line with no stage direction is a single npc piece."""
+    A line with no stage direction is a single npc piece. A direction that is only
+    a sound is left out (is_bare_sound), so the speech around it is one piece."""
     if pronunciations is None:
         pronunciations = load_config().pronunciations
     out: list[tuple[str, str]] = []
@@ -146,7 +182,7 @@ def segments(
         else:
             role = "npc"
         piece = _finish(piece, pronunciations)
-        if not piece:
+        if not piece or (role == "narrator" and is_bare_sound(piece)):
             continue
         if out and out[-1][0] == role:
             out[-1] = (role, f"{out[-1][1]} {piece}")

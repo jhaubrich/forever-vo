@@ -15,6 +15,7 @@ local MODEL_SIZE = 115
 local TEXT_INSET = 28   -- left margin of the name and text when the portrait is hidden
 local TALK_ANIMATION = 60
 local MODEL_SETTLE = 0.5    -- seconds a model load gets before the book stands in
+local UNIT_SETTLE = 2       -- further seconds a unit's load gets before the creature cache
 local CLOSE_INSET = 12       -- the close button's offset from the top right corner
 local CONTROL_SIZE = 26
 local CONTROLS_OUT = 0.3    -- seconds the buttons take to fade before the panel does
@@ -279,6 +280,26 @@ function TalkingHead:CreatePortrait()
     local function Settle(self)
         self.settle = nil
         local hasModel = HasModel(self)
+        -- A unit the client drew no model from (Zeroth, who is dead, #1286) gets
+        -- one more try from the creature cache. Its load may only be slow, and
+        -- SetCreature or hiding the model would end it, so the book stands over
+        -- the empty model while it goes on; OnModelLoaded cancels the retry
+        if not hasModel and self.retryCreature then
+            local creatureID = self.retryCreature
+            self.retryCreature = nil
+            frame.Book:Show()
+            self.settle = C_Timer.NewTimer(UNIT_SETTLE, function()
+                self.settle = nil
+                if not HasModel(self) then
+                    self:SetCreature(creatureID)
+                    self:Reveal()
+                end
+            end)
+            return
+        end
+        if hasModel then
+            self.retryCreature = nil
+        end
         -- A hidden PlayerModel drops its model, so it is only hidden once the
         -- load has had its chance, and shown again before the next load.
         -- Showing it fires OnModelLoaded again, even when it was already
@@ -330,6 +351,14 @@ function TalkingHead:CreatePortrait()
         if unit and Util.Plain(UnitGUID(unit)) ~= guid then
             unit = nil
         end
+        -- A dead speaker's unit loaded nothing new and left the previous
+        -- speaker's face up (Zeroth in Blackfathom Villainy, #1286); the
+        -- creature cache draws them standing, or the book shows. Settle's retry
+        -- would get there too, but only after the book for MODEL_SETTLE and
+        -- UNIT_SETTLE, so a speaker known to be dead goes to the cache at once
+        if unit and Util.Plain(UnitIsDead(unit)) then
+            unit = nil
+        end
         local loaded = unit and guid or creatureID
         if self.loaded == loaded then
             self:SetAnimation(TALK_ANIMATION)
@@ -339,10 +368,14 @@ function TalkingHead:CreatePortrait()
         self:CancelSettle()
         self:Show()
         frame.Book:Hide()
+        -- cleared first on either path, so a load that fails shows the book and
+        -- never the face before it
+        self:ClearModel()
         if unit then
+            self.retryCreature = creatureID
             self:SetUnit(unit)
         else
-            self:ClearModel()
+            self.retryCreature = nil
             self:SetCreature(creatureID)
         end
         self:Reveal()
@@ -792,6 +825,7 @@ function TalkingHead:SetPortrait(item)
         model:CancelSettle()
         model:ClearModel()
         model.loaded = nil
+        model.retryCreature = nil
         model:Hide()
         frame.Book:SetShown(shown)
     end
