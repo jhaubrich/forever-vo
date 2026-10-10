@@ -1,0 +1,121 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "267327|0371bf6f": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Kagil",
+   "npc": "267327",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Care to learn how to gather leather from slain beasts? Or do you need some new tools?",
+   "time": 1791674843,
+   "title": null,
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "npcs": {
+  "1652": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Deathguard Burgess",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "267327": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Kagil",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3153": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Frang",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6389": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Deathguard Podrig",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1699",
+ "quests": {
+  "2383-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Frang",
+   "npc": "3153",
+   "questID": 2383,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "What's that you have there?  A parchment?  You're not a scholar, I hope... ",
+   "time": 1791669647,
+   "title": "Simple Parchment",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "374-progress": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Deathguard Burgess",
+   "npc": "1652",
+   "questID": 374,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Have you collected 10 Scarlet Insignia Rings yet, $c?",
+   "time": 1791646217,
+   "title": "Proof of Demise",
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "6324-progress": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Deathguard Podrig",
+   "npc": "6389",
+   "questID": 6324,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "$N, you return.  Do you have our supplies from the Undercity?",
+   "time": 1791647412,
+   "title": "Return to Podrig",
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
