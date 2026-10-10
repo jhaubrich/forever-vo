@@ -1,0 +1,102 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "257007|d62b45b0": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Melasa Fairmend",
+   "npc": "257007",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Gales greetings, friend. Is there something I can help you with?",
+   "time": 1791662593,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "252383": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Valennia Stormfist",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "253285": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Fillion Flamebreeze",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "253474": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Peacekeeper",
+   "sex": 3,
+   "sexes": "mf"
+  },
+  "257007": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Melasa Fairmend",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1688",
+ "quests": {
+  "92701-progress": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Valennia Stormfist",
+   "npc": "252383",
+   "questID": 92701,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "A letter from Aonda. What's that crafty highlander been up to?",
+   "time": 1791662415,
+   "title": "To Valanaar",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "92850-progress": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Fillion Flamebreeze",
+   "npc": "253285",
+   "questID": 92850,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Those shrieklings are too dangerous to be left to nest this close to Valanaar. However... they are the least of our troubles.",
+   "time": 1791665819,
+   "title": "The Missing Scholar",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
