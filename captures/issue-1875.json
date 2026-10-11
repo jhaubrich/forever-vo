@@ -1,0 +1,141 @@
+{
+ "addon": "0.1.9",
+ "books": {
+  "c2e3dc0a": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": true,
+   "event": "page",
+   "isObject": null,
+   "mapID": 1429,
+   "name": null,
+   "npc": null,
+   "page": 1,
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "There are four rules to magic:\n\n   Magic is powerful.\n   Magic is corrupting.\n   Magic is addicting.\n   Magic draws the denizens of the Twisting Nether to those who wield the arcane.\n\nThose rules you can always guarantee. Those rules will govern your destiny if you chose to continue down the path as a $c.\n\nIf you're foolish enough to ignore this warning, then come speak to me inside the library wing of the abbey in Northshire. I'll be waiting for you upstairs.\n\n-Khelden Bremen, $C Trainer",
+   "time": 1791758074,
+   "title": "Glyphic Letter",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "gossip": {},
+ "npcs": {
+  "196": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Eagan Peltskinner",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "197": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Marshal McBride",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "198": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Khelden Bremen",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "951": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Brother Paxton",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1875",
+ "quests": {
+  "3104-progress": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Khelden Bremen",
+   "npc": "198",
+   "questID": 3104,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Hello, $N. I am Khelden. Is there something I can do for you?",
+   "time": 1791758411,
+   "title": "Glyphic Letter",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "33-progress": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Eagan Peltskinner",
+   "npc": "196",
+   "questID": 33,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Hey $N.  I'm getting hungry...did you get that tough wolf meat?",
+   "time": 1791757610,
+   "title": "Wolves Across the Border",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "7-progress": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Marshal McBride",
+   "npc": "197",
+   "questID": 7,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "How goes the hunting, $N?  Have you found and defeated those vermin?",
+   "time": 1791757340,
+   "title": "Kobold Camp Cleanup",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  },
+  "91741-progress": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Brother Paxton",
+   "npc": "951",
+   "questID": 91741,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "What's that you got there? It looks like one of my books.",
+   "time": 1791758135,
+   "title": "Nibbled-On Book",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
