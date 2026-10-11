@@ -1,0 +1,120 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "1569|e2fc85be": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Shadow Priest Sarvis",
+   "npc": "1569",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "No other race on Azeroth has suffered as much as our people, $c. To laugh in the face of death has become second nature for all of us.",
+   "time": 1791718008,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "2124|7d510daf": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Isabella",
+   "npc": "2124",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings.  I'm an $r $c trainer, and you're a $c.",
+   "time": 1791718153,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "244808|942bf955": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "You may not be a paladin, but you may yet find solace in the light should you seek it.",
+   "time": 1791718085,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "2993|f7a5deb4": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Baine Bloodhoof",
+   "npc": "2993",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "The land has been good to our people, $c. We must be thankful for our good fortune.",
+   "time": 1791711147,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "npcs": {
+  "1569": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Shadow Priest Sarvis",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2124": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Isabella",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "244808": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Aramis Hammerhand",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2993": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Baine Bloodhoof",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1767",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
