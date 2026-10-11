@@ -1,0 +1,94 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "251361|d8b5b5c2": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "What do you need of me, child of Zephras?",
+   "time": 1791690323,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "251362|0f923099": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Ailee Farheart",
+   "npc": "251362",
+   "questID": null,
+   "race": "High Order Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Hello, $c.",
+   "time": 1791690278,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251361": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Rorian the Dayseeker",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "251362": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Ailee Farheart",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "823": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Deputy Willem",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1724",
+ "quests": {
+  "783-accept": {
+   "build": "70338",
+   "class": "Warlock",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1429,
+   "name": "Deputy Willem",
+   "npc": "823",
+   "questID": 783,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "I hope you strapped your belt on tight, young $c, because there is work to do here in Northshire.\n\nAnd I don't mean farming.\n\nThe Stormwind guards are hard pressed to keep the peace here, with so many of us in distant lands and so many threats pressing close.  And so we're enlisting the aid of anyone willing to defend their home.  And their alliance.\n\nIf you're here to answer the call, then speak with my superior, Marshal McBride.  He's inside the abbey behind me.",
+   "time": 1791686890,
+   "title": "A Threat Within",
+   "wanted": null,
+   "zone": "Elwynn Forest"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
