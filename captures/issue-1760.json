@@ -1,0 +1,58 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "258098|1605f087": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Eldrun Stormbreaker",
+   "npc": "258098",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "The spirits have guided you to me. How may I be of service?",
+   "time": 1791661111,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "258098|8fca8484": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Eldrun Stormbreaker",
+   "npc": "258098",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "If you desire, in addition to training, I have it within my power to erase the knowledge of your talents from your mind.  Be warned that every time you undergo this procedure the more difficult it is to perform, and therefore the more expensive it becomes.",
+   "time": 1791661107,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  }
+ },
+ "npcs": {
+  "258098": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Eldrun Stormbreaker",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1760",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
