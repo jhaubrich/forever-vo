@@ -1,0 +1,140 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "12616|c5ceacbe": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Vhulgra",
+   "npc": "12616",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Where would you like to fly to?",
+   "time": 1791730828,
+   "title": null,
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "12736|e3f9a765": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Je'neu Sancrea",
+   "npc": "12736",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "The elements speak to us, $c.  They share knowledge that we must learn, and they share secrets that must be kept.",
+   "time": 1791732806,
+   "title": null,
+   "wanted": null,
+   "zone": "Ashenvale"
+  },
+  "12863|e8c0397c": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Warsong Runner",
+   "npc": "12863",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Yes, $c? Are you reporting in?",
+   "time": 1791733421,
+   "title": null,
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "npcs": {
+  "12616": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121087,
+   "name": "Vhulgra",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "12736": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 122560,
+   "name": "Je'neu Sancrea",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "12863": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Warsong Runner",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "8582": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Kadrak",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1826",
+ "quests": {
+  "6543-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Kadrak",
+   "npc": "8582",
+   "questID": 6543,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Hurry, $N. They must receive their reports; it is urgent.",
+   "time": 1791728701,
+   "title": "The Warsong Reports",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "824-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1440,
+   "name": "Je'neu Sancrea",
+   "npc": "12736",
+   "questID": 824,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Ah, hello there.  I spend a great deal of time studying the water - all the elements really - so much so that sometimes I don't even notice people around me.\n\nIs there something I can help you with?",
+   "time": 1791732792,
+   "title": "Je'neu of the Earthen Ring",
+   "wanted": null,
+   "zone": "Ashenvale"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
