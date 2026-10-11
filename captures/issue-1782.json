@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "276110|2fc3ff64": {
+   "build": "70338",
+   "class": "Rogue",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Knight of Mourning",
+   "npc": "276110",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "My oath binds me to this place. What brings you here, to this light-forsaken place?",
+   "time": 1791726861,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "npcs": {
+  "276110": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "Knight of Mourning",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1782",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
