@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "3387": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Jorn Skyseer",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1800",
+ "quests": {
+  "882-progress": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Jorn Skyseer",
+   "npc": "3387",
+   "questID": 882,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "$N, have you bested Ishamuhale?",
+   "time": 1791661250,
+   "title": "Ishamuhale",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
