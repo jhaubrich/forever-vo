@@ -1,0 +1,85 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "1573|10cfc531": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1455,
+   "name": "Gryth Thurden",
+   "npc": "1573",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "The Wildhammer dwarves might have fast steeds, but can those Aerie Peak gryphons stand the heat of The Great Forge?  I think not!",
+   "time": 1791727423,
+   "title": null,
+   "wanted": null,
+   "zone": "Ironforge"
+  },
+  "2057|b0e063a7": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Huldar",
+   "npc": "2057",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "This is a dangerous line of business!\n\nMiran just left with a delivery. He should be back in a few minutes.",
+   "time": 1791728376,
+   "title": null,
+   "wanted": null,
+   "zone": "Loch Modan"
+  },
+  "2057|f6158e52": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1432,
+   "name": "Huldar",
+   "npc": "2057",
+   "questID": null,
+   "race": "Dwarf",
+   "sex": "m",
+   "source": "community",
+   "text": "Delivering these barrels to the excavation site is hard work, but there are so many depending on us to get the blast powder there.\n\nWe must do what we can against the Dark Irons!",
+   "time": 1791727904,
+   "title": null,
+   "wanted": null,
+   "zone": "Loch Modan"
+  }
+ },
+ "npcs": {
+  "1573": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Gryth Thurden",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2057": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Huldar",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1795",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
