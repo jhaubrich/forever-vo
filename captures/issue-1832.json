@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.9",
+ "books": {
+  "d466042e": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "page",
+   "isObject": null,
+   "mapID": 1439,
+   "name": null,
+   "npc": null,
+   "page": 1,
+   "questID": null,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Mr. Alexston of Stormwind,\r\n\r\nI must congratulate you on the long journey restoring the city of Stormwind. Many whose path crosses Auberdine speak well of its grandeur and sound foundations. It is this success that bid me send you this message.\r\n\r\nAuberdine has found its place in this world by the sea. Where we were once isolated, we now find hope carried by the very winds that batter our shores.\r\n\r\nThis courier represents one such traveler the winds bore to me. I hope that they may aid your people as they have mine.\r\n\r\nIn return, I ask that you might send supplies and labor to Auberdine, such that we might bolster the city against the wrath of this world that has taken so much from us.\r\n\r\n-- Thundris Windweaver, Elder of Auberdine",
+   "time": 1791663319,
+   "title": "Thundris' Letter",
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "gossip": {
+  "3701|b47f3ff2": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Tharnariun Treetender",
+   "npc": "3701",
+   "questID": null,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Greetings $R, I am Tharnariun Treetender.",
+   "time": 1791664495,
+   "title": null,
+   "wanted": null,
+   "zone": "Darkshore"
+  },
+  "6300|0b719f6c": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Elisa Steelhand",
+   "npc": "6300",
+   "questID": null,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "How can I help you, friend?",
+   "time": 1791664523,
+   "title": null,
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "npcs": {
+  "-17183": {
+   "isObject": true,
+   "name": "Unknown"
+  },
+  "3701": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Tharnariun Treetender",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "6300": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 950080,
+   "name": "Elisa Steelhand",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1832",
+ "quests": {
+  "1001-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1439,
+   "name": "Unknown",
+   "npc": "-17183",
+   "questID": 1001,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "The machine's hatch is open and it seems to wait expectantly for 3 Thresher Eyes to be placed inside.",
+   "time": 1791663738,
+   "title": "Buzzbox 411",
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
