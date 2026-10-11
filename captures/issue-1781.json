@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "3841|ab4871bb": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Caylais Moonfeather",
+   "npc": "3841",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "The Hippogryph is a noble beast, proud and swift.  They are an honor to train, and can quickly take their rider a great distance.",
+   "time": 1791693077,
+   "title": null,
+   "wanted": null,
+   "zone": "Darkshore"
+  },
+  "5483|877c4b1d": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "Erika Tate",
+   "npc": "5483",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "I sell only the best gear, tested and true. And the prices are set, so if you want to haggle then go find a Goblin.",
+   "time": 1791693797,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "3841": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 921844,
+   "name": "Caylais Moonfeather",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "5483": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1000764,
+   "name": "Erika Tate",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1781",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
