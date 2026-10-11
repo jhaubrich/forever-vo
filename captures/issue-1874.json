@@ -1,0 +1,113 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "3419|dabc0513": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Apothecary Zamah",
+   "npc": "3419",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "For our people to survive, we must study the ways of nature and learn its secrets.",
+   "time": 1791758619,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "3448|dcea3712": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Tonga Runetotem",
+   "npc": "3448",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "The times we live in are as fickle as the shifting winds, $c.  It is important to remember what is true and lasting in this world, and to preserve that.  Everything else is a waste.",
+   "time": 1791758303,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "3615|ddd7878b": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Devrak",
+   "npc": "3615",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "My wind riders are trained to fly quickly through the hot Barrens air.",
+   "time": 1791758333,
+   "title": null,
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "npcs": {
+  "3419": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Apothecary Zamah",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3448": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Tonga Runetotem",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3615": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Devrak",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1874",
+ "quests": {
+  "853-progress": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Apothecary Zamah",
+   "npc": "3419",
+   "questID": 853,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "You have something from Apothecary Helbrim?",
+   "time": 1791758621,
+   "title": "Apothecary Zamah",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
