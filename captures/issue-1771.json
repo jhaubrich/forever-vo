@@ -1,0 +1,94 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "254345|d62b45b0": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Syriel Nightrain",
+   "npc": "254345",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Gales greetings, friend. Is there something I can help you with?",
+   "time": 1791712485,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "257006|53a09e6f": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Nyalah Brightfire",
+   "npc": "257006",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Y garde bor hir uden algos me nuff nostyec lon aldonoth, far Y nagan Y borne eynes nud danagarde lo rothas melka.",
+   "time": 1791712642,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "252800": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Aamelia Windfield",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "254345": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Syriel Nightrain",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "257006": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Nyalah Brightfire",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1771",
+ "quests": {
+  "92693-progress": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Aamelia Windfield",
+   "npc": "252800",
+   "questID": 92693,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "There's not enough stormapples in skywall to repay you for this.",
+   "time": 1791712320,
+   "title": "Standing Our Ground",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
