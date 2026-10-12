@@ -546,16 +546,14 @@ function TalkingHead:CreateControls()
     frame.PauseButton:SetPoint("BOTTOM", frame.SkipButton, "TOP", 0, 2)
     Icon(frame.PauseButton, PAUSE_ATLAS)
 
-    -- "3 more queued" on the title line; the title gives way to it. It hangs
-    -- off Name, not Title, so the two do not anchor to each other
+    -- "3 more queued" at the bottom beside the queue button, in the strip
+    -- under the text box: on the title line it ran under the spoken text
     frame.QueueText = frame:CreateFontString(nil, "ARTWORK")
     frame.QueueText:SetFontObject("GameFontNormalSmall")
     frame.QueueText:SetJustifyH("RIGHT")
-    frame.QueueText:SetPoint("TOPRIGHT", frame.Name, "BOTTOMRIGHT", 0, -1)
+    frame.QueueText:SetPoint("BOTTOMRIGHT", queue, "BOTTOMLEFT", -6, -10)
     frame.QueueText:SetAlpha(0.01)
-    frame.Title:ClearAllPoints()
-    frame.Title:SetPoint("TOPLEFT", frame.Name, "BOTTOMLEFT", 1, -1)
-    frame.Title:SetPoint("RIGHT", frame.QueueText, "LEFT", -8, 0)
+    frame.Title:SetPoint("RIGHT", -42, 0)
 end
 
 function TalkingHead:SetQueueCount(remaining)
