@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "2859|2cc67a59": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1434,
+   "name": "Gyll",
+   "npc": "2859",
+   "questID": null,
+   "race": "Human",
+   "sex": "m",
+   "source": "community",
+   "text": "Fastest gryphons this side of Aerie Peak. Want to take a ride?",
+   "time": 1791820112,
+   "title": null,
+   "wanted": null,
+   "zone": "Stranglethorn Vale"
+  }
+ },
+ "npcs": {
+  "2859": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 878772,
+   "name": "Gyll",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1940",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
