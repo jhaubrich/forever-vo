@@ -1,0 +1,132 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "10881|dc8290dc": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Bluff Runner Windstrider",
+   "npc": "10881",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings and salutations, hero!  I have the latest news from both continents and points beyond for your consideration.",
+   "time": 1791831379,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "3084|5d6f0b28": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "What are you looking for?",
+   "time": 1791831391,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "3084|b2444ac7": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Don't blame you for taking up fishing.  Mulgore has some the best fishing spots in Southern Kalimdor and Mountaintop Bait & Tackle on the high rise has all of the gear you'll need to take advantage of it.\r\n\r\nTell Kah Mistrunner that I sent ya!",
+   "time": 1791831397,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "3084|ef767f20": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Which profession?",
+   "time": 1791831395,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "npcs": {
+  "10881": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Bluff Runner Windstrider",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "205729": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Boarton Shadetotem",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3084": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Bluffwatcher",
+   "sex": 2,
+   "sexes": "fm"
+  }
+ },
+ "origin": "issue-1959",
+ "quests": {
+  "76240-progress": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Boarton Shadetotem",
+   "npc": "205729",
+   "questID": 76240,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Do you have something for me?",
+   "time": 1791831530,
+   "title": "Stalk With The Earthmother",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
