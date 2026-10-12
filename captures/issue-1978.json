@@ -1,0 +1,144 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "265809": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Brakk",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "266940": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Turroc",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3154": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 122414,
+   "name": "Jen'shan",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3159": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Kzan Thornslash",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3191": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Cook Torka",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3387": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 122055,
+   "name": "Jorn Skyseer",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "7088": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 121287,
+   "name": "Thuwd",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1978",
+ "quests": {
+  "3082-progress": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Jen'shan",
+   "npc": "3154",
+   "questID": 3082,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "Jen'shan see a mighty $c before her and da spirits approve.\n\nDa path of da $c is one of our oldest walks of life. Da Horde turned to us when they be just strugglin' to survive on Azeroth, and they ask us to teach them, to show them the secrets of many tings. They were strong already: strong in shaman ways; strong in warrior ways. But the $c path not be their path... then.",
+   "time": 1791742139,
+   "title": "Etched Tablet",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "907-progress": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Jorn Skyseer",
+   "npc": "3387",
+   "questID": 907,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Are the thunder lizards defeated, $N?",
+   "time": 1791733525,
+   "title": "Enraged Thunder Lizards",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "913-progress": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Jorn Skyseer",
+   "npc": "3387",
+   "questID": 913,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "Is it done? Have you slain the thunderhawk?",
+   "time": 1791734343,
+   "title": "Cry of the Thunderhawk",
+   "wanted": null,
+   "zone": "The Barrens"
+  },
+  "96655-progress": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Cook Torka",
+   "npc": "3191",
+   "questID": 96655,
+   "race": "Troll",
+   "sex": "m",
+   "source": "community",
+   "text": "A good campfire is the foundation to any good camp.",
+   "time": 1791750231,
+   "title": "Camping 101: Cooking",
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
