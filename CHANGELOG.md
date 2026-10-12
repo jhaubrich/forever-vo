@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The talking head's portrait stands a little further back from the face.
+  A speaker whose talk animation leans into the camera (skyborne women)
+  pushed her face through it, and the portrait showed the inside of her
+  head.
 - A quest that more than one NPC takes in speaks in the voice of the one in
   front of you. The crates of "A Sealed Crate" go to Dokimi in the Barrens
   and to Marcy Baker in Redridge, and both were read in whichever voice the
