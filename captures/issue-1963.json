@@ -1,0 +1,115 @@
+{
+ "addon": "0.1.9",
+ "books": {
+  "19ae415e": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "page",
+   "isObject": null,
+   "mapID": 2521,
+   "name": null,
+   "npc": null,
+   "page": 1,
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "$N, you've got a good sword arm and I've taken notice. \r\n\r\nThings are a fine mess here on Zephras Isle, no doubt about it. We need our fighting shen'dorei in top form if we are to survive what's to come. It's time for you to stop playing at being a proper $c, and actually become one.\r\n\r\nFind me inside the base of the watchtower here in Thendal Village. I'll see to it you are properly trained.\r\n\r\n\r\n-Blademaster Ren, $C Trainer",
+   "time": 1791825806,
+   "title": "Crumpled Note",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "gossip": {
+  "6491|22357dc5": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Spirit Healer",
+   "npc": "6491",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "It is not yet your time. I shall aid your journey back to the realm of the living... for a price.",
+   "time": 1791827654,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251361": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Rorian the Dayseeker",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "251964": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Blademaster Ren",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "6491": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 126042,
+   "name": "Spirit Healer",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1963",
+ "quests": {
+  "92532-accept": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "questID": 92532,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "While you were gone our $c trainer--Blademaster Ren--requested that we send you their way when you returned. She dropped this note off for you as well.\r\n\r\nGive it a read, then find Blademaster Ren inside the village watchtower.",
+   "time": 1791825749,
+   "title": "The Warrior's Path",
+   "wanted": true,
+   "zone": "Zephras Isle"
+  },
+  "92532-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Blademaster Ren",
+   "npc": "251964",
+   "questID": 92532,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "So you've come for training, then?",
+   "time": 1791826023,
+   "title": "The Warrior's Path",
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
