@@ -1,0 +1,66 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "251361|d8b5b5c2": {
+   "build": "70338",
+   "class": "Rogue",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Rorian the Dayseeker",
+   "npc": "251361",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "What do you need of me, child of Zephras?",
+   "time": 1791743497,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  },
+  "251362|0f923099": {
+   "build": "70338",
+   "class": "Rogue",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 2521,
+   "name": "Ailee Farheart",
+   "npc": "251362",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Hello, $c.",
+   "time": 1791742867,
+   "title": null,
+   "wanted": null,
+   "zone": "Zephras Isle"
+  }
+ },
+ "npcs": {
+  "251361": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478487,
+   "name": "Rorian the Dayseeker",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "251362": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Ailee Farheart",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1952",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
