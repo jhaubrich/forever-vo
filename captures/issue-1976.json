@@ -1,0 +1,140 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "15106|53fff4bc": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Frostwolf Emissary",
+   "npc": "15106",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "I am sorry, $c, but you are not experienced enough yet to enter Darkspear Islands.",
+   "time": 1791840982,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "259119|00001505": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "greeting",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Alaana Stormwalker",
+   "npc": "259119",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": " ",
+   "time": 1791841201,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "3084|2dd00134": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "Look for Innkeeper Pala in the building just south of the Thunder Bluff Bank on the lower rise.",
+   "time": 1791840874,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  },
+  "3084|5d6f0b28": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Bluffwatcher",
+   "npc": "3084",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "What are you looking for?",
+   "time": 1791840871,
+   "title": null,
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "npcs": {
+  "14728": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Rumstag Proudstrider",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "15106": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Frostwolf Emissary",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "259119": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 7478494,
+   "name": "Alaana Stormwalker",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3084": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Bluffwatcher",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1976",
+ "quests": {
+  "7820-progress": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1456,
+   "name": "Rumstag Proudstrider",
+   "npc": "14728",
+   "questID": 7820,
+   "race": "Windshaper Skyborne",
+   "sex": "m",
+   "source": "community",
+   "text": "We are currently accepting donations for wool cloth.  A donation of sixty pieces of wool cloth will net you full recognition by Thunder Bluff for your generous actions.  Our stores are such on wool that we would only need sixty pieces from you total; we should be able to acquire enough from others in the realm to support our drive.\n\nIf you have the sixty pieces of wool cloth on you and are ready to donate them, I'm able to take them from you now.",
+   "time": 1791840934,
+   "title": "A Donation of Wool",
+   "wanted": null,
+   "zone": "Thunder Bluff"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
