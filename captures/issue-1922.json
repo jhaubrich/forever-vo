@@ -1,0 +1,58 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "2457|105cd232": {
+   "build": "70338",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "John Burnside",
+   "npc": "2457",
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "No one's ever stolen anything out of here. Not in the whole history of... the whole history!",
+   "time": 1791803228,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  },
+  "2457|6928abbf": {
+   "build": "70338",
+   "class": "Priest",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1453,
+   "name": "John Burnside",
+   "npc": "2457",
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Welcome to the Bank of Stormwind. We offer financial accounts and safety deposit boxes for valuable items. Do you already have an account with us ma'am?",
+   "time": 1791803303,
+   "title": null,
+   "wanted": null,
+   "zone": "Stormwind City"
+  }
+ },
+ "npcs": {
+  "2457": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1011653,
+   "name": "John Burnside",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1922",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
