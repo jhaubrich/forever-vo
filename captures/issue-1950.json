@@ -1,0 +1,111 @@
+{
+ "addon": "0.1.8",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "2216": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Apothecary Lydon",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2230": {
+   "addon": "0.1.8",
+   "creatureType": "Beast",
+   "modelFileID": 124008,
+   "name": "Umpi",
+   "sex": 1
+  },
+  "244808": {
+   "addon": "0.1.8",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Aramis Hammerhand",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1950",
+ "quests": {
+  "496-progress": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Apothecary Lydon",
+   "npc": "2216",
+   "questID": 496,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I see you are back.  I hope you were able to gather the agents I need.  Another deathless day will put me in such a gloomy mood.",
+   "time": 1791722571,
+   "title": "Elixir of Suffering",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "499-progress": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Umpi",
+   "npc": "2230",
+   "questID": 499,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Ribbit!",
+   "time": 1791722576,
+   "title": "Elixir of Suffering",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "501-progress": {
+   "build": "70338",
+   "class": "Druid",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1424,
+   "name": "Apothecary Lydon",
+   "npc": "2216",
+   "questID": 501,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "I remember you, $N.  You were going to help me out in concocting my latest elixir.  I'll need that blood before I can bring my own special brand of misery to the inhabitants of Hillsbrad.",
+   "time": 1791722591,
+   "title": "Elixir of Pain",
+   "wanted": null,
+   "zone": "Hillsbrad Foothills"
+  },
+  "91209-accept": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Aramis Hammerhand",
+   "npc": "244808",
+   "questID": 91209,
+   "race": "Undead",
+   "sex": "f",
+   "source": "community",
+   "text": "Lordaeron may not be what it used to be, but our home still needs protection from all manner of threats and it's time for you to go out and face the world. Your next stop should be the town of Brill in central Tirisfal Glades. Go and meet with Shari Stilwell there. She can see to your continued training. \r\n\r\nOne last bit of advice before you go--take extra care as a $c traveling through Forsaken lands. There are many in the Dark Lady's service who distrust us and our proximity to the light.",
+   "time": 1791660831,
+   "title": "Continue Your Training",
+   "wanted": true,
+   "zone": "Tirisfal Glades"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
