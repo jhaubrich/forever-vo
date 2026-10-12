@@ -1,0 +1,147 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "11835|0f923099": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Theodore Griffs",
+   "npc": "11835",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Hello, $N.",
+   "time": 1791693759,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "2226|dd7de3ae": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1421,
+   "name": "Karos Razok",
+   "npc": "2226",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings.  Our bats are well trained and fed.  You'll not find faster.",
+   "time": 1791689989,
+   "title": null,
+   "wanted": null,
+   "zone": "Silverpine Forest"
+  },
+  "4551|d37b59d0": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Michael Garrett",
+   "npc": "4551",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "How may I be of service?",
+   "time": 1791689704,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  },
+  "5624|5d6f0b28": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Undercity Guardian",
+   "npc": "5624",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "What are you looking for?",
+   "time": 1791693455,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "11835": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Theodore Griffs",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2226": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Karos Razok",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4551": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Michael Garrett",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "4568": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 997378,
+   "name": "Anastasia Hartwell",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "5624": {
+   "addon": "0.1.9",
+   "creatureType": "Undead",
+   "modelFileID": 123961,
+   "name": "Undercity Guardian",
+   "sex": 1
+  }
+ },
+ "origin": "issue-1960",
+ "quests": {
+  "1961-accept": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": true,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Anastasia Hartwell",
+   "npc": "4568",
+   "questID": 1961,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "It is time for you to don your first $c's robes, $N.  They are a sign of your station, and a testament to your worth.\n\nTo gain the robes, you must gather the mana gems from the Dalaran mages of Silverpine.  Their beliefs are similar to ours and so killing them is somewhat distasteful, but if they lack the strength to resist us, then they do not deserve their lives.\n\nBring the gems and a supply of linen to Josef Gregorian at the Magic Quarter's tailor shop.",
+   "time": 1791689401,
+   "title": "Gathering Materials",
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
