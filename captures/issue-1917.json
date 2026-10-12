@@ -1,0 +1,85 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "13417|1605f087": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Sagorne Creststrider",
+   "npc": "13417",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "The spirits have guided you to me. How may I be of service?",
+   "time": 1791790432,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  },
+  "13417|8fca8484": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Sagorne Creststrider",
+   "npc": "13417",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "If you desire, in addition to training, I have it within my power to erase the knowledge of your talents from your mind.  Be warned that every time you undergo this procedure the more difficult it is to perform, and therefore the more expensive it becomes.",
+   "time": 1791790435,
+   "title": null,
+   "wanted": null,
+   "zone": "Orgrimmar"
+  },
+  "5814|7161de72": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1434,
+   "name": "Innkeeper Thulbek",
+   "npc": "5814",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "If we are to make these new lands ours then we must have places to rest our battle weary bodies. Lay your axe by the fire and share the stories of your mighty battles.",
+   "time": 1791790101,
+   "title": null,
+   "wanted": null,
+   "zone": "Stranglethorn Vale"
+  }
+ },
+ "npcs": {
+  "13417": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Sagorne Creststrider",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "5814": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Innkeeper Thulbek",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1917",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
