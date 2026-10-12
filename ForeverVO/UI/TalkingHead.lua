@@ -514,10 +514,19 @@ function TalkingHead:CreateControls()
         button.Icon = icon
     end
 
-    local queue = ControlButton(function() return "Queue" end, function()
+    local queue = ControlButton(function()
+        local remaining = frame.QueueButton.remaining or 0
+        return remaining > 0 and format("Queue: %d more queued", remaining) or "Queue"
+    end, function()
         ns.UI.QueueList:Toggle()
     end)
     frame.QueueButton = queue
+    -- how many wait, on the button's corner like a bag's stack count: "N more
+    -- queued" fits nowhere on the parchment without covering the spoken text
+    -- (the title line, the bottom strip is the border); the tooltip spells it out
+    queue.Count = queue.Glyph:CreateFontString(nil, "OVERLAY")
+    queue.Count:SetFontObject("NumberFontNormalSmall")
+    queue.Count:SetPoint("BOTTOMRIGHT", queue, "BOTTOMRIGHT", -2, 2)
     -- centred on the close button's column, so the stack straddles the
     -- parchment's edge the way the X does
     local close = frame.CloseButton
@@ -546,18 +555,13 @@ function TalkingHead:CreateControls()
     frame.PauseButton:SetPoint("BOTTOM", frame.SkipButton, "TOP", 0, 2)
     Icon(frame.PauseButton, PAUSE_ATLAS)
 
-    -- "3 more queued" at the bottom beside the queue button, in the strip
-    -- under the text box: on the title line it ran under the spoken text
-    frame.QueueText = frame:CreateFontString(nil, "ARTWORK")
-    frame.QueueText:SetFontObject("GameFontNormalSmall")
-    frame.QueueText:SetJustifyH("RIGHT")
-    frame.QueueText:SetPoint("BOTTOMRIGHT", queue, "BOTTOMLEFT", -6, -10)
-    frame.QueueText:SetAlpha(0.01)
     frame.Title:SetPoint("RIGHT", -42, 0)
 end
 
 function TalkingHead:SetQueueCount(remaining)
-    self.frame.QueueText:SetText(remaining > 0 and format("%d more queued", remaining) or "")
+    local queue = self.frame.QueueButton
+    queue.remaining = remaining
+    queue.Count:SetText(remaining > 0 and tostring(remaining) or "")
 end
 
 function TalkingHead:CreateAnimations()
@@ -572,7 +576,6 @@ function TalkingHead:CreateAnimations()
     Alpha(fadeIn, frame.Name, 0, 1, 0.25)
     Alpha(fadeIn, frame.Title, 0, 1, 0.25)
     Alpha(fadeIn, frame.Text, 0, 1, 0.25)
-    Alpha(fadeIn, frame.QueueText, 0, 1, 0.25)
     Alpha(fadeIn, frame.CloseButton, 0, 1, 0.75, 0.75)
     Alpha(fadeIn, frame.ReportButton, 0, 1, 0.75, 0.75)
     for _, button in ipairs({ frame.PauseButton, frame.SkipButton, frame.QueueButton }) do
@@ -627,7 +630,7 @@ function TalkingHead:CreateAnimations()
     for _, button in ipairs({ frame.PauseButton, frame.SkipButton, frame.QueueButton }) do
         Alpha(close, button, 1, 0, CONTROLS_OUT)
     end
-    for _, region in ipairs({ frame.Model, frame.Model.PortraitBg, frame.Portrait, frame.TextBackground, frame.Name, frame.Title, frame.QueueText, frame.Text }) do
+    for _, region in ipairs({ frame.Model, frame.Model.PortraitBg, frame.Portrait, frame.TextBackground, frame.Name, frame.Title, frame.Text }) do
         Alpha(close, region, 1, 0, 1, CONTROLS_OUT)
     end
     close:SetScript("OnFinished", function()
@@ -664,8 +667,6 @@ function TalkingHead:ApplyTextureKit()
     frame.Text:SetShadowColor(colors.Shadow:GetRGBA())
     frame.Title:SetTextColor(colors.Title:GetRGB())
     frame.Title:SetShadowColor(colors.Shadow:GetRGBA())
-    frame.QueueText:SetTextColor(colors.Title:GetRGB())
-    frame.QueueText:SetShadowColor(colors.Shadow:GetRGBA())
 end
 
 --- Shows or hides the portrait (model, ring, glows, book) and moves the name,
