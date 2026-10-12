@@ -1,0 +1,58 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "1992": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 123698,
+   "name": "Tarindrella",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1951",
+ "quests": {
+  "459-progress": {
+   "build": "70338",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Tarindrella",
+   "npc": "1992",
+   "questID": 459,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Satisfy my suspicions, $N.  Bring to me 8 Fel Moss.",
+   "time": 1791826097,
+   "title": "The Woodland Protector",
+   "wanted": null,
+   "zone": "Teldrassil"
+  },
+  "97977-progress": {
+   "build": "70338",
+   "class": "Rogue",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1438,
+   "name": "Tarindrella",
+   "npc": "1992",
+   "questID": 97977,
+   "race": "Night Elf",
+   "sex": "f",
+   "source": "community",
+   "text": "Don't worry about any larger totems you might find. I wouldn't know what to do with them if you found a way to get them!",
+   "time": 1791826107,
+   "title": "Nature's Call",
+   "wanted": null,
+   "zone": "Teldrassil"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
