@@ -1,7 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.1.10
 
+- Forever Voiceover is looking for volunteers. The login window links to the
+  call on GitHub, for anyone comfortable with git who'd like to help tune
+  voices for the voice packs or look after the addon. It shows once with
+  this version even with nothing to send, and the link is also under
+  **Call for Volunteers** on the addon's page in Options.
 - The talking head's portrait stands a little further back from the face.
   A speaker whose talk animation leans into the camera (skyborne women)
   pushed her face through it, and the portrait showed the inside of her

@@ -29,6 +29,15 @@ character login, and the prompt came up on all of them. The saved
 welcomeShownAt holds when the client was started (time() - GetSessionTime())
 for the run that last showed it, which no /reload or relog changes and the next
 start of the game does.
+
+The window ends with the call for volunteers (0.1.10): a paragraph and the
+GitHub issue's link in a read-only edit box, selected on a click so Ctrl+C takes
+it (the client cannot open a browser, and CopyToClipboard is protected). The
+link is the issue, not the developer Discord's invite: the owner wants that
+one step of friction, and a changed invite is edited there without a release.
+volunteersAsked shows the window once to every player who has not opted out,
+with nothing to send too, so players from before 0.1.10 see the call. Options'
+Call for Volunteers opens the window again.
 ]]
 
 local Welcome = {}
@@ -40,6 +49,11 @@ local PADDING = 16
 local BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_GAP = 168, 22, 8
 local CHECK_SIZE = 26
 local TITLE_GAP = 10
+local LINK_HEIGHT = 22
+local LINK_GAP = 8
+
+local VOLUNTEERS_URL = "https://github.com/quinn-dougherty/forever-vo/issues/1971"
+local VOLUNTEERS = "Forever Voiceover is a small fan project, and it could use a hand. If you're comfortable with git and the command line, we're looking for people to tune voices for the voice packs and help look after the addon. Click the link, press |cffffd100Ctrl+C|r and paste it into your browser."
 
 local INTRO = "This addon reads quests and NPC dialogue aloud in voices made by players, not by Blizzard. Quest text is not in the game files, so a line can only be voiced once someone has seen it and sent it in."
 
@@ -98,9 +112,34 @@ function Welcome:GetFrame()
     frame.Text:SetWidth(WIDTH - 2 * PADDING)
     frame.Text:SetPoint("TOP", frame.Title, "BOTTOM", 0, -TITLE_GAP)
 
+    -- The call for volunteers' link, selected so Ctrl+C copies it
+    local link = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
+    link:SetAutoFocus(false)
+    link:SetSize(WIDTH - 2 * PADDING - 8, LINK_HEIGHT) -- the template's border sits outside its left edge
+    link:SetPoint("TOP", frame.Text, "BOTTOM", 4, -LINK_GAP)
+    link:SetFontObject("GameFontHighlightSmall")
+    link:SetText(VOLUNTEERS_URL)
+    link:SetCursorPosition(0)
+    link:SetScript("OnEditFocusGained", function(editBox)
+        editBox:HighlightText()
+    end)
+    link:SetScript("OnMouseUp", function(editBox)
+        editBox:HighlightText()
+    end)
+    link:SetScript("OnEscapePressed", function()
+        frame:Hide()
+    end)
+    link:SetScript("OnTextChanged", function(editBox, userInput)
+        if userInput then
+            editBox:SetText(VOLUNTEERS_URL)
+            editBox:HighlightText()
+        end
+    end)
+    frame.Link = link
+
     local send = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     send:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-    send:SetPoint("TOPRIGHT", frame.Text, "BOTTOM", -BUTTON_GAP / 2, -PADDING)
+    send:SetPoint("TOPRIGHT", frame.Text, "BOTTOM", -BUTTON_GAP / 2, -(LINK_GAP + LINK_HEIGHT + PADDING))
     send:SetText("Send Quests to Project")
     send:SetScript("OnClick", function()
         frame:Hide()
@@ -110,7 +149,7 @@ function Welcome:GetFrame()
 
     local later = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     later:SetSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-    later:SetPoint("TOPLEFT", frame.Text, "BOTTOM", BUTTON_GAP / 2, -PADDING)
+    later:SetPoint("TOPLEFT", frame.Text, "BOTTOM", BUTTON_GAP / 2, -(LINK_GAP + LINK_HEIGHT + PADDING))
     later:SetText("Later")
     later:SetScript("OnClick", function()
         frame:Hide()
@@ -147,12 +186,14 @@ function Welcome:Refresh(intro)
     else
         table.insert(lines, "Nothing to send yet. Play with the addon on, and you will be asked here when you have lines to contribute, or type |cffffd100/fvo export|r any time.")
     end
+    table.insert(lines, "")
+    table.insert(lines, VOLUNTEERS)
     frame.Text:SetText(table.concat(lines, "\n"))
 
     frame.Send:SetEnabled(pending > 0)
     frame.OptOut:SetChecked(ns.db.crowdsourceOptOut)
     local textHeight = frame.Text:GetStringHeight()
-    local checkTop = PADDING + frame.Title:GetStringHeight() + TITLE_GAP + textHeight + PADDING + BUTTON_HEIGHT + PADDING / 2
+    local checkTop = PADDING + frame.Title:GetStringHeight() + TITLE_GAP + textHeight + LINK_GAP + LINK_HEIGHT + PADDING + BUTTON_HEIGHT + PADDING / 2
     -- Centre the box and its label together under the buttons.
     frame.OptOut:ClearAllPoints()
     frame.OptOut:SetPoint("TOPLEFT", frame, "TOP", -(CHECK_SIZE + 2 + frame.OptOut.Text:GetStringWidth()) / 2, -checkTop)
@@ -167,6 +208,13 @@ function Welcome:Show(intro)
     self:Refresh(intro)
     self:GetFrame():Show()
     MarkSeen()
+    ns.db.volunteersAsked = true
+end
+
+--- The window with its link box focused, for Options' Call for Volunteers.
+function Welcome:ShowVolunteers()
+    self:Show(false)
+    self.frame.Link:SetFocus()
 end
 
 ns.OnInit(function()
@@ -178,7 +226,8 @@ ns.OnLogin(function()
         return
     end
     local first = not HasSeen()
-    if not first and (Pending() == 0 or ShownThisRun()) then
+    local ask = not ns.db.volunteersAsked
+    if not first and not ask and (Pending() == 0 or ShownThisRun()) then
         return
     end
     ns.db.welcomeShownAt = ClientStart()

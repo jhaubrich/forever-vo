@@ -264,6 +264,9 @@ ns.OnInit(function()
     ButtonRow(layout, function() return "Report Bug" end,
         "Say what went wrong and copy a link that opens a GitHub issue with your addon and voice pack versions filled in.",
         function() ns.Report:ShowGeneral() end)
+    ButtonRow(layout, function() return "Call for Volunteers" end,
+        "Show the link to the call for volunteers on GitHub: tuning voices for the voice packs and looking after the addon.",
+        function() ns.Welcome:ShowVolunteers() end)
     layout:AddInitializer(VersionsInitializer())
 
     -- What to voice
