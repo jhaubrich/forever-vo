@@ -1,0 +1,60 @@
+{
+ "addon": "0.1.9",
+ "books": {
+  "2a4f8c01": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "page",
+   "isObject": null,
+   "mapID": 1439,
+   "name": null,
+   "npc": null,
+   "page": 1,
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "Master Delgren,\r\n\r\nIt is as you feared. Your theory about the Tower of Althalaxx has proven true. A cult has gathered at the tower with many warlocks amongst their number, including even a foul satyr. They call themselves the Cult of the Dark Strand. I cannot imagine what vile purpose brings them together, but it worries me.\r\n\r\nPlease forgive the terseness in which I have composed this missive, but danger lurks in the forest around me, and I can spare few words to describing the situation. I",
+   "time": 1791817215,
+   "title": "Letter to Delgren",
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "gossip": {
+  "3693|85fc41cc": {
+   "build": "70338",
+   "class": "Paladin",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1439,
+   "name": "Terenthis",
+   "npc": "3693",
+   "questID": null,
+   "race": "Human",
+   "sex": "f",
+   "source": "community",
+   "text": "$N, I've come to find out how rampant the effects of Fel Moss are throughout Darkshore. The corruption of Teldrassil and our surrounding lands really concerns the druids of the Cenarian Circle, and all Night elves.\n\nIt is my goal to find out why this has happened and to put an end to it.",
+   "time": 1791814828,
+   "title": null,
+   "wanted": null,
+   "zone": "Darkshore"
+  }
+ },
+ "npcs": {
+  "3693": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 974343,
+   "name": "Terenthis",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1932",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
