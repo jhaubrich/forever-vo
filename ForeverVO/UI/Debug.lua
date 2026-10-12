@@ -312,6 +312,33 @@ local function PaintHead()
     Fill(headPanel, lines)
 end
 
+--- Over the head, flush with the portrait's left edge: beside it the frame
+--- runs on past the button column and the panel floated off on its own. It
+--- goes above or below with the queue list (PanelsAbove), and beyond the
+--- list while that is shown, since the list stands in the same spot; it
+--- follows the list as it comes and goes and the head as it is dragged.
+local function AnchorHead(host)
+    local list = ns.UI.QueueList:GetFrame()
+    if not list.debugHooked then
+        list.debugHooked = true
+        local function reanchor()
+            if headPanel and headPanel:IsShown() then
+                AnchorHead(host)
+            end
+        end
+        list:HookScript("OnShow", reanchor)
+        list:HookScript("OnHide", reanchor)
+        host:HookScript("OnDragStop", reanchor)
+    end
+    headPanel:ClearAllPoints()
+    local beside = list:IsShown() and list or host.Portrait
+    if host:PanelsAbove() then
+        headPanel:SetPoint("BOTTOMLEFT", beside, "TOPLEFT", 0, 4)
+    else
+        headPanel:SetPoint("TOPLEFT", beside, "BOTTOMLEFT", 0, -4)
+    end
+end
+
 --- Follows the talking head: shown beside it while a line plays, gone with it.
 function Debug:ShowHead(item)
     local head = ns.UI.TalkingHead
@@ -333,10 +360,7 @@ function Debug:ShowHead(item)
         end)
     end
     headItem = item
-    headPanel:ClearAllPoints()
-    -- above the head, flush with the portrait's left edge: beside it the frame
-    -- runs on past the button column and the panel floated off on its own
-    headPanel:SetPoint("BOTTOMLEFT", host.Portrait, "TOPLEFT", 0, 4)
+    AnchorHead(host)
     PaintHead()
     headPanel:Show()
 end

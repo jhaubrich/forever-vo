@@ -145,6 +145,19 @@ function TalkingHead:CreateFrame()
     frame:ResetPosition()
     frame:SetUserPlaced(true)
 
+    --- Whether the panels that keep the head company (the queue list, the
+    --- debug panel) go above it. They do while the head sits in the lower
+    --- half of the screen; dragged into the upper half, above runs off the
+    --- top, so they go below
+    function frame:PanelsAbove()
+        local _, y = self:GetCenter()
+        local _, mid = UIParent:GetCenter()
+        if not y or not mid then
+            return true
+        end
+        return y * self:GetEffectiveScale() <= mid * UIParent:GetEffectiveScale()
+    end
+
     frame:SetScript("OnClick", function(_, button)
         if button == "RightButton" then
             Queue:Skip()

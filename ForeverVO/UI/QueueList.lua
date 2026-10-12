@@ -21,9 +21,11 @@ function QueueList:GetFrame()
     local frame = CreateFrame("Frame", "ForeverVOQueueList", head, "TooltipBackdropTemplate")
     self.frame = frame
     frame:SetWidth(PANEL_WIDTH)
-    frame:SetPoint("BOTTOM", head, "TOP", 0, 4)
     frame:SetFrameLevel(head:GetFrameLevel() + 5)
     frame:Hide()
+    head:HookScript("OnDragStop", function()
+        self:Update()
+    end)
 
     frame.Header = frame:CreateFontString(nil, "ARTWORK")
     frame.Header:SetFontObject("GameFontNormal")
@@ -111,6 +113,19 @@ function QueueList:Toggle()
     self:Update()
 end
 
+--- Above the head, or below it once the head is dragged into the upper half
+--- of the screen.
+function QueueList:Anchor()
+    local head = ns.UI.TalkingHead.frame
+    local frame = self:GetFrame()
+    frame:ClearAllPoints()
+    if head:PanelsAbove() then
+        frame:SetPoint("BOTTOM", head, "TOP", 0, 4)
+    else
+        frame:SetPoint("TOP", head, "BOTTOM", 0, -4)
+    end
+end
+
 function QueueList:Update()
     local head = ns.UI.TalkingHead.frame
     if not head then
@@ -122,6 +137,7 @@ function QueueList:Update()
         frame:Hide()
         return
     end
+    self:Anchor()
 
     self.rowPool:ReleaseAll()
     local shown = 0
