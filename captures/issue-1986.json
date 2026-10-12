@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "5884": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1018060,
+   "name": "Mai'ah",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-1986",
+ "quests": {
+  "3086-progress": {
+   "build": "70338",
+   "class": "Mage",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Mai'ah",
+   "npc": "5884",
+   "questID": 3086,
+   "race": "Troll",
+   "sex": "f",
+   "source": "community",
+   "text": "Ya look to please Mai'ah already, $N. Dat be good. You give Mai'ah respect, and Mai'ah maybe give you respect back. But enough o' dat, you be here to learn 'bout magic, not hear Mai'ah talk.\n\nThere be only one ting Mai'ah can no teach you 'bout magic, $N, and dat's how to stop da corruptin'.",
+   "time": 1791827796,
+   "title": "Glyphic Tablet",
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
