@@ -14,6 +14,12 @@ local FRAME_WIDTH, FRAME_HEIGHT = 570, 155
 local MODEL_SIZE = 115
 local TEXT_INSET = 28   -- left margin of the name and text when the portrait is hidden
 local TALK_ANIMATION = 60
+-- How far the portrait camera stands from the head, as a multiple of the
+-- model's own head camera. At 1 the camera sits where the model's portrait
+-- camera puts it, and a talk animation that leans forward (the skyborne
+-- female's) pushes the face through it and shows the inside of the head
+-- (#1945). Backed off, the lean stays in front of the lens
+local PORTRAIT_DISTANCE = 1.5
 local MODEL_SETTLE = 0.5    -- seconds a model load gets before the book stands in
 local UNIT_SETTLE = 2       -- further seconds a unit's load gets before the creature cache
 local CLOSE_INSET = 12       -- the close button's offset from the top right corner
@@ -261,7 +267,7 @@ function TalkingHead:CreatePortrait()
 
     model:SetScript("OnModelLoaded", function(self)
         pcall(self.SetPortraitZoom, self, 1)
-        pcall(self.SetCamDistanceScale, self, 1)
+        pcall(self.SetCamDistanceScale, self, PORTRAIT_DISTANCE)
         pcall(self.SetFacing, self, 0)
         if not self.revealing then
             self:Reveal()
