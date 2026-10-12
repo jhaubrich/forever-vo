@@ -1,0 +1,39 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {},
+ "npcs": {
+  "8582": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Kadrak",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-1883",
+ "quests": {
+  "6543-accept": {
+   "build": "70338",
+   "class": "Hunter",
+   "differs": null,
+   "event": "accept",
+   "isObject": null,
+   "mapID": 1413,
+   "name": "Kadrak",
+   "npc": "8582",
+   "questID": 6543,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "I recently deployed a few scouts into Ashenvale and I need a runner to take them their orders, and bring me back a report of what they have observed.\n\nYour first stop should be the Zoram'gar Outpost, along the coast to the west, at the Zoram Strand, to locate the first runner. You also need to stop at Splintertree Post, to the north, and along the road to the east, near Azshara. You will find a scout and an outrider there.\n\nGive them each a report, and from them, get an update on their findings.",
+   "time": 1791767155,
+   "title": "The Warsong Reports",
+   "wanted": null,
+   "zone": "The Barrens"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
