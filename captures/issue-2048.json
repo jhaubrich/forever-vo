@@ -1,0 +1,148 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "267291|c9dbd9e7": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Emerald Riding Raptor",
+   "npc": "267291",
+   "questID": null,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "<It sways back and forth, clearly brimming with energy.>",
+   "time": 1791769227,
+   "title": null,
+   "wanted": null,
+   "zone": "Durotar"
+  }
+ },
+ "npcs": {
+  "265809": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Brakk",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "267291": {
+   "addon": "0.1.9",
+   "creatureType": "Beast",
+   "modelFileID": 125680,
+   "name": "Emerald Riding Raptor",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "268684": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 125362,
+   "name": "Thra",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "3140": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 1022938,
+   "name": "Lar Prowltusk",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3191": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Cook Torka",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-2048",
+ "quests": {
+  "786-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Lar Prowltusk",
+   "npc": "3140",
+   "questID": 786,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "The centaurs have proven to be a consistent nuisance to the Horde. Their intentions to lay siege to our homeland cannot be tolerated.",
+   "time": 1791769492,
+   "title": "Thwarting Kolkar Aggression",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "815-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Cook Torka",
+   "npc": "3191",
+   "questID": 815,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Breakfast, lunch, dinner! Who cares which meal it is? It still has to be cooked by someone--namely me!",
+   "time": 1791770415,
+   "title": "Break a Few Eggs",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "96604-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1411,
+   "name": "Brakk",
+   "npc": "265809",
+   "questID": 96604,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "Having the skills needed to survive the outdoors is critical. A well-rested and well-prepared adventurer has a much higher chance of surviving this lifestyle.",
+   "time": 1791720549,
+   "title": "The Great Outdoors",
+   "wanted": null,
+   "zone": "Durotar"
+  },
+  "97326-progress": {
+   "build": "70338",
+   "class": "Warrior",
+   "differs": null,
+   "event": "progress",
+   "isObject": null,
+   "mapID": 1454,
+   "name": "Thra",
+   "npc": "268684",
+   "questID": 97326,
+   "race": "Orc",
+   "sex": "m",
+   "source": "community",
+   "text": "It's nice to not have to always sit in the dirt!",
+   "time": 1791717459,
+   "title": "Rocks to Rests",
+   "wanted": null,
+   "zone": "Orgrimmar"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
