@@ -152,8 +152,14 @@
   /* a knob that departs from the voice's saved value, until it is kept or put back */
   .fields .unsaved input { border-color: var(--warn); box-shadow: 0 0 0 1px var(--warn); }
   .fields .unsaved label { color: var(--warn); }
-  /* saved settings a live pin was heard under: a retune lapses it */
-  .fields .locked label::after { content: " \1F512"; font-size: 0.85em; }
+  /* saved settings the picked line's live pin was heard under: a faded padlock at the
+     right edge of the box (a select keeps its arrow outside it) */
+  .fields .locked input, .fields .locked select {
+    padding-right: 1.8em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23888' fill-opacity='.45' d='M4 7V5a4 4 0 0 1 8 0v2h1a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h1zm2 0h4V5a2 2 0 0 0-4 0v2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right .5em center; background-size: .95em;
+  }
+  .fields .locked select { background-position: right 1.6em center; }
   #pin-locks { margin: 4px 0 0; }
   .fields .saved-note { color: var(--warn); }
   .fields .saved-note:empty { display: none; }
@@ -1094,13 +1100,15 @@ function markPinLocks() {
   const box = $("pin-locks");
   if (!state || !box) return;
   const voice = $("voice").value, held = (state.pinned || {})[voice] || [];
-  const locked = held.length > 0;
+  // the lock marks the fields a pinned picked line holds under; the note below
+  // lists the voice's pinned lines either way
+  const locked = !!(current && current.pin && current.pin.live && current.voice === voice);
   for (const id of [...KNOBS.map(([id]) => id), "reference"]) $(id).parentElement.classList.toggle("locked", locked);
-  if (!locked) { box.innerHTML = ""; return; }
+  if (!held.length) { box.innerHTML = ""; return; }
   const shown = held.slice(0, 6).map(b => `<a href="#" class="badge pinned-line" data-base="${esc(b)}" title="find this line">${esc(b)}</a>`).join(" ") +
     (held.length > 6 ? ` <a href="#" class="pinned-all" title="list every pinned line">and ${held.length - 6} more</a>` : "");
   box.innerHTML = `<span title="A pin is heard under the voice's saved knobs, clone-from and clip picks. Keep these settings or a new clip pick changes them, and the pin then stands aside: the line falls back to its index seed until a take under the new settings is pinned.">` +
-    `&#x1F512; ${held.length} line${held.length === 1 ? "" : "s"} pinned under ${esc(voice)}'s saved settings and clips: Keep or a new pick lapses ${held.length === 1 ? "it" : "them"}</span> ${shown}`;
+    `${locked ? "&#x1F512; " : ""}${held.length} line${held.length === 1 ? "" : "s"} pinned under ${esc(voice)}'s saved settings and clips: Keep or a new pick lapses ${held.length === 1 ? "it" : "them"}</span> ${shown}`;
 }
 document.querySelector(".fields.knobs").addEventListener("click", ev => {
   const b = ev.target.closest("button.knob-reset");
@@ -1280,7 +1288,12 @@ function pick(row, li) {
   current = row;
   $("results").querySelectorAll("li").forEach(x => x.classList.remove("active")); li.classList.add("active");
   $("text").value = row.spoken;
-  if (state.voices.includes(row.voice)) $("voice").value = row.voice;
+  if (state.voices.includes(row.voice) && $("voice").value !== row.voice) {
+    // the knobs follow the voice, as choosing it in the list does: left on the
+    // voice before, they read "not saved" against this one
+    $("voice").value = row.voice;
+    loadVoiceSettings();
+  }
   // the pack's file plays from the card's top right, beside the title; wowhead links
   // the quest (its ID leads the base name, after an m-/f- branch) and the speaker
   const quest = row.subfolder === "Quests" ? (row.base.replace(/^[mf]-/, "").match(/^(\d+)-/) || [])[1] : null;
@@ -1353,7 +1366,7 @@ function showLinePin() {
       `<a href="#" id="pin-load" title="Put the pin's seed, chunk length and Same seed in the run options">load into run</a>` +
       `<a href="#" id="pin-drop" title="Remove the pin from [lines]. The file it drew stays, and its seed stays the index seed, until something else changes the line.">unpin</a>` +
       (kept ? `<div>${kept}</div>` : "");
-    $("pin-load").addEventListener("click", e => { e.preventDefault(); useSeed(p.seed, p.chunk_chars, p.same_seed); seedFromPin = true; markPinnedSeed(); });
+    $("pin-load").addEventListener("click", e => { e.preventDefault(); useSeed(p.seed, p.chunk_chars, p.same_seed); seedFromPin = true; loadHeard(p); markPinnedSeed(); });
     $("pin-drop").addEventListener("click", async e => {
       e.preventDefault();
       try {
@@ -1617,6 +1630,15 @@ const SEED_NOTE = "The seed this take was drawn from, each model call seeded fro
   "not. 'use this seed' puts it, the chunk length and Same seed in the run options; " +
   "Pin this take keeps it for the line's pack file.";
 
+// The knobs and clone-from a pin was heard under, into the run options: with a live
+// pin these are the voice's saved values already; with a lapsed one they are what to
+// put back to hear the pinned take
+function loadHeard(p) {
+  if (!p || !p.heard) return;
+  for (const [id, key] of KNOBS) $(id).value = `${p.heard[key] ?? (key === "tempo" || key === "speed" ? 1 : 0)}`;
+  $("reference").value = p.heard.reference || "";
+  markKnobs(); showResolved(); markPinned();
+}
 // The run options a seed belongs with; a seed locks Takes each to one
 function useSeed(seed, chunkChars, sameSeed) {
   $("seed-in").value = seed; $("chunk-chars").value = chunkChars; $("same-seed").checked = sameSeed;

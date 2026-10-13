@@ -334,10 +334,13 @@ date) and says whether the audio playing was drawn from it: only the working
 folder's current copy was (`drawn`); an installed pack is a release, named with
 its version, that may be an earlier take. It is not loaded into the Seed box
 (that would lock Takes to one on every line); "load into run" does. A pin holds
-only under the voice's saved knobs, clone-from and clip picks (its `heard`): the
-page marks those fields with a lock and lists the lines pinned in the chosen
-voice (`pinned` in the state, `Studio.live_pins`, by the line's voice and the
-clip's), and Keep these settings or a kept pick answers with a `warning` naming
+only under the voice's saved knobs, clone-from and clip picks (its `heard`): while
+the picked line's pin holds, those boxes carry a faded padlock at their right
+edge, a note lists the lines pinned in the chosen voice (`pinned` in the state,
+`Studio.live_pins`, by the line's voice and the clip's), "load into run" puts
+the pin's knobs and clone-from in place too, picking a line of another voice
+loads that voice's saved knobs (left on the voice before, they read "not
+saved"), and Keep these settings or a kept pick answers with a `warning` naming
 the pins it lapsed (`held_lines` before the write, `lapsed_since` after: the
 write forgets the corpus, so the lines are kept from before). "Pinned lines"
 (`/api/lines?pinned=1`, `&voice=` for one voice) lists every pinned line, live
