@@ -145,11 +145,12 @@ function TalkingHead:CreateFrame()
     frame:ResetPosition()
     frame:SetUserPlaced(true)
 
-    --- Where the parchment's top edge sits below the frame's top: the atlas
-    --- fills the frame with clear padding above the art, and the close
-    --- button's top is on the edge. A panel level with the head lines up
-    --- with this, not with the rect.
-    frame.artTop = CLOSE_INSET
+    --- Where the parchment's top edge sits below the frame's top. The
+    --- TextBackground atlases are 570x155, the whole frame, with the art
+    --- inset 14 px on every side (half alpha at row 14, opaque from 16, in
+    --- all three kits). A panel level with the head lines up with this,
+    --- not with the rect.
+    frame.artTop = 14
 
     --- How much room, in screen pixels, a panel beside the head has on each
     --- side: the distance from each of the head's edges to the screen's. The
