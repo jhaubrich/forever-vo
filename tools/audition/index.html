@@ -1114,7 +1114,7 @@ document.querySelector(".fields.knobs").addEventListener("click", ev => {
   const b = ev.target.closest("button.knob-reset");
   if (!b) return;
   $(b.dataset.knob).value = b.dataset.saved;
-  markKnobs();
+  markKnobs(); markPinned();  // the saved value is the pin's under a live pin
 });
 // Who is read in the chosen voice, most lines first, each linked to wowhead. Loaded
 // once per voice; a species voice nobody is cast on yet lists who would move to it.
