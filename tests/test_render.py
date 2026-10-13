@@ -1013,3 +1013,38 @@ def test_a_pin_heard_under_uncommitted_settings_is_said_so(
     # another configs/ than the repository's has nothing to compare against
     monkeypatch.setattr(audition, "CONFIG_DIR", pin_studio.toml / "elsewhere")
     assert "warning" not in client.post("/api/pin-seed", json=body).json()
+
+
+def test_a_retune_says_which_pins_it_lapses(
+    pin_studio: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from tools.config import load_config
+
+    client, studio = pin_studio.client, pin_studio.studio
+    monkeypatch.setattr(studio, "forget_corpus", lambda: None, raising=False)
+    take = take_of(client, seed=5)
+    client.post(
+        "/api/pin-seed", json={"session": take["session"], "name": take["name"]}
+    )
+    load_config.cache_clear()
+    # the page learns which lines hold under the voice's settings, and its clip's
+    assert studio.live_pins()["human-male"] == ["1-accept"]
+    saved = VoiceCatalog(load_config(pin_studio.toml)).resolve("human-male").settings
+    body = {
+        "voice": "human-male",
+        "exaggeration": saved.exaggeration,
+        "cfg_weight": saved.cfg_weight,
+        "tempo": saved.tempo or 1.0,
+        "pitch": saved.pitch or 0.0,
+        "speed": saved.speed or 1.0,
+        "reference": saved.reference,
+    }
+    # keeping the same settings lapses nothing
+    assert "warning" not in client.post("/api/keep-tuning", json=body).json()
+    # a retune does, and says so by name
+    response = client.post(
+        "/api/keep-tuning", json={**body, "exaggeration": saved.exaggeration + 0.2}
+    ).json()
+    assert "1-accept" in response["warning"] and "index seed" in response["warning"]
+    load_config.cache_clear()
+    assert studio.live_pins() == {}

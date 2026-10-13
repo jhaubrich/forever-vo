@@ -152,6 +152,9 @@
   /* a knob that departs from the voice's saved value, until it is kept or put back */
   .fields .unsaved input { border-color: var(--warn); box-shadow: 0 0 0 1px var(--warn); }
   .fields .unsaved label { color: var(--warn); }
+  /* saved settings a live pin was heard under: a retune lapses it */
+  .fields .locked label::after { content: " \1F512"; font-size: 0.85em; }
+  #pin-locks { margin: 4px 0 0; }
   .fields .saved-note { color: var(--warn); }
   .fields .saved-note:empty { display: none; }
   .fields .knob-reset { font-size: 11px; padding: 0 6px; line-height: 1.5; margin-left: 4px; color: var(--warn); border-color: var(--warn); background: transparent; }
@@ -471,6 +474,7 @@
         <div><label for="pitch">Pitch, semitones</label><input id="pitch" autocomplete="off" value="0"><div class="hint">&minus;12&ndash;12; 0 as generated, down is negative</div></div>
         <div><label for="speed" title="Varispeed: pace and pitch together, one resample">Speed</label><input id="speed" autocomplete="off" value="1.0"><div class="hint">0.5&ndash;2.0; tape-style, slower is lower</div></div>
       </div>
+      <div id="pin-locks" class="hint"></div>
     </div>
     <!-- run what is set above; the saved resolution beside it says what the pack would use -->
     <div class="actions">
@@ -670,6 +674,7 @@ function applyState(s) {
   $("s-bulk").textContent = s.bulk_service; $("s-bulk").className = s.bulk_service === "active" ? "warn" : "";
   $("s-config").textContent = s.config_path;
   showPronunciations(s.pronunciations);
+  setTimeout(markPinLocks, 0);  // once the voice list below is in place
   const voice = $("voice"), ref = $("reference");
   const keepVoice = voice.value, keepRef = ref.value;
   voice.innerHTML = voiceOptions(s);
@@ -1067,6 +1072,22 @@ function markKnobs() {
   }
 }
 for (const [id] of KNOBS) $(id).addEventListener("input", markKnobs);
+
+// The lines pinned in the chosen voice hold only under its saved knobs, clone-from and
+// clip picks (the pin's `heard`): the fields carry a lock while any does, and the
+// note says which lines. Trying other values is fine; Keep these settings or a new
+// pick lapses the pins, which the server then says.
+function markPinLocks() {
+  const box = $("pin-locks");
+  if (!state || !box) return;
+  const voice = $("voice").value, held = (state.pinned || {})[voice] || [];
+  const locked = held.length > 0;
+  for (const id of [...KNOBS.map(([id]) => id), "reference"]) $(id).parentElement.classList.toggle("locked", locked);
+  if (!locked) { box.innerHTML = ""; return; }
+  const shown = held.slice(0, 6).map(b => `<span class="badge">${esc(b)}</span>`).join(" ") + (held.length > 6 ? ` and ${held.length - 6} more` : "");
+  box.innerHTML = `<span title="A pin is heard under the voice's saved knobs, clone-from and clip picks. Keep these settings or a new clip pick changes them, and the pin then stands aside: the line falls back to its index seed until a take under the new settings is pinned.">` +
+    `&#x1F512; ${held.length} line${held.length === 1 ? "" : "s"} pinned under ${esc(voice)}'s saved settings and clips: Keep or a new pick lapses ${held.length === 1 ? "it" : "them"}</span> ${shown}`;
+}
 document.querySelector(".fields.knobs").addEventListener("click", ev => {
   const b = ev.target.closest("button.knob-reset");
   if (!b) return;
@@ -1253,6 +1274,7 @@ function pick(row, li) {
   showLinePin();
   fillFromPin();
   showResolved();
+  markPinLocks();
   schedulePreview();
 }
 
@@ -1295,6 +1317,7 @@ function showLinePin() {
     const drawn = k && k.seed === p.seed && k.chunk_chars === p.chunk_chars && !!k.same_seed === !!p.same_seed;
     box.innerHTML = (p.live
         ? `Pinned: seed <b>${p.seed}</b> · chunks of ${p.chunk_chars}${p.same_seed ? " · same seed" : ""}` +
+          ` · <span title="The pin was heard under ${esc(current.voice)}'s saved knobs, clone-from and clip picks, and holds only while they stay: Keep these settings or a new pick lapses it.">&#x1F512; holds under ${esc(current.voice)}'s saved settings</span>` +
           (drawn ? ` · <span title="The index records this seed for the file: the machine that builds the pack has drawn it.">the builder's file is drawn from it</span>`
                  : ` · <span class="warn" title="The index still records another seed for the file: the next generate run on the machine that builds the pack draws it from the pin.">not yet drawn</span>`)
         : `<span class="warn" title="The line's text or the voice's settings changed since the take was pinned, so the seed would draw another take: the pin is not used.">pinned under other settings (seed ${p.seed}); not used</span>`) +
@@ -1395,6 +1418,7 @@ $("voice").addEventListener("change", () => {
   $("takes-body").innerHTML = ""; $("progress").textContent = "";
   loadVoiceSettings();
   showResolved();
+  markPinLocks();
   listVoiceLines(true);
   showSpeakerPin();
   if (clipsVoice && $("voice").value !== clipsVoice) {
@@ -1504,9 +1528,12 @@ function onEvent(ev) {
   keep.addEventListener("click", async () => {
     busy(keep, true);
     try {
-      applyState(await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voice, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, speed: ev.speed || 1, reference: ev.reference }) }));
+      const r = await api("/api/keep-tuning", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voice, exaggeration: ev.exaggeration, cfg_weight: ev.cfg_weight, tempo: ev.tempo || 1, pitch: ev.pitch || 0, speed: ev.speed || 1, reference: ev.reference }) });
+      applyState(r);
       toast(`Kept for ${voice}. The next generate run restages that voice's files.`, "ok");
+      if (r.warning) toast(r.warning, "warn");
+      if (current) { const again = await api(`/api/lines?q=${encodeURIComponent(current.base)}&limit=1`); if (again.rows[0] && again.rows[0].base === current.base) { current = again.rows[0]; showLinePin(); fillFromPin(); } }
       if (voice === $("voice").value) loadVoiceSettings();  // the knobs now read as saved
     } catch (e) { toast(e.message, "warn"); }
     busy(keep, false);
@@ -2217,6 +2244,7 @@ $("clips-build").addEventListener("click", async () => {
     $("clips-status").textContent = `built ${r.built}, ${r.seconds}s`;
     renderHistory(r.history, picks);
     toast(r.restage, "ok");
+    if (r.warning) toast(r.warning, "warn");
   } catch (e) { toast(e.message, "warn"); }
   busy($("clips-build"), false);
 });

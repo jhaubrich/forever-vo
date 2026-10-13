@@ -1274,6 +1274,21 @@ class WorkingCopies:
         }
 
 
+def lapsed_pins(gone: list[str]) -> str | None:
+    """A warning naming the pins a settings or clip write lapsed (Studio.lapsed_since);
+    None when it lapsed none."""
+    if not gone:
+        return None
+    shown = ", ".join(gone[:5]) + (
+        f" and {len(gone) - 5} more" if len(gone) > 5 else ""
+    )
+    return (
+        f"this lapses the pin on {shown}: the pinned take was heard under the old "
+        "settings, so the line falls back to its index seed until a take under the "
+        "new ones is pinned"
+    )
+
+
 @functools.lru_cache(maxsize=8)
 def _index_date(stamp: tuple[int, int] | None) -> str | None:
     """When sound_index.json last changed in git (its commit date), so the page can
@@ -1615,6 +1630,44 @@ class Studio:
                 }
         return sorted(rows, key=lambda r: r["voice"])
 
+    def held_lines(
+        self, config: Config | None = None
+    ) -> dict[str, tuple[Item, Variant]]:
+        """The lines whose [lines] pin holds today, with their corpus entries. Taken
+        before a settings or clip write, so what the write lapsed can be told after
+        it without the corpus, which a write forgets. Empty until the corpus loads."""
+        config = config or self.config()
+        catalog = self.catalog(config)
+        held = {}
+        for base in sorted(config.lines.root):
+            line = self.line_if_loaded(base)
+            if line is not None and catalog.pin(base, line[0].voice, line[1].text):
+                held[base] = line
+        return held
+
+    def live_pins(self, config: Config | None = None) -> dict[str, list[str]]:
+        """held_lines by the voice each is read in and, when that voice borrows its
+        clip, by the clip's voice too: a pin is heard under the voice's knobs and the
+        clip's picks, so Keep these settings or a new pick on either lapses it."""
+        config = config or self.config()
+        catalog = self.catalog(config)
+        by_voice: dict[str, list[str]] = {}
+        for base, (item, _) in self.held_lines(config).items():
+            by_voice.setdefault(item.voice, []).append(base)
+            source = catalog.resolve(item.voice).source
+            if source != item.voice:
+                by_voice.setdefault(source, []).append(base)
+        return by_voice
+
+    def lapsed_since(self, held: dict[str, tuple[Item, Variant]]) -> list[str]:
+        """Which of held_lines no longer hold under the configuration as it is now."""
+        catalog = self.catalog(self.config())
+        return sorted(
+            base
+            for base, (item, variant) in held.items()
+            if catalog.pin(base, item.voice, variant.text) is None
+        )
+
     def state(self) -> dict[str, Any]:
         config = self.config()
         catalog = self.catalog(config)
@@ -1650,6 +1703,9 @@ class Studio:
             "resolved": resolved,
             "pronunciations": config.pronunciations.root,
             "speakers": config.voices.speakers,
+            # the lines whose pin holds, by the voice (and borrowed clip) it holds
+            # under: what a retune or a re-pick would lapse
+            "pinned": self.live_pins(config),
             # [lines], as written; whether each still holds is the line's to say
             "pins": {
                 base: {
@@ -2577,6 +2633,7 @@ def create_app(
         _safe(request.voice)
         if request.reference:
             _safe(request.reference)
+        held = studio.held_lines()
         write_tuning(
             studio.config_path,
             request.voice,
@@ -2588,7 +2645,11 @@ def create_app(
             request.speed,
         )
         studio.forget_corpus()
-        return studio.state()
+        state = studio.state()
+        warning = lapsed_pins(studio.lapsed_since(held))
+        if warning:
+            state["warning"] = warning
+        return state
 
     @app.post("/api/keep-pronunciation")
     def keep_pronunciation(request: KeepPronunciation) -> dict[str, Any]:
@@ -3037,6 +3098,7 @@ def create_app(
                 raise HTTPException(404, f"clip {fdid} is not downloaded")
             paths.append(_under(CLIP_RAW, f"{voice}/{path.name}"))
         existed = (VOICES_DIR / f"{voice}.wav").exists()
+        held = studio.held_lines()
         try:
             out = build_picked_reference(
                 voice, paths, gaps, clips=request.clips, build=request.build
@@ -3061,6 +3123,7 @@ def create_app(
             ),
             "reference_url": f"/api/clips/reference/{voice}.wav?t={int(time.time())}",
             "restage": restage_note(voice, existed, request.keep),
+            "warning": lapsed_pins(studio.lapsed_since(held)) if request.keep else None,
         }
 
     @app.post("/api/rebuild-tables")

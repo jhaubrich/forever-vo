@@ -333,8 +333,14 @@ seed** (`kept` in the payload, from `sound_index.json`, with the index's commit
 date) and says whether the audio playing was drawn from it: only the working
 folder's current copy was (`drawn`); an installed pack is a release, named with
 its version, that may be an earlier take. It is not loaded into the Seed box
-(that would lock Takes to one on every line); "load into run" does. Takes and
-their `<take>.json` sidecars go to `tools/data/audition/` (gitignored).
+(that would lock Takes to one on every line); "load into run" does. A pin holds
+only under the voice's saved knobs, clone-from and clip picks (its `heard`): the
+page marks those fields with a lock and lists the lines pinned in the chosen
+voice (`pinned` in the state, `Studio.live_pins`, by the line's voice and the
+clip's), and Keep these settings or a kept pick answers with a `warning` naming
+the pins it lapsed (`held_lines` before the write, `lapsed_since` after: the
+write forgets the corpus, so the lines are kept from before). Takes and their
+`<take>.json` sidecars go to `tools/data/audition/` (gitignored).
 
 ## Automation on the owner's machine (NixOS, systemd user units)
 
