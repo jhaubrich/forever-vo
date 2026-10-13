@@ -1,0 +1,120 @@
+{
+ "addon": "0.1.9",
+ "books": {},
+ "gossip": {
+  "12137|c087faab": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1434,
+   "name": "Squibby Overspeck",
+   "npc": "12137",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Slip a little coin into the boss's hand and look what it gets ya. I love my job. Though, if I could find a way to get that little firecracker Snurk reassigned to this port....well, I can't imagine it any better. But I'm betting that you aren't here about my business practices. You're looking for the Zeppelin to Undercity, am I right? Well that's great, because it docks right here behind me. Oh and hey, if you see Snurk, put a good word in for me, would ya?",
+   "time": 1791859120,
+   "title": null,
+   "wanted": null,
+   "zone": "Stranglethorn Vale"
+  },
+  "1382|3b48d638": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1434,
+   "name": "Mudduk",
+   "npc": "1382",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Dirge Quikcleave of Gadgetzan is a master of the culinary arts.  To better yourself you will need to seek him out.",
+   "time": 1791854262,
+   "title": null,
+   "wanted": null,
+   "zone": "Stranglethorn Vale"
+  },
+  "1387|c5ceacbe": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1434,
+   "name": "Thysta",
+   "npc": "1387",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "Where would you like to fly to?",
+   "time": 1791859084,
+   "title": null,
+   "wanted": null,
+   "zone": "Stranglethorn Vale"
+  },
+  "4551|d37b59d0": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1458,
+   "name": "Michael Garrett",
+   "npc": "4551",
+   "questID": null,
+   "race": "Windshaper Skyborne",
+   "sex": "f",
+   "source": "community",
+   "text": "How may I be of service?",
+   "time": 1791856001,
+   "title": null,
+   "wanted": null,
+   "zone": "Undercity"
+  }
+ },
+ "npcs": {
+  "12137": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 119376,
+   "name": "Squibby Overspeck",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1382": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 917116,
+   "name": "Mudduk",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "1387": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 949470,
+   "name": "Thysta",
+   "sex": 3,
+   "sexes": "f"
+  },
+  "4551": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Michael Garrett",
+   "sex": 2,
+   "sexes": "m"
+  }
+ },
+ "origin": "issue-2015",
+ "quests": {},
+ "source": "community",
+ "version": 2
+}
