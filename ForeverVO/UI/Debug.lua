@@ -315,7 +315,7 @@ end
 local GAP = 4   -- between the head and the panel
 
 --- Beside the head, to its left, its top level with the parchment's (the
---- head's rect runs above its art), or to its right when the room on the
+--- head's rect runs above its art, artTop), or to its right when the room on the
 --- left is narrower than the panel (the head dragged to the left edge of
 --- the screen) and the right is not. It follows the head as it is dragged.
 --- Sized before it is placed: PaintHead runs first.
@@ -331,13 +331,11 @@ local function AnchorHead(host)
     local room = host:Room()
     local need = (headPanel:GetWidth() + GAP) * headPanel:GetEffectiveScale()
     local left = not room or room.left >= need or room.left >= room.right
-    local top, artTop = host:GetTop(), host.TextBackground:GetTop()
-    local drop = (top and artTop) and (top - artTop) or 0
     headPanel:ClearAllPoints()
     if left then
-        headPanel:SetPoint("TOPRIGHT", host, "TOPLEFT", -GAP, -drop)
+        headPanel:SetPoint("TOPRIGHT", host, "TOPLEFT", -GAP, -host.artTop)
     else
-        headPanel:SetPoint("TOPLEFT", host, "TOPRIGHT", GAP, -drop)
+        headPanel:SetPoint("TOPLEFT", host, "TOPRIGHT", GAP, -host.artTop)
     end
 end
 
