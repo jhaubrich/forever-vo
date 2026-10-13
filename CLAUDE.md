@@ -328,7 +328,7 @@ Each take shows numbered chunk marks (where each model call starts; a click play
 from the gap before it), its seed ("use this seed"), and Chunk length, Seed and
 "same for every chunk" are run options; a preview under the Text box (`/api/chunks`,
 the generator's own `chunk()`) shows where the chunks fall, and a picked line's
-live pin fills the Seed box. Under a picked line the page shows its **index
+pin, live or lapsed, fills the Seed box and the knobs it was heard under. Under a picked line the page shows its **index
 seed** (`kept` in the payload, from `sound_index.json`, with the index's commit
 date) and says whether the audio playing was drawn from it: only the working
 folder's current copy was (`drawn`); an installed pack is a release, named with

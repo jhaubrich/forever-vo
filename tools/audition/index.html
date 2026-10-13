@@ -1645,16 +1645,20 @@ function useSeed(seed, chunkChars, sameSeed) {
   seedFromPin = false;  // a take's seed; fillFromPin marks the pin's own
   seedChanged(); markPinnedSeed(); schedulePreview();
 }
-// A picked line with a pin that holds runs from it by default: its seed, chunk length
-// and Same seed fill the run options, the Seed box outlined in blue while it is the
-// pin's. Typing over it, unpinning or picking a line without one clears that, and a
-// seed the pin put there goes with it, so it does not ride along to the next line.
+// A picked line with a pin runs from it by default: its seed, chunk length, Same seed,
+// knobs and clone-from fill the run options, each box blue while it holds the pin's
+// value. Typing over the seed, unpinning or picking a line without a pin clears the
+// seed the pin put there, so it does not ride along to the next line.
 let seedFromPin = false;
 function fillFromPin() {
   const p = current && current.pin;
-  if (p && p.live) {
+  if (p) {
+    // a pinned line runs from its pin: the seed, chunk length and Same seed, and
+    // the knobs and clone-from it was heard under, lapsed or not (a lapsed pin
+    // then plays its take under the old settings, to re-pin after a Keep)
     useSeed(p.seed, p.chunk_chars, p.same_seed);
     seedFromPin = true;
+    loadHeard(p);
   } else if (seedFromPin) {
     $("seed-in").value = ""; $("chunk-chars").value = 300; $("same-seed").checked = false;
     seedFromPin = false;
