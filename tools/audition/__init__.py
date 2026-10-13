@@ -1142,9 +1142,10 @@ class SoundPack:
     label: str  # what the page shows: "working folder", or the manifest's name
     priority: int
     sounds: Path
+    version: str = ""  # the release's date version, so the page can name a take's age
 
 
-PACK_FIELD = re.compile(r'^\s*(name|priority)\s*=\s*"?([^",]+)"?', re.MULTILINE)
+PACK_FIELD = re.compile(r'^\s*(name|priority|version)\s*=\s*"?([^",]+)"?', re.MULTILINE)
 
 
 def sound_packs(
@@ -1172,7 +1173,13 @@ def sound_packs(
         with contextlib.suppress(ValueError):
             priority = int(fields.get("priority", 0))
         installed.append(
-            SoundPack(folder.name, fields.get("name", folder.name), priority, sounds)
+            SoundPack(
+                folder.name,
+                fields.get("name", folder.name),
+                priority,
+                sounds,
+                fields.get("version", ""),
+            )
         )
     installed.sort(key=lambda pack: (-pack.priority, pack.label))
     return [SoundPack(PACK_NAME, "working folder", 0, working), *installed]
@@ -1247,6 +1254,28 @@ class WorkingCopies:
             return False
         seconds = self.seconds(path)
         return seconds is not None and abs(seconds - recorded) > self.TOLERANCE
+
+    def kept(self, base: str) -> dict[str, Any] | None:
+        """The seed the index says drew the line's file (generate.kept_seed): the
+        builder's file, whether or not this machine has it."""
+        kept = generate.kept_seed(self.index().get(generate.index_key(base)))
+        if kept is None:
+            return None
+        return {
+            "seed": kept.seed,
+            "chunk_chars": kept.chunk_chars,
+            "same_seed": kept.same_seed,
+            "capped": kept.capped,
+        }
+
+
+@functools.cache
+def _index_date() -> str | None:
+    """When sound_index.json last changed in git (its commit date), so the page can
+    say how old the index seed it shows is: a contributor's checkout may lag the
+    nightly by days, and the seed it shows may since have been rerolled."""
+    out = _git("log", "-1", "--format=%cs", "--", "tools/data/sound_index.json")
+    return out.strip() or None if out else None
 
 
 class Studio:
@@ -2189,11 +2218,18 @@ def create_app(
             **row.__dict__,
             "exists": found is not None,
             "pack": found.label if found else None,
+            "pack_version": found.version if found else None,
             "pack_url": f"/api/pack/{found.key}/{row.subfolder}/{row.base}.mp3"
             if found
             else None,
             # the working folder's copy is an older take (WorkingCopies)
             "stale": stale,
+            # the seed the index says drew the builder's file; the file playing
+            # here was drawn from it only when it is the working folder's own
+            # current copy: an installed pack is a release, maybe an earlier take
+            "kept": working.kept(row.base),
+            "drawn": found is not None and found.key == PACK_NAME and not stale,
+            "index_date": _index_date(),
             **line_pin(row, catalog),
         }
 
@@ -2579,8 +2615,10 @@ def create_app(
     @app.post("/api/chunks")
     def chunk_preview(request: ChunkPreview) -> dict[str, Any]:
         """How a text is cut into model calls at a chunk length, as the model hears
-        it (respelled), with the picked line's pinned length when it has a live pin.
-        Reads the config only when the file has changed: the page asks as you type."""
+        it (respelled), with the chunk length the picked line's seed goes with: its
+        live pin's, else the length that drew the pack's file (`from`: "pin" or
+        "kept"). Reads the config only when the file has changed: the page asks as
+        you type."""
         config = studio.config_cached()
         line = studio.line_if_loaded(request.base)
         if line is not None and request.text == line[1].text:
@@ -2592,11 +2630,20 @@ def create_app(
             if line is not None
             else None
         )
+        kept = working.kept(request.base) if request.base and line else None
+        line_chars, origin = (
+            (pin.chunk_chars, "pin")
+            if pin
+            else (kept["chunk_chars"], "kept")
+            if kept
+            else (None, None)
+        )
         return {
             "spoken": spoken,
             "chars": request.chars,
             "chunks": chunk(spoken, request.chars) if spoken else [],
-            "pinned_chars": pin.chunk_chars if pin else None,
+            "line_chars": line_chars,
+            "from": origin,
         }
 
     @app.post("/api/pin-seed")
@@ -2651,6 +2698,15 @@ def create_app(
                 "the take was made under other settings than the voice's saved ones: "
                 "keep its settings first, or the pack would not draw this take",
             )
+        kept = working.kept(base)
+        if kept and kept["capped"] and kept["seed"] == about["seed"]:
+            # A checkout days behind the nightly still shows the seed the builder
+            # has since rolled away from; pinning it would bring the babble back
+            raise HTTPException(
+                400,
+                "that seed is the index seed, and its take ran into the token cap on "
+                "the machine that builds the pack: it is being drawn anew; pin another",
+            )
         write_line_pin(
             studio.config_path,
             base,
@@ -2660,9 +2716,24 @@ def create_app(
                 "same_seed": bool(about.get("same_seed")),
                 "heard": heard,
                 "spoken": generate.spoken_hash(variant.text),
+                "voice": item.voice,
             },
         )
-        return studio.state()
+        # `heard` was checked against this checkout's configs/. Four pins went dead
+        # on 2026-10-13 because the reference they were heard under was never
+        # committed: the builder's checkout never had it, so the pin never held.
+        edited = _git("status", "--porcelain", "--", "configs")
+        changed = sorted(
+            line[3:].strip() for line in (edited or "").splitlines() if line.strip()
+        )
+        state = studio.state()
+        if changed and changed != ["configs/lines.toml"]:
+            state["warning"] = (
+                "this pin was heard under uncommitted edits in "
+                f"{', '.join(changed)}: commit them with the pin, or the machine "
+                "that builds the pack will not hold it"
+            )
+        return state
 
     @app.delete("/api/pin-seed/{base}")
     def unpin_seed(base: str) -> dict[str, Any]:

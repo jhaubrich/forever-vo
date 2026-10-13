@@ -541,12 +541,15 @@
         seed instead of each from its own &mdash; an experiment, since the accent comes from
         the reference every chunk already shares.</p>
       <p>Every take has a <b>seed</b>; the same seed, text, settings and chunk length make
-        the same take again on this machine. <b>Pin this take</b> keeps a perfect take's
-        seed for its line in <code>[lines]</code>, and the pack's file is drawn from it
-        &mdash; only for a take of the line's own text under the voice's saved settings. The
-        pack is built on another GPU, where the seed draws a different take, though always
-        the same one; the pin stops applying when the line's text or the voice's settings
-        change.</p>
+        the same take again on this machine. Every file in the pack keeps the seed it was
+        drawn with (the <b>index seed</b> under a picked line, from
+        <code>sound_index.json</code>) and is drawn from it again until rerolled.
+        <b>Pin this take</b> overrides it: a perfect take's seed for its line in
+        <code>[lines]</code>, and the pack's file is drawn from it &mdash; only for a take of
+        the line's own text under the voice's saved, committed settings. The pack is built on
+        another GPU, where a seed draws a different take, though always the same one; the pin
+        stops applying when the line's text or the voice's settings change, and the file then
+        keeps its index seed.</p>
       <p class="warn">Not an accent control. Four settings pairs over eight takes of
         goblin-male moved its accent not at all, while changing the source clips took the
         same voice from &ldquo;sounds like a gnome&rdquo; to level with the shipped pack.</p>
@@ -1152,7 +1155,8 @@ function renderResults(rows) {
     `<li data-i="${i}">` +
     (r.pack_url ? `<button class="play" title="play the file in ${esc(r.pack || "the pack")}">▶</button>` : "") +
     `<div><div class="t">${esc(r.title)} <span class="badge">${r.base}</span>` +
-    (r.exists ? `<span class="badge">${esc(r.pack || "")}</span>` : '<span class="badge warn">no file</span>') + `</div>` +
+    (r.exists ? `<span class="badge">${esc(r.pack || "")}</span>` : '<span class="badge warn">no file</span>') +
+    (r.pin && r.pin.live ? `<span class="badge" title="a seed pinned in [lines]">pinned</span>` : "") + `</div>` +
     `<div class="m">${esc(r.speaker || "")} · ${r.voice} · ${esc(r.raw.slice(0, 90))}${r.raw.length > 90 ? "…" : ""}</div></div></li>`).join("");
   const items = $("results").querySelectorAll("li");
   items.forEach(li => {
@@ -1252,30 +1256,60 @@ function pick(row, li) {
   schedulePreview();
 }
 
-// [lines]: the line's pinned seed, if any, and whether it still applies
+// The index seed: what sound_index.json (in git, following the machine that builds
+// the pack) says drew the line's file. Every generated file keeps its seed and is
+// drawn from it again until rerolled; a pin in [lines] overrides it. Whether the
+// audio playing in the card was drawn from it depends on where that audio is from.
+function indexSeedNote() {
+  const k = current.kept;
+  if (!k) return "";
+  const when = current.index_date ? ` · index of ${current.index_date}` : "";
+  const audio = current.drawn ? "the file playing was drawn from it"
+    : current.pack_url ? `the file playing is ${esc(current.pack || "")}${current.pack_version ? ` ${esc(current.pack_version)}` : ""}, which may be an earlier take`
+    : "no file here";
+  const cap = k.capped ? ` · <span class="warn" title="Every try of a chunk ran to the 40 s token cap, so the file holds babble; the next generate run draws it from a new seed.">ran into the token cap on the builder; it will be rerolled</span>` : "";
+  return `<span title="${esc(INDEX_SEED_NOTE)}">Index seed <b>${k.seed}</b> · chunks of ${k.chunk_chars}${k.same_seed ? " · same seed" : ""}${when} · ${audio}</span>${cap}` +
+    ` <a href="#" id="kept-load" title="Put the index seed, its chunk length and Same seed in the run options: on the machine that builds the pack it draws the pack's take again, here a close one">load into run</a>`;
+}
+const INDEX_SEED_NOTE = "Every generated file keeps the seed it was drawn with in sound_index.json and is " +
+  "drawn from it again until rerolled (generate.py --reroll). Pin this take overrides it for this line. " +
+  "The index follows the machine that builds the pack; the audio in the card is only that seed's " +
+  "take when it is the working folder's current copy.";
+
+// [lines]: the line's pinned seed, if any, and whether it still applies, over the index seed
 function showLinePin() {
   const box = $("line-pin");
   if (!box || !current) return;
-  const p = current.pin;
+  const p = current.pin, k = current.kept;
   if (current.parts) {
     box.innerHTML = `<span title="The speaker's words are split between several parts with the narrator's stage directions between them, and the addon plays the parts, so no one take is what players hear.">narration splits the speaker's words: can't be pinned</span>`;
     return;
   }
-  if (!p) { box.innerHTML = ""; return; }
-  box.innerHTML = (p.live
-      ? `Pinned: seed <b>${p.seed}</b> · chunks of ${p.chunk_chars}${p.same_seed ? " · same seed" : ""}`
-      : `<span class="warn" title="The line's text or the voice's settings changed since the take was pinned, so the seed would draw another take: the pin is not used.">pinned under other settings (seed ${p.seed}); not used</span>`) +
-    `<a href="#" id="pin-load" title="Put the pin's seed, chunk length and Same seed in the run options">load into run</a>` +
-    `<a href="#" id="pin-drop" title="Remove the pin from [lines]. The file it drew stays until something else changes the line.">unpin</a>`;
-  $("pin-load").addEventListener("click", e => { e.preventDefault(); useSeed(p.seed, p.chunk_chars, p.same_seed); seedFromPin = true; markPinnedSeed(); });
-  $("pin-drop").addEventListener("click", async e => {
-    e.preventDefault();
-    try {
-      await api(`/api/pin-seed/${encodeURIComponent(current.base)}`, { method: "DELETE" });
-      current.pin = null; showLinePin(); fillFromPin(); schedulePreview();
-      toast("Unpinned. The file it drew stays until something else changes the line.", "ok");
-    } catch (err) { toast(err.message, "warn"); }
-  });
+  const kept = indexSeedNote();
+  if (!p) {
+    box.innerHTML = kept;
+  } else {
+    const drawn = k && k.seed === p.seed && k.chunk_chars === p.chunk_chars && !!k.same_seed === !!p.same_seed;
+    box.innerHTML = (p.live
+        ? `Pinned: seed <b>${p.seed}</b> · chunks of ${p.chunk_chars}${p.same_seed ? " · same seed" : ""}` +
+          (drawn ? ` · <span title="The index records this seed for the file: the machine that builds the pack has drawn it.">the builder's file is drawn from it</span>`
+                 : ` · <span class="warn" title="The index still records another seed for the file: the next generate run on the machine that builds the pack draws it from the pin.">not yet drawn</span>`)
+        : `<span class="warn" title="The line's text or the voice's settings changed since the take was pinned, so the seed would draw another take: the pin is not used.">pinned under other settings (seed ${p.seed}); not used</span>`) +
+      `<a href="#" id="pin-load" title="Put the pin's seed, chunk length and Same seed in the run options">load into run</a>` +
+      `<a href="#" id="pin-drop" title="Remove the pin from [lines]. The file it drew stays, and its seed stays the index seed, until something else changes the line.">unpin</a>` +
+      (kept ? `<div>${kept}</div>` : "");
+    $("pin-load").addEventListener("click", e => { e.preventDefault(); useSeed(p.seed, p.chunk_chars, p.same_seed); seedFromPin = true; markPinnedSeed(); });
+    $("pin-drop").addEventListener("click", async e => {
+      e.preventDefault();
+      try {
+        await api(`/api/pin-seed/${encodeURIComponent(current.base)}`, { method: "DELETE" });
+        current.pin = null; showLinePin(); fillFromPin(); schedulePreview();
+        toast("Unpinned. The file it drew stays, and its seed stays the index seed, until something else changes the line.", "ok");
+      } catch (err) { toast(err.message, "warn"); }
+    });
+  }
+  const load = $("kept-load");
+  if (load) load.addEventListener("click", e => { e.preventDefault(); useSeed(k.seed, k.chunk_chars, k.same_seed); });
 }
 
 // --- Chunk preview ------------------------------------------------------------
@@ -1296,7 +1330,9 @@ async function previewChunks() {
   $("chunk-preview").innerHTML =
     `<span title="Each chunk is one model call; a take's marks number them the same way. The text is shown respelled, as the model hears it.">` +
     `${n} chunk${n === 1 ? "" : "s"} at ${r.chars} characters, as the model hears it</span>` +
-    (r.pinned_chars && r.pinned_chars !== r.chars ? ` · <span class="warn">this line is pinned at ${r.pinned_chars}</span>` : "") +
+    // the chunk length a seed belongs with matters only while the Seed box holds one
+    (r.line_chars && r.line_chars !== r.chars && $("seed-in").value !== ""
+      ? ` · <span class="warn">${r.from === "pin" ? "this line is pinned at" : "the index seed was drawn at"} ${r.line_chars}</span>` : "") +
     (n > 1 ? `<div class="bands">` + r.chunks.map((c, i) => `<span class="band b${i % 2}"><b>${i + 1}</b>${esc(c)}</span>`).join(" ") + `</div>` : "");
 }
 $("text").addEventListener("input", schedulePreview);
@@ -1481,13 +1517,16 @@ function onEvent(ev) {
       "speaker's part; one whose words narration splits cannot be pinned.\n\n" +
       "On this machine the seed makes this exact take. On the CUDA machine that builds the " +
       "pack it makes a different take, but always the same one. The pin stops applying " +
-      "when the line's text or the voice's settings change.";
+      "when the line's text or the voice's settings change; the file then keeps the seed " +
+      "that drew it (the index seed) until rerolled. The pin must be heard under committed " +
+      "settings: the page says so when configs/ has edits not yet committed.";
     pin.addEventListener("click", async () => {
       busy(pin, true);
       try {
-        await api("/api/pin-seed", { method: "POST", headers: { "Content-Type": "application/json" },
+        const r = await api("/api/pin-seed", { method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ session: ev.session || runSession, name: ev.name }) });
         toast(`Pinned seed ${ev.seed} to ${ev.base}. The next generate run draws its file from it.`, "ok");
+        if (r && r.warning) toast(r.warning, "warn");
         if (current && current.base === ev.base) {
           current.pin = { seed: ev.seed, chunk_chars: ev.chunk_chars || 300, same_seed: !!ev.same_seed, live: true };
           showLinePin(); fillFromPin();

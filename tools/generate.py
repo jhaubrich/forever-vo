@@ -43,6 +43,8 @@ import hashlib
 import json
 import os
 import random
+import re
+import signal
 import subprocess
 import sys
 import tempfile
@@ -245,15 +247,20 @@ class VoiceCatalog:
 
     def pin(self, key: str, voice: str, text: str) -> LinePin | None:
         """The [lines] pin for this line's file while it still holds: heard under
-        today's fingerprint and spoken from today's exact text. A retune, a re-pick, a
-        respelling or a corrected text makes the same seed another take, so the pin
-        then stands aside and the line is drawn afresh."""
+        today's fingerprint, spoken from today's exact text, and read in the voice
+        it was pinned in (when the pin says which: a take made where an archetype's
+        clip was missing fell back to the plain race voice, which hashes the same).
+        A retune, a re-pick, a respelling or a corrected text makes the same seed
+        another take, so the pin then stands aside and the line keeps the seed that
+        drew its file (kept_seed)."""
         pin = self.config.lines.root.get(key)
         if pin is None:
             return None
         if pin.heard != self.fingerprint(voice, text) or pin.spoken != spoken_hash(
             text
         ):
+            return None
+        if pin.voice is not None and pin.voice != voice:
             return None
         return pin
 
@@ -444,6 +451,15 @@ def part_name(base: str, index: int) -> str:
     (an older generator still running probes any file it sees under Sounds/)."""
     head, _, last = base.rpartition("-")
     return f"{head}-p{index}-{last}"
+
+
+PART_SEGMENT = re.compile(r"-p\d+(-[^-]+)$")
+
+
+def line_of(base: str) -> str:
+    """The whole-line file a part belongs to: 1241-p2-complete is 1241-complete's,
+    and a whole-line name is its own."""
+    return PART_SEGMENT.sub(r"\1", base)
 
 
 # ----------------------------------------------------------------------------
@@ -719,6 +735,9 @@ CHUNK_GAP_SECONDS = 0.35  # silence between two chunks of one line
 # pinned files are drawn again from their seeds; unpinned files never carry it.
 PIN_VERSION = 1
 PIN_TERMS = ("seed", "chunk", "pin", "same_seed")
+# --reroll stops above this many files unless --yes: --voice reaches every voice
+# cloned from the clip, so a reroll meant for one voice can be thousands of files
+REROLL_LIMIT = 200
 
 
 def spoken_hash(text: str) -> str:
@@ -756,17 +775,74 @@ def index_record(
     same_seed: bool = False,
 ) -> dict[str, Any]:
     """A generated file's sound_index.json entry: its length, voice and fingerprint,
-    and the seed and chunk length it was drawn with (`s`, `c`, since 2026-10-07), so a
-    take that turns out perfect can be pinned from the pack itself. The seed replays
-    exactly only on the machine and libraries that drew it; files from before seeds
-    have none. Nothing that reads the index needs `s` or `c`."""
+    and the seed and chunk length it was drawn with (`s`, `c`, since 2026-10-07;
+    `same: 1` for a same-seed take, `cap: 1` when a chunk ran into the token cap on
+    every try). The seed is the file's own: the next generation of the file replays
+    it (kept_seed, seed_for) unless the take was capped or the line is rerolled, and
+    the audition page shows it as the index seed. It replays exactly only on the
+    machine and libraries that drew it; files from before seeds have none."""
     record: dict[str, Any] = {"d": duration, "v": target.voice, "t": target.fingerprint}
     if take is not None:
         record["s"] = take.seed
         record["c"] = max_chars
         if same_seed:
             record["same"] = 1  # every chunk drawn from the take's first seed
+        if any(mark.capped for mark in take.chunks):
+            record["cap"] = 1  # babble inside: the next run draws it anew
     return record
+
+
+class KeptSeed(NamedTuple):
+    """What drew the file on disk, from its index entry."""
+
+    seed: int
+    chunk_chars: int
+    same_seed: bool
+    capped: bool
+
+
+def kept_seed(recorded: Any) -> KeptSeed | None:
+    """The seed, chunk length and same-seed flag that drew a file, from its index
+    entry; None for a file drawn before seeds (2026-10-07), a probed placeholder, a
+    legacy bare duration, or a seed outside what torch takes."""
+    if not isinstance(recorded, dict):
+        return None
+    seed = recorded.get("s")
+    if not isinstance(seed, int) or isinstance(seed, bool) or not 0 <= seed < 2**31:
+        return None
+    chunk_chars = recorded.get("c")
+    if not isinstance(chunk_chars, int) or isinstance(chunk_chars, bool):
+        chunk_chars = CHUNK_CHARS
+    return KeptSeed(
+        seed, chunk_chars, bool(recorded.get("same")), bool(recorded.get("cap"))
+    )
+
+
+class SeedChoice(NamedTuple):
+    """How one file is drawn: from its [lines] pin, from the seed that drew the file
+    before (`kept`), or from a seed render_take draws (`new`)."""
+
+    seed: int | None
+    chunk_chars: int
+    same_seed: bool
+    origin: str  # "pinned" | "kept" | "new"
+
+
+def seed_for(
+    target: Target, recorded: Any, catalog: VoiceCatalog, reroll: bool = False
+) -> SeedChoice:
+    """The seed a file is drawn from, decided from its index entry alone so --force
+    and a missing file answer the same as a regeneration: a live pin first; else the
+    seed that drew the file, unless it is being rerolled or that take ran into the
+    token cap (replaying it would hit the cap again, every night); else a new one.
+    A hand-deleted mp3 comes back as the same take: the index is the store."""
+    pin = target.live_pin
+    if pin is not None:
+        return SeedChoice(pin.seed, pin.chunk_chars, pin.same_seed, "pinned")
+    kept = kept_seed(recorded)
+    if kept is None or reroll or ran_into_cap(recorded, target, catalog):
+        return SeedChoice(None, CHUNK_CHARS, False, "new")
+    return SeedChoice(kept.seed, kept.chunk_chars, kept.same_seed, "kept")
 
 
 def pinnable_part(variant: Any) -> int | None:
@@ -782,15 +858,54 @@ def pinnable_part(variant: Any) -> int | None:
     return index if variant.parts[index - 1][1] == variant.text else None
 
 
+def fingerprint_terms(fingerprint: str) -> dict[str, str]:
+    """A fingerprint as its terms: the text key under "text", then each
+    `name=value` of the conditioning and pin terms."""
+    key, _, fields = fingerprint.partition("+")
+    terms = {"text": key}
+    for field in fields.split(",") if fields else []:
+        name, _, value = field.partition("=")
+        terms[name] = value
+    return terms
+
+
+def pin_lapse(pin: LinePin, voice: str, fingerprint: str, text: str) -> str:
+    """Why a pin no longer holds, term by term: "heard with
+    reference=spirithealer-female, now none; text unchanged" says which edit, on
+    which machine, moved the voice from under the pin."""
+    heard, now = fingerprint_terms(pin.heard), fingerprint_terms(fingerprint)
+    changes = []
+    if pin.spoken != spoken_hash(text) or heard["text"] != now["text"]:
+        changes.append("text changed")
+    for name in sorted((set(heard) | set(now)) - {"text"}):
+        before, after = heard.get(name), now.get(name)
+        if before != after:
+            changes.append(
+                f"heard with {name}={before if before is not None else 'none'}, "
+                f"now {after if after is not None else 'none'}"
+            )
+    if pin.voice is not None and pin.voice != voice:
+        changes.append(f"pinned in {pin.voice}, the line is read in {voice}")
+    if not changes:
+        return "its settings moved"
+    if "text changed" not in changes:
+        changes.append("text unchanged")
+    return "; ".join(changes)
+
+
 def pin_report(
-    items: list[Item], catalog: VoiceCatalog, include_progress: bool = True
+    items: list[Item],
+    catalog: VoiceCatalog,
+    include_progress: bool = True,
+    sound_index: dict | None = None,
 ) -> list[str]:
     """What the run says about [lines]: a pin whose line is gone, one that no longer
-    holds (the text or the voice's settings changed since it was heard), and one on a
-    line the addon plays as parts, where the whole-line file it pins is not heard. A
-    pinned progress text in a run without --progress is not gone, only not in the
-    run, and is said so: the nightly's bulk pass voices progress texts for captured
-    lines only."""
+    holds (which term of the voice's settings, or the text, moved since it was
+    heard), one on a line the addon plays as parts, where the whole-line file it
+    pins is not heard, and, given the index, one the pack's file is not yet drawn
+    from. A pinned progress text in a run without --progress is not gone, only not
+    in the run, and is said so: the nightly's bulk pass voices progress texts for
+    captured lines only."""
     pins = catalog.config.lines.root
     if not pins:
         return []
@@ -807,16 +922,30 @@ def pin_report(
                 notes.append(f"pinned seed for {key}: no such line now; unpin it")
             continue
         item, variant = lines[key]
-        if catalog.pin(key, item.voice, variant.text) is None:
+        pin = catalog.pin(key, item.voice, variant.text)
+        if pin is None:
+            why = pin_lapse(
+                pins[key],
+                item.voice,
+                catalog.fingerprint(item.voice, variant.text),
+                variant.text,
+            )
             notes.append(
-                f"pinned seed for {key} no longer holds (its text or voice settings "
-                "changed since it was heard); the line is drawn afresh"
+                f"pinned seed for {key} no longer holds ({why}); the line keeps the "
+                "seed that drew its file"
             )
         elif variant.parts and pinnable_part(variant) is None:
             notes.append(
                 f"pinned seed for {key}: narration splits the line's speech into "
                 "several parts, so no file it pins is what players hear"
             )
+        elif sound_index is not None:
+            kept = kept_seed(sound_index.get(key))
+            if kept is None or kept[:3] != (pin.seed, pin.chunk_chars, pin.same_seed):
+                notes.append(
+                    f"pinned seed for {key}: live; the pack's file is not yet drawn "
+                    "from it"
+                )
     return notes
 
 
@@ -828,16 +957,24 @@ def text_current(recorded: str, fingerprint: str, pinned: bool) -> bool:
 
 
 def ran_into_cap(recorded: Any, target: Target, catalog: VoiceCatalog) -> bool:
-    """Whether a pack file is a take that ran into the token cap: a line short enough
-    for one chunk whose length before tempo and speed is the cap's 40.0 s. Those were
-    kept because the longest try used to win; the next run replaces them. A line of
-    several chunks runs past 40 s honestly, so only single chunks are judged."""
+    """Whether a pack file is a take that ran into the token cap, so the next run
+    draws it anew from a fresh seed: its entry says so (`cap`, written since
+    2026-10-13 when any chunk stayed capped through every try and halving), or, for
+    an older entry, the line is short enough for one chunk and the file's length
+    before tempo and speed is the cap's 40.0 s. Those were kept because the longest
+    try used to win. A line of several chunks runs past 40 s honestly, so without
+    the flag only single chunks are judged. A pinned take is never redone for the
+    cap: it would come out the same."""
     if not isinstance(recorded, dict) or not recorded.get("d"):
         return False
     pin = target.live_pin
     if pin is not None and recorded.get("t") == target.fingerprint:
         return False  # drawn from its pinned seed already: it would come out the same
-    if len(chunk(target.text, pin.chunk_chars if pin else CHUNK_CHARS)) != 1:
+    if recorded.get("cap"):
+        return True
+    kept = kept_seed(recorded)
+    chunk_chars = pin.chunk_chars if pin else kept.chunk_chars if kept else CHUNK_CHARS
+    if len(chunk(target.text, chunk_chars)) != 1:
         return False
     settings = catalog.resolve(target.voice).settings
     raw = recorded["d"] * (settings.tempo or 1.0) * (settings.speed or 1.0)
@@ -1347,13 +1484,18 @@ def probe_duration(path: Path) -> float:
 
 
 def index_rank(value) -> int:
-    """How much an index entry knows: 3 for a generator's record (voice and text
-    fingerprint), 1 for a pre-fingerprint record, 0 for a duration a table
-    rebuild probed from the file, or a legacy bare float. An entry may only
-    replace one of equal or lower rank, so a probe never erases a record."""
+    """How much an index entry knows: 7 for a generator's record with its seed
+    (voice, text fingerprint and `s`), 3 for one from before seeds, 1 for a
+    pre-fingerprint record, 0 for a duration a table rebuild probed from the file,
+    or a legacy bare float. An entry may only replace one of equal or lower rank,
+    so a probe never erases a record and a seedless record never erases a seed."""
     if not isinstance(value, dict):
         return 0
-    return (1 if value.get("v") is not None else 0) + (2 if "t" in value else 0)
+    return (
+        (1 if value.get("v") is not None else 0)
+        + (2 if "t" in value else 0)
+        + (4 if "s" in value else 0)
+    )
 
 
 def save_sound_index(sound_index: dict, keys: set[str] | None = None) -> None:
@@ -1396,6 +1538,43 @@ def save_sound_index(sound_index: dict, keys: set[str] | None = None) -> None:
             sound_index[key] = value
     if keys is not None:
         keys.clear()
+
+
+def _exit_on_signal(signum: int, frame: Any) -> None:
+    """SIGTERM unwinds like SystemExit, so the loop's `finally` saves the index."""
+    raise SystemExit(128 + signum)
+
+
+def draw_target(
+    synth: Synth,
+    target: Target,
+    sound_index: dict,
+    catalog: VoiceCatalog,
+    dirty: set[str],
+    reroll: bool = False,
+) -> tuple[float, RenderedTake | None, SeedChoice, bool]:
+    """Generates one file from the seed seed_for chooses, records it in the index and
+    saves the index at once (one locked dump against 10 to 40 s of synthesis), so a
+    stop between files loses no seed. Returns the duration, the take, the choice and
+    whether the mp3 was missing before."""
+    recorded = sound_index.get(target.key)
+    missing = not target.path.exists()
+    choice = seed_for(target, recorded, catalog, reroll=reroll)
+    duration = synth.speak(
+        target.text,
+        target.voice,
+        target.path,
+        seed=choice.seed,
+        same_seed=choice.same_seed,
+        max_chars=choice.chunk_chars,
+    )
+    take = synth.last_take
+    sound_index[target.key] = index_record(
+        duration, target, take, choice.chunk_chars, choice.same_seed
+    )
+    dirty.add(target.key)
+    save_sound_index(sound_index, dirty)
+    return duration, take, choice, missing
 
 
 def speaker_int(key: str | None) -> int | None:
@@ -1976,7 +2155,28 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--limit", type=int, default=0, help="generate at most N files")
     parser.add_argument(
-        "--force", action="store_true", help="regenerate even if a file exists"
+        "--force",
+        action="store_true",
+        help="regenerate even if a file exists, from the seed that drew it (a true "
+        "rebuild); --reroll draws new seeds",
+    )
+    parser.add_argument(
+        "--reroll",
+        action="store_true",
+        help="draw new seeds for the selected lines (--line, --quest or --voice) and "
+        "regenerate them; a line pinned in [lines] is left alone (unpin it first). "
+        f"More than {REROLL_LIMIT} files stops with the count unless --yes",
+    )
+    parser.add_argument(
+        "--line",
+        action="append",
+        metavar="BASE",
+        help="restrict to one line by its file name (1287-accept, 302-994abcf7, "
+        "016d57ec-page): its whole file, parts, other-sex, other-speaker and "
+        "alternate narrator files",
+    )
+    parser.add_argument(
+        "--yes", action="store_true", help="let --reroll go past its file count guard"
     )
     parser.add_argument(
         "--all", action="store_true", help="include texts another pack already covers"
@@ -2041,6 +2241,8 @@ def main(argv: list[str] | None = None) -> int:
         help="generate only the alternate narrator voices, nothing else",
     )
     args = parser.parse_args(argv)
+    if args.reroll and not (args.line or args.quest or args.voice):
+        parser.error("--reroll needs --line, --quest or --voice to say what to reroll")
     config = load_config()
     catalog = VoiceCatalog(config)
     for where, voice in unclipped_speakers(catalog).items():
@@ -2073,7 +2275,9 @@ def main(argv: list[str] | None = None) -> int:
         else {}
     )
     items = load_items(capture, include_progress=args.progress, catalog=catalog)
-    for note in pin_report(items, catalog, include_progress=args.progress):
+    for note in pin_report(
+        items, catalog, include_progress=args.progress, sound_index=sound_index
+    ):
         print(note)
 
     todo: list[Target] = []
@@ -2084,7 +2288,13 @@ def main(argv: list[str] | None = None) -> int:
 
     def wanted(target: Target) -> bool:
         """False when the file is already there in the voice it should be in."""
-        if not target.path.exists() or args.force:
+        if args.reroll and target.live_pin is not None:
+            # The human's choice is never rolled away: unpin first
+            skipped["pinned in [lines], not rerolled (unpin first)"] = (
+                skipped.get("pinned in [lines], not rerolled (unpin first)", 0) + 1
+            )
+            return False
+        if not target.path.exists() or args.force or args.reroll:
             return True
         recorded = sound_index.get(target.key)
         previous_text = recorded.get("t") if isinstance(recorded, dict) else None
@@ -2139,6 +2349,11 @@ def main(argv: list[str] | None = None) -> int:
             or target.voice in args.voice
             or catalog.resolve(target.voice).source in args.voice
         )
+
+    def in_line(target: Target) -> bool:
+        """--line names a whole-line file; its parts (1287-p2-accept), other-sex,
+        other-speaker and alternate narrator files belong to it too."""
+        return not args.line or line_of(target.base) in args.line
 
     for item in items:
         if args.only and item.kind != args.only:
@@ -2243,7 +2458,9 @@ def main(argv: list[str] | None = None) -> int:
                 candidates += [
                     Target(item, part, words, voice, True) for voice in alternate_voices
                 ]
-            candidates = [target for target in candidates if in_voice(target)]
+            candidates = [
+                target for target in candidates if in_voice(target) and in_line(target)
+            ]
             if unbuilt:
                 kept = [
                     target
@@ -2283,6 +2500,13 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.stale_only:
         todo = [target for target in todo if target.key in stale]
+
+    if args.reroll and len(todo) > REROLL_LIMIT and not args.yes and not args.dry_run:
+        raise SystemExit(
+            f"--reroll would draw {len(todo)} files anew (more than {REROLL_LIMIT}): "
+            "narrow it with --line or --quest, see the list with --dry-run, or "
+            "pass --yes"
+        )
 
     if args.shard:
         index, _, count = args.shard.partition("/")
@@ -2327,10 +2551,16 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.dry_run:
         for target in todo[:50]:
-            pin = target.live_pin
+            choice = seed_for(
+                target, sound_index.get(target.key), catalog, reroll=args.reroll
+            )
             print(
                 f"  {target.label}  [{target.voice}]"
-                + (f"  (pinned seed {pin.seed})" if pin else "")
+                + (
+                    f"  (seed {choice.seed}, {choice.origin})"
+                    if choice.seed is not None
+                    else "  (new seed)"
+                )
                 + f"  {target.text[:90]}…"
             )
         if len(todo) > 50:
@@ -2343,46 +2573,47 @@ def main(argv: list[str] | None = None) -> int:
         require_filters(tuning_filters(config))
         synth = Synth(catalog, allow_cpu=args.cpu)
         started = time.time()
-        for n, target in enumerate(todo, 1):
-            item = target.item
-            t0 = time.time()
-            pin = target.live_pin
-            duration = synth.speak(
-                target.text,
-                target.voice,
-                target.path,
-                seed=pin.seed if pin else None,
-                same_seed=pin.same_seed if pin else False,
-                max_chars=pin.chunk_chars if pin else CHUNK_CHARS,
-            )
-            take = synth.last_take
-            sound_index[target.key] = index_record(
-                duration,
-                target,
-                take,
-                pin.chunk_chars if pin else CHUNK_CHARS,
-                pin.same_seed if pin else False,
-            )
-            dirty.add(target.key)
-            print(
-                f"[{n}/{len(todo)}] {target.label} {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{target.voice}] {item.entry.get('title') or item.entry.get('name')}"
-                + (f"  seed {take.seed}" if take else "")
-                + ("  (pinned)" if pin else "")
-                + (
-                    "  (ran into the token cap)"
-                    if take and any(mark.capped for mark in take.chunks)
-                    else ""
+        # The nightly stops a pass with SIGTERM (timeout, through bulk.sh), which
+        # Python takes without unwinding: the seeds of the files drawn since the
+        # last save were lost with it, up to 24 a shard, and the orphaned mp3s were
+        # probed seedless and drawn again from new seeds. Now every file's record
+        # is saved as it is made, and the stop unwinds to the save below.
+        signal.signal(signal.SIGTERM, _exit_on_signal)
+        try:
+            for n, target in enumerate(todo, 1):
+                item = target.item
+                t0 = time.time()
+                duration, take, choice, missing = draw_target(
+                    synth, target, sound_index, catalog, dirty, reroll=args.reroll
                 )
-            )
-            if n % 25 == 0:
-                # Keep the pack tables current so a client restart picks up what exists so far.
-                # Sources are reloaded so files made by another run (e.g. a --captured pass) are included.
-                rebuild_tables(
-                    load_items(load_sources(), include_progress=True, catalog=catalog),
-                    sound_index,
-                    config,
-                    dirty=dirty,
+                print(
+                    f"[{n}/{len(todo)}] {target.label} {duration:5.1f}s audio in {time.time() - t0:4.1f}s  [{target.voice}] {item.entry.get('title') or item.entry.get('name')}"
+                    + (f"  seed {take.seed}" if take else "")
+                    + (
+                        f"  ({choice.origin}, file was missing)"
+                        if missing and choice.origin == "kept"
+                        else f"  ({choice.origin})"
+                    )
+                    + (
+                        "  (ran into the token cap)"
+                        if take and any(mark.capped for mark in take.chunks)
+                        else ""
+                    )
                 )
+                if n % 25 == 0:
+                    # Keep the pack tables current so a client restart picks up what exists so far.
+                    # Sources are reloaded so files made by another run (e.g. a --captured pass) are included.
+                    rebuild_tables(
+                        load_items(
+                            load_sources(), include_progress=True, catalog=catalog
+                        ),
+                        sound_index,
+                        config,
+                        dirty=dirty,
+                    )
+        finally:
+            if dirty:
+                save_sound_index(sound_index, dirty)
         print(f"generated {len(todo)} files in {(time.time() - started) / 60:.1f} min")
 
     rebuild_tables(
