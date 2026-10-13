@@ -926,6 +926,7 @@ def test_a_book_page_can_be_pinned() -> None:
 
 def test_the_page_shows_the_index_seed_beside_what_is_playing(pin_studio: Any) -> None:
     from tools import audition
+    from tools.config import load_config
 
     client, index = pin_studio.client, pin_studio.index
     rows = [
@@ -961,6 +962,17 @@ def test_the_page_shows_the_index_seed_beside_what_is_playing(pin_studio: Any) -
     )
     (listed,) = client.get("/api/lines", params={"pinned": 1}).json()["rows"]
     assert listed["base"] == "1-accept" and listed["pin"]["live"]
+    # the knobs and clone-from the pin was heard under, defaults filled in, so the
+    # page can mark a run option that holds the pin's value
+    saved = VoiceCatalog(load_config(pin_studio.toml)).resolve("human-male").settings
+    assert listed["pin"]["heard"] == {
+        "exaggeration": saved.exaggeration,
+        "cfg_weight": saved.cfg_weight,
+        "tempo": saved.tempo,
+        "pitch": saved.pitch,
+        "speed": saved.speed,
+        "reference": saved.reference,
+    }
     assert (
         client.get("/api/lines", params={"pinned": 1, "voice": "orc-male"}).json()[
             "rows"

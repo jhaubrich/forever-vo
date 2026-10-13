@@ -341,7 +341,12 @@ clip's), and Keep these settings or a kept pick answers with a `warning` naming
 the pins it lapsed (`held_lines` before the write, `lapsed_since` after: the
 write forgets the corpus, so the lines are kept from before). "Pinned lines"
 (`/api/lines?pinned=1`, `&voice=` for one voice) lists every pinned line, live
-or lapsed (`pin lapsed` badge), by voice; the lock note's badges find one.
+or lapsed (`pin lapsed` badge), by voice; the lock note's badges find one. A
+run option holding the picked line's pinned value is blue (`markPinned`): the
+seed, and with it the chunk length and Same seed, and each knob and clone-from
+of the pin's `heard` (`pinned_settings` decodes it, defaults filled in, as
+`pin.heard` in the payload), live or lapsed, so a lapsed pin shows what to put
+back to hear its take.
 Takes and their `<take>.json` sidecars go to `tools/data/audition/` (gitignored).
 
 ## Automation on the owner's machine (NixOS, systemd user units)

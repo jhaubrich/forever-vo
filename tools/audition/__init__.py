@@ -77,6 +77,8 @@ from tools.config import (
     VOICES_DIR,
     Config,
     ConfigError,
+    LinePin,
+    Tts,
     VoiceSources,
     VoiceTuning,
     config_file,
@@ -1274,6 +1276,20 @@ class WorkingCopies:
         }
 
 
+def pinned_settings(pin: LinePin, tts: Tts) -> dict[str, Any]:
+    """The knobs and clone-from a pin was heard under, read back from its `heard`:
+    the fingerprint carries only what differs from the [tts] defaults, so the rest
+    is the defaults. The page turns a run option blue while it holds this value."""
+    terms = generate.fingerprint_terms(pin.heard)
+    heard: dict[str, Any] = tts.defaults.model_dump()
+    for name, default in list(heard.items()):
+        if name not in terms:
+            continue
+        value = terms[name]
+        heard[name] = float(value) if isinstance(default, int | float) else value
+    return heard
+
+
 def lapsed_pins(gone: list[str]) -> str | None:
     """A warning naming the pins a settings or clip write lapsed (Studio.lapsed_since);
     None when it lapsed none."""
@@ -2253,6 +2269,8 @@ def create_app(
                 "chunk_chars": pin.chunk_chars,
                 "same_seed": pin.same_seed,
                 "live": catalog.pin(row.base, item.voice, variant.text) is not None,
+                # the knobs and clone-from it was heard under, for the page to mark
+                "heard": pinned_settings(pin, catalog.config.tts),
             }
             if pin
             else None,

@@ -196,7 +196,9 @@
   .fields.run { grid-template-columns: minmax(0, 1fr) repeat(3, minmax(6.5em, 10em)); }
   .fields.run label.check.hint { display: flex; margin-top: 4px; font-size: 11px; color: var(--dim); }
   /* the picked line's pinned seed, filled in for it */
-  #seed-in.pinned { border-color: var(--borrow); box-shadow: 0 0 0 1px var(--borrow); color: var(--borrow); }
+  /* a run option holding the value the picked line's pin was heard under */
+  #seed-in.pinned, .fields .pinned input, .fields .pinned select { border-color: var(--borrow); box-shadow: 0 0 0 1px var(--borrow); color: var(--borrow); }
+  .fields .pinned label, .fields .pinned label.check { color: var(--borrow); }
   /* after the rule above, which it overrides: Clone from on a row of its own */
   @container (max-width: 560px) {
     .fields.run { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1071,7 +1073,10 @@ function markKnobs() {
       : "";
   }
 }
-for (const [id] of KNOBS) $(id).addEventListener("input", markKnobs);
+for (const [id] of KNOBS) $(id).addEventListener("input", () => { markKnobs(); markPinned(); });
+$("reference").addEventListener("change", markPinned);
+$("chunk-chars").addEventListener("input", markPinned);
+$("same-seed").addEventListener("change", markPinned);
 $("pin-locks").addEventListener("click", ev => {
   const line = ev.target.closest("a.pinned-line"), all = ev.target.closest("a.pinned-all");
   if (!line && !all) return;
@@ -1635,10 +1640,25 @@ function fillFromPin() {
   }
   markPinnedSeed();
 }
-function markPinnedSeed() {
-  const pinned = seedFromPin && current && current.pin && +$("seed-in").value === current.pin.seed;
-  $("seed-in").classList.toggle("pinned", !!pinned);
-  $("seed-in").title = pinned ? `${current.base}'s pinned seed: generating with it draws the pinned take again` : "";
+// Every run option that holds what the picked line's pin was heard under is blue, as
+// the Seed box has been: the seed, chunk length and Same seed of the pinned draw, and
+// the knobs and clone-from of its `heard`. Blue means "this is the pin's value", live
+// or lapsed: with a lapsed pin it shows which fields to put back to hear the take.
+function markPinnedSeed() { markPinned(); }
+function markPinned() {
+  const p = current && current.pin, heard = p && p.heard;
+  const seedPinned = !!(p && $("seed-in").value !== "" && +$("seed-in").value === p.seed);
+  $("seed-in").classList.toggle("pinned", seedPinned);
+  $("seed-in").title = seedPinned ? `${current.base}'s pinned seed: generating with it draws the pinned take again` : "";
+  // the chunk length and Same seed matter to the draw only together with the seed
+  $("chunk-chars").parentElement.classList.toggle("pinned", seedPinned && +$("chunk-chars").value === p.chunk_chars);
+  $("same-seed").parentElement.classList.toggle("pinned", seedPinned && $("same-seed").checked === !!p.same_seed);
+  for (const [id, key] of KNOBS) {
+    const typed = $(id).value.split(/[,\s]+/).filter(Boolean).map(Number);
+    const match = !!heard && typed.length === 1 && Math.abs(typed[0] - Number(heard[key] ?? 0)) < 1e-9;
+    $(id).parentElement.classList.toggle("pinned", match);
+  }
+  $("reference").parentElement.classList.toggle("pinned", !!heard && ($("reference").value || null) === (heard.reference || null));
 }
 
 let takesBeforeSeed = null;  // Takes each as it was before a seed locked it to one
