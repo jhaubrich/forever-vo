@@ -339,8 +339,10 @@ page marks those fields with a lock and lists the lines pinned in the chosen
 voice (`pinned` in the state, `Studio.live_pins`, by the line's voice and the
 clip's), and Keep these settings or a kept pick answers with a `warning` naming
 the pins it lapsed (`held_lines` before the write, `lapsed_since` after: the
-write forgets the corpus, so the lines are kept from before). Takes and their
-`<take>.json` sidecars go to `tools/data/audition/` (gitignored).
+write forgets the corpus, so the lines are kept from before). "Pinned lines"
+(`/api/lines?pinned=1`, `&voice=` for one voice) lists every pinned line, live
+or lapsed (`pin lapsed` badge), by voice; the lock note's badges find one.
+Takes and their `<take>.json` sidecars go to `tools/data/audition/` (gitignored).
 
 ## Automation on the owner's machine (NixOS, systemd user units)
 

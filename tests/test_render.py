@@ -953,6 +953,27 @@ def test_the_page_shows_the_index_seed_beside_what_is_playing(pin_studio: Any) -
         "/api/chunks", json={"text": LINE, "chars": 200, "base": "1-accept"}
     ).json()
     assert (preview["line_chars"], preview["from"]) == (300, "kept")
+    # pinned lines are listed by voice, lapsed ones among them, and no others
+    assert client.get("/api/lines", params={"pinned": 1}).json()["rows"] == []
+    take = take_of(client, seed=77)
+    client.post(
+        "/api/pin-seed", json={"session": take["session"], "name": take["name"]}
+    )
+    (listed,) = client.get("/api/lines", params={"pinned": 1}).json()["rows"]
+    assert listed["base"] == "1-accept" and listed["pin"]["live"]
+    assert (
+        client.get("/api/lines", params={"pinned": 1, "voice": "orc-male"}).json()[
+            "rows"
+        ]
+        == []
+    )
+    pin_studio.variant.text = (
+        LINE + " Now."
+    )  # the text moved: the pin lapsed, still listed
+    (listed,) = client.get("/api/lines", params={"pinned": 1}).json()["rows"]
+    assert not listed["pin"]["live"]
+    pin_studio.variant.text = LINE
+    client.delete("/api/pin-seed/1-accept")
     # a file from before seeds, and a capped take, are said so
     index.write_text(json.dumps({"1-accept": {"d": 2.0, "v": "human-male", "t": "k"}}))
     (row,) = client.get("/api/lines", params={"q": "t"}).json()["rows"]

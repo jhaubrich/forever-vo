@@ -2307,11 +2307,30 @@ def create_app(
         return [payload(row, catalog) for row in rows]
 
     @app.get("/api/lines")
-    def lines(q: str = "", voice: str = "", limit: int = 60) -> dict[str, Any]:
+    def lines(
+        q: str = "", voice: str = "", limit: int = 60, pinned: bool = False
+    ) -> dict[str, Any]:
         """Search by words, or list one voice's own lines when `voice` is given, the
         `limit` longest of them (0 for all: the page lists a voice's every line when
-        the voice is chosen)."""
+        the voice is chosen), or, with `pinned`, every line with a [lines] pin, live
+        or lapsed (the payload's `pin.live` tells), in one voice when `voice` is
+        given too, by voice then file name."""
         rows = studio.rows()
+        if pinned:
+            pins = studio.config_cached().lines.root
+            found = sorted(
+                (
+                    row
+                    for row in rows
+                    if row.base in pins and (not voice or row.voice == voice)
+                ),
+                key=lambda row: (row.voice, row.base),
+            )
+            return {
+                "rows": payloads(found),
+                "total": len(found),
+                "voice": voice or None,
+            }
         if voice:
             _safe(voice)
             moving = studio.moving_to(voice)

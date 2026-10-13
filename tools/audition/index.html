@@ -396,7 +396,7 @@
   <aside>
     <h2>Find a line</h2>
     <input id="q" placeholder="quest title, NPC, words, or a base name like 415-accept" autocomplete="off">
-    <div class="row" style="margin-top:6px"><button id="random">Random line</button><button id="in-voice">All lines in this voice</button></div>
+    <div class="row" style="margin-top:6px"><button id="random">Random line</button><button id="in-voice">All lines in this voice</button><button id="pinned-lines" title="Every line with a seed pinned in [lines], live or lapsed, by voice">Pinned lines</button></div>
     <ul id="results"></ul>
     <p class="note">Every word must match. Pick a line to load its spoken text and voice; free text below works too. The random button draws a quest line spoken in the selected voice.</p>
 
@@ -1072,6 +1072,14 @@ function markKnobs() {
   }
 }
 for (const [id] of KNOBS) $(id).addEventListener("input", markKnobs);
+$("pin-locks").addEventListener("click", ev => {
+  const line = ev.target.closest("a.pinned-line"), all = ev.target.closest("a.pinned-all");
+  if (!line && !all) return;
+  ev.preventDefault();
+  if (all) { listPinnedLines(); return; }
+  $("q").value = line.dataset.base;
+  $("q").dispatchEvent(new Event("input"));
+});
 
 // The lines pinned in the chosen voice hold only under its saved knobs, clone-from and
 // clip picks (the pin's `heard`): the fields carry a lock while any does, and the
@@ -1084,7 +1092,8 @@ function markPinLocks() {
   const locked = held.length > 0;
   for (const id of [...KNOBS.map(([id]) => id), "reference"]) $(id).parentElement.classList.toggle("locked", locked);
   if (!locked) { box.innerHTML = ""; return; }
-  const shown = held.slice(0, 6).map(b => `<span class="badge">${esc(b)}</span>`).join(" ") + (held.length > 6 ? ` and ${held.length - 6} more` : "");
+  const shown = held.slice(0, 6).map(b => `<a href="#" class="badge pinned-line" data-base="${esc(b)}" title="find this line">${esc(b)}</a>`).join(" ") +
+    (held.length > 6 ? ` <a href="#" class="pinned-all" title="list every pinned line">and ${held.length - 6} more</a>` : "");
   box.innerHTML = `<span title="A pin is heard under the voice's saved knobs, clone-from and clip picks. Keep these settings or a new clip pick changes them, and the pin then stands aside: the line falls back to its index seed until a take under the new settings is pinned.">` +
     `&#x1F512; ${held.length} line${held.length === 1 ? "" : "s"} pinned under ${esc(voice)}'s saved settings and clips: Keep or a new pick lapses ${held.length === 1 ? "it" : "them"}</span> ${shown}`;
 }
@@ -1177,7 +1186,8 @@ function renderResults(rows) {
     (r.pack_url ? `<button class="play" title="play the file in ${esc(r.pack || "the pack")}">▶</button>` : "") +
     `<div><div class="t">${esc(r.title)} <span class="badge">${r.base}</span>` +
     (r.exists ? `<span class="badge">${esc(r.pack || "")}</span>` : '<span class="badge warn">no file</span>') +
-    (r.pin && r.pin.live ? `<span class="badge" title="a seed pinned in [lines]">pinned</span>` : "") + `</div>` +
+    (r.pin ? (r.pin.live ? `<span class="badge" title="a seed pinned in [lines]">pinned</span>`
+                         : `<span class="badge warn" title="pinned in [lines] under other settings or text: the pin is not used">pin lapsed</span>`) : "") + `</div>` +
     `<div class="m">${esc(r.speaker || "")} · ${r.voice} · ${esc(r.raw.slice(0, 90))}${r.raw.length > 90 ? "…" : ""}</div></div></li>`).join("");
   const items = $("results").querySelectorAll("li");
   items.forEach(li => {
@@ -1236,6 +1246,20 @@ async function listVoiceLines(quiet) {
   } catch (e) { if (!quiet) toast(e.message, "warn"); }
 }
 $("in-voice").addEventListener("click", () => listVoiceLines(false));
+
+// Every pinned line, live or lapsed, by voice: the lock note under the knobs lists
+// the chosen voice's; this lists them all, so a lapsed pin is found without knowing
+// which line it was on
+async function listPinnedLines() {
+  try {
+    const d = await api("/api/lines?pinned=1");
+    $("q").value = "";
+    renderResults(d.rows);
+    const lapsed = d.rows.filter(r => r.pin && !r.pin.live).length;
+    toast(d.rows.length ? `${d.rows.length} pinned line${d.rows.length === 1 ? "" : "s"}${lapsed ? `, ${lapsed} lapsed` : ""}` : "no pinned lines", d.rows.length ? "ok" : "warn");
+  } catch (e) { toast(e.message, "warn"); }
+}
+$("pinned-lines").addEventListener("click", listPinnedLines);
 
 $("random").addEventListener("click", async () => {
   try {
