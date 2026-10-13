@@ -228,19 +228,27 @@ Generation details:
   retries such a try and halves the chunk (`textclean.halve`) after three; it
   used to keep the longest try, so the runaway won. `ran_into_cap` in `wanted()`
   regenerates a file whose entry says a chunk stayed capped through every try
-  (`cap: 1`, written since 2026-10-13) or, for an older entry, that fits one chunk
-  and is 40.0 s before tempo and speed; such a file is drawn from a new seed.
+  (`cap`, written since 2026-10-13: how many takes in a row did) or, for an older
+  entry, that fits one chunk and is 40.0 s before tempo and speed; such a file is
+  drawn from a new seed, `CAP_RETRIES` (3) nights at most, then left as it is and
+  listed by the run (`given_up`) for a `--reroll --line` by hand: a text the model
+  cannot finish would otherwise cost up to 21 calls every night for good.
 - **Every file keeps its seed** (since 2026-10-13). Every `generate()` call is
   seeded (`derive_seed(take, chunk, try)` from the take seed); each file's index
-  entry keeps it (`s`, chunk length `c`, `same: 1`, `cap: 1`; `index_record`,
+  entry keeps it (`s`, chunk length `c`, `same: 1`, `cap`; `index_record`,
   read back by `kept_seed`), and the next generation of that file replays it
   (`seed_for`: a live `[lines]` pin, else the kept seed, else a fresh one),
   across text and tuning changes, `--force` (a true rebuild) and a hand-deleted
   mp3 (the index is the store). Only `--reroll` (with `--line <base>`, `--quest`
-  or `--voice`; it skips pinned lines and stops above `REROLL_LIMIT` files
-  without `--yes`) or a capped take draws anew. The index is saved after every
-  file (`draw_target`) and on SIGTERM, since the nightly's `timeout` used to lose
-  up to 24 seeds a shard. Files from before 2026-10-07 were drawn unseeded and
+  or `--voice`; it skips pinned lines and stops above `REROLL_LIMIT` files, after
+  `--limit`, without `--yes`) or a capped take draws anew. `--line` names one
+  line's every file (parts, `Sex/`, `Speaker/`, narrator alternates), implies
+  `--all` and `--progress` for a progress base, and fails when nothing matched.
+  The index is saved after every file (`draw_target`) and on SIGTERM, since the
+  nightly's `timeout` used to lose up to 24 seeds a shard; the handler is one-shot
+  and `save_sound_index` blocks SIGTERM, because `timeout` signals the process
+  group and `bulk.sh`'s trap forwards a second TERM milliseconds later, which
+  landed inside the final save. Files from before 2026-10-07 were drawn unseeded and
   get a seed when something else regenerates them. A seed replays exactly only
   on the machine and libraries that drew it. The chunk length (`CHUNK_CHARS`,
   300; the slowest voices read about 10 characters a second, so much more risks

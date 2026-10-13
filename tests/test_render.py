@@ -755,6 +755,18 @@ def test_a_take_that_stayed_capped_is_flagged_and_drawn_anew() -> None:
     assert not ran_into_cap({**record, "cap": 0}, own, catalog)
     clean = RenderedTake("audio", 50.0, 9, [ChunkMark(0.0, 50.0, LINE, 9, 1)])
     assert "cap" not in index_record(50.0, own, clean, 300)
+    # capped takes in a row are counted, and after CAP_RETRIES the file is left as
+    # it is and listed, rather than drawn every night for a text that never ends
+    from tools.generate import CAP_RETRIES, given_up, seed_for
+
+    again = index_record(50.0, own, capped, 300, previous=record)
+    assert again["cap"] == 2 and not given_up(again)
+    clean_record = index_record(50.0, own, clean, 300)
+    assert index_record(50.0, own, capped, 300, previous=clean_record)["cap"] == 1
+    last = {**record, "cap": CAP_RETRIES}
+    assert not ran_into_cap(last, own, catalog) and given_up(last)
+    assert seed_for(own, last, catalog).origin == "kept"  # a rebuild replays it
+    assert seed_for(own, last, catalog, reroll=True).origin == "new"
 
 
 def test_an_older_entry_is_judged_at_the_chunk_length_that_drew_it() -> None:
@@ -871,12 +883,24 @@ def test_the_run_says_which_term_moved_from_under_a_pin() -> None:
     )
 
 
-def test_reroll_names_what_it_rerolls() -> None:
+def test_reroll_names_what_it_rerolls(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tools import generate
     from tools.generate import line_of, main
 
     with pytest.raises(SystemExit) as refused:
         main(["--reroll", "--dry-run"])
     assert refused.value.code == 2  # argparse's usage error
+    # a --line nothing in the run matches is said, not silently nothing to do
+    monkeypatch.setattr(generate, "ensure_picked_references", lambda *a, **k: set())
+    monkeypatch.setattr(
+        generate,
+        "load_sources",
+        lambda: {"quests": {"1": {}}, "gossip": {}, "books": {}, "npcs": {}},
+    )
+    monkeypatch.setattr(generate, "load_items", lambda *a, **k: [])
+    with pytest.raises(SystemExit) as missing:
+        main(["--reroll", "--line", "999999-accept", "--dry-run"])
+    assert "no such line" in str(missing.value)
     assert line_of("1241-p2-complete") == "1241-complete"
     assert line_of("m-170-p1-accept") == "m-170-accept"
     assert line_of("2492-p1-aa6f2374") == "2492-aa6f2374"
@@ -942,6 +966,18 @@ def test_the_page_shows_the_index_seed_beside_what_is_playing(pin_studio: Any) -
         "/api/pin-seed", json={"session": take["session"], "name": take["name"]}
     )
     assert response.status_code == 400 and "token cap" in response.json()["detail"]
+    # nor a take whose own chunk stayed capped: a pinned take is never drawn again
+    take = take_of(client, seed=79)
+    sidecar = (audition.AUDITION_DIR / take["session"] / take["name"]).with_suffix(
+        ".json"
+    )
+    about = json.loads(sidecar.read_text(encoding="utf-8"))
+    about["chunks"][0]["capped"] = True
+    sidecar.write_text(json.dumps(about), encoding="utf-8")
+    response = client.post(
+        "/api/pin-seed", json={"session": take["session"], "name": take["name"]}
+    )
+    assert response.status_code == 400 and "babble" in response.json()["detail"]
     assert (
         client.post(
             "/api/pin-seed",
@@ -954,8 +990,14 @@ def test_the_page_shows_the_index_seed_beside_what_is_playing(pin_studio: Any) -
     )
 
 
-def test_a_pin_heard_under_uncommitted_settings_is_said_so(pin_studio: Any) -> None:
+def test_a_pin_heard_under_uncommitted_settings_is_said_so(
+    pin_studio: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from tools import audition
+
     client = pin_studio.client
+    # the check compares the repository's configs/, which the fixture's copy stands for
+    monkeypatch.setattr(audition, "CONFIG_DIR", pin_studio.toml)
     take = take_of(client, seed=5)
     body = {"session": take["session"], "name": take["name"]}
     assert "warning" not in client.post("/api/pin-seed", json=body).json()
@@ -965,3 +1007,9 @@ def test_a_pin_heard_under_uncommitted_settings_is_said_so(pin_studio: Any) -> N
     pin_studio.git["status"] = " M configs/lines.toml\n M configs/tts.toml\n"
     warning = client.post("/api/pin-seed", json=body).json()["warning"]
     assert "configs/tts.toml" in warning and "commit them" in warning
+    # git failing is said, not passed off as clean
+    pin_studio.git["status"] = None
+    assert "git failed" in client.post("/api/pin-seed", json=body).json()["warning"]
+    # another configs/ than the repository's has nothing to compare against
+    monkeypatch.setattr(audition, "CONFIG_DIR", pin_studio.toml / "elsewhere")
+    assert "warning" not in client.post("/api/pin-seed", json=body).json()

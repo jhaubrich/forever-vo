@@ -1255,6 +1255,11 @@ class WorkingCopies:
         seconds = self.seconds(path)
         return seconds is not None and abs(seconds - recorded) > self.TOLERANCE
 
+    def stamp(self) -> tuple[int, int] | None:
+        """The index file's version (mtime and size), after reading it."""
+        self.index()
+        return self._index_stamp
+
     def kept(self, base: str) -> dict[str, Any] | None:
         """The seed the index says drew the line's file (generate.kept_seed): the
         builder's file, whether or not this machine has it."""
@@ -1265,15 +1270,17 @@ class WorkingCopies:
             "seed": kept.seed,
             "chunk_chars": kept.chunk_chars,
             "same_seed": kept.same_seed,
-            "capped": kept.capped,
+            "capped": bool(kept.capped),
         }
 
 
-@functools.cache
-def _index_date() -> str | None:
+@functools.lru_cache(maxsize=8)
+def _index_date(stamp: tuple[int, int] | None) -> str | None:
     """When sound_index.json last changed in git (its commit date), so the page can
     say how old the index seed it shows is: a contributor's checkout may lag the
-    nightly by days, and the seed it shows may since have been rerolled."""
+    nightly by days, and the seed it shows may since have been rerolled. Keyed on
+    the file's version (WorkingCopies.stamp), so a pull while the server runs
+    moves the date with the seeds."""
     out = _git("log", "-1", "--format=%cs", "--", "tools/data/sound_index.json")
     return out.strip() or None if out else None
 
@@ -2229,7 +2236,7 @@ def create_app(
             # current copy: an installed pack is a release, maybe an earlier take
             "kept": working.kept(row.base),
             "drawn": found is not None and found.key == PACK_NAME and not stale,
-            "index_date": _index_date(),
+            "index_date": _index_date(working.stamp()),
             **line_pin(row, catalog),
         }
 
@@ -2698,6 +2705,13 @@ def create_app(
                 "the take was made under other settings than the voice's saved ones: "
                 "keep its settings first, or the pack would not draw this take",
             )
+        if any(mark.get("capped") for mark in about.get("chunks") or []):
+            # A pinned take is never redone for the cap (generate.ran_into_cap)
+            raise HTTPException(
+                400,
+                "a chunk of this take ran into the token cap on every try, so it "
+                "holds babble, and a pinned take is never drawn again: pin another",
+            )
         kept = working.kept(base)
         if kept and kept["capped"] and kept["seed"] == about["seed"]:
             # A checkout days behind the nightly still shows the seed the builder
@@ -2722,12 +2736,20 @@ def create_app(
         # `heard` was checked against this checkout's configs/. Four pins went dead
         # on 2026-10-13 because the reference they were heard under was never
         # committed: the builder's checkout never had it, so the pin never held.
+        state = studio.state()
+        if studio.config_path.resolve() != CONFIG_DIR.resolve():
+            return state  # another configs/ than the repository's: nothing to compare
         edited = _git("status", "--porcelain", "--", "configs")
         changed = sorted(
             line[3:].strip() for line in (edited or "").splitlines() if line.strip()
         )
-        state = studio.state()
-        if changed and changed != ["configs/lines.toml"]:
+        if edited is None:
+            state["warning"] = (
+                "could not check configs/ for uncommitted edits (git failed): the "
+                "pin holds on the machine that builds the pack only under committed "
+                "settings"
+            )
+        elif changed and changed != ["configs/lines.toml"]:
             state["warning"] = (
                 "this pin was heard under uncommitted edits in "
                 f"{', '.join(changed)}: commit them with the pin, or the machine "

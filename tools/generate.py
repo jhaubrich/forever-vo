@@ -738,6 +738,10 @@ PIN_TERMS = ("seed", "chunk", "pin", "same_seed")
 # --reroll stops above this many files unless --yes: --voice reaches every voice
 # cloned from the clip, so a reroll meant for one voice can be thousands of files
 REROLL_LIMIT = 200
+# A take that stays capped is drawn anew from a fresh seed this many nights, then
+# left as it is and listed: a text the model cannot finish (a shout, an unbreakable
+# run) would otherwise cost 9 to 21 generate() calls every night for good
+CAP_RETRIES = 3
 
 
 def spoken_hash(text: str) -> str:
@@ -773,11 +777,13 @@ def index_record(
     take: RenderedTake | None,
     max_chars: int,
     same_seed: bool = False,
+    previous: Any = None,
 ) -> dict[str, Any]:
     """A generated file's sound_index.json entry: its length, voice and fingerprint,
     and the seed and chunk length it was drawn with (`s`, `c`, since 2026-10-07;
-    `same: 1` for a same-seed take, `cap: 1` when a chunk ran into the token cap on
-    every try). The seed is the file's own: the next generation of the file replays
+    `same: 1` for a same-seed take; `cap`, how many takes in a row a chunk ran into
+    the token cap on every try, counted from `previous`, the entry this one
+    replaces). The seed is the file's own: the next generation of the file replays
     it (kept_seed, seed_for) unless the take was capped or the line is rerolled, and
     the audition page shows it as the index seed. It replays exactly only on the
     machine and libraries that drew it; files from before seeds have none."""
@@ -788,7 +794,9 @@ def index_record(
         if same_seed:
             record["same"] = 1  # every chunk drawn from the take's first seed
         if any(mark.capped for mark in take.chunks):
-            record["cap"] = 1  # babble inside: the next run draws it anew
+            # babble inside: the next run draws it anew, CAP_RETRIES times
+            before = previous.get("cap") if isinstance(previous, dict) else 0
+            record["cap"] = (before if isinstance(before, int) else 0) + 1
     return record
 
 
@@ -798,7 +806,7 @@ class KeptSeed(NamedTuple):
     seed: int
     chunk_chars: int
     same_seed: bool
-    capped: bool
+    capped: int  # takes in a row that ran into the token cap; 0 for a clean one
 
 
 def kept_seed(recorded: Any) -> KeptSeed | None:
@@ -813,8 +821,12 @@ def kept_seed(recorded: Any) -> KeptSeed | None:
     chunk_chars = recorded.get("c")
     if not isinstance(chunk_chars, int) or isinstance(chunk_chars, bool):
         chunk_chars = CHUNK_CHARS
+    cap = recorded.get("cap")
     return KeptSeed(
-        seed, chunk_chars, bool(recorded.get("same")), bool(recorded.get("cap"))
+        seed,
+        chunk_chars,
+        bool(recorded.get("same")),
+        cap if isinstance(cap, int) and not isinstance(cap, bool) else int(bool(cap)),
     )
 
 
@@ -940,12 +952,21 @@ def pin_report(
                 "several parts, so no file it pins is what players hear"
             )
         elif sound_index is not None:
-            kept = kept_seed(sound_index.get(key))
-            if kept is None or kept[:3] != (pin.seed, pin.chunk_chars, pin.same_seed):
-                notes.append(
-                    f"pinned seed for {key}: live; the pack's file is not yet drawn "
-                    "from it"
-                )
+            # the whole-line file, and the speaker part the addon plays instead
+            # when narration surrounds the line
+            keys = [key]
+            if variant.parts:
+                keys.append(part_name(key, pinnable_part(variant) or 0))
+            for file in keys:
+                kept = kept_seed(sound_index.get(file))
+                if kept is None or kept[:3] != (
+                    pin.seed,
+                    pin.chunk_chars,
+                    pin.same_seed,
+                ):
+                    notes.append(
+                        f"pinned seed for {key}: live; {file} is not yet drawn from it"
+                    )
     return notes
 
 
@@ -963,22 +984,29 @@ def ran_into_cap(recorded: Any, target: Target, catalog: VoiceCatalog) -> bool:
     an older entry, the line is short enough for one chunk and the file's length
     before tempo and speed is the cap's 40.0 s. Those were kept because the longest
     try used to win. A line of several chunks runs past 40 s honestly, so without
-    the flag only single chunks are judged. A pinned take is never redone for the
-    cap: it would come out the same."""
+    the count only single chunks are judged. A pinned take is never redone for the
+    cap: it would come out the same. After CAP_RETRIES capped takes in a row the
+    file is left as it is (given_up): --reroll draws it again by hand."""
     if not isinstance(recorded, dict) or not recorded.get("d"):
         return False
     pin = target.live_pin
     if pin is not None and recorded.get("t") == target.fingerprint:
         return False  # drawn from its pinned seed already: it would come out the same
-    if recorded.get("cap"):
-        return True
     kept = kept_seed(recorded)
-    chunk_chars = pin.chunk_chars if pin else kept.chunk_chars if kept else CHUNK_CHARS
+    if kept and kept.capped:
+        return kept.capped < CAP_RETRIES
+    chunk_chars = kept.chunk_chars if kept else CHUNK_CHARS
     if len(chunk(target.text, chunk_chars)) != 1:
         return False
     settings = catalog.resolve(target.voice).settings
     raw = recorded["d"] * (settings.tempo or 1.0) * (settings.speed or 1.0)
     return TOKEN_CAP_SECONDS <= raw <= 40.1
+
+
+def given_up(recorded: Any) -> bool:
+    """Whether a file was left capped after CAP_RETRIES takes: listed by the run."""
+    kept = kept_seed(recorded)
+    return kept is not None and kept.capped >= CAP_RETRIES
 
 
 def derive_seed(take_seed: int, chunk: int, attempt: int) -> int:
@@ -1494,7 +1522,7 @@ def index_rank(value) -> int:
     return (
         (1 if value.get("v") is not None else 0)
         + (2 if "t" in value else 0)
-        + (4 if "s" in value else 0)
+        + (4 if kept_seed(value) is not None else 0)
     )
 
 
@@ -1502,7 +1530,7 @@ def save_sound_index(sound_index: dict, keys: set[str] | None = None) -> None:
     """Merges this process's entries into the index on disk and replaces the file
     atomically, then brings the in-memory copy up to date with the disk.
 
-    Two workers (--shard) each hold a copy in memory and write every 25 files.
+    Two workers (--shard) each hold a copy in memory and write after every file.
     Only `keys` -- what this process wrote since its last save; everything when
     None -- are merged in, so a stale copy of an entry the other worker has since
     rewritten does not overwrite it, and an entry never replaces one that knows
@@ -1513,6 +1541,19 @@ def save_sound_index(sound_index: dict, keys: set[str] | None = None) -> None:
     so two saves cannot interleave or rename each other's half-written file."""
     SOUND_INDEX.parent.mkdir(parents=True, exist_ok=True)
     lock_path = SOUND_INDEX.with_suffix(".lock")
+    # A stop (SIGTERM) waits until the save is whole: timeout signals the process
+    # group and bulk.sh's trap then forwards a second TERM, milliseconds apart, and
+    # the second would land inside this save and abort it
+    signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGTERM})
+    try:
+        _save_sound_index(sound_index, keys, lock_path)
+    finally:
+        signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGTERM})
+
+
+def _save_sound_index(
+    sound_index: dict, keys: set[str] | None, lock_path: Path
+) -> None:
     with open(lock_path, "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         merged: dict = {}
@@ -1541,7 +1582,10 @@ def save_sound_index(sound_index: dict, keys: set[str] | None = None) -> None:
 
 
 def _exit_on_signal(signum: int, frame: Any) -> None:
-    """SIGTERM unwinds like SystemExit, so the loop's `finally` saves the index."""
+    """SIGTERM unwinds like SystemExit, so the loop's `finally` saves the index. One
+    shot: a second TERM (bulk.sh forwards the one timeout sent the group) is ignored
+    rather than cutting that save short."""
+    signal.signal(signum, signal.SIG_IGN)
     raise SystemExit(128 + signum)
 
 
@@ -1570,7 +1614,7 @@ def draw_target(
     )
     take = synth.last_take
     sound_index[target.key] = index_record(
-        duration, target, take, choice.chunk_chars, choice.same_seed
+        duration, target, take, choice.chunk_chars, choice.same_seed, previous=recorded
     )
     dirty.add(target.key)
     save_sound_index(sound_index, dirty)
@@ -2243,6 +2287,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.reroll and not (args.line or args.quest or args.voice):
         parser.error("--reroll needs --line, --quest or --voice to say what to reroll")
+    if args.line:
+        # A named line is meant whether or not another pack covers it, and a
+        # progress text is in the run only when asked for
+        args.all = True
+        args.progress = args.progress or any(b.endswith("-progress") for b in args.line)
     config = load_config()
     catalog = VoiceCatalog(config)
     for where, voice in unclipped_speakers(catalog).items():
@@ -2285,6 +2334,7 @@ def main(argv: list[str] | None = None) -> int:
     dirty: set[str] = set()  # index keys this process wrote since its last save
 
     stale: set[str] = set()
+    given_up_lines: list[str] = []  # capped CAP_RETRIES takes in a row, left as is
 
     def wanted(target: Target) -> bool:
         """False when the file is already there in the voice it should be in."""
@@ -2304,6 +2354,8 @@ def main(argv: list[str] | None = None) -> int:
             )
             stale.add(target.key)
             return True
+        if given_up(recorded):
+            given_up_lines.append(target.label)
         if previous_text is not None and not text_current(
             previous_text, target.fingerprint, target.live_pin is not None
         ):
@@ -2350,10 +2402,18 @@ def main(argv: list[str] | None = None) -> int:
             or catalog.resolve(target.voice).source in args.voice
         )
 
+    lines_matched: set[str] = set()
+
     def in_line(target: Target) -> bool:
         """--line names a whole-line file; its parts (1287-p2-accept), other-sex,
         other-speaker and alternate narrator files belong to it too."""
-        return not args.line or line_of(target.base) in args.line
+        if not args.line:
+            return True
+        line = line_of(target.base)
+        if line in args.line:
+            lines_matched.add(line)
+            return True
+        return False
 
     for item in items:
         if args.only and item.kind != args.only:
@@ -2501,11 +2561,25 @@ def main(argv: list[str] | None = None) -> int:
     if args.stale_only:
         todo = [target for target in todo if target.key in stale]
 
-    if args.reroll and len(todo) > REROLL_LIMIT and not args.yes and not args.dry_run:
+    for base in args.line or []:
+        if base not in lines_matched:
+            raise SystemExit(
+                f"--line {base}: no such line in the run (a speaker still unknown, "
+                "or not a whole-line file name such as 1287-accept, 302-994abcf7, "
+                "016d57ec-page)"
+            )
+    if given_up_lines:
+        print(
+            f"{len(given_up_lines)} left capped after {CAP_RETRIES} takes (--reroll "
+            f"--line draws one again): {', '.join(given_up_lines[:10])}"
+            + (" …" if len(given_up_lines) > 10 else "")
+        )
+    drawn = min(len(todo), args.limit) if args.limit else len(todo)
+    if args.reroll and drawn > REROLL_LIMIT and not args.yes and not args.dry_run:
         raise SystemExit(
-            f"--reroll would draw {len(todo)} files anew (more than {REROLL_LIMIT}): "
-            "narrow it with --line or --quest, see the list with --dry-run, or "
-            "pass --yes"
+            f"--reroll would draw {drawn} files anew (more than {REROLL_LIMIT}): "
+            "narrow it with --line, --quest or --limit, see the list with --dry-run, "
+            "or pass --yes"
         )
 
     if args.shard:

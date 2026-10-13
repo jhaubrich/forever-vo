@@ -541,8 +541,8 @@
         seed instead of each from its own &mdash; an experiment, since the accent comes from
         the reference every chunk already shares.</p>
       <p>Every take has a <b>seed</b>; the same seed, text, settings and chunk length make
-        the same take again on this machine. Every file in the pack keeps the seed it was
-        drawn with (the <b>index seed</b> under a picked line, from
+        the same take again on this machine. Every file generated since 2026-10-07 keeps
+        the seed it was drawn with (the <b>index seed</b> under a picked line, from
         <code>sound_index.json</code>) and is drawn from it again until rerolled.
         <b>Pin this take</b> overrides it: a perfect take's seed for its line in
         <code>[lines]</code>, and the pack's file is drawn from it &mdash; only for a take of
@@ -1265,9 +1265,12 @@ function indexSeedNote() {
   if (!k) return "";
   const when = current.index_date ? ` · index of ${current.index_date}` : "";
   const audio = current.drawn ? "the file playing was drawn from it"
-    : current.pack_url ? `the file playing is ${esc(current.pack || "")}${current.pack_version ? ` ${esc(current.pack_version)}` : ""}, which may be an earlier take`
+    : current.pack_url ? `the file playing is ${esc(current.pack || "")}${current.pack_version ? ` ${esc(current.pack_version)}` : ""}, a release: not necessarily this seed's take`
     : "no file here";
-  const cap = k.capped ? ` · <span class="warn" title="Every try of a chunk ran to the 40 s token cap, so the file holds babble; the next generate run draws it from a new seed.">ran into the token cap on the builder; it will be rerolled</span>` : "";
+  const pinnedHere = current.pin && current.pin.live && current.pin.seed === k.seed;
+  const cap = !k.capped ? ""
+    : pinnedHere ? ` · <span class="warn" title="Every try of a chunk ran to the 40 s token cap, so the file holds babble, and a pinned take is never drawn again.">ran into the token cap; pinned, so kept as is: unpin or pin another</span>`
+    : ` · <span class="warn" title="Every try of a chunk ran to the 40 s token cap, so the file holds babble; the next generate run draws it from a new seed.">ran into the token cap on the builder; it will be rerolled</span>`;
   return `<span title="${esc(INDEX_SEED_NOTE)}">Index seed <b>${k.seed}</b> · chunks of ${k.chunk_chars}${k.same_seed ? " · same seed" : ""}${when} · ${audio}</span>${cap}` +
     ` <a href="#" id="kept-load" title="Put the index seed, its chunk length and Same seed in the run options: on the machine that builds the pack it draws the pack's take again, here a close one">load into run</a>`;
 }
@@ -1330,10 +1333,16 @@ async function previewChunks() {
   $("chunk-preview").innerHTML =
     `<span title="Each chunk is one model call; a take's marks number them the same way. The text is shown respelled, as the model hears it.">` +
     `${n} chunk${n === 1 ? "" : "s"} at ${r.chars} characters, as the model hears it</span>` +
-    // the chunk length a seed belongs with matters only while the Seed box holds one
-    (r.line_chars && r.line_chars !== r.chars && $("seed-in").value !== ""
+    // the chunk length a seed belongs with matters only while the Seed box holds that seed
+    (r.line_chars && r.line_chars !== r.chars && seedInBoxIs(r.from)
       ? ` · <span class="warn">${r.from === "pin" ? "this line is pinned at" : "the index seed was drawn at"} ${r.line_chars}</span>` : "") +
     (n > 1 ? `<div class="bands">` + r.chunks.map((c, i) => `<span class="band b${i % 2}"><b>${i + 1}</b>${esc(c)}</span>`).join(" ") + `</div>` : "");
+}
+// Whether the Seed box holds the picked line's pinned seed, or its index seed
+function seedInBoxIs(from) {
+  if (!current || $("seed-in").value === "") return false;
+  const s = +$("seed-in").value;
+  return from === "pin" ? !!(current.pin && s === current.pin.seed) : !!(current.kept && s === current.kept.seed);
 }
 $("text").addEventListener("input", schedulePreview);
 schedulePreview();  // the text the page opens with
@@ -1589,7 +1598,7 @@ function seedChanged() {
   $("takes").disabled = seeded;
   $("takes").title = seeded ? "One take: a seed makes every take the same" : "";
 }
-$("seed-in").addEventListener("input", () => { seedFromPin = false; seedChanged(); markPinnedSeed(); });
+$("seed-in").addEventListener("input", () => { seedFromPin = false; seedChanged(); markPinnedSeed(); schedulePreview(); });
 
 // One mark per chunk of a take, where the model was called afresh: an accent that
 // switches at a mark is a chunk boundary, one that drifts between marks is the model

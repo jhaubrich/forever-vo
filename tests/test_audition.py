@@ -875,6 +875,7 @@ def test_a_voice_lists_every_line_when_asked_for_all(
     assert d["rows"][0]["base"] == "75-accept"  # longest first
     # the index seed rides along with every row, pins or no corpus
     assert d["rows"][0]["kept"]["seed"] == 9 and d["rows"][1]["kept"] is None
+    audition._index_date.cache_clear()
 
 
 def test_write_voice_sources_keeps_gaps_and_writes_none_for_no_gap(
