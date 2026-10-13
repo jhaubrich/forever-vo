@@ -2,7 +2,7 @@ local _, ns = ...
 local Queue = ns.Queue
 
 --[[
-A panel above the talking head listing what is waiting to play. Click a row
+A panel under the talking head listing what is waiting to play. Click a row
 to play it now, its X to drop it, or clear the whole queue.
 ]]
 
@@ -114,20 +114,20 @@ function QueueList:Toggle()
     self:Update()
 end
 
---- Above the head, or below it when the room above is shorter than the
---- list (the head dragged to the top of the screen) and the room below is
---- not. Sized before it is placed: Update sets the height first.
+--- Below the head, or above it when the room below is shorter than the
+--- list (the head dragged to the bottom of the screen) and the room above
+--- is not. Sized before it is placed: Update sets the height first.
 function QueueList:Anchor()
     local head = ns.UI.TalkingHead.frame
     local frame = self:GetFrame()
     local room = head:Room()
     local need = (frame:GetHeight() + GAP) * frame:GetEffectiveScale()
-    local above = not room or room.top >= need or room.top >= room.bottom
+    local below = not room or room.bottom >= need or room.bottom >= room.top
     frame:ClearAllPoints()
-    if above then
-        frame:SetPoint("BOTTOM", head, "TOP", 0, GAP)
-    else
+    if below then
         frame:SetPoint("TOP", head, "BOTTOM", 0, -GAP)
+    else
+        frame:SetPoint("BOTTOM", head, "TOP", 0, GAP)
     end
 end
 
