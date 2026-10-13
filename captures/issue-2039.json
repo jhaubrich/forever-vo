@@ -1,0 +1,145 @@
+{
+ "addon": "0.1.10",
+ "books": {},
+ "gossip": {
+  "1569|e2fc85be": {
+   "build": "70338",
+   "class": "Warlock",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1420,
+   "name": "Shadow Priest Sarvis",
+   "npc": "1569",
+   "questID": null,
+   "race": "Undead",
+   "sex": "m",
+   "source": "community",
+   "text": "No other race on Azeroth has suffered as much as our people, $c. To laugh in the face of death has become second nature for all of us.",
+   "time": 1791791277,
+   "title": null,
+   "wanted": null,
+   "zone": "Tirisfal Glades"
+  },
+  "2980|e775a01e": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Grull Hawkwind",
+   "npc": "2980",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Greetings, $N, and welcome to Camp Narache. News of your arrival spread quickly among the tribe.",
+   "time": 1791816213,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "3060|7b785024": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Gart Mistrunner",
+   "npc": "3060",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "Many are the paths of the Earth Mother.  May your ancestors watch over you $c.",
+   "time": 1791816271,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  },
+  "3062|1605f087": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "gossip",
+   "isObject": null,
+   "mapID": 1412,
+   "name": "Meela Dawnstrider",
+   "npc": "3062",
+   "questID": null,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "The spirits have guided you to me. How may I be of service?",
+   "time": 1791816297,
+   "title": null,
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "locale": "enUS",
+ "npcs": {
+  "-660739": {
+   "isObject": true,
+   "name": "Unknown"
+  },
+  "1569": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 959310,
+   "name": "Shadow Priest Sarvis",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "2980": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Grull Hawkwind",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3060": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 968705,
+   "name": "Gart Mistrunner",
+   "sex": 2,
+   "sexes": "m"
+  },
+  "3062": {
+   "addon": "0.1.9",
+   "creatureType": "Humanoid",
+   "modelFileID": 986648,
+   "name": "Meela Dawnstrider",
+   "sex": 3,
+   "sexes": "f"
+  }
+ },
+ "origin": "issue-2039",
+ "quests": {
+  "95805-progress": {
+   "build": "70338",
+   "class": "Shaman",
+   "differs": null,
+   "event": "progress",
+   "isObject": true,
+   "mapID": 1412,
+   "name": "Unknown",
+   "npc": "-660739",
+   "questID": 95805,
+   "race": "Tauren",
+   "sex": "m",
+   "source": "community",
+   "text": "<The smoke from the incense rises toward the sky.>",
+   "time": 1791814153,
+   "title": "Grace of An'she and Mu'sha",
+   "wanted": null,
+   "zone": "Mulgore"
+  }
+ },
+ "source": "community",
+ "version": 2
+}
