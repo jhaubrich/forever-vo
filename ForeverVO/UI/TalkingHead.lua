@@ -145,17 +145,23 @@ function TalkingHead:CreateFrame()
     frame:ResetPosition()
     frame:SetUserPlaced(true)
 
-    --- Whether the panels that keep the head company (the queue list, the
-    --- debug panel) go above it. They do while the head sits in the lower
-    --- half of the screen; dragged into the upper half, above runs off the
-    --- top, so they go below
-    function frame:PanelsAbove()
-        local _, y = self:GetCenter()
-        local _, mid = UIParent:GetCenter()
-        if not y or not mid then
-            return true
+    --- How much room, in screen pixels, a panel beside the head has on each
+    --- side: the distance from each of the head's edges to the screen's. The
+    --- queue list and the debug panel pick their side by it. Nil before the
+    --- head is laid out.
+    function frame:Room()
+        local left, bottom, width, height = self:GetRect()
+        local screenWidth, screenHeight = UIParent:GetRight(), UIParent:GetTop()
+        if not left or not screenWidth then
+            return nil
         end
-        return y * self:GetEffectiveScale() <= mid * UIParent:GetEffectiveScale()
+        local scale, screenScale = self:GetEffectiveScale(), UIParent:GetEffectiveScale()
+        return {
+            left = left * scale,
+            right = screenWidth * screenScale - (left + width) * scale,
+            bottom = bottom * scale,
+            top = screenHeight * screenScale - (bottom + height) * scale,
+        }
     end
 
     frame:SetScript("OnClick", function(_, button)

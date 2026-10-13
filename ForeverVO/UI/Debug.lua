@@ -312,30 +312,29 @@ local function PaintHead()
     Fill(headPanel, lines)
 end
 
---- Over the head, flush with the portrait's left edge: beside it the frame
---- runs on past the button column and the panel floated off on its own. It
---- goes above or below with the queue list (PanelsAbove), and beyond the
---- list while that is shown, since the list stands in the same spot; it
---- follows the list as it comes and goes and the head as it is dragged.
+local GAP = 4   -- between the head and the panel
+
+--- Beside the head, to its left, top edges level, or to its right when the
+--- room on the left is narrower than the panel (the head dragged to the
+--- left edge of the screen) and the right is not. It follows the head as
+--- it is dragged. Sized before it is placed: PaintHead runs first.
 local function AnchorHead(host)
-    local list = ns.UI.QueueList:GetFrame()
-    if not list.debugHooked then
-        list.debugHooked = true
-        local function reanchor()
+    if not host.debugHooked then
+        host.debugHooked = true
+        host:HookScript("OnDragStop", function()
             if headPanel and headPanel:IsShown() then
                 AnchorHead(host)
             end
-        end
-        list:HookScript("OnShow", reanchor)
-        list:HookScript("OnHide", reanchor)
-        host:HookScript("OnDragStop", reanchor)
+        end)
     end
+    local room = host:Room()
+    local need = (headPanel:GetWidth() + GAP) * headPanel:GetEffectiveScale()
+    local left = not room or room.left >= need or room.left >= room.right
     headPanel:ClearAllPoints()
-    local beside = list:IsShown() and list or host.Portrait
-    if host:PanelsAbove() then
-        headPanel:SetPoint("BOTTOMLEFT", beside, "TOPLEFT", 0, 4)
+    if left then
+        headPanel:SetPoint("TOPRIGHT", host, "TOPLEFT", -GAP, 0)
     else
-        headPanel:SetPoint("TOPLEFT", beside, "BOTTOMLEFT", 0, -4)
+        headPanel:SetPoint("TOPLEFT", host, "TOPRIGHT", GAP, 0)
     end
 end
 
@@ -356,12 +355,13 @@ function Debug:ShowHead(item)
         host.Model:HookScript("OnModelLoaded", function()
             if headItem then
                 PaintHead()
+                AnchorHead(host)
             end
         end)
     end
     headItem = item
-    AnchorHead(host)
     PaintHead()
+    AnchorHead(host)
     headPanel:Show()
 end
 
